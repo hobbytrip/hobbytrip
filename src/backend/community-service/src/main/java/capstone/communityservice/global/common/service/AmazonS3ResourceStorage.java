@@ -23,7 +23,7 @@ public class AmazonS3ResourceStorage {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public URL store(String fullPath, MultipartFile multipartFile) {
+    public String store(String fullPath, MultipartFile multipartFile) {
         try {
             // MultipartFile의 InputStream을 가져옴
             InputStream inputStream = multipartFile.getInputStream();
@@ -43,7 +43,7 @@ public class AmazonS3ResourceStorage {
         }
 
         // S3에 업로드된 이미지 URL 반환
-        return amazonS3Client.getUrl(bucket, fullPath);
+        return amazonS3Client.getUrl(bucket, fullPath).toString();
     }
 
     public void delete(String fileUrl) {
