@@ -35,3 +35,13 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### yml ###
+*.yml
+application.yml
+
+### log ###
+./log
+**/*.log
+
+
