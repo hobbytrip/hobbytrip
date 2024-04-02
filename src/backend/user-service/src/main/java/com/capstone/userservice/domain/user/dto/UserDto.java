@@ -1,15 +1,13 @@
 package com.capstone.userservice.domain.user.dto;
 
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Date;
 
 @Getter
+@Builder
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserDto {
     private Long userId;
     private String email;
@@ -18,5 +16,5 @@ public class UserDto {
     private String password;
     private Date birthdate;
     private boolean notificationEnabled;
-    private Date createAt;
+    private Date createdAt;
 }

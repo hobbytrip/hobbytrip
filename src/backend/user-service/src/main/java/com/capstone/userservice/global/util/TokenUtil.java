@@ -39,12 +39,14 @@ public class TokenUtil {
          * Access Token 생성
          *  payload "sub": "email"
          *  payload "userId": "userId"
+         *  payload "iat": 토큰 발급 시간
          *  payload "exp"
          *  header "alg" : "HS512"
          */
         String accessToken = Jwts.builder()
-                .setSubject(user.getEmail())
                 .claim(USER_ID, user.getUserId())
+                .setSubject(user.getEmail())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.ES512)
                 .compact();
@@ -53,6 +55,7 @@ public class TokenUtil {
          * Refresh Token 생성
          */
         String refreshToken = Jwts.builder()
+                .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(now + refreshTokenExpTime))
                 .signWith(key, SignatureAlgorithm.ES512)
                 .compact();

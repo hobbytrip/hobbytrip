@@ -1,12 +1,11 @@
 package com.capstone.userservice.global.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 @Builder
-@Data
+@Getter
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class JwtTokenDto {
     private String grantType; //Bearer
     private String accessToken;
