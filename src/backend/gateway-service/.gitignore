@@ -40,5 +40,5 @@ out/
 application.yml
 
 .community-service/
-discovery-service/
+.discovery-service/
 .github/
