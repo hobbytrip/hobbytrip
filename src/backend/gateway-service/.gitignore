@@ -42,3 +42,7 @@ application.yml
 .community-service/
 .discovery-service/
 .github/
+
+### log ###
+./log
+**/*.log
