@@ -1,6 +1,6 @@
 package capstone.communityservice.domain.user.service;
 
-import capstone.communityservice.domain.user.dto.UserRequestEmailDto;
+import capstone.communityservice.domain.user.dto.UserRequestIdDto;
 import capstone.communityservice.domain.user.dto.UserResponseDto;
 import capstone.communityservice.domain.user.entity.User;
 import capstone.communityservice.domain.user.exception.UserException;
@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -23,18 +25,17 @@ public class UserCommandService {
 
     private final UserServiceFakeClient userServiceFakeClient;
 
-    public UserResponseDto findOrSaveUser(UserRequestEmailDto requestDto){
-        User user;
-        try{
-            user = userQueryService.findByEmail(requestDto.getEmail());
-        } catch(UserException e){
-            // user = User.of(userServiceClient.getUser(email));
-            user = User.of(userServiceFakeClient.getUser());
-            userRepository.save(user);
+
+    public UserResponseDto save(UserRequestIdDto requestDto) {
+        Optional<User> user = userRepository.findByOriginalId(requestDto.getOriginalId());
+
+        if(user.isPresent()){
+            return UserResponseDto.of(user.get());
+        } else{
+            // User newUser = User.of(userServiceClient.getUser(requestDto.getOriginalId()));
+            User newUser = User.of(userServiceFakeClient.getUser());
+            userRepository.save(newUser);
+            return UserResponseDto.of(newUser);
         }
-
-        return UserResponseDto.of(user);
     }
-
-
 }

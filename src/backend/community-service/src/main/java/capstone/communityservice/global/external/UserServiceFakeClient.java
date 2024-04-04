@@ -11,6 +11,7 @@ public class UserServiceFakeClient {
 
     public UserFeignResponseDto getUser(){
         UserFeignResponseDto userFeignResponseDto = new UserFeignResponseDto();
+        userFeignResponseDto.setOriginalId(1L);
         userFeignResponseDto.setEmail("abc@naver.com");
         userFeignResponseDto.setName("abc");
         userFeignResponseDto.setProfile("http://image.png");

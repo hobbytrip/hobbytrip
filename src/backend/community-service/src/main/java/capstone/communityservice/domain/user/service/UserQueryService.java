@@ -18,18 +18,8 @@ public class UserQueryService {
 
     private final UserRepository userRepository;
 
-    @Transactional(noRollbackFor = UserException.class)
-    public User findByEmail(String email){
-        System.out.println(email);
-        return userRepository.findByEmail(email)
-                .orElseThrow(
-                        () -> new UserException(Code.NOT_FOUND, "User Not Found Email: " + email)
-                );
-    }
-
-    public User findUserById(Long managerId) {
-        return userRepository.findById(managerId)
-                .orElseThrow(
-                        () -> new UserException(Code.NOT_FOUND, "User Not Found Id: " + managerId));
+    public User findUserByOriginalId(Long originalId) {
+        return userRepository.findByOriginalId(originalId)
+                .orElseThrow(() -> new UserException(Code.NOT_FOUND, "User Not Found"));
     }
 }

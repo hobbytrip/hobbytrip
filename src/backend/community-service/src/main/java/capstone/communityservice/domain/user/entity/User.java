@@ -27,6 +27,9 @@ public class User extends BaseTimeEntity {
     private Long id;
 
     @Column(unique = true, nullable = false)
+    private Long originalId;
+
+    @Column(unique = true, nullable = false)
     private String email;
 
     @Column(nullable = false)
@@ -50,6 +53,7 @@ public class User extends BaseTimeEntity {
     public static User of(UserFeignResponseDto userFeignResponseDto){
         User user = new User();
 
+        user.setOriginalId(userFeignResponseDto.getOriginalId());
         user.setEmail(userFeignResponseDto.getEmail());
         user.setName(userFeignResponseDto.getName());
         user.setProfile(userFeignResponseDto.getProfile());
@@ -68,5 +72,9 @@ public class User extends BaseTimeEntity {
 
     private void setName(String name){
         this.name = name;
+    }
+
+    public void setOriginalId(Long originalId) {
+        this.originalId = originalId;
     }
 }

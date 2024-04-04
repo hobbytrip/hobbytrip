@@ -14,6 +14,9 @@ public class UserResponseDto {
     @NotNull
     private Long id;
 
+    @NotNull
+    private Long originalId;
+
     @NotBlank
     private String email;
 
@@ -26,6 +29,7 @@ public class UserResponseDto {
     public static UserResponseDto of(User user){
         return UserResponseDto.builder()
                 .id(user.getId())
+                .originalId(user.getOriginalId())
                 .email(user.getEmail())
                 .name(user.getName())
                 .profile(user.getProfile())

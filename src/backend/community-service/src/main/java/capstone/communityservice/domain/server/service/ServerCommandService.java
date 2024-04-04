@@ -42,7 +42,7 @@ public class ServerCommandService {
         String profileUrl = "http://image.png";
         String invitationCode = this.createInvitationCode();
 
-        User user = userQueryService.findUserById(requestDto.getManagerId());
+        User user = userQueryService.findUserByOriginalId(requestDto.getManagerId());
 
         Server server = serverRepository.save(
                 Server.of(
