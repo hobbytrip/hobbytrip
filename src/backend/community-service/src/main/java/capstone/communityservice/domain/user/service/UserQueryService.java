@@ -1,6 +1,5 @@
 package capstone.communityservice.domain.user.service;
 
-import capstone.communityservice.domain.user.dto.UserResponseDto;
 import capstone.communityservice.domain.user.entity.User;
 import capstone.communityservice.domain.user.exception.UserException;
 import capstone.communityservice.domain.user.repository.UserRepository;

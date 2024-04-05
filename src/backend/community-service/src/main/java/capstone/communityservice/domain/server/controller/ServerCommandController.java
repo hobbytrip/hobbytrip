@@ -24,6 +24,12 @@ public class ServerCommandController {
         return DataResponseDto.of(response);
     }
 
+    @GetMapping("/join/{invitationCode}/{userId}")
+    public DataResponseDto<Object> join(@PathVariable("invitationCode") String invitationCode, @PathVariable("userId") Long userId){
+        ServerResponseDto response = serverCommandService.join(invitationCode, userId);
+        return DataResponseDto.of(response);
+    }
+
 //    @DeleteMapping("/{managerId}/{serverId}")
 //    public DataResponseDto<Object> remove(@PathVariable("managerId") String managerId, @PathVariable("serverid") String serverId){
 //        serverCommandService.remove(managerId, serverId);
@@ -41,8 +47,4 @@ public class ServerCommandController {
 //        serverCommandService.reprofile(requestDto, profile);
 //    }
 //
-//    @GetMapping("/join/{invitationCode}/{userId}")
-//    public DataResponseDto<Object> join(@PathVariable("invitationCode") String invitationCode, @PathVariable("userId") Long userId){
-//        serverCommandService.join(invitationCode, userId);
-//    }
 }
