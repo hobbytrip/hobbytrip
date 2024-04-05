@@ -1,6 +1,8 @@
 package capstone.communityservice.domain.server.controller;
 
 import capstone.communityservice.domain.server.dto.ServerCreateRequestDto;
+import capstone.communityservice.domain.server.dto.ServerInviteCodeResponse;
+import capstone.communityservice.domain.server.dto.ServerJoinRequestDto;
 import capstone.communityservice.domain.server.dto.ServerResponseDto;
 import capstone.communityservice.domain.server.service.ServerCommandService;
 import capstone.communityservice.global.common.dto.DataResponseDto;
@@ -24,9 +26,16 @@ public class ServerCommandController {
         return DataResponseDto.of(response);
     }
 
-    @GetMapping("/join/{invitationCode}/{userId}")
-    public DataResponseDto<Object> join(@PathVariable("invitationCode") String invitationCode, @PathVariable("userId") Long userId){
-        ServerResponseDto response = serverCommandService.join(invitationCode, userId);
+    @PostMapping("/join")
+    public DataResponseDto<Object> join(@Valid @RequestBody ServerJoinRequestDto serverJoinRequestDto){
+        ServerResponseDto response = serverCommandService.join(serverJoinRequestDto);
+        return DataResponseDto.of(response);
+    }
+
+    @GetMapping("/{serverId}/invitation")
+    public DataResponseDto<Object> generateInvitationCode(@PathVariable("serverId") Long serverId){
+        ServerInviteCodeResponse response = serverCommandService.generatedServerInviteCode(serverId);
+
         return DataResponseDto.of(response);
     }
 

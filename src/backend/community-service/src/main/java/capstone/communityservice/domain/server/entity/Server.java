@@ -35,9 +35,6 @@ public class Server extends BaseTimeEntity {
     @Column(nullable = false)
     private Long managerId;
 
-    @Column(unique = true, nullable = false)
-    private String invitationCode;
-
     @Column(nullable = false)
     private boolean deleted = Boolean.FALSE;
 
@@ -67,14 +64,12 @@ public class Server extends BaseTimeEntity {
     }
 
     //===생성 메서드===//
-    public static Server of(String name, String profile, Long managerId, String invitationCode){
+    public static Server of(String name, String profile, Long managerId){
         Server server = new Server();
 
         server.setName(name);
         server.setProfile(profile);
         server.setManagerId(managerId);
-        server.setInvitationCode(invitationCode);
-
         return server;
     }
 
@@ -91,7 +86,4 @@ public class Server extends BaseTimeEntity {
         this.managerId = managerId;
     }
 
-    public void setInvitationCode(String invitationCode) {
-        this.invitationCode = invitationCode;
-    }
 }
