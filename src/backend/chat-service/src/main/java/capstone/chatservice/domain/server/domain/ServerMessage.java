@@ -1,19 +1,19 @@
 package capstone.chatservice.domain.server.domain;
 
 import capstone.chatservice.domain.model.BaseModel;
+import java.time.LocalDateTime;
 import java.util.List;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 @Getter
-@Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Document(collection = "serverMessages")
 public class ServerMessage extends BaseModel {
 
@@ -33,7 +33,7 @@ public class ServerMessage extends BaseModel {
     private Long userId;
 
     @Field
-    private Long parentId;
+    private Long parentId = 0L;
 
     @Field
     private String profileImage;
@@ -66,5 +66,13 @@ public class ServerMessage extends BaseModel {
         this.writer = writer;
         this.content = content;
         this.files = files;
+    }
+
+    public void generateSequence(Long messageId) {
+        this.messageId = messageId;
+    }
+
+    public void setCreatedAt() {
+        super.setCreatedAt(LocalDateTime.now());
     }
 }

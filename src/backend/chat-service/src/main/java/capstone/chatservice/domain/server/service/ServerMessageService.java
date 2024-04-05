@@ -1,0 +1,39 @@
+package capstone.chatservice.domain.server.service;
+
+import capstone.chatservice.domain.server.domain.ServerMessage;
+import capstone.chatservice.domain.server.dto.ServerMessageDto;
+import capstone.chatservice.domain.server.dto.request.ServerMessageCreateRequest;
+import capstone.chatservice.domain.server.repository.ServerMessageRepository;
+import capstone.chatservice.global.util.SequenceGenerator;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class ServerMessageService {
+
+    private final SequenceGenerator sequenceGenerator;
+    private final ServerMessageRepository messageRepository;
+
+    @Transactional
+    public ServerMessageDto save(ServerMessageCreateRequest createRequest) {
+        ServerMessage serverMessage = ServerMessage.builder()
+                .serverId(createRequest.getServerId())
+                .channelId(createRequest.getChannelId())
+                .userId(createRequest.getUserId())
+                .parentId(createRequest.getParentId())
+                .profileImage(createRequest.getProfileImage())
+                .type(createRequest.getType())
+                .content(createRequest.getContent())
+                .writer(createRequest.getWriter())
+                .build();
+
+        serverMessage.generateSequence(sequenceGenerator.generateSequence(ServerMessage.SEQUENCE_NAME));
+        serverMessage.setCreatedAt();
+
+        return ServerMessageDto.from(messageRepository.save(serverMessage));
+    }
+}
