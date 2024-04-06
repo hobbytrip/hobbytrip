@@ -21,6 +21,9 @@ public class ServerResponseDto {
     private String profile;
 
     @NotBlank
+    private String description;
+
+    @NotBlank
     private String name;
 
     @NotBlank
@@ -33,6 +36,7 @@ public class ServerResponseDto {
                 .profile(server.getProfile())
                 .name(server.getName())
                 .open(server.isOpen())
+                .description(server.getDescription())
                 .build();
     }
 }

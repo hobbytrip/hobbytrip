@@ -10,15 +10,16 @@ import java.util.List;
 
 public interface ServerRepository extends JpaRepository<Server, Long> {
 
-    @Query(value = "select s.* " +
-            "from server s j" +
-            "oin server_user su on s.server_id = su.server_id " +
+    @Query(value = "select distinct(s.*) " +
+            "from server s " +
+            "join server_user su on s.server_id = su.server_id " +
             "where s.open = true " +
             "group by s.server_id " +
             "order by count(su.server_id) desc limit 9",
             nativeQuery = true)
     List<Server> findTopOpenServer();
 
-    @Query("select s from Server s where s.name like concat('%', :name, '%')")
+    @Query("select distinct(s) from Server s join fetch s.serverUsers where s.name like CONCAT('%', :name, '%')")
     Page<Server> findServerWithPaging(String name, Pageable pageable);
+
 }

@@ -1,6 +1,7 @@
 package capstone.communityservice.domain.server.service;
 
 import capstone.communityservice.domain.server.dto.ServerResponseDto;
+import capstone.communityservice.domain.server.dto.ServerWithCountResponseDto;
 import capstone.communityservice.domain.server.entity.Server;
 import capstone.communityservice.domain.server.exception.ServerException;
 import capstone.communityservice.domain.server.repository.ServerRepository;
@@ -49,6 +50,6 @@ public class ServerQueryService {
 
         Page<Server> servers = serverRepository.findServerWithPaging(name, pageable);
 
-        return PageResponseDto.of(servers, ServerResponseDto::of);
+        return PageResponseDto.of(servers, ServerWithCountResponseDto::of);
     }
 }
