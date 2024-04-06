@@ -37,7 +37,7 @@ public class Server extends BaseTimeEntity {
     @Column(nullable = false)
     private boolean deleted = Boolean.FALSE;
 
-    @OneToMany(mappedBy = "server") // ServerUser가 Server, User 둘다 부모로 갖고있기 때문에 orphanRemoval 사용 고민.
+    @OneToMany(mappedBy = "server", orphanRemoval = true) // ServerUser가 Server, User 둘다 부모로 갖고있기 때문에 orphanRemoval 사용 고민.
     private List<ServerUser> serverUsers = new ArrayList<>();
 
     @OneToMany(mappedBy = "server")

@@ -141,9 +141,7 @@ public class ServerCommandService {
     public ServerResponseDto update(ServerUpdateRequestDto requestDto, MultipartFile file) {
         Server findServer = serverQueryService.validateExistServer(requestDto.getServerId());
 
-        if(!findServer.getManagerId().equals(requestDto.getUserId())){
-            throw new ServerException(Code.UNAUTHORIZED, "Not Manager");
-        }
+        validateManager(findServer.getId(), requestDto.getUserId());
 
         String profileUrl = determineProfileUrl(file, findServer, requestDto.getProfile());
 
@@ -177,5 +175,19 @@ public class ServerCommandService {
         String profile = server.getProfile();
 
         return profile == null || profile.equals(profileUrl);
+    }
+
+    public void delete(ServerDeleteRequestDto requestDto) {
+        Server findServer = serverQueryService.validateExistServer(requestDto.getServerId());
+
+        validateManager(findServer.getId(), requestDto.getUserId());
+
+        serverRepository.delete(findServer);
+    }
+
+    private void validateManager(Long serverId, Long userId){
+        if(!serverId.equals(userId)){
+            throw new ServerException(Code.UNAUTHORIZED, "Not Manager");
+        }
     }
 }

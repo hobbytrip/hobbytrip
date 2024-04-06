@@ -44,6 +44,12 @@ public class ServerCommandController {
         return DataResponseDto.of(response);
     }
 
+    @DeleteMapping
+    public DataResponseDto<Object> delete(@Valid @RequestBody ServerDeleteRequestDto requestDto){
+        serverCommandService.delete(requestDto);
+        return DataResponseDto.of("Server delete success!!");
+    }
+
 //    @DeleteMapping("/{managerId}/{serverId}")
 //    public DataResponseDto<Object> remove(@PathVariable("managerId") String managerId, @PathVariable("serverid") String serverId){
 //        serverCommandService.remove(managerId, serverId);
