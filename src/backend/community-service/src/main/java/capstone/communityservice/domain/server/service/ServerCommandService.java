@@ -154,13 +154,16 @@ public class ServerCommandService {
     public ServerResponseDto update(ServerUpdateRequestDto requestDto, MultipartFile file) {
         Server findServer = serverQueryService.validateExistServer(requestDto.getServerId());
 
-        validateManager(findServer.getId(), requestDto.getUserId());
+        validateManager(findServer.getManagerId(), requestDto.getUserId());
 
         String profileUrl = determineProfileUrl(file, findServer, requestDto.getProfile());
 
-        findServer.setName(requestDto.getName());
-        findServer.setProfile(profileUrl);
-        findServer.setOpen(requestDto.isOpen());
+        findServer.setServer(
+                requestDto.getName(),
+                profileUrl,
+                requestDto.isOpen(),
+                requestDto.getDescription()
+        );
 
         return ServerResponseDto.of(findServer);
     }

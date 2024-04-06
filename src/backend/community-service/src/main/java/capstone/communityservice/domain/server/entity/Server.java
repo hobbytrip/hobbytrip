@@ -31,6 +31,8 @@ public class Server extends BaseTimeEntity {
 
     private String profile;
 
+    private String description;
+
     @Column(nullable = false)
     private Long managerId;
 
@@ -76,6 +78,12 @@ public class Server extends BaseTimeEntity {
     }
 
     //===Setter 메서드===//
+    public void setServer(String name, String profile, boolean open, String description){
+        this.name = name;
+        this.profile = profile;
+        this.open = open;
+        this.description = description;
+    }
     public void setName(String name) {
         this.name = name;
     }
@@ -90,4 +98,7 @@ public class Server extends BaseTimeEntity {
 
     public void setOpen(boolean open) { this.open = open; }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }
