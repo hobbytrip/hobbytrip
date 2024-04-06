@@ -50,21 +50,4 @@ public class ServerCommandController {
         return DataResponseDto.of("Server delete success!!");
     }
 
-//    @DeleteMapping("/{managerId}/{serverId}")
-//    public DataResponseDto<Object> remove(@PathVariable("managerId") String managerId, @PathVariable("serverid") String serverId){
-//        serverCommandService.remove(managerId, serverId);
-//    }
-//
-//    @PatchMapping("/serverName")
-//    public DataResponseDto<Object> rename(@Valid @RequestBody ServerUpdateNameRequestDto requestDto){
-//        serverCommandService.rename(requestDto);
-//    }
-//
-//    @PatchMapping("/serverProfile")
-//    public DataResponseDto<Object> reprofile(
-//            @Valid @RequestPart(value = "requestDto") ServerUpdateProfileRequestDto requestDto,
-//            @RequestPart(value = "profile") MultipartFile profile){
-//        serverCommandService.reprofile(requestDto, profile);
-//    }
-//
 }

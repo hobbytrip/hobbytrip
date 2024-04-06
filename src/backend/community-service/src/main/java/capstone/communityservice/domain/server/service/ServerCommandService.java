@@ -100,17 +100,9 @@ public class ServerCommandService {
 
 
     public ServerResponseDto join(ServerJoinRequestDto requestDto) {
-        Optional<Server> byServerIdWithUserId = serverUserRepository.findByServerIdWithUserId(
-                requestDto.getServerId(),
-                requestDto.getUserId()
-        );
-
-        if(byServerIdWithUserId.isPresent()){
-            throw new ServerException(Code.VALIDATION_ERROR, "Already Exist User");
-        }
+        Server findServer = validateServerUser(requestDto);
 
         Long serverId = requestDto.getServerId();
-        Server findServer = serverQueryService.validateExistServer(serverId);
         User findUser = userQueryService.findUserByOriginalId(requestDto.getUserId());
 
         String value = redisService.getValues(
@@ -123,6 +115,19 @@ public class ServerCommandService {
         serverUserCommandService.save(ServerUser.of(findServer, findUser));
 
         return ServerResponseDto.of(findServer);
+    }
+
+    private Server validateServerUser(ServerJoinRequestDto requestDto) {
+        Optional<Server> findServer = serverUserRepository.validateServerUser(
+                requestDto.getServerId(),
+                requestDto.getUserId()
+        );
+
+        if(findServer.isPresent()){
+            throw new ServerException(Code.VALIDATION_ERROR, "Already Exist User");
+        } else{
+            return serverQueryService.validateExistServer(requestDto.getServerId());
+        }
     }
 
     private void validateMatchInvitationCode(String value, String invitationCode) {
@@ -190,4 +195,5 @@ public class ServerCommandService {
             throw new ServerException(Code.UNAUTHORIZED, "Not Manager");
         }
     }
+
 }
