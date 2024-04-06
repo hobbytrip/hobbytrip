@@ -1,5 +1,6 @@
 package com.capstone.userservice.global.config;
 
+import com.capstone.userservice.global.common.filter.JwtFilter;
 import com.capstone.userservice.global.util.TokenUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;

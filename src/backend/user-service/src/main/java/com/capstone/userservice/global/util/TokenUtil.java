@@ -2,7 +2,7 @@ package com.capstone.userservice.global.util;
 
 
 import com.capstone.userservice.domain.user.dto.CustomUserInfoDto;
-import com.capstone.userservice.global.dto.JwtTokenDto;
+import com.capstone.userservice.global.common.dto.JwtTokenDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;

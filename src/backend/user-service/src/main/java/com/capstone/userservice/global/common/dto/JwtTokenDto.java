@@ -1,6 +1,10 @@
-package com.capstone.userservice.global.dto;
+package com.capstone.userservice.global.common.dto;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Builder
 @Getter

@@ -1,4 +1,4 @@
-package com.capstone.userservice.global.config;
+package com.capstone.userservice.global.common.filter;
 
 import com.capstone.userservice.global.util.TokenUtil;
 import jakarta.servlet.FilterChain;
