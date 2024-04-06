@@ -66,13 +66,10 @@ public class ServerMessage extends BaseModel {
         this.writer = writer;
         this.content = content;
         this.files = files;
+        this.setCreatedAt(LocalDateTime.now());
     }
 
     public void generateSequence(Long messageId) {
         this.messageId = messageId;
-    }
-
-    public void setCreatedAt() {
-        super.setCreatedAt(LocalDateTime.now());
     }
 }

@@ -32,7 +32,6 @@ public class ServerMessageService {
                 .build();
 
         serverMessage.generateSequence(sequenceGenerator.generateSequence(ServerMessage.SEQUENCE_NAME));
-        serverMessage.setCreatedAt();
 
         return ServerMessageDto.from(messageRepository.save(serverMessage));
     }
