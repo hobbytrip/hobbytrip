@@ -29,7 +29,6 @@ public class Server extends BaseTimeEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
     private String profile;
 
     @Column(nullable = false)

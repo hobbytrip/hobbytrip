@@ -9,10 +9,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserServiceFakeClient {
 
-    public UserFeignResponseDto getUser(){
+    public UserFeignResponseDto getUser(Long originalId){
         UserFeignResponseDto userFeignResponseDto = new UserFeignResponseDto();
-        userFeignResponseDto.setOriginalId(1L);
-        userFeignResponseDto.setEmail("abc@naver.com");
+        userFeignResponseDto.setOriginalId(originalId);
+        userFeignResponseDto.setEmail("abc" + originalId + "@naver.com");
         userFeignResponseDto.setName("abc");
         userFeignResponseDto.setProfile("http://image.png");
 

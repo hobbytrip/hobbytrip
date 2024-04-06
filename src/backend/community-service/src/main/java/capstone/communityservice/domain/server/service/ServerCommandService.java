@@ -6,10 +6,7 @@ import capstone.communityservice.domain.category.service.CategoryCommandService;
 import capstone.communityservice.domain.channel.entity.Channel;
 import capstone.communityservice.domain.channel.entity.ChannelType;
 import capstone.communityservice.domain.channel.service.ChannelCommandService;
-import capstone.communityservice.domain.server.dto.ServerCreateRequestDto;
-import capstone.communityservice.domain.server.dto.ServerInviteCodeResponse;
-import capstone.communityservice.domain.server.dto.ServerJoinRequestDto;
-import capstone.communityservice.domain.server.dto.ServerResponseDto;
+import capstone.communityservice.domain.server.dto.*;
 import capstone.communityservice.domain.server.entity.Server;
 import capstone.communityservice.domain.server.entity.ServerUser;
 import capstone.communityservice.domain.server.exception.ServerException;
@@ -32,7 +29,7 @@ import java.util.UUID;
 
 @Slf4j
 @Service
-@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
 public class ServerCommandService {
 
@@ -50,10 +47,9 @@ public class ServerCommandService {
 
     private final ServerUserRepository serverUserRepository;
 
-    @Transactional
-    public ServerResponseDto save(ServerCreateRequestDto requestDto, MultipartFile profile) {
-        // String profileUrl = fileUploadService.save(profile); <- S3 등록 후
-        String profileUrl = "http://image.png";
+    public ServerResponseDto save(ServerCreateRequestDto requestDto, MultipartFile file) {
+        // String profileUrl = file != null ? uploadProfile(file) : null; <- S3 등록 후
+        String profileUrl = null;
 
         User user = userQueryService.findUserByOriginalId(requestDto.getManagerId());
 
@@ -69,6 +65,7 @@ public class ServerCommandService {
         categoryInit(server);
 
         /**
+         * 서버 Read
          * 유저 상태 정보(온라인/오프라인) 상태관리 서버로부터 받아오는 로직 필요.
          * 첫 접속시 보여줄 채팅 메시지를 가져오기 위한 채팅 서비스 OpenFeign 작업 필요.
          */
@@ -102,25 +99,25 @@ public class ServerCommandService {
     }
 
 
-    public ServerResponseDto join(ServerJoinRequestDto serverJoinRequestDto) {
+    public ServerResponseDto join(ServerJoinRequestDto requestDto) {
         Optional<Server> byServerIdWithUserId = serverUserRepository.findByServerIdWithUserId(
-                serverJoinRequestDto.getServerId(),
-                serverJoinRequestDto.getUserId()
+                requestDto.getServerId(),
+                requestDto.getUserId()
         );
 
         if(byServerIdWithUserId.isPresent()){
             throw new ServerException(Code.VALIDATION_ERROR, "Already Exist User");
         }
 
-        Long serverId = serverJoinRequestDto.getServerId();
+        Long serverId = requestDto.getServerId();
         Server findServer = serverQueryService.validateExistServer(serverId);
-        User findUser = userQueryService.findUserByOriginalId(serverJoinRequestDto.getUserId());
+        User findUser = userQueryService.findUserByOriginalId(requestDto.getUserId());
 
         String value = redisService.getValues(
                 INVITE_LINK_PREFIX.formatted(serverId)
         );
 
-        validateMatchInvitationCode(value, serverJoinRequestDto.getInvitationCode());
+        validateMatchInvitationCode(value, requestDto.getInvitationCode());
 
 
         serverUserCommandService.save(ServerUser.of(findServer, findUser));
@@ -134,10 +131,51 @@ public class ServerCommandService {
         }
     }
 
-    public void validateExistServer(Long serverId){
+    private void validateExistServer(Long serverId){
         serverRepository.findById(serverId)
                 .orElseThrow(() ->
                         new ServerException(Code.NOT_FOUND, "Server Not Found")
                 );
+    }
+
+    public ServerResponseDto update(ServerUpdateRequestDto requestDto, MultipartFile file) {
+        Server findServer = serverQueryService.validateExistServer(requestDto.getServerId());
+
+        if(!findServer.getManagerId().equals(requestDto.getUserId())){
+            throw new ServerException(Code.UNAUTHORIZED, "Not Manager");
+        }
+
+        String profileUrl = determineProfileUrl(file, findServer, requestDto.getProfile());
+
+        findServer.setName(requestDto.getName());
+        findServer.setProfile(profileUrl);
+
+        return ServerResponseDto.of(findServer);
+    }
+
+    private String determineProfileUrl(MultipartFile file, Server server, String serverProfile) {
+        if (file != null) {
+            return serverProfile == null ? uploadProfile(file) : updateProfile(file, serverProfile, server);
+        }
+        return serverProfile;
+    }
+
+    private String uploadProfile(MultipartFile file) {
+        // return fileUploadService.save(profile); <- S3 등록 후
+        return "http://image.png"; // 예시 URL
+    }
+
+    private String updateProfile(MultipartFile file, String serverProfile, Server server) {
+        if (validateProfileWithFile(server, serverProfile)) {
+            // return fileUploadService.update(file, serverProfile); <- S3 등록 후
+            return "http://image2.png"; // 예시 URL
+        }
+        return serverProfile;
+    }
+
+    private boolean validateProfileWithFile(Server server, String profileUrl) {
+        String profile = server.getProfile();
+
+        return profile == null || profile.equals(profileUrl);
     }
 }

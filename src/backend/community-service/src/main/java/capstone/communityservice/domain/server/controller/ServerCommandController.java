@@ -1,9 +1,6 @@
 package capstone.communityservice.domain.server.controller;
 
-import capstone.communityservice.domain.server.dto.ServerCreateRequestDto;
-import capstone.communityservice.domain.server.dto.ServerInviteCodeResponse;
-import capstone.communityservice.domain.server.dto.ServerJoinRequestDto;
-import capstone.communityservice.domain.server.dto.ServerResponseDto;
+import capstone.communityservice.domain.server.dto.*;
 import capstone.communityservice.domain.server.service.ServerCommandService;
 import capstone.communityservice.global.common.dto.DataResponseDto;
 import jakarta.validation.Valid;
@@ -27,8 +24,8 @@ public class ServerCommandController {
     }
 
     @PostMapping("/join")
-    public DataResponseDto<Object> join(@Valid @RequestBody ServerJoinRequestDto serverJoinRequestDto){
-        ServerResponseDto response = serverCommandService.join(serverJoinRequestDto);
+    public DataResponseDto<Object> join(@Valid @RequestBody ServerJoinRequestDto requestDto){
+        ServerResponseDto response = serverCommandService.join(requestDto);
         return DataResponseDto.of(response);
     }
 
@@ -36,6 +33,14 @@ public class ServerCommandController {
     public DataResponseDto<Object> generateInvitationCode(@PathVariable("serverId") Long serverId){
         ServerInviteCodeResponse response = serverCommandService.generatedServerInviteCode(serverId);
 
+        return DataResponseDto.of(response);
+    }
+
+    @PatchMapping
+    public DataResponseDto<Object> update(
+            @Valid @RequestPart("requestDto") ServerUpdateRequestDto requestDto,
+            @RequestPart(name = "profile", required = false) MultipartFile file){
+        ServerResponseDto response = serverCommandService.update(requestDto, file);
         return DataResponseDto.of(response);
     }
 

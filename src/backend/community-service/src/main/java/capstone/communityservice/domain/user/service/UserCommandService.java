@@ -32,7 +32,7 @@ public class UserCommandService {
                         requestDto.getOriginalId())
                         .orElseGet(() -> {
                             // User newUser = User.of(userServiceClient.getUser(requestDto.getOriginalId()));
-                            User newUser = User.of(userServiceFakeClient.getUser());
+                            User newUser = User.of(userServiceFakeClient.getUser(requestDto.getOriginalId()));
                             userRepository.save(newUser);
                             return newUser;
                         }));
