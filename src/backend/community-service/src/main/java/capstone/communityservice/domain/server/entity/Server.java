@@ -37,6 +37,9 @@ public class Server extends BaseTimeEntity {
     @Column(nullable = false)
     private boolean deleted = Boolean.FALSE;
 
+    @Column(nullable = false)
+    private boolean open = Boolean.FALSE;
+
     @OneToMany(mappedBy = "server", orphanRemoval = true) // ServerUser가 Server, User 둘다 부모로 갖고있기 때문에 orphanRemoval 사용 고민.
     private List<ServerUser> serverUsers = new ArrayList<>();
 
@@ -84,5 +87,7 @@ public class Server extends BaseTimeEntity {
     public void setManagerId(Long managerId) {
         this.managerId = managerId;
     }
+
+    public void setOpen(boolean open) { this.open = open; }
 
 }

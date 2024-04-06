@@ -25,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Slf4j
 @Service
@@ -101,20 +100,29 @@ public class ServerCommandService {
 
     public ServerResponseDto join(ServerJoinRequestDto requestDto) {
         Server findServer = validateServerUser(requestDto);
+        validateServerAccess(findServer, requestDto);
 
-        Long serverId = requestDto.getServerId();
         User findUser = userQueryService.findUserByOriginalId(requestDto.getUserId());
 
-        String value = redisService.getValues(
-                INVITE_LINK_PREFIX.formatted(serverId)
-        );
-
-        validateMatchInvitationCode(value, requestDto.getInvitationCode());
-
+        verifyInvitationCode(findServer.getId(), requestDto);
 
         serverUserCommandService.save(ServerUser.of(findServer, findUser));
 
         return ServerResponseDto.of(findServer);
+    }
+
+    private void validateServerAccess(Server server, ServerJoinRequestDto requestDto) {
+        boolean isClosedWithoutCode = !server.isOpen() && requestDto.getInvitationCode() == null;
+        if (isClosedWithoutCode) {
+            throw new ServerException(Code.VALIDATION_ERROR, "Not open server. Require invitationCode");
+        }
+    }
+
+    private void verifyInvitationCode(Long serverId, ServerJoinRequestDto requestDto) {
+        if (requestDto.getInvitationCode() != null) {
+            String storedInvitationCode = redisService.getValues(INVITE_LINK_PREFIX.formatted(serverId));
+            validateMatchInvitationCode(storedInvitationCode, requestDto.getInvitationCode());
+        }
     }
 
     private Server validateServerUser(ServerJoinRequestDto requestDto) {
@@ -152,6 +160,7 @@ public class ServerCommandService {
 
         findServer.setName(requestDto.getName());
         findServer.setProfile(profileUrl);
+        findServer.setOpen(requestDto.isOpen());
 
         return ServerResponseDto.of(findServer);
     }

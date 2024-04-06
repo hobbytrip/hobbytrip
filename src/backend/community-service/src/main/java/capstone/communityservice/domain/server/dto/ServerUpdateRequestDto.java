@@ -18,4 +18,5 @@ public class ServerUpdateRequestDto {
 
     private String profile;
 
+    private boolean open;
 }

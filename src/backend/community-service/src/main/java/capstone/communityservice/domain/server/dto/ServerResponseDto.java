@@ -23,12 +23,16 @@ public class ServerResponseDto {
     @NotBlank
     private String name;
 
+    @NotBlank
+    private boolean open;
+
     public static ServerResponseDto of(Server server){
         return ServerResponseDto.builder()
                 .serverId(server.getId())
                 .managerId(server.getManagerId())
                 .profile(server.getProfile())
                 .name(server.getName())
+                .open(server.isOpen())
                 .build();
     }
 }
