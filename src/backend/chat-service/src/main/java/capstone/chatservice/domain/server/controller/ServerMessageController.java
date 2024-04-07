@@ -18,8 +18,8 @@ public class ServerMessageController {
     private final KafkaProducerService producerService;
 
     @MessageMapping("/server/message/send")
-    public void save(ServerMessageCreateRequest messageRequest) {
-        ServerMessageDto messageDto = messageService.save(messageRequest);
+    public void save(ServerMessageCreateRequest createRequest) {
+        ServerMessageDto messageDto = messageService.save(createRequest);
         producerService.sendToServerChatTopic(messageDto);
     }
 }
