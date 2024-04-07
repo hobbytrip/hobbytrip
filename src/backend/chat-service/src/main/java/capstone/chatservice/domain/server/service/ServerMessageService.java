@@ -1,10 +1,9 @@
 package capstone.chatservice.domain.server.service;
 
 import capstone.chatservice.domain.server.domain.ServerMessage;
+import capstone.chatservice.domain.server.dto.ServerMessageDto;
 import capstone.chatservice.domain.server.dto.request.ServerMessageCreateRequest;
 import capstone.chatservice.domain.server.dto.request.ServerMessageModifyRequest;
-import capstone.chatservice.domain.server.dto.response.ServerMessageCreateResponse;
-import capstone.chatservice.domain.server.dto.response.ServerMessageModifyResponse;
 import capstone.chatservice.domain.server.repository.ServerMessageRepository;
 import capstone.chatservice.global.util.SequenceGenerator;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +20,7 @@ public class ServerMessageService {
     private final ServerMessageRepository messageRepository;
 
     @Transactional
-    public ServerMessageCreateResponse save(ServerMessageCreateRequest createRequest) {
+    public ServerMessageDto save(ServerMessageCreateRequest createRequest) {
         ServerMessage serverMessage = ServerMessage.builder()
                 .serverId(createRequest.getServerId())
                 .channelId(createRequest.getChannelId())
@@ -35,16 +34,16 @@ public class ServerMessageService {
 
         serverMessage.generateSequence(sequenceGenerator.generateSequence(ServerMessage.SEQUENCE_NAME));
 
-        return ServerMessageCreateResponse.from(messageRepository.save(serverMessage));
+        return ServerMessageDto.from(messageRepository.save(serverMessage));
     }
 
     @Transactional
-    public ServerMessageModifyResponse modify(ServerMessageModifyRequest modifyRequest) {
+    public ServerMessageDto modify(ServerMessageModifyRequest modifyRequest) {
         ServerMessage serverMessage = messageRepository.findById(modifyRequest.getMessageId())
                 .orElseThrow(() -> new RuntimeException("no message"));
 
         serverMessage.modify(modifyRequest.getType(), modifyRequest.getContent());
 
-        return ServerMessageModifyResponse.from(messageRepository.save(serverMessage));
+        return ServerMessageDto.from(messageRepository.save(serverMessage));
     }
 }

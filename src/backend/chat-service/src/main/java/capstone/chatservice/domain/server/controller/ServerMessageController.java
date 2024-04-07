@@ -1,9 +1,8 @@
 package capstone.chatservice.domain.server.controller;
 
+import capstone.chatservice.domain.server.dto.ServerMessageDto;
 import capstone.chatservice.domain.server.dto.request.ServerMessageCreateRequest;
 import capstone.chatservice.domain.server.dto.request.ServerMessageModifyRequest;
-import capstone.chatservice.domain.server.dto.response.ServerMessageCreateResponse;
-import capstone.chatservice.domain.server.dto.response.ServerMessageModifyResponse;
 import capstone.chatservice.domain.server.service.ServerMessageService;
 import capstone.chatservice.infra.kafka.KafkaProducerService;
 import lombok.RequiredArgsConstructor;
@@ -21,13 +20,13 @@ public class ServerMessageController {
 
     @MessageMapping("/server/message/send")
     public void save(ServerMessageCreateRequest createRequest) {
-        ServerMessageCreateResponse messageDto = messageService.save(createRequest);
-        producerService.sendToMultiServerChatTopic(messageDto);
+        ServerMessageDto messageDto = messageService.save(createRequest);
+        producerService.sendToServerChatTopic(messageDto);
     }
 
     @MessageMapping("/server/message/modify")
     public void modify(ServerMessageModifyRequest modifyRequest) {
-        ServerMessageModifyResponse modifyResponse = messageService.modify(modifyRequest);
-        producerService.sendToMultiServerChatTopic(modifyResponse);
+        ServerMessageDto messageDto = messageService.modify(modifyRequest);
+        producerService.sendToServerChatTopic(messageDto);
     }
 }
