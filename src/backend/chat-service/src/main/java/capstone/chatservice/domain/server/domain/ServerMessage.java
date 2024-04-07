@@ -72,4 +72,10 @@ public class ServerMessage extends BaseModel {
     public void generateSequence(Long messageId) {
         this.messageId = messageId;
     }
+
+    public void modify(String type, String content) {
+        this.type = type;
+        this.content = content;
+        this.setModifiedAt(LocalDateTime.now());
+    }
 }
