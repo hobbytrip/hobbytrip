@@ -1,6 +1,8 @@
 package capstone.chatservice.infra.kafka;
 
 import capstone.chatservice.domain.server.dto.ServerMessageDto;
+import capstone.chatservice.domain.server.dto.response.ServerMessageCreateResponse;
+import capstone.chatservice.domain.server.dto.response.ServerMessageModifyResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -16,6 +18,13 @@ public class KafkaConsumerService {
 
     @KafkaListener(topics = "${spring.kafka.topic.server-chat}", groupId = "${spring.kafka.consumer.group-id.server-chat}", containerFactory = "serverChatListenerContainerFactory")
     public void serverChatListener(ServerMessageDto messageDto) {
-        messagingTemplate.convertAndSend("/topic/server/" + messageDto.getServerId(), messageDto);
+        String messageType = messageDto.getType();
+        if (messageType.equals("send")) {
+            ServerMessageCreateResponse createResponse = ServerMessageCreateResponse.from(messageDto);
+            messagingTemplate.convertAndSend("/topic/server/" + messageDto.getServerId(), createResponse);
+        } else if (messageType.equals("modify")) {
+            ServerMessageModifyResponse modifyResponse = ServerMessageModifyResponse.from(messageDto);
+            messagingTemplate.convertAndSend("/topic/server/" + messageDto.getServerId(), modifyResponse);
+        }
     }
 }

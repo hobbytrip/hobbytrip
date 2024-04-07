@@ -29,6 +29,7 @@ public class ServerMessageDto {
     private boolean isDeleted;
     private List<String> files;
     private LocalDateTime createdAt;
+    private LocalDateTime modifiedAt;
 
     public static ServerMessageDto from(ServerMessage message) {
         return ServerMessageDto.builder()
@@ -44,6 +45,7 @@ public class ServerMessageDto {
                 .isDeleted(message.isDeleted())
                 .files(message.getFiles())
                 .createdAt(message.getCreatedAt())
+                .modifiedAt(message.getModifiedAt())
                 .build();
     }
 }
