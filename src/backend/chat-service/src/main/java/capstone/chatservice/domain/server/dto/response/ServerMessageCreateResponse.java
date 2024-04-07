@@ -1,6 +1,6 @@
 package capstone.chatservice.domain.server.dto.response;
 
-import capstone.chatservice.domain.server.domain.ServerMessage;
+import capstone.chatservice.domain.server.dto.ServerMessageDto;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -30,7 +30,7 @@ public class ServerMessageCreateResponse {
     private List<String> files;
     private LocalDateTime createdAt;
 
-    public static ServerMessageCreateResponse from(ServerMessage message) {
+    public static ServerMessageCreateResponse from(ServerMessageDto message) {
         return ServerMessageCreateResponse.builder()
                 .messageId(message.getMessageId())
                 .serverId(message.getServerId())
