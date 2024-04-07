@@ -2,6 +2,7 @@ package capstone.chatservice.domain.emoji.contorller;
 
 import capstone.chatservice.domain.emoji.dto.EmojiDto;
 import capstone.chatservice.domain.emoji.dto.request.EmojiCreateRequest;
+import capstone.chatservice.domain.emoji.dto.request.EmojiDeleteRequest;
 import capstone.chatservice.domain.emoji.service.EmojiService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -18,4 +19,8 @@ public class EmojiController {
         EmojiDto emoji = emojiService.save(createRequest);
     }
 
+    @MessageMapping("/emoji/delete")
+    public void delete(EmojiDeleteRequest deleteRequest) {
+        EmojiDto emojiDto = emojiService.delete(deleteRequest);
+    }
 }

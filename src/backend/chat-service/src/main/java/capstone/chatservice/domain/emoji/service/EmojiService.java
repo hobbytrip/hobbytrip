@@ -3,6 +3,7 @@ package capstone.chatservice.domain.emoji.service;
 import capstone.chatservice.domain.emoji.domain.Emoji;
 import capstone.chatservice.domain.emoji.dto.EmojiDto;
 import capstone.chatservice.domain.emoji.dto.request.EmojiCreateRequest;
+import capstone.chatservice.domain.emoji.dto.request.EmojiDeleteRequest;
 import capstone.chatservice.domain.emoji.repository.EmojiRepository;
 import capstone.chatservice.global.util.SequenceGenerator;
 import lombok.RequiredArgsConstructor;
@@ -35,4 +36,16 @@ public class EmojiService {
         return EmojiDto.from(emojiRepository.save(emoji));
     }
 
+    @Transactional
+    public EmojiDto delete(EmojiDeleteRequest deleteRequest) {
+        Emoji emoji = emojiRepository.findById(deleteRequest.getEmojiId())
+                .orElseThrow(() -> new RuntimeException("예외 발생"));
+
+        EmojiDto emojiDto = EmojiDto.from(emoji);
+        emojiDto.setType(deleteRequest.getType());
+
+        emojiRepository.delete(emoji);
+
+        return emojiDto;
+    }
 }
