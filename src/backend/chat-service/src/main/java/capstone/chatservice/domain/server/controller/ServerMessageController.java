@@ -2,6 +2,7 @@ package capstone.chatservice.domain.server.controller;
 
 import capstone.chatservice.domain.server.dto.ServerMessageDto;
 import capstone.chatservice.domain.server.dto.request.ServerMessageCreateRequest;
+import capstone.chatservice.domain.server.dto.request.ServerMessageDeleteRequest;
 import capstone.chatservice.domain.server.dto.request.ServerMessageModifyRequest;
 import capstone.chatservice.domain.server.service.ServerMessageService;
 import capstone.chatservice.infra.kafka.KafkaProducerService;
@@ -27,6 +28,12 @@ public class ServerMessageController {
     @MessageMapping("/server/message/modify")
     public void modify(ServerMessageModifyRequest modifyRequest) {
         ServerMessageDto messageDto = messageService.modify(modifyRequest);
+        producerService.sendToServerChatTopic(messageDto);
+    }
+
+    @MessageMapping("/server/message/delete")
+    public void modify(ServerMessageDeleteRequest deleteRequest) {
+        ServerMessageDto messageDto = messageService.delete(deleteRequest);
         producerService.sendToServerChatTopic(messageDto);
     }
 }

@@ -3,6 +3,7 @@ package capstone.chatservice.domain.server.service;
 import capstone.chatservice.domain.server.domain.ServerMessage;
 import capstone.chatservice.domain.server.dto.ServerMessageDto;
 import capstone.chatservice.domain.server.dto.request.ServerMessageCreateRequest;
+import capstone.chatservice.domain.server.dto.request.ServerMessageDeleteRequest;
 import capstone.chatservice.domain.server.dto.request.ServerMessageModifyRequest;
 import capstone.chatservice.domain.server.repository.ServerMessageRepository;
 import capstone.chatservice.global.util.SequenceGenerator;
@@ -43,6 +44,16 @@ public class ServerMessageService {
                 .orElseThrow(() -> new RuntimeException("no message"));
 
         serverMessage.modify(modifyRequest.getType(), modifyRequest.getContent());
+
+        return ServerMessageDto.from(messageRepository.save(serverMessage));
+    }
+
+    @Transactional
+    public ServerMessageDto delete(ServerMessageDeleteRequest deleteRequest) {
+        ServerMessage serverMessage = messageRepository.findById(deleteRequest.getMessageId())
+                .orElseThrow(() -> new RuntimeException("no message"));
+
+        serverMessage.delete(deleteRequest.getType());
 
         return ServerMessageDto.from(messageRepository.save(serverMessage));
     }
