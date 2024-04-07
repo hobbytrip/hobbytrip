@@ -18,7 +18,6 @@ public class KafkaProducerService {
     private final KafkaTemplate<String, ServerMessageDto> serverChatKafkaTemplate;
 
     public void sendToServerChatTopic(ServerMessageDto messageDto) {
-        log.info("messageDto {}", messageDto.getType());
         serverChatKafkaTemplate.send(serverChatTopic, messageDto);
     }
 }
