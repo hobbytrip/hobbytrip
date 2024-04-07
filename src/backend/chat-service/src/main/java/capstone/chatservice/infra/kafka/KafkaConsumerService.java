@@ -21,15 +21,19 @@ public class KafkaConsumerService {
     public void serverChatListener(ServerMessageDto messageDto) {
         String messageType = messageDto.getType();
         Long serverId = messageDto.getServerId();
-        if (messageType.equals("send")) {
-            ServerMessageCreateResponse createResponse = ServerMessageCreateResponse.from(messageDto);
-            messagingTemplate.convertAndSend("/topic/server/" + serverId, createResponse);
-        } else if (messageType.equals("modify")) {
-            ServerMessageModifyResponse modifyResponse = ServerMessageModifyResponse.from(messageDto);
-            messagingTemplate.convertAndSend("/topic/server/" + serverId, modifyResponse);
-        } else if (messageType.equals("delete")) {
-            ServerMessageDeleteResponse deleteResponse = ServerMessageDeleteResponse.from(messageDto);
-            messagingTemplate.convertAndSend("/topic/server/" + serverId, deleteResponse);
+        switch (messageType) {
+            case "send" -> {
+                ServerMessageCreateResponse createResponse = ServerMessageCreateResponse.from(messageDto);
+                messagingTemplate.convertAndSend("/topic/server/" + serverId, createResponse);
+            }
+            case "modify" -> {
+                ServerMessageModifyResponse modifyResponse = ServerMessageModifyResponse.from(messageDto);
+                messagingTemplate.convertAndSend("/topic/server/" + serverId, modifyResponse);
+            }
+            case "delete" -> {
+                ServerMessageDeleteResponse deleteResponse = ServerMessageDeleteResponse.from(messageDto);
+                messagingTemplate.convertAndSend("/topic/server/" + serverId, deleteResponse);
+            }
         }
     }
 }
