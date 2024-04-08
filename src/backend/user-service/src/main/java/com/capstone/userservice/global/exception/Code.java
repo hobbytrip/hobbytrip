@@ -26,9 +26,8 @@ public enum Code {
 
     INTERNAL_ERROR(20000, HttpStatus.INTERNAL_SERVER_ERROR, "Internal error"),
     DATA_ACCESS_ERROR(20001, HttpStatus.INTERNAL_SERVER_ERROR, "Data access error"),
-
-    UNAUTHORIZED(40000, HttpStatus.UNAUTHORIZED, "User unauthorized");
-
+    UNAUTHORIZED(40000, HttpStatus.UNAUTHORIZED, "User unauthorized"),
+    FORBIDDEN(40001, HttpStatus.FORBIDDEN, "Access denied");
 
     private final Integer code;
     private final HttpStatus httpStatus;

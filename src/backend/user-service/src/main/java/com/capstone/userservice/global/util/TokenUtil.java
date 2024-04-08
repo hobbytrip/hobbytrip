@@ -1,7 +1,7 @@
 package com.capstone.userservice.global.util;
 
 
-import com.capstone.userservice.domain.user.dto.CustomUserInfoDto;
+import com.capstone.userservice.domain.user.dto.UserRequestDto;
 import com.capstone.userservice.global.common.dto.JwtTokenDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -45,7 +45,13 @@ public class TokenUtil {
         this.refreshTokenExpTime = refreshTokenExpTime;
     }
 
-    public JwtTokenDto generateToken(CustomUserInfoDto user, Authentication authentication) {
+    public JwtTokenDto generateToken(UserRequestDto user, Authentication authentication) {
+
+        // Authentication 객체에서 userDetails 추출
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+        // userDetails 객체에서 userId 가져오기
+        String userId = userDetails.getUsername();
 
         //권한 'ROLE_USER'
         String authorities = authentication.getAuthorities().stream()
@@ -57,19 +63,20 @@ public class TokenUtil {
 
         /**
          * Access Token 생성
+         *  payload "auth": "ROLE_USER"
          *  payload "sub": "email"
          *  payload "userId": "userId"
          *  payload "iat": 토큰 발급 시간
-         *  payload "exp"
-         *  header "alg" : "HS512"
+         *  payload "exp" : 토큰 만료 시간
+         *  header "alg" : "HS256"
          */
         String accessToken = Jwts.builder()
-                .claim(USER_ID, user.getUserId())
+                .claim(USER_ID, userId)
                 .claim(AUTHORITIES_KEY, authorities)
                 .setSubject(user.getEmail())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(accessTokenExpiresIn)
-                .signWith(key, SignatureAlgorithm.ES512)
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 
         /**
@@ -78,7 +85,7 @@ public class TokenUtil {
         String refreshToken = Jwts.builder()
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(now + refreshTokenExpTime))
-                .signWith(key, SignatureAlgorithm.ES512)
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 
         return JwtTokenDto.builder()
@@ -122,6 +129,7 @@ public class TokenUtil {
         }
     }
 
+    //토큰 유효성 검사
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJwt(token);
