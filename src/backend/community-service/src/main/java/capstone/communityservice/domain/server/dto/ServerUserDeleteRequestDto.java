@@ -14,5 +14,4 @@ public class ServerUserDeleteRequestDto {
 
     @NotNull
     private Long serverUserId;
-
 }

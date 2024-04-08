@@ -33,4 +33,5 @@ public class ServerQueryController {
 
         return DataResponseDto.of(response);
     }
+
 }

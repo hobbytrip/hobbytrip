@@ -21,4 +21,5 @@ public class ServerUpdateRequestDto {
     private boolean open;
 
     private String description;
+
 }

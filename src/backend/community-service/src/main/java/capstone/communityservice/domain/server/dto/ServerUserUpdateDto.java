@@ -14,4 +14,5 @@ public class ServerUserUpdateDto {
 
     @NotBlank
     private String name;
+
 }

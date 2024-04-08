@@ -49,5 +49,4 @@ public class ServerCommandController {
         serverCommandService.delete(requestDto);
         return DataResponseDto.of("Server delete success!!");
     }
-
 }
