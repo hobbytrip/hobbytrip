@@ -50,7 +50,7 @@ public class ServerCommandService {
         // String profileUrl = file != null ? uploadProfile(file) : null; <- S3 등록 후
         String profileUrl = null;
 
-        User user = userQueryService.findUserByOriginalId(requestDto.getManagerId());
+        User user = userQueryService.findUserByOriginalId(requestDto.getUserId());
 
         Server server = serverRepository.save(
                 Server.of(
@@ -197,13 +197,13 @@ public class ServerCommandService {
     public void delete(ServerDeleteRequestDto requestDto) {
         Server findServer = serverQueryService.validateExistServer(requestDto.getServerId());
 
-        validateManager(findServer.getId(), requestDto.getUserId());
+        validateManager(findServer.getManagerId(), requestDto.getUserId());
 
         serverRepository.delete(findServer);
     }
 
-    private void validateManager(Long serverId, Long userId){
-        if(!serverId.equals(userId)){
+    private void validateManager(Long managerId, Long userId){
+        if(!managerId.equals(userId)){
             throw new ServerException(Code.UNAUTHORIZED, "Not Manager");
         }
     }

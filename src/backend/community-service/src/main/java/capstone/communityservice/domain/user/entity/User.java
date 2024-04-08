@@ -1,5 +1,6 @@
 package capstone.communityservice.domain.user.entity;
 
+import capstone.communityservice.domain.dm.entity.DmUser;
 import capstone.communityservice.domain.server.entity.ServerUser;
 import capstone.communityservice.domain.user.dto.UserFeignResponseDto;
 import capstone.communityservice.global.common.entity.BaseTimeEntity;
@@ -43,10 +44,18 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "user")
     private List<ServerUser> serverUsers = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user")
+    private List<DmUser> dmUsers = new ArrayList<>();
+
     //===연관 관계 메서드===//
     public void addServerUser(ServerUser serverUser){
         getServerUsers().add(serverUser);
         serverUser.setUser(this);
+    }
+
+    public void addDmUser(DmUser dmUser) {
+        getDmUsers().add(dmUser);
+        dmUser.setUser(this);
     }
 
     //===생성 메서드===//

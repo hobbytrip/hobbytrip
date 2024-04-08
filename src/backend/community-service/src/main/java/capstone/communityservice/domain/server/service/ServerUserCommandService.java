@@ -1,6 +1,6 @@
 package capstone.communityservice.domain.server.service;
 
-import capstone.communityservice.domain.server.dto.ServerUserCreateRequestDto;
+import capstone.communityservice.domain.server.dto.ServerUserDeleteRequestDto;
 import capstone.communityservice.domain.server.dto.ServerUserResponseDto;
 import capstone.communityservice.domain.server.dto.ServerUserUpdateDto;
 import capstone.communityservice.domain.server.entity.Server;
@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -22,18 +21,38 @@ import java.util.Optional;
 public class ServerUserCommandService {
 
     private final ServerUserRepository serverUserRepository;
+    private final ServerQueryService serverQueryService;
 
     public void save(ServerUser serverUser) {
         serverUserRepository.save(serverUser);
     }
 
     public ServerUserResponseDto update(ServerUserUpdateDto requestDto) {
-        ServerUser findServerUser = serverUserRepository.findByServerIdAndUserId(
-                requestDto.getServerId(), requestDto.getUserId()
-        ).orElseThrow(() -> new ServerException(Code.NOT_FOUND, "Not Found ServerUser"));
+        ServerUser findServerUser = validateServerUser(requestDto.getServerId(), requestDto.getUserId());
 
         findServerUser.setName(requestDto.getName());
 
         return ServerUserResponseDto.of(findServerUser);
+    }
+
+    private ServerUser validateServerUser(Long serverId, Long userId) {
+        ServerUser findServerUser = serverUserRepository.findByServerIdAndUserId(
+                serverId, userId
+        ).orElseThrow(() -> new ServerException(Code.NOT_FOUND, "Not Found ServerUser"));
+        return findServerUser;
+    }
+
+    public void delete(ServerUserDeleteRequestDto requestDto) {
+        ServerUser findServerUser = validateServerUser(
+                requestDto.getServerId(),
+                requestDto.getUserId()
+        );
+
+        serverQueryService.validateManager(
+                requestDto.getUserId(),
+                requestDto.getServerUserId()
+        );
+
+        serverUserRepository.delete(findServerUser);
     }
 }

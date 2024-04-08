@@ -1,0 +1,15 @@
+package capstone.communityservice.domain.dm.repository;
+
+import capstone.communityservice.domain.dm.entity.DmUser;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+@Repository
+public interface DmUserRepository extends JpaRepository<DmUser, Long> {
+
+    @Query("select du from DmUser du where du.dm.id =:dmId and du.user.id =:userId")
+    Optional<DmUser> findByDmIdAndUserId(Long dmId, Long userId);
+}

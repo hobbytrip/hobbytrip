@@ -52,4 +52,10 @@ public class ServerQueryService {
 
         return PageResponseDto.of(servers, ServerWithCountResponseDto::of);
     }
+
+    public void validateManager(Long managerId, Long userId){
+        if(!managerId.equals(userId)){
+            throw new ServerException(Code.UNAUTHORIZED, "Not Manager");
+        }
+    }
 }

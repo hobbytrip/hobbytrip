@@ -45,10 +45,10 @@ public class Server extends BaseTimeEntity {
     @OneToMany(mappedBy = "server", orphanRemoval = true) // ServerUser가 Server, User 둘다 부모로 갖고있기 때문에 orphanRemoval 사용 고민.
     private List<ServerUser> serverUsers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "server")
+    @OneToMany(mappedBy = "server", orphanRemoval = true)
     private List<Category> categories = new ArrayList<>();
 
-    @OneToMany(mappedBy = "server")
+    @OneToMany(mappedBy = "server", orphanRemoval = true)
     private List<Channel> channels = new ArrayList<>();
 
     //===연관 관계 메서드===//
