@@ -35,13 +35,6 @@ public class ServerUserCommandService {
         return ServerUserResponseDto.of(findServerUser);
     }
 
-    private ServerUser validateServerUser(Long serverId, Long userId) {
-        return serverUserRepository.findByServerIdAndUserId(serverId, userId)
-                .orElseThrow(() -> new ServerException(
-                        Code.NOT_FOUND, "Not Found ServerUser")
-                );
-    }
-
     public void delete(ServerUserDeleteRequestDto requestDto) {
         ServerUser findServerUser = validateServerUser(
                 requestDto.getServerId(),
@@ -56,5 +49,12 @@ public class ServerUserCommandService {
         );
 
         serverUserRepository.delete(findServerUser);
+    }
+
+    private ServerUser validateServerUser(Long serverId, Long userId) {
+        return serverUserRepository.findByServerIdAndUserId(serverId, userId)
+                .orElseThrow(() -> new ServerException(
+                        Code.NOT_FOUND, "Not Found ServerUser")
+                );
     }
 }

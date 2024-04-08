@@ -52,6 +52,13 @@ public class DmCommandService {
         return DmResponseDto.of(findDm);
     }
 
+    public DmResponseDto update(DmUpdateRequestDto requestDto) {
+        Dm findDm = validateDm(requestDto.getDmId());
+        findDm.setName(requestDto.getName());
+
+        return DmResponseDto.of(findDm);
+    }
+
 
 
     private void saveDmUser(List<User> users, Dm dm) {
@@ -73,12 +80,6 @@ public class DmCommandService {
         return userQueryService.findUsers(userIds);
     }
 
-    public DmResponseDto update(DmUpdateRequestDto requestDto) {
-        Dm findDm = validateDm(requestDto.getDmId());
-        findDm.setName(requestDto.getName());
-
-        return DmResponseDto.of(findDm);
-    }
 
     private Dm validateDm(Long dmId){
         return dmRepository.findById(dmId)

@@ -71,6 +71,44 @@ public class ServerCommandService {
         return ServerResponseDto.of(server);
     }
 
+    public ServerResponseDto join(ServerJoinRequestDto requestDto) {
+        Server findServer = validateServerUser(requestDto);
+        validateServerAccess(findServer, requestDto);
+
+        User findUser = userQueryService.findUserByOriginalId(requestDto.getUserId());
+
+        verifyInvitationCode(findServer.getId(), requestDto);
+
+        serverUserCommandService.save(ServerUser.of(findServer, findUser));
+
+        return ServerResponseDto.of(findServer);
+    }
+
+    public ServerResponseDto update(ServerUpdateRequestDto requestDto, MultipartFile file) {
+        Server findServer = serverQueryService.validateExistServer(requestDto.getServerId());
+
+        validateManager(findServer.getManagerId(), requestDto.getUserId());
+
+        String profileUrl = determineProfileUrl(file, findServer, requestDto.getProfile());
+
+        findServer.setServer(
+                requestDto.getName(),
+                profileUrl,
+                requestDto.isOpen(),
+                requestDto.getDescription()
+        );
+
+        return ServerResponseDto.of(findServer);
+    }
+
+    public void delete(ServerDeleteRequestDto requestDto) {
+        Server findServer = serverQueryService.validateExistServer(requestDto.getServerId());
+
+        validateManager(findServer.getManagerId(), requestDto.getUserId());
+
+        serverRepository.delete(findServer);
+    }
+
     private void categoryInit(Server server){
         CategoryResponseDto initChatCategory
                 = categoryCommandService.save(Category.of(server, "채팅 채널"));
@@ -95,20 +133,6 @@ public class ServerCommandService {
         }
 
         return ServerInviteCodeResponse.of(value);
-    }
-
-
-    public ServerResponseDto join(ServerJoinRequestDto requestDto) {
-        Server findServer = validateServerUser(requestDto);
-        validateServerAccess(findServer, requestDto);
-
-        User findUser = userQueryService.findUserByOriginalId(requestDto.getUserId());
-
-        verifyInvitationCode(findServer.getId(), requestDto);
-
-        serverUserCommandService.save(ServerUser.of(findServer, findUser));
-
-        return ServerResponseDto.of(findServer);
     }
 
     private void validateServerAccess(Server server, ServerJoinRequestDto requestDto) {
@@ -151,23 +175,6 @@ public class ServerCommandService {
                 );
     }
 
-    public ServerResponseDto update(ServerUpdateRequestDto requestDto, MultipartFile file) {
-        Server findServer = serverQueryService.validateExistServer(requestDto.getServerId());
-
-        validateManager(findServer.getManagerId(), requestDto.getUserId());
-
-        String profileUrl = determineProfileUrl(file, findServer, requestDto.getProfile());
-
-        findServer.setServer(
-                requestDto.getName(),
-                profileUrl,
-                requestDto.isOpen(),
-                requestDto.getDescription()
-        );
-
-        return ServerResponseDto.of(findServer);
-    }
-
     private String determineProfileUrl(MultipartFile file, Server server, String serverProfile) {
         if (file != null) {
             return serverProfile == null ? uploadProfile(file) : updateProfile(file, serverProfile, server);
@@ -192,14 +199,6 @@ public class ServerCommandService {
         String profile = server.getProfile();
 
         return profile == null || profile.equals(profileUrl);
-    }
-
-    public void delete(ServerDeleteRequestDto requestDto) {
-        Server findServer = serverQueryService.validateExistServer(requestDto.getServerId());
-
-        validateManager(findServer.getManagerId(), requestDto.getUserId());
-
-        serverRepository.delete(findServer);
     }
 
     private void validateManager(Long managerId, Long userId){
