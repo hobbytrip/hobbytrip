@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Slf4j
 @Service
 @Transactional(readOnly = true)
@@ -21,4 +23,10 @@ public class UserQueryService {
         return userRepository.findByOriginalId(originalId)
                 .orElseThrow(() -> new UserException(Code.NOT_FOUND, "User Not Found"));
     }
+
+    public List<User> findUsers(List<Long> userIds){
+        return userRepository.findByOriginalIds(userIds);
+    }
+
+
 }

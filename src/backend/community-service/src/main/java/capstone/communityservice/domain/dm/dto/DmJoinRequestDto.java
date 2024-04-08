@@ -6,8 +6,12 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class DmCreateRequestDto {
+public class DmJoinRequestDto {
+
+    @NotNull
+    private Long dmId;
 
     @NotNull
     private List<Long> userIds;
+
 }

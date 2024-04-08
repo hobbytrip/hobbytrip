@@ -1,9 +1,6 @@
 package capstone.communityservice.domain.dm.service;
 
-import capstone.communityservice.domain.dm.dto.DmCreateRequestDto;
-import capstone.communityservice.domain.dm.dto.DmDeleteRequestDto;
-import capstone.communityservice.domain.dm.dto.DmResponseDto;
-import capstone.communityservice.domain.dm.dto.DmUpdateRequestDto;
+import capstone.communityservice.domain.dm.dto.*;
 import capstone.communityservice.domain.dm.entity.Dm;
 import capstone.communityservice.domain.dm.entity.DmUser;
 import capstone.communityservice.domain.dm.exception.DmException;
@@ -42,8 +39,27 @@ public class DmCommandService {
         return DmResponseDto.of(newDm);
     }
 
-    private void saveDmUser(List<User> users, Dm newDm) {
-        users.forEach(user -> dmUserRepository.save(DmUser.of(newDm, user)));
+    public DmResponseDto join(DmJoinRequestDto requestDto) {
+        List<User> users = findUsers(requestDto.getUserIds());
+        String dmName = createDmName(users);
+
+        Dm findDm = validateDm(requestDto.getDmId());
+
+        findDm.setName(findDm.getName() + ", " + dmName);
+
+        saveDmUser(users, findDm);
+
+        return DmResponseDto.of(findDm);
+    }
+
+
+
+    private void saveDmUser(List<User> users, Dm dm) {
+        List<DmUser> dmUsers = users.stream()
+                .map(user -> DmUser.of(dm, user))
+                .collect(Collectors.toList());
+
+        dmUserRepository.saveAll(dmUsers);
     }
 
     private String createDmName(List<User> users) {
@@ -54,9 +70,7 @@ public class DmCommandService {
 
 
     private List<User> findUsers(List<Long> userIds) {
-        return userIds.stream()
-                .map(userQueryService::findUserByOriginalId)
-                .toList();
+        return userQueryService.findUsers(userIds);
     }
 
     public DmResponseDto update(DmUpdateRequestDto requestDto) {
@@ -76,4 +90,6 @@ public class DmCommandService {
 
         dmRepository.delete(findDm);
     }
+
+
 }

@@ -1,9 +1,6 @@
 package capstone.communityservice.domain.dm.controller;
 
-import capstone.communityservice.domain.dm.dto.DmCreateRequestDto;
-import capstone.communityservice.domain.dm.dto.DmDeleteRequestDto;
-import capstone.communityservice.domain.dm.dto.DmResponseDto;
-import capstone.communityservice.domain.dm.dto.DmUpdateRequestDto;
+import capstone.communityservice.domain.dm.dto.*;
 import capstone.communityservice.domain.dm.service.DmCommandService;
 import capstone.communityservice.domain.server.dto.ServerJoinRequestDto;
 import capstone.communityservice.domain.server.dto.ServerResponseDto;
@@ -25,11 +22,14 @@ public class DmCommandController {
         return DataResponseDto.of(response);
     }
 
-//    @PostMapping("/join")
-//    public DataResponseDto<Object> join(@Valid @RequestBody ServerJoinRequestDto requestDto){
-//        ServerResponseDto response = serverCommandService.join(requestDto);
-//        return DataResponseDto.of(response);
-//    }
+    /**
+     * 기존 DM에 있던 사람인지 검사를 할 때의 처리 고민.
+     */
+    @PostMapping("/join")
+    public DataResponseDto<Object> join(@Valid @RequestBody DmJoinRequestDto requestDto){
+        DmResponseDto response = dmCommandService.join(requestDto);
+        return DataResponseDto.of(response);
+    }
 
     @PatchMapping
     public DataResponseDto<Object> update(@Valid @RequestBody DmUpdateRequestDto requestDto){

@@ -36,21 +36,23 @@ public class ServerUserCommandService {
     }
 
     private ServerUser validateServerUser(Long serverId, Long userId) {
-        ServerUser findServerUser = serverUserRepository.findByServerIdAndUserId(
-                serverId, userId
-        ).orElseThrow(() -> new ServerException(Code.NOT_FOUND, "Not Found ServerUser"));
-        return findServerUser;
+        return serverUserRepository.findByServerIdAndUserId(serverId, userId)
+                .orElseThrow(() -> new ServerException(
+                        Code.NOT_FOUND, "Not Found ServerUser")
+                );
     }
 
     public void delete(ServerUserDeleteRequestDto requestDto) {
         ServerUser findServerUser = validateServerUser(
                 requestDto.getServerId(),
-                requestDto.getUserId()
+                requestDto.getServerUserId()
         );
 
+        Server findServer = serverQueryService.validateExistServer(requestDto.getServerId());
+
         serverQueryService.validateManager(
-                requestDto.getUserId(),
-                requestDto.getServerUserId()
+                findServer.getManagerId(),
+                requestDto.getUserId()
         );
 
         serverUserRepository.delete(findServerUser);
