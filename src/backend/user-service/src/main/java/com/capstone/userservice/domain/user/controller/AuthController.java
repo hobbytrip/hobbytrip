@@ -40,4 +40,11 @@ public class AuthController {
     public ResponseEntity<Boolean> logout(@RequestBody TokenRequestDto tokenRequestDto) {
         return ResponseEntity.ok(authService.logout(tokenRequestDto));
     }
+
+    //true 시 로그인 되어있는 상태
+    @PostMapping("/logoutCheck")
+    public ResponseEntity<Boolean> loginCheck(@RequestBody TokenRequestDto tokenRequestDto) {
+        return ResponseEntity.ok(authService.loginCheck(tokenRequestDto));
+    }
+
 }

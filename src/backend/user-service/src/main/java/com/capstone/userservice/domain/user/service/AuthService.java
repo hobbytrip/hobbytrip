@@ -121,7 +121,7 @@ public class AuthService {
     }
 
     @Transactional
-    public boolean checkLoginToken(TokenRequestDto tokenRequestDto) {
+    public boolean loginCheck(TokenRequestDto tokenRequestDto) {
         try {
             // 1. Refersh Token 검증
             if (!tokenUtil.validateToken(tokenRequestDto.getRefreshToken())) {
