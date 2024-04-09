@@ -1,10 +1,15 @@
-import "./App.css";
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+// import StartView from "./components/StartView/StartView";
 
 function App() {
   return (
-    <>
-      <div></div>
-    </>
+    <Router>
+      <Routes>
+        {/* <Route path="/" element={<StartView />} /> */}
+        {/* <Route path="/login" element={<Login />} /> */}
+      </Routes>
+    </Router>
   );
 }
 
