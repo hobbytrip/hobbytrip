@@ -98,7 +98,7 @@ public class ServerMessageService {
         return messageDtos;
     }
 
-    public Page<ServerMessageDto> messagesToMessageDtos(String type, Long id, int page, int size) {
+    private Page<ServerMessageDto> messagesToMessageDtos(String type, Long id, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         Page<ServerMessage> messages = null;
         if (type.equals("message")) {
@@ -110,7 +110,7 @@ public class ServerMessageService {
         return (messages != null) ? messages.map(ServerMessageDto::from) : Page.empty(pageable);
     }
 
-    public Map<Long, List<EmojiDto>> getEmojisForMessages(List<Long> messageIds) {
+    private Map<Long, List<EmojiDto>> getEmojisForMessages(List<Long> messageIds) {
         List<Emoji> emojis = emojiRepository.findEmojisByServerMessageIds(messageIds);
         Map<Long, List<EmojiDto>> emojiMap = new HashMap<>();
 
@@ -127,7 +127,7 @@ public class ServerMessageService {
         return emojiMap;
     }
 
-    public Map<Long, Long> getMessageCounts(List<Long> messageIds) {
+    private Map<Long, Long> getMessageCounts(List<Long> messageIds) {
         List<ServerMessage> messages = messageRepository.countMessagesByParentIds(messageIds);
         Map<Long, Long> messageCounts = new HashMap<>();
 
@@ -144,7 +144,7 @@ public class ServerMessageService {
         return messageCounts;
     }
 
-    public List<Long> getMessageIds(Page<ServerMessageDto> messageDtos) {
+    private List<Long> getMessageIds(Page<ServerMessageDto> messageDtos) {
         return messageDtos.getContent().stream()
                 .map(ServerMessageDto::getMessageId)
                 .collect(Collectors.toList());
