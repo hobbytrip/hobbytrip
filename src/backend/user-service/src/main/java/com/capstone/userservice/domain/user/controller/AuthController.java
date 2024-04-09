@@ -42,9 +42,8 @@ public class AuthController {
     }
 
     //true 시 로그인 되어있는 상태
-    @PostMapping("/logoutCheck")
-    public ResponseEntity<Boolean> loginCheck(@RequestBody TokenRequestDto tokenRequestDto) {
-        return ResponseEntity.ok(authService.loginCheck(tokenRequestDto));
+    @PostMapping("/loginCheck")
+    public ResponseEntity<Boolean> loginCheck(@RequestBody String accessToken) {
+        return ResponseEntity.ok(authService.loginCheck(accessToken));
     }
-
 }

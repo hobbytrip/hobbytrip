@@ -122,23 +122,22 @@ public class AuthService {
         return true;
     }
 
+    /**
+     * @param accessToken
+     * @return 로그인 되어 있으면 True, 로그아웃은 flase
+     */
     @Transactional
-    public boolean loginCheck(TokenRequestDto tokenRequestDto) {
+    public boolean loginCheck(String accessToken) {
         try {
-            // 1. Refersh Token 검증
-            if (!tokenUtil.validateToken(tokenRequestDto.getRefreshToken())) {
-                throw new RuntimeException("Refresh Token 이 유효하지 않습니다.");
-            }
+            // 1. Access Token 에서 UserDetails 객체 가져오기
+            Authentication authentication = tokenUtil.getAuthentication(accessToken);
 
-            // 2. Access Token 에서 UserDetails 객체 가져오기
-            Authentication authentication = tokenUtil.getAuthentication(tokenRequestDto.getAccessToken());
-
-            // 3. 저장소에서 UserId 를 기반으로 Refresh Token 값 가져옴
+            // 2. 저장소에서 UserId 를 기반으로 Refresh Token 값 가져옴
             Optional<RefreshToken> refreshToken = refreshTokenRepository.findByKey(authentication.getName());
 
-            //객체가 값을 가지고 있으면 토큰 유효성 검사
+            //객체가 값을 가지고 있으면 true
             if (refreshToken.isPresent()) {
-                return tokenUtil.validateToken(refreshToken.get().getValue());
+                return true;
             }
         } catch (Exception e) {
             return false;
