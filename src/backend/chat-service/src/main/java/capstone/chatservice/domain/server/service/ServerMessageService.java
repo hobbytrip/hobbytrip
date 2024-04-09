@@ -1,5 +1,8 @@
 package capstone.chatservice.domain.server.service;
 
+import capstone.chatservice.domain.emoji.domain.Emoji;
+import capstone.chatservice.domain.emoji.dto.EmojiDto;
+import capstone.chatservice.domain.emoji.repository.EmojiRepository;
 import capstone.chatservice.domain.server.domain.ServerMessage;
 import capstone.chatservice.domain.server.dto.ServerMessageDto;
 import capstone.chatservice.domain.server.dto.request.ServerMessageCreateRequest;
@@ -7,8 +10,18 @@ import capstone.chatservice.domain.server.dto.request.ServerMessageDeleteRequest
 import capstone.chatservice.domain.server.dto.request.ServerMessageModifyRequest;
 import capstone.chatservice.domain.server.repository.ServerMessageRepository;
 import capstone.chatservice.global.util.SequenceGenerator;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ServerMessageService {
 
     private final SequenceGenerator sequenceGenerator;
+    private final EmojiRepository emojiRepository;
     private final ServerMessageRepository messageRepository;
 
     @Transactional
@@ -56,5 +70,69 @@ public class ServerMessageService {
         serverMessage.delete(deleteRequest.getType());
 
         return ServerMessageDto.from(messageRepository.save(serverMessage));
+    }
+
+    public Page<ServerMessageDto> getMessages(Long channelId, int page, int size) {
+        Page<ServerMessageDto> messageDtos = messagesToMessageDtos("message", channelId, page, size);
+        List<Long> messageIds = getMessageIds(messageDtos);
+
+        Map<Long, List<EmojiDto>> emojiMap = getEmojisForMessages(messageIds);
+        Map<Long, Long> messageCounts = getMessageCounts(messageIds);
+        for (ServerMessageDto messageDto : messageDtos) {
+            messageDto.setEmojis(emojiMap.getOrDefault(messageDto.getMessageId(), Collections.emptyList()));
+            messageDto.setCount(messageCounts.getOrDefault(messageDto.getMessageId(), 0L));
+        }
+
+        return messageDtos;
+    }
+
+    public Page<ServerMessageDto> messagesToMessageDtos(String type, Long id, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Page<ServerMessage> messages = null;
+        if (type.equals("message")) {
+            messages = messageRepository.findByChannelIdAndIsDeletedAndParentId(id, pageable);
+        }
+
+        return (messages != null) ? messages.map(ServerMessageDto::from) : Page.empty(pageable);
+    }
+
+    public Map<Long, List<EmojiDto>> getEmojisForMessages(List<Long> messageIds) {
+        List<Emoji> emojis = emojiRepository.findEmojisByServerMessageIds(messageIds);
+        Map<Long, List<EmojiDto>> emojiMap = new HashMap<>();
+
+        for (Long messageId : messageIds) {
+            List<EmojiDto> emojiDtos = new ArrayList<>();
+            for (Emoji emoji : emojis) {
+                if (messageId.equals(emoji.getServerMessageId())) {
+                    EmojiDto emojiDto = EmojiDto.from(emoji);
+                    emojiDtos.add(emojiDto);
+                }
+            }
+            emojiMap.put(messageId, emojiDtos);
+        }
+        return emojiMap;
+    }
+
+    public Map<Long, Long> getMessageCounts(List<Long> messageIds) {
+        List<ServerMessage> messages = messageRepository.countMessagesByParentIds(messageIds);
+        Map<Long, Long> messageCounts = new HashMap<>();
+
+        for (Long messageId : messageIds) {
+            long count = 0L;
+            for (ServerMessage message : messages) {
+                if (message.getParentId().equals(messageId)) {
+                    count += 1;
+                }
+            }
+            messageCounts.put(messageId, count);
+        }
+
+        return messageCounts;
+    }
+
+    public List<Long> getMessageIds(Page<ServerMessageDto> messageDtos) {
+        return messageDtos.getContent().stream()
+                .map(ServerMessageDto::getMessageId)
+                .collect(Collectors.toList());
     }
 }
