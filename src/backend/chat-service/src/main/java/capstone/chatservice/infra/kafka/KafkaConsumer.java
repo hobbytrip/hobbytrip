@@ -1,5 +1,7 @@
 package capstone.chatservice.infra.kafka;
 
+import capstone.chatservice.domain.emoji.dto.EmojiDto;
+import capstone.chatservice.domain.emoji.dto.response.EmojiCreateResponse;
 import capstone.chatservice.domain.server.dto.ServerMessageDto;
 import capstone.chatservice.domain.server.dto.response.ServerMessageCreateResponse;
 import capstone.chatservice.domain.server.dto.response.ServerMessageDeleteResponse;
@@ -33,6 +35,18 @@ public class KafkaConsumer {
             case "delete" -> {
                 ServerMessageDeleteResponse deleteResponse = ServerMessageDeleteResponse.from(messageDto);
                 messagingTemplate.convertAndSend("/topic/server/" + serverId, deleteResponse);
+            }
+        }
+    }
+
+    @KafkaListener(topics = "${spring.kafka.topic.emoji-chat}", groupId = "${spring.kafka.consumer.group-id.emoji-chat}", containerFactory = "emojiChatListenerContainerFactory")
+    public void emojiChatListener(EmojiDto emojiDto) {
+        String emojiType = emojiDto.getType();
+        Long serverId = emojiDto.getServerId();
+        switch (emojiType) {
+            case "save" -> {
+                EmojiCreateResponse createResponse = EmojiCreateResponse.from(emojiDto);
+                messagingTemplate.convertAndSend("/topic/server/" + serverId, createResponse);
             }
         }
     }
