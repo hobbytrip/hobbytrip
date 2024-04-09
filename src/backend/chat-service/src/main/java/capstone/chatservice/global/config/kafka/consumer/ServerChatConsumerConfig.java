@@ -1,4 +1,4 @@
-package capstone.chatservice.global.config.kafka;
+package capstone.chatservice.global.config.kafka.consumer;
 
 import capstone.chatservice.domain.server.dto.ServerMessageDto;
 import java.util.HashMap;
@@ -16,7 +16,7 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 @EnableKafka
 @Configuration
-public class KafkaConsumerConfig {
+public class ServerChatConsumerConfig {
 
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
@@ -25,7 +25,7 @@ public class KafkaConsumerConfig {
     private String groupId;
 
     @Bean
-    public Map<String, Object> consumerConfig() {
+    public Map<String, Object> serverChatConsumerConfiguration() {
         Map<String, Object> config = new HashMap<>();
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         config.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
@@ -35,7 +35,7 @@ public class KafkaConsumerConfig {
     @Bean
     public ConsumerFactory<String, ServerMessageDto> serverChatConsumerFactory() {
         return new DefaultKafkaConsumerFactory<>(
-                consumerConfig(),
+                serverChatConsumerConfiguration(),
                 new StringDeserializer(),
                 new JsonDeserializer<>(ServerMessageDto.class));
     }
