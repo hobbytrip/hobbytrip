@@ -1,14 +1,14 @@
-package capstone.communityservice.domain.server.dto;
+package capstone.communityservice.domain.dm.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Getter
-public class ServerCreateRequestDto {
+public class DmUpdateRequestDto {
 
     @NotNull
-    private Long userId;
+    private Long dmId;
 
     @NotBlank
     private String name;

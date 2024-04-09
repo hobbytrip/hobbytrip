@@ -1,9 +1,12 @@
 package capstone.communityservice.domain.dm.entity;
 
+import capstone.communityservice.domain.server.entity.ServerUser;
 import capstone.communityservice.domain.user.entity.User;
 import capstone.communityservice.global.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -11,6 +14,7 @@ import org.hibernate.annotations.Where;
 @Getter
 @SQLDelete(sql = "UPDATE dm_user SET deleted = true WHERE dm_user_id = ?")
 @Where(clause = "deleted = false")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "dm_user")
 public class DmUser extends BaseTimeEntity{
 
@@ -29,4 +33,24 @@ public class DmUser extends BaseTimeEntity{
 
     @Column(nullable = false)
     private boolean deleted = Boolean.FALSE;
+
+    public static DmUser of(Dm dm, User user) {
+        DmUser dmUser = new DmUser();
+
+        user.addDmUser(dmUser);
+        dm.addDmUser(dmUser);
+
+        return dmUser;
+    }
+
+    //===Setter 메서드===//
+    public void setDm(Dm dm) {
+        this.dm = dm;
+    }
+
+    public void setUser(User user){
+        this.user = user;
+    }
+
+
 }

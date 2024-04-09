@@ -50,7 +50,7 @@ public class ServerCommandService {
         // String profileUrl = file != null ? uploadProfile(file) : null; <- S3 등록 후
         String profileUrl = null;
 
-        User user = userQueryService.findUserByOriginalId(requestDto.getManagerId());
+        User user = userQueryService.findUserByOriginalId(requestDto.getUserId());
 
         Server server = serverRepository.save(
                 Server.of(
@@ -69,6 +69,44 @@ public class ServerCommandService {
          * 첫 접속시 보여줄 채팅 메시지를 가져오기 위한 채팅 서비스 OpenFeign 작업 필요.
          */
         return ServerResponseDto.of(server);
+    }
+
+    public ServerResponseDto join(ServerJoinRequestDto requestDto) {
+        Server findServer = validateServerUser(requestDto);
+        validateServerAccess(findServer, requestDto);
+
+        User findUser = userQueryService.findUserByOriginalId(requestDto.getUserId());
+
+        verifyInvitationCode(findServer.getId(), requestDto);
+
+        serverUserCommandService.save(ServerUser.of(findServer, findUser));
+
+        return ServerResponseDto.of(findServer);
+    }
+
+    public ServerResponseDto update(ServerUpdateRequestDto requestDto, MultipartFile file) {
+        Server findServer = serverQueryService.validateExistServer(requestDto.getServerId());
+
+        validateManager(findServer.getManagerId(), requestDto.getUserId());
+
+        String profileUrl = determineProfileUrl(file, findServer, requestDto.getProfile());
+
+        findServer.setServer(
+                requestDto.getName(),
+                profileUrl,
+                requestDto.isOpen(),
+                requestDto.getDescription()
+        );
+
+        return ServerResponseDto.of(findServer);
+    }
+
+    public void delete(ServerDeleteRequestDto requestDto) {
+        Server findServer = serverQueryService.validateExistServer(requestDto.getServerId());
+
+        validateManager(findServer.getManagerId(), requestDto.getUserId());
+
+        serverRepository.delete(findServer);
     }
 
     private void categoryInit(Server server){
@@ -95,20 +133,6 @@ public class ServerCommandService {
         }
 
         return ServerInviteCodeResponse.of(value);
-    }
-
-
-    public ServerResponseDto join(ServerJoinRequestDto requestDto) {
-        Server findServer = validateServerUser(requestDto);
-        validateServerAccess(findServer, requestDto);
-
-        User findUser = userQueryService.findUserByOriginalId(requestDto.getUserId());
-
-        verifyInvitationCode(findServer.getId(), requestDto);
-
-        serverUserCommandService.save(ServerUser.of(findServer, findUser));
-
-        return ServerResponseDto.of(findServer);
     }
 
     private void validateServerAccess(Server server, ServerJoinRequestDto requestDto) {
@@ -151,23 +175,6 @@ public class ServerCommandService {
                 );
     }
 
-    public ServerResponseDto update(ServerUpdateRequestDto requestDto, MultipartFile file) {
-        Server findServer = serverQueryService.validateExistServer(requestDto.getServerId());
-
-        validateManager(findServer.getManagerId(), requestDto.getUserId());
-
-        String profileUrl = determineProfileUrl(file, findServer, requestDto.getProfile());
-
-        findServer.setServer(
-                requestDto.getName(),
-                profileUrl,
-                requestDto.isOpen(),
-                requestDto.getDescription()
-        );
-
-        return ServerResponseDto.of(findServer);
-    }
-
     private String determineProfileUrl(MultipartFile file, Server server, String serverProfile) {
         if (file != null) {
             return serverProfile == null ? uploadProfile(file) : updateProfile(file, serverProfile, server);
@@ -194,16 +201,8 @@ public class ServerCommandService {
         return profile == null || profile.equals(profileUrl);
     }
 
-    public void delete(ServerDeleteRequestDto requestDto) {
-        Server findServer = serverQueryService.validateExistServer(requestDto.getServerId());
-
-        validateManager(findServer.getId(), requestDto.getUserId());
-
-        serverRepository.delete(findServer);
-    }
-
-    private void validateManager(Long serverId, Long userId){
-        if(!serverId.equals(userId)){
+    private void validateManager(Long managerId, Long userId){
+        if(!managerId.equals(userId)){
             throw new ServerException(Code.UNAUTHORIZED, "Not Manager");
         }
     }
