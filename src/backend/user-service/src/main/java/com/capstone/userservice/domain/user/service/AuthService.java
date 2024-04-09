@@ -70,10 +70,12 @@ public class AuthService {
             throw new RuntimeException("Refresh Token 이 유효하지 않습니다.");
         }
 
-        // 2. Access Token 에서 User Email 가져오기
+        // 2. Access Token 에서 User ID 가져오기
         Authentication authentication = tokenUtil.getAuthentication(tokenRequestDto.getAccessToken());
+        String userEmail = tokenUtil.getEmail(tokenRequestDto.getAccessToken());
+        userRequestDto.setEmail(userEmail);
 
-        // 3. 저장소에서 UserId 를 기반으로 Refresh Token 값 가져옴
+        // 3. 저장소에서 User ID 를 기반으로 Refresh Token 값 가져옴
         RefreshToken refreshToken = refreshTokenRepository.findByKey(authentication.getName())
                 .orElseThrow(() -> new RuntimeException("로그아웃 된 사용자입니다."));
 
@@ -94,8 +96,32 @@ public class AuthService {
     }
 
     @Transactional
-    public boolean checkLoginToken(TokenRequestDto tokenRequestDto) {
+    public boolean logout(TokenRequestDto tokenRequestDto) {
+        // 1. Access Token 유효성 검사
+        if (!tokenUtil.validateToken(tokenRequestDto.getAccessToken())) {
+            throw new RuntimeException("Access Token 이 유효하지 않습니다.");
+        }
 
+        // 2. Access Token 에서 User 정보 가져오기
+        Authentication authentication = tokenUtil.getAuthentication(tokenRequestDto.getAccessToken());
+
+        // 3. 저장소에서 해당 User의 Refresh Token 가져오기
+        RefreshToken refreshToken = refreshTokenRepository.findByKey(authentication.getName())
+                .orElseThrow(() -> new RuntimeException("로그아웃 하려는 사용자의 Refresh Token이 존재하지 않습니다."));
+
+        // 4. 제출된 Refresh Token 일치 검사
+        if (!refreshToken.getValue().equals(tokenRequestDto.getRefreshToken())) {
+            throw new RuntimeException("제출된 Refresh Token이 저장된 값과 일치하지 않습니다.");
+        }
+
+        // 5. Refresh Token 삭제
+        refreshTokenRepository.delete(refreshToken);
+
+        return true;
+    }
+
+    @Transactional
+    public boolean checkLoginToken(TokenRequestDto tokenRequestDto) {
         try {
             // 1. Refersh Token 검증
             if (!tokenUtil.validateToken(tokenRequestDto.getRefreshToken())) {

@@ -29,7 +29,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class TokenUtil {
-    private static final String USER_ID = "userId";
+    private static final String USER_EMAIL = "email";
     private static final String BEARER_TYPE = "Bearer";
     private static final String AUTHORITIES_KEY = "auth";
     private final Key key;
@@ -71,9 +71,9 @@ public class TokenUtil {
          *  header "alg" : "HS256"
          */
         String accessToken = Jwts.builder()
-                .claim(USER_ID, userId)
+                .claim(USER_EMAIL, user.getEmail())
                 .claim(AUTHORITIES_KEY, authorities)
-                .setSubject(user.getEmail())
+                .setSubject(userId)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -97,16 +97,6 @@ public class TokenUtil {
     }
 
     /**
-     * Token 에서 userId 추출
-     *
-     * @param token
-     * @return userId
-     */
-    public Long getUserId(String token) {
-        return parseClaims(token).get("userId", Long.class);
-    }
-
-    /**
      * Token 에서 유저 권한 추출 -> authentication 에 저장
      *
      * @param accessToken
@@ -125,6 +115,7 @@ public class TokenUtil {
                 Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
+
         //UserDetails 객체로 만들어서 Authentication 리턴
         UserDetails principal = new User(claims.getSubject(), "", authorities);
 
@@ -154,6 +145,11 @@ public class TokenUtil {
             log.info("JWT 토큰이 잘못되었습니다.");
         }
         return false;
+    }
+
+    public String getEmail(String token) {
+        Claims claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
+        return claims.get(USER_EMAIL, String.class);
     }
 }
 

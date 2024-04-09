@@ -36,4 +36,8 @@ public class AuthController {
         return ResponseEntity.ok(authService.reissue(tokenRequestDto, userRequestDto));
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<Boolean> logout(@RequestBody TokenRequestDto tokenRequestDto) {
+        return ResponseEntity.ok(authService.logout(tokenRequestDto));
+    }
 }
