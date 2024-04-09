@@ -2,6 +2,7 @@ package capstone.chatservice.infra.kafka;
 
 import capstone.chatservice.domain.emoji.dto.EmojiDto;
 import capstone.chatservice.domain.emoji.dto.response.EmojiCreateResponse;
+import capstone.chatservice.domain.emoji.dto.response.EmojiDeleteResponse;
 import capstone.chatservice.domain.server.dto.ServerMessageDto;
 import capstone.chatservice.domain.server.dto.response.ServerMessageCreateResponse;
 import capstone.chatservice.domain.server.dto.response.ServerMessageDeleteResponse;
@@ -47,6 +48,10 @@ public class KafkaConsumer {
             case "save" -> {
                 EmojiCreateResponse createResponse = EmojiCreateResponse.from(emojiDto);
                 messagingTemplate.convertAndSend("/topic/server/" + serverId, createResponse);
+            }
+            case "delete" -> {
+                EmojiDeleteResponse deleteResponse = EmojiDeleteResponse.from(emojiDto);
+                messagingTemplate.convertAndSend("/topic/server/" + serverId, deleteResponse);
             }
         }
     }

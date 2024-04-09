@@ -18,12 +18,13 @@ public class EmojiController {
 
     @MessageMapping("/emoji/save")
     public void save(EmojiCreateRequest createRequest) {
-        EmojiDto emoji = emojiService.save(createRequest);
-        producerService.sendToEmojiChatTopic(emoji);
+        EmojiDto emojiDto = emojiService.save(createRequest);
+        producerService.sendToEmojiChatTopic(emojiDto);
     }
 
     @MessageMapping("/emoji/delete")
     public void delete(EmojiDeleteRequest deleteRequest) {
         EmojiDto emojiDto = emojiService.delete(deleteRequest);
+        producerService.sendToEmojiChatTopic(emojiDto);
     }
 }
