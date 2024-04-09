@@ -16,7 +16,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.filter.CorsFilter;
 
 @Configuration
@@ -52,8 +51,6 @@ public class SecurityConfig {
                 .formLogin().disable() //form 기반 로그인 사용 X
                 .httpBasic().disable() // 기본 인증 방식 사용 X
 
-                .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
-
                 .headers()
                 .frameOptions()
                 .sameOrigin()
@@ -62,12 +59,6 @@ public class SecurityConfig {
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-
-                //요청 접근 권한 설정
-                .and()
-                .authorizeHttpRequests()
-                .requestMatchers("/api/hello", "/api/user/login", "/api/user/signup", "api/user/reissue").permitAll()
-                .anyRequest().authenticated()//접근 제한
 
                 .and()
                 // exceptionHandling 에 클래스 추가 (인증 예외 처리 설정)

@@ -97,6 +97,16 @@ public class TokenUtil {
     }
 
     /**
+     * Token 에서 userId 추출
+     *
+     * @param token
+     * @return userId
+     */
+    public Long getUserId(String token) {
+        return parseClaims(token).get("userId", Long.class);
+    }
+
+    /**
      * Token 에서 유저 권한 추출 -> authentication 에 저장
      *
      * @param accessToken
@@ -123,7 +133,7 @@ public class TokenUtil {
 
     private Claims parseClaims(String accessToken) {
         try {
-            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJwt(accessToken).getBody();
+            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         }
@@ -132,7 +142,8 @@ public class TokenUtil {
     //토큰 유효성 검사
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJwt(token);
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             log.info("잘못된 JWT 서명입니다.");
         } catch (ExpiredJwtException e) {
@@ -140,7 +151,7 @@ public class TokenUtil {
         } catch (UnsupportedJwtException e) {
             log.info("지원되지 않는 JWT 토큰입니다.");
         } catch (IllegalArgumentException e) {
-            log.info("잘못된 JWT 토큰입니다.");
+            log.info("JWT 토큰이 잘못되었습니다.");
         }
         return false;
     }

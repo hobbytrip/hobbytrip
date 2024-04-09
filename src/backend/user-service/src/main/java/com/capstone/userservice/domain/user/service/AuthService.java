@@ -10,6 +10,7 @@ import com.capstone.userservice.global.common.dto.JwtTokenDto;
 import com.capstone.userservice.global.entity.RefreshToken;
 import com.capstone.userservice.global.respository.RefreshTokenRepository;
 import com.capstone.userservice.global.util.TokenUtil;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -72,7 +73,7 @@ public class AuthService {
         // 2. Access Token 에서 User Email 가져오기
         Authentication authentication = tokenUtil.getAuthentication(tokenRequestDto.getAccessToken());
 
-        // 3. 저장소에서 User Email 를 기반으로 Refresh Token 값 가져옴
+        // 3. 저장소에서 UserId 를 기반으로 Refresh Token 값 가져옴
         RefreshToken refreshToken = refreshTokenRepository.findByKey(authentication.getName())
                 .orElseThrow(() -> new RuntimeException("로그아웃 된 사용자입니다."));
 
@@ -92,5 +93,27 @@ public class AuthService {
         return tokenDto;
     }
 
+    @Transactional
+    public boolean checkLoginToken(TokenRequestDto tokenRequestDto) {
 
+        try {
+            // 1. Refersh Token 검증
+            if (!tokenUtil.validateToken(tokenRequestDto.getRefreshToken())) {
+                throw new RuntimeException("Refresh Token 이 유효하지 않습니다.");
+            }
+
+            // 2. Access Token 에서 User Email 가져오기
+            Authentication authentication = tokenUtil.getAuthentication(tokenRequestDto.getAccessToken());
+
+            // 3. 저장소에서 UserId 를 기반으로 Refresh Token 값 가져옴
+            Optional<RefreshToken> refreshToken = refreshTokenRepository.findByKey(authentication.getName());
+
+            if (refreshToken.isPresent()) {
+                return tokenUtil.validateToken(refreshToken.get().getValue());
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return false;
+    }
 }
