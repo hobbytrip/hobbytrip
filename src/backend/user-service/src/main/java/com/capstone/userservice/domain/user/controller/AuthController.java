@@ -5,7 +5,7 @@ import com.capstone.userservice.domain.user.dto.TokenRequestDto;
 import com.capstone.userservice.domain.user.dto.UserRequestDto;
 import com.capstone.userservice.domain.user.dto.UserResponseDto;
 import com.capstone.userservice.domain.user.service.AuthService;
-import com.capstone.userservice.global.common.dto.JwtTokenDto;
+import com.capstone.userservice.global.common.dto.TokenDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,13 +26,13 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<JwtTokenDto> login(@RequestBody UserRequestDto userRequestDto) {
+    public ResponseEntity<TokenDto> login(@RequestBody UserRequestDto userRequestDto) {
         return ResponseEntity.ok(authService.login(userRequestDto));
     }
 
     @PostMapping("/reissue")
-    public ResponseEntity<JwtTokenDto> reissue(@RequestBody TokenRequestDto tokenRequestDto,
-                                               UserRequestDto userRequestDto) {
+    public ResponseEntity<TokenDto> reissue(@RequestBody TokenRequestDto tokenRequestDto,
+                                            UserRequestDto userRequestDto) {
         return ResponseEntity.ok(authService.reissue(tokenRequestDto, userRequestDto));
     }
 

@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class JwtTokenDto {
+public class TokenDto {
     private String grantType; //Bearer
     private String accessToken;
     private String refreshToken;

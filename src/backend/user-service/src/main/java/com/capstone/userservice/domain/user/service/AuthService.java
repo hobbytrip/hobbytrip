@@ -6,7 +6,7 @@ import com.capstone.userservice.domain.user.dto.UserRequestDto;
 import com.capstone.userservice.domain.user.dto.UserResponseDto;
 import com.capstone.userservice.domain.user.entity.User;
 import com.capstone.userservice.domain.user.repository.UserRepository;
-import com.capstone.userservice.global.common.dto.JwtTokenDto;
+import com.capstone.userservice.global.common.dto.TokenDto;
 import com.capstone.userservice.global.entity.RefreshToken;
 import com.capstone.userservice.global.respository.RefreshTokenRepository;
 import com.capstone.userservice.global.util.TokenUtil;
@@ -40,7 +40,7 @@ public class AuthService {
     }
 
     @Transactional
-    public JwtTokenDto login(UserRequestDto userRequestDto) {
+    public TokenDto login(UserRequestDto userRequestDto) {
         // 1. Login ID/PW 를 기반으로 AuthenticationToken 생성
         UsernamePasswordAuthenticationToken authenticationToken = userRequestDto.toAuthentication();
 
@@ -49,7 +49,7 @@ public class AuthService {
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
         // 3. 인증 정보를 기반으로 JWT 토큰 생성
-        JwtTokenDto tokenDto = tokenUtil.generateToken(userRequestDto, authentication);
+        TokenDto tokenDto = tokenUtil.generateToken(userRequestDto, authentication);
 
         // 4. RefreshToken 저장
         RefreshToken refreshToken = RefreshToken.builder()
@@ -64,34 +64,36 @@ public class AuthService {
     }
 
     @Transactional
-    public JwtTokenDto reissue(TokenRequestDto tokenRequestDto, UserRequestDto userRequestDto) {
+    public TokenDto reissue(TokenRequestDto tokenRequestDto, UserRequestDto userRequestDto) {
         // 1. Refersh Token 검증
         if (!tokenUtil.validateToken(tokenRequestDto.getRefreshToken())) {
             throw new RuntimeException("Refresh Token 이 유효하지 않습니다.");
         }
 
-        // 2. Access Token 에서 User ID 가져오기
+        //2. Access Token 에서 UserDetails 객체 가져오기
         Authentication authentication = tokenUtil.getAuthentication(tokenRequestDto.getAccessToken());
+
+        //3. Access Token 에서 userEmail 가져오고, set
         String userEmail = tokenUtil.getEmail(tokenRequestDto.getAccessToken());
         userRequestDto.setEmail(userEmail);
 
-        // 3. 저장소에서 User ID 를 기반으로 Refresh Token 값 가져옴
+        // 4. 저장소에서 User ID 를 기반으로 Refresh Token 값 가져옴
         RefreshToken refreshToken = refreshTokenRepository.findByKey(authentication.getName())
                 .orElseThrow(() -> new RuntimeException("로그아웃 된 사용자입니다."));
 
-        // 4. Refresh Token 일치 검사
+        // 5. Refresh Token 일치 검사
         if (!refreshToken.getValue().equals(tokenRequestDto.getRefreshToken())) {
             throw new RuntimeException("토큰의 유저 정보가 일치하지 않습니다.");
         }
 
-        // 5. 새로운 토큰 생성
-        JwtTokenDto tokenDto = tokenUtil.generateToken(userRequestDto, authentication);
+        // 6. 새로운 토큰 생성
+        TokenDto tokenDto = tokenUtil.generateToken(userRequestDto, authentication);
 
-        // 6. 저장소 정보 업데이트
+        // 7. 저장소 정보 업데이트
         RefreshToken newRefreshToken = refreshToken.updateValue(tokenDto.getRefreshToken());
         refreshTokenRepository.save(newRefreshToken);
 
-        // 토큰 발급
+        // 8. 토큰 발급
         return tokenDto;
     }
 
@@ -102,7 +104,7 @@ public class AuthService {
             throw new RuntimeException("Access Token 이 유효하지 않습니다.");
         }
 
-        // 2. Access Token 에서 User 정보 가져오기
+        // 2. Access Token 에서 UserDetails 객체 가져오기
         Authentication authentication = tokenUtil.getAuthentication(tokenRequestDto.getAccessToken());
 
         // 3. 저장소에서 해당 User의 Refresh Token 가져오기
@@ -128,7 +130,7 @@ public class AuthService {
                 throw new RuntimeException("Refresh Token 이 유효하지 않습니다.");
             }
 
-            // 2. Access Token 에서 User Email 가져오기
+            // 2. Access Token 에서 UserDetails 객체 가져오기
             Authentication authentication = tokenUtil.getAuthentication(tokenRequestDto.getAccessToken());
 
             // 3. 저장소에서 UserId 를 기반으로 Refresh Token 값 가져옴
