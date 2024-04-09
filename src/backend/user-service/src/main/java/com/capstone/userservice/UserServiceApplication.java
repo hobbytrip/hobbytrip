@@ -6,7 +6,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @EnableJpaAuditing
-@SpringBootApplication(scanBasePackages = {"org.springframework.web.filter.CorsFilter"})
+@SpringBootApplication
 @ComponentScan(basePackages = {"com.capstone.userservice.domain", "com.capstone.userservice.global"})
 public class UserServiceApplication {
 

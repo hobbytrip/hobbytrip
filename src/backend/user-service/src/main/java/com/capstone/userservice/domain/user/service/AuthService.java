@@ -108,6 +108,7 @@ public class AuthService {
             // 3. 저장소에서 UserId 를 기반으로 Refresh Token 값 가져옴
             Optional<RefreshToken> refreshToken = refreshTokenRepository.findByKey(authentication.getName());
 
+            //객체가 값을 가지고 있으면 토큰 유효성 검사
             if (refreshToken.isPresent()) {
                 return tokenUtil.validateToken(refreshToken.get().getValue());
             }
