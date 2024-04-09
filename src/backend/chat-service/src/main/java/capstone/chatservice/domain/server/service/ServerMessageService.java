@@ -86,11 +86,25 @@ public class ServerMessageService {
         return messageDtos;
     }
 
+    public Page<ServerMessageDto> getComments(Long parentId, int page, int size) {
+        Page<ServerMessageDto> messageDtos = messagesToMessageDtos("comment", parentId, page, size);
+        List<Long> messageIds = getMessageIds(messageDtos);
+
+        Map<Long, List<EmojiDto>> emojiMap = getEmojisForMessages(messageIds);
+        for (ServerMessageDto messageDto : messageDtos) {
+            messageDto.setEmojis(emojiMap.getOrDefault(messageDto.getMessageId(), Collections.emptyList()));
+        }
+
+        return messageDtos;
+    }
+
     public Page<ServerMessageDto> messagesToMessageDtos(String type, Long id, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         Page<ServerMessage> messages = null;
         if (type.equals("message")) {
             messages = messageRepository.findByChannelIdAndIsDeletedAndParentId(id, pageable);
+        } else if (type.equals("comment")) {
+            messages = messageRepository.findByParentIdAndIsDeleted(id, pageable);
         }
 
         return (messages != null) ? messages.map(ServerMessageDto::from) : Page.empty(pageable);

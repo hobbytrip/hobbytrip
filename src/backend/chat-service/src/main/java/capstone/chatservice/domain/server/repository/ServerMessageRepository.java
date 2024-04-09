@@ -14,6 +14,9 @@ public interface ServerMessageRepository extends MongoRepository<ServerMessage, 
     @Query("{ 'channelId': ?0, 'isDeleted': false, 'parentId': 0 }")
     Page<ServerMessage> findByChannelIdAndIsDeletedAndParentId(Long channelId, Pageable pageable);
 
+    @Query("{ 'parentId': ?0, 'isDeleted': false }")
+    Page<ServerMessage> findByParentIdAndIsDeleted(Long parentId, Pageable pageable);
+
     @Query(value = "{ 'parentId': { $in: ?0 } }")
     List<ServerMessage> countMessagesByParentIds(List<Long> parentIds);
 }

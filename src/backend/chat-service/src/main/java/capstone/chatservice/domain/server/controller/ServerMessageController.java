@@ -48,4 +48,11 @@ public class ServerMessageController {
         return messageService.getMessages(channelId, page, size);
     }
 
+    @GetMapping("/api/chat/server/comments/message")
+    public Page<ServerMessageDto> getComments(@RequestParam(value = "parentId") Long parentId,
+                                              @RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "30") int size) {
+
+        return messageService.getComments(parentId, page, size);
+    }
 }
