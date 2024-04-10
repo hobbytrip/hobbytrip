@@ -1,5 +1,6 @@
 package capstone.chatservice.infra.kafka;
 
+import capstone.chatservice.domain.dm.dto.DirectMessageDto;
 import capstone.chatservice.domain.emoji.dto.EmojiDto;
 import capstone.chatservice.domain.server.dto.ServerMessageDto;
 import lombok.RequiredArgsConstructor;
@@ -16,17 +17,26 @@ public class KafkaProducer {
     @Value("${spring.kafka.topic.server-chat}")
     private String serverChatTopic;
 
+    @Value("${spring.kafka.topic.direct-chat}")
+    private String directChatTopic;
+
     @Value("${spring.kafka.topic.emoji-chat}")
     private String emojiChatTopic;
 
     private final KafkaTemplate<String, ServerMessageDto> serverChatKafkaTemplate;
+    private final KafkaTemplate<String, DirectMessageDto> direcetChatKafkaTemplate;
     private final KafkaTemplate<String, EmojiDto> emojiChatKafkaTemplate;
 
     public void sendToServerChatTopic(ServerMessageDto messageDto) {
         serverChatKafkaTemplate.send(serverChatTopic, messageDto);
     }
 
+    public void sendToDirectChatTopic(DirectMessageDto directMessageDto) {
+        direcetChatKafkaTemplate.send(directChatTopic, directMessageDto);
+    }
+
     public void sendToEmojiChatTopic(EmojiDto emojiDto) {
         emojiChatKafkaTemplate.send(emojiChatTopic, emojiDto);
     }
+
 }
