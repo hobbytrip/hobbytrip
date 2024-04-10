@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import useUserStore from "../../actions/useUserStore";
 import s from "./LoginForm.module.css";
 
@@ -7,6 +8,7 @@ function LoginForm() {
   const [password, setPassword] = useState("");
   const login = useUserStore((state) => state.login);
   const error = useUserStore((state) => state.error);
+  const navigate = useNavigate();
 
   const handleInput = (e) => {
     const { name, value } = e.target;
@@ -16,6 +18,9 @@ function LoginForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
     login(email, password);
+  };
+  const moveToSignUp = () => {
+    navigate("/user/signup");
   };
   return (
     <div className={s.container}>
@@ -44,14 +49,14 @@ function LoginForm() {
           onChange={handleInput}
           required
         />
-        <button type="submit" className={s.helpBtn}>
+        {/* <button type="submit" className={s.helpBtn}>
           비밀번호를 잊으셨나요?
-        </button>
+        </button> */}
         <button type="submit" onClick={handleSubmit} className={s.loginBtn}>
           로그인
         </button>
         <div className={s.errorMsg}>{error && <h4>{error}</h4>}</div>
-        <button type="submit" className={s.helpBtn}>
+        <button type="submit" onClick={moveToSignUp} className={s.helpBtn}>
           가입하기
         </button>
       </form>
