@@ -1,6 +1,7 @@
 package capstone.chatservice.domain.dm.domain;
 
 import capstone.chatservice.domain.model.BaseModel;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -61,5 +62,10 @@ public class DirectMessage extends BaseModel {
         this.writer = writer;
         this.content = content;
         this.files = files;
+        this.setCreatedAt(LocalDateTime.now());
+    }
+
+    public void generateSequence(Long messageId) {
+        this.messageId = messageId;
     }
 }
