@@ -1,0 +1,60 @@
+.list {
+  color: var(--mid-gray);
+}
+.container {
+  width: 100%;
+  height: 370px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.form {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  padding: 30px 35px 60px;
+  gap: 10px;
+
+  width: 391px;
+  height: 371px;
+
+  flex: none;
+  order: 1;
+  flex-grow: 0;
+}
+.input {
+  height: 35px;
+  border-style: none;
+  border-radius: 5px;
+  background-color: var(--light-gray);
+  font-family: "Pretendard";
+  outline: none;
+}
+.loginBtn {
+  border-style: none;
+  height: 35px;
+  background-color: var(--main-purple);
+  border-radius: 5px;
+  color: white;
+  font-family: "Pretendard";
+}
+.loginBtn:focus {
+  cursor: pointer;
+}
+.helpBtn {
+  border-style: none;
+  height: 35px;
+  font-family: "Pretendard";
+  color: var(--main-purple);
+  font-size: 12px;
+  font-weight: 600;
+  background-color: transparent;
+  text-align: left;
+}
+.errorMsg {
+  color: red;
+  text-align: center;
+}
