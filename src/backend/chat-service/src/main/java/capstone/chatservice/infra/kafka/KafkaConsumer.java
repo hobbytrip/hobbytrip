@@ -2,6 +2,7 @@ package capstone.chatservice.infra.kafka;
 
 import capstone.chatservice.domain.dm.dto.DirectMessageDto;
 import capstone.chatservice.domain.dm.dto.response.DirectMessageCreateResponse;
+import capstone.chatservice.domain.dm.dto.response.DirectMessageDeleteResponse;
 import capstone.chatservice.domain.dm.dto.response.DirectMessageModifyResponse;
 import capstone.chatservice.domain.emoji.dto.EmojiDto;
 import capstone.chatservice.domain.emoji.dto.response.EmojiCreateResponse;
@@ -55,6 +56,10 @@ public class KafkaConsumer {
             case "modify" -> {
                 DirectMessageModifyResponse modifyResponse = DirectMessageModifyResponse.from(messageDto);
                 messagingTemplate.convertAndSend("/topic/direct/" + dmRoomId, modifyResponse);
+            }
+            case "delete" -> {
+                DirectMessageDeleteResponse deleteResponse = DirectMessageDeleteResponse.from(messageDto);
+                messagingTemplate.convertAndSend("/topic/direct/" + dmRoomId, deleteResponse);
             }
         }
     }

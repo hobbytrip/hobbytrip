@@ -35,5 +35,6 @@ public class DirectMessageController {
     public void modify(DirectMessageDeleteRequest deleteRequest) {
 
         DirectMessageDto messageDto = directMessageService.delete(deleteRequest);
+        kafkaProducer.sendToDirectChatTopic(messageDto);
     }
 }
