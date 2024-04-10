@@ -49,4 +49,11 @@ public class DirectMessageController {
         return directMessageService.getDirectMessages(roomId, page, size);
     }
 
+    @GetMapping("/api/chat/direct/comments")
+    public Page<DirectMessageDto> getComments(@RequestParam(value = "parentId") Long parentId,
+                                              @RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "30") int size) {
+
+        return directMessageService.getComments(parentId, page, size);
+    }
 }

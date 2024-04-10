@@ -12,6 +12,9 @@ public interface DirectMessageRepository extends MongoRepository<DirectMessage, 
     @Query("{ 'dmRoomId': ?0, 'isDeleted': false, 'parentId': 0 }")
     Page<DirectMessage> findByDmRoomIdAndIsDeletedAndParentId(Long dmRoomId, Pageable pageable);
 
+    @Query("{ 'parentId': ?0, 'isDeleted': false }")
+    Page<DirectMessage> findByParentIdAndIsDeleted(Long parentId, Pageable pageable);
+
     @Query(value = "{ 'parentId': { $in: ?0 } }")
     List<DirectMessage> countMessagesByParentIds(List<Long> parentIds);
 }

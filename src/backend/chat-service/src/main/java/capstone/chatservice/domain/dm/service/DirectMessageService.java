@@ -83,12 +83,25 @@ public class DirectMessageService {
         return messageDtos;
     }
 
+    public Page<DirectMessageDto> getComments(Long parentId, int page, int size) {
+        Page<DirectMessageDto> messageDtos = messagesToMessageDtos("comment", parentId, page, size);
+        List<Long> messageIds = getMessageIds(messageDtos);
+
+        Map<Long, List<EmojiDto>> emojiMap = getEmojisForDirectMessages(messageIds);
+        for (DirectMessageDto messageDto : messageDtos) {
+            messageDto.setEmojis(emojiMap.getOrDefault(messageDto.getMessageId(), Collections.emptyList()));
+        }
+
+        return messageDtos;
+    }
 
     public Page<DirectMessageDto> messagesToMessageDtos(String type, Long id, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         Page<DirectMessage> messages = null;
         if (type.equals("message")) {
             messages = messageRepository.findByDmRoomIdAndIsDeletedAndParentId(id, pageable);
+        } else if (type.equals("comment")) {
+            messages = messageRepository.findByParentIdAndIsDeleted(id, pageable);
         }
 
         return (messages != null) ? messages.map(DirectMessageDto::from) : Page.empty(pageable);
