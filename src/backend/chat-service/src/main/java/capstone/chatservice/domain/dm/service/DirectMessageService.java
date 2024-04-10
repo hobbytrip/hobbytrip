@@ -3,6 +3,7 @@ package capstone.chatservice.domain.dm.service;
 import capstone.chatservice.domain.dm.domain.DirectMessage;
 import capstone.chatservice.domain.dm.dto.DirectMessageDto;
 import capstone.chatservice.domain.dm.dto.request.DirectMessageCreateRequest;
+import capstone.chatservice.domain.dm.dto.request.DirectMessageModifyRequest;
 import capstone.chatservice.domain.dm.repository.DirectMessageRepository;
 import capstone.chatservice.global.util.SequenceGenerator;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,16 @@ public class DirectMessageService {
                 .build();
 
         directMessage.generateSequence(sequenceGenerator.generateSequence(DirectMessage.SEQUENCE_NAME));
+
+        return DirectMessageDto.from(messageRepository.save(directMessage));
+    }
+
+    @Transactional
+    public DirectMessageDto modify(DirectMessageModifyRequest modifyRequest) {
+        DirectMessage directMessage = messageRepository.findById(modifyRequest.getMessageId())
+                .orElseThrow(() -> new RuntimeException("no message"));
+
+        directMessage.modify(modifyRequest.getType(), modifyRequest.getContent());
 
         return DirectMessageDto.from(messageRepository.save(directMessage));
     }
