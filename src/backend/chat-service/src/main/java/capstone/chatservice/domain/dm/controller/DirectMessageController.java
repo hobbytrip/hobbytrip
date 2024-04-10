@@ -2,6 +2,7 @@ package capstone.chatservice.domain.dm.controller;
 
 import capstone.chatservice.domain.dm.dto.DirectMessageDto;
 import capstone.chatservice.domain.dm.dto.request.DirectMessageCreateRequest;
+import capstone.chatservice.domain.dm.dto.request.DirectMessageDeleteRequest;
 import capstone.chatservice.domain.dm.dto.request.DirectMessageModifyRequest;
 import capstone.chatservice.domain.dm.service.DirectMessageService;
 import capstone.chatservice.infra.kafka.KafkaProducer;
@@ -28,5 +29,11 @@ public class DirectMessageController {
 
         DirectMessageDto messageDto = directMessageService.modify(modifyRequest);
         kafkaProducer.sendToDirectChatTopic(messageDto);
+    }
+
+    @MessageMapping("/direct/message/delete")
+    public void modify(DirectMessageDeleteRequest deleteRequest) {
+
+        DirectMessageDto messageDto = directMessageService.delete(deleteRequest);
     }
 }
