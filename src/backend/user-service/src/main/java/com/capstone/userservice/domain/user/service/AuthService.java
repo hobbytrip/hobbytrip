@@ -124,7 +124,7 @@ public class AuthService {
 
     /**
      * @param accessToken
-     * @return 로그인 되어 있으면 True, 로그아웃은 flase
+     * @return 로그인 되어 있으면 True, 로그아웃은 False
      */
     @Transactional
     public boolean loginCheck(String accessToken) {
