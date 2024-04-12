@@ -1,8 +1,12 @@
 import React from "react";
+import axios from "axios";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import StartView from "./components/StartView/StartView";
 import LoginView from "./pages/LoginView/Loginview";
 import RegView from "./pages/RegView/RegView";
+
+axios.defaults.baseURL = "http://localhost:3001/";
+axios.defaults.withCredentials = true;
 
 function App() {
   return (

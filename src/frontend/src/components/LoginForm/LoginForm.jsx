@@ -20,7 +20,7 @@ function LoginForm() {
     e.preventDefault();
     await login(email, password);
     if (!error) {
-      navigate("/home");
+      navigate("/user/profile");
     }
   };
   const moveToSignUp = () => {

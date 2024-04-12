@@ -1,6 +1,6 @@
 import s from "./NotificationBox.module.css";
 
-function NotificationBox({ isNotification, handleChange }) {
+function NotificationBox({ notificationEnabled, handleChange }) {
   return (
     <div className={s.wrapper}>
       <h4 className={s.list}>알림 설정</h4>
@@ -15,8 +15,8 @@ function NotificationBox({ isNotification, handleChange }) {
           <input
             className={s.checkBox}
             type="checkbox"
-            name="isNotification"
-            checked={isNotification}
+            name="notificationEnabled"
+            checked={notificationEnabled}
             onChange={handleChange}
           />
           <span className={s.checkIcon}></span>

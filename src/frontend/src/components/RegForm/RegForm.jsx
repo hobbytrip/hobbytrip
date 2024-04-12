@@ -3,7 +3,7 @@ import axios from "axios"; // axios 임포트 추가
 import s from "./RegForm.module.css";
 import { useNavigate } from "react-router-dom";
 import useUserStore from "../../actions/useUserStore";
-import NotificationBox from "../Notification/NotificationBox";
+import NotificationBox from "../NotificationBox/NotificationBox";
 
 function RegForm() {
   const { setUserData } = useUserStore();
@@ -13,7 +13,7 @@ function RegForm() {
     nickname: "",
     password: "",
     birthdate: "",
-    isNotification: false,
+    notificationEnabled: true,
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -103,7 +103,7 @@ function RegForm() {
           required
         />
         <NotificationBox
-          isNotification={form.isNotification}
+          isNotification={form.notificationEnabled}
           handleChange={handleChange}
         />
 

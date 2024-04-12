@@ -28,9 +28,10 @@
   margin-top: -20px;
 }
 .checkIcon::before {
-  content: "";
+  content: "✓";
+  color: white;
+  padding-left: 3px;
   display: block;
-  margin-right: 5px;
   display: inline-block;
   width: 20px;
   height: 20px;
