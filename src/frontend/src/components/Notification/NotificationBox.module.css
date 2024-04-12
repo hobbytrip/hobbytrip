@@ -1,0 +1,47 @@
+.notiContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 125px;
+
+  width: 321px;
+  height: 44px;
+}
+.notiBox {
+  flex: none;
+  align-self: stretch;
+  flex-grow: 0;
+}
+.list {
+  color: var(--mid-gray);
+}
+.detail {
+  color: var(--mid-gray);
+  font-weight: 400;
+}
+.checkBox {
+  display: none;
+}
+.checkLabel {
+  display: flex;
+  align-items: center;
+  margin-top: -20px;
+}
+.checkIcon::before {
+  content: "";
+  display: block;
+  margin-right: 5px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-color: var(--mid-gray);
+  border-radius: 50%;
+  box-sizing: border-box;
+  position: relative;
+  cursor: pointer;
+}
+.checkLabel input:checked + .checkIcon::before {
+  background: url("../../assets/image/symbols_check.svg") var(--main-purple)
+    no-repeat center;
+  border: none;
+}

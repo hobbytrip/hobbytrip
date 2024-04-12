@@ -1,24 +1,32 @@
 import { useState } from "react";
 import axios from "axios"; // axios 임포트 추가
 import s from "./RegForm.module.css";
-import userStore from "../../actions/userStore";
 import { useNavigate } from "react-router-dom";
+import useUserStore from "../../actions/useUserStore";
+import NotificationBox from "../Notification/NotificationBox";
 
 function RegForm() {
-  const { setUserData } = userStore();
+  const { setUserData } = useUserStore();
   const [form, setForm] = useState({
     email: "",
     username: "",
     nickname: "",
     password: "",
+    birthdate: "",
+    isNotification: false,
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prevForm) => ({ ...prevForm, [name]: value }));
+    const { name, type, checked, value } = e.target;
+    const newValue = type === "checkbox" ? checked : value;
+    console.log(checked);
+    setForm((prevForm) => ({
+      ...prevForm,
+      [name]: newValue,
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -74,6 +82,16 @@ function RegForm() {
           onChange={handleChange}
         />
         <h4 className={s.list}>
+          생년월일<a>*</a>
+        </h4>
+        <input
+          className={s.box}
+          type="date"
+          name="birthdate"
+          value={form.birthdate}
+          onChange={handleChange}
+        />
+        <h4 className={s.list}>
           비밀번호<a>*</a>
         </h4>
         <input
@@ -84,6 +102,11 @@ function RegForm() {
           onChange={handleChange}
           required
         />
+        <NotificationBox
+          isNotification={form.isNotification}
+          handleChange={handleChange}
+        />
+
         <button type="submit" className={s.signUpBtn} disabled={isLoading}>
           가입하기
         </button>

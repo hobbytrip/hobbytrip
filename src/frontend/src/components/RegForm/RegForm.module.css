@@ -3,7 +3,6 @@
 }
 .container {
   width: 100%;
-  height: 370px;
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -17,10 +16,7 @@
   /* align-items: center; */
   padding: 30px 35px 60px;
   gap: 10px;
-
   width: 391px;
-  height: 371px;
-
   flex: none;
   order: 1;
   flex-grow: 0;
@@ -34,7 +30,7 @@
   outline: none;
 }
 .box:focus {
-  border: 1.5px solid var(--main-purple);
+  border: 2px solid var(--main-purple);
 }
 .signUpBtn {
   border-style: none;
