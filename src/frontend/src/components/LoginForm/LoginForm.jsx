@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import userLoginStore from "../../actions/userLoginStore";
+import userLoginStore from "../../actions/useLoginStore";
 import s from "./LoginForm.module.css";
 
 function LoginForm() {
@@ -12,12 +12,16 @@ function LoginForm() {
 
   const handleInput = (e) => {
     const { name, value } = e.target;
-    if (name == "email") setEmail(value);
-    if (name == "password") setPassword(value);
+    if (name === "email") setEmail(value);
+    if (name === "password") setPassword(value);
   };
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    login(email, password);
+    await login(email, password);
+    if (!error) {
+      navigate("/home");
+    }
   };
   const moveToSignUp = () => {
     navigate("/register");
@@ -49,9 +53,6 @@ function LoginForm() {
           onChange={handleInput}
           required
         />
-        {/* <button type="submit" className={s.helpBtn}>
-          비밀번호를 잊으셨나요?
-        </button> */}
         <button type="submit" onClick={handleSubmit} className={s.loginBtn}>
           로그인
         </button>
