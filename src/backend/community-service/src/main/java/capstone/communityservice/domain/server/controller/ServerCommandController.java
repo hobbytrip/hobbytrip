@@ -18,8 +18,9 @@ public class ServerCommandController {
     @PostMapping
     public DataResponseDto<Object> create(
             @Valid @RequestPart(value = "requestDto") ServerCreateRequestDto requestDto,
-            @RequestPart(name = "profile", required = false) MultipartFile profile){
-        ServerResponseDto response = serverCommandService.save(requestDto, profile);
+            @RequestPart(name = "profile", required = false) MultipartFile profile
+    ){
+        ServerResponseDto response = serverCommandService.create(requestDto, profile);
         return DataResponseDto.of(response);
     }
 

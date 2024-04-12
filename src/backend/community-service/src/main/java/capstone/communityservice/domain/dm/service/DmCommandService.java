@@ -28,7 +28,7 @@ public class DmCommandService {
     private final DmUserRepository dmUserRepository;
     private final UserQueryService userQueryService;
 
-    public DmResponseDto save(DmCreateRequestDto requestDto) {
+    public DmResponseDto create(DmCreateRequestDto requestDto) {
         List<User> users = findUsers(requestDto.getUserIds());
         String dmName = createDmName(users);
 

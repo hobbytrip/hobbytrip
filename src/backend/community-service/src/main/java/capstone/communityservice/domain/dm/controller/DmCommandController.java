@@ -18,7 +18,7 @@ public class DmCommandController {
 
     @PostMapping
     public DataResponseDto<Object> create(@Valid @RequestBody DmCreateRequestDto requestDto){
-        DmResponseDto response = dmCommandService.save(requestDto);
+        DmResponseDto response = dmCommandService.create(requestDto);
         return DataResponseDto.of(response);
     }
 

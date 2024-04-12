@@ -46,7 +46,7 @@ public class ServerCommandService {
 
     private final ServerUserRepository serverUserRepository;
 
-    public ServerResponseDto save(ServerCreateRequestDto requestDto, MultipartFile file) {
+    public ServerResponseDto create(ServerCreateRequestDto requestDto, MultipartFile file) {
         // String profileUrl = file != null ? uploadProfile(file) : null; <- S3 등록 후
         String profileUrl = null;
 
