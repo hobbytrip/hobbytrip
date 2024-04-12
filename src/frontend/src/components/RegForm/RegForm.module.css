@@ -10,7 +10,7 @@
   padding-left: 10px;
   padding-right: 10px;
 }
-.form {
+.forms {
   margin-top: 30px;
   display: flex;
   flex-direction: column;
@@ -25,7 +25,7 @@
   order: 1;
   flex-grow: 0;
 }
-.input {
+.box {
   height: 35px;
   border-style: none;
   border-radius: 5px;
@@ -33,10 +33,10 @@
   font-family: "Pretendard";
   outline: none;
 }
-.input:focus {
+.box:focus {
   border: 1.5px solid var(--main-purple);
 }
-.loginBtn {
+.signUpBtn {
   border-style: none;
   height: 35px;
   background-color: var(--main-purple);
@@ -44,7 +44,7 @@
   color: white;
   font-family: "Pretendard";
 }
-.loginBtn:focus {
+.signUpBtn:focus {
   cursor: pointer;
 }
 .helpBtn {

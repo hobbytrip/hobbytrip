@@ -1,12 +1,16 @@
 import create from "zustand";
 
-const useUserStore = create((set) => ({
+const userLoginStore = create((set) => ({
   user: null,
   error: null,
   login: async (email, password) => {
     try {
-      const response = await axios.post("/user/login", { email, password });
+      const response = await axios.post("http://localhost:3001/login", {
+        email,
+        password,
+      });
       set({ user: response.data });
+      console.log("로그인 성공");
     } catch (error) {
       set({ error: "회원정보를 확인해주세요." });
     }
@@ -14,4 +18,4 @@ const useUserStore = create((set) => ({
   logout: () => set({ user: null }),
 }));
 
-export default useUserStore;
+export default userLoginStore;

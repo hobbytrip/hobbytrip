@@ -1,0 +1,31 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "email": "1234@gmail.com",
+      "username": "1234",
+      "nickname": "5678",
+      "password": "1234"
+    },
+    {
+      "email": "ydw082504211@gmail.com",
+      "username": "12345",
+      "nickname": "12345",
+      "password": "12345",
+      "id": 2
+    },
+    {
+      "email": "yyjj0421@kangwon.ac.kr",
+      "username": "345",
+      "nickname": "345",
+      "password": "345",
+      "id": 3
+    }
+  ],
+  "login": [
+    {
+      "email": "1234@gmail.com",
+      "password": "1234"
+    }
+  ]
+}

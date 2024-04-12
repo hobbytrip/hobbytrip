@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useUserStore from "../../actions/useUserStore";
+import userLoginStore from "../../actions/userLoginStore";
 import s from "./LoginForm.module.css";
 
 function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const login = useUserStore((state) => state.login);
-  const error = useUserStore((state) => state.error);
+  const login = userLoginStore((state) => state.login);
+  const error = userLoginStore((state) => state.error);
   const navigate = useNavigate();
 
   const handleInput = (e) => {
@@ -20,7 +20,7 @@ function LoginForm() {
     login(email, password);
   };
   const moveToSignUp = () => {
-    navigate("/user/signup");
+    navigate("/register");
   };
   return (
     <div className={s.container}>
