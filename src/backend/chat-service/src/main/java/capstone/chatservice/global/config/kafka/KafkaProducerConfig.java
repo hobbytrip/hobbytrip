@@ -1,5 +1,6 @@
 package capstone.chatservice.global.config.kafka;
 
+import capstone.chatservice.domain.dm.dto.DirectMessageDto;
 import capstone.chatservice.domain.emoji.dto.EmojiDto;
 import capstone.chatservice.domain.server.dto.ServerMessageDto;
 import java.util.HashMap;
@@ -40,6 +41,16 @@ public class KafkaProducerConfig {
     @Bean
     public KafkaTemplate<String, ServerMessageDto> serverChatKafkaTemplate() {
         return new KafkaTemplate<>(serverChatProducerFactory());
+    }
+
+    @Bean
+    public ProducerFactory<String, DirectMessageDto> directChatProducerFactory() {
+        return new DefaultKafkaProducerFactory<>(producerConfig());
+    }
+
+    @Bean
+    public KafkaTemplate<String, DirectMessageDto> directChatKafkaTemplate() {
+        return new KafkaTemplate<>(directChatProducerFactory());
     }
 
     public ProducerFactory<String, EmojiDto> emojiChatProducerFactory() {

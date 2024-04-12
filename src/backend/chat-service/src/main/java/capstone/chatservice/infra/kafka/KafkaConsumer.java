@@ -1,5 +1,9 @@
 package capstone.chatservice.infra.kafka;
 
+import capstone.chatservice.domain.dm.dto.DirectMessageDto;
+import capstone.chatservice.domain.dm.dto.response.DirectMessageCreateResponse;
+import capstone.chatservice.domain.dm.dto.response.DirectMessageDeleteResponse;
+import capstone.chatservice.domain.dm.dto.response.DirectMessageModifyResponse;
 import capstone.chatservice.domain.emoji.dto.EmojiDto;
 import capstone.chatservice.domain.emoji.dto.response.EmojiCreateResponse;
 import capstone.chatservice.domain.emoji.dto.response.EmojiDeleteResponse;
@@ -36,6 +40,26 @@ public class KafkaConsumer {
             case "delete" -> {
                 ServerMessageDeleteResponse deleteResponse = ServerMessageDeleteResponse.from(messageDto);
                 messagingTemplate.convertAndSend("/topic/server/" + serverId, deleteResponse);
+            }
+        }
+    }
+
+    @KafkaListener(topics = "${spring.kafka.topic.direct-chat}", groupId = "${spring.kafka.consumer.group-id.direct-chat}", containerFactory = "directChatListenerContainerFactory")
+    public void directChatListener(DirectMessageDto messageDto) {
+        String messageType = messageDto.getType();
+        Long dmRoomId = messageDto.getDmRoomId();
+        switch (messageType) {
+            case "send" -> {
+                DirectMessageCreateResponse createResponse = DirectMessageCreateResponse.from(messageDto);
+                messagingTemplate.convertAndSend("/topic/direct/" + dmRoomId, createResponse);
+            }
+            case "modify" -> {
+                DirectMessageModifyResponse modifyResponse = DirectMessageModifyResponse.from(messageDto);
+                messagingTemplate.convertAndSend("/topic/direct/" + dmRoomId, modifyResponse);
+            }
+            case "delete" -> {
+                DirectMessageDeleteResponse deleteResponse = DirectMessageDeleteResponse.from(messageDto);
+                messagingTemplate.convertAndSend("/topic/direct/" + dmRoomId, deleteResponse);
             }
         }
     }
