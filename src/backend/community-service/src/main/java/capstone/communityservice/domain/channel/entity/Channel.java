@@ -34,12 +34,16 @@ public class Channel extends BaseTimeEntity {
     private ChannelType channelType;
 
     @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
     private boolean deleted = Boolean.FALSE;
 
-    public static Channel of(Server server, Long categoryId, ChannelType channelType) {
+    public static Channel of(Server server, Long categoryId, ChannelType channelType, String name) {
         Channel channel = new Channel();
         channel.setCategoryId(categoryId);
         channel.setChannelType(channelType);
+        channel.setName(name);
         server.addChannel(channel);
 
         return channel;
@@ -56,5 +60,14 @@ public class Channel extends BaseTimeEntity {
 
     public void setChannelType(ChannelType channelType) {
         this.channelType = channelType;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void modifyChannel(Long categoryId, String name) {
+        this.categoryId = categoryId;
+        this.name = name;
     }
 }

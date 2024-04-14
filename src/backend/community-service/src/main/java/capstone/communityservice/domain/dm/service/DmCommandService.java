@@ -6,14 +6,16 @@ import capstone.communityservice.domain.dm.entity.DmUser;
 import capstone.communityservice.domain.dm.exception.DmException;
 import capstone.communityservice.domain.dm.repository.DmRepository;
 import capstone.communityservice.domain.dm.repository.DmUserRepository;
-import capstone.communityservice.domain.server.dto.ServerResponseDto;
 import capstone.communityservice.domain.user.entity.User;
 import capstone.communityservice.domain.user.service.UserQueryService;
+import capstone.communityservice.global.common.service.FileUploadService;
 import capstone.communityservice.global.exception.Code;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,8 +29,9 @@ public class DmCommandService {
     private final DmRepository dmRepository;
     private final DmUserRepository dmUserRepository;
     private final UserQueryService userQueryService;
+    private final FileUploadService fileUploadService;
 
-    public DmResponseDto save(DmCreateRequestDto requestDto) {
+    public DmResponseDto create(DmCreateRequestDto requestDto) {
         List<User> users = findUsers(requestDto.getUserIds());
         String dmName = createDmName(users);
 
@@ -59,7 +62,16 @@ public class DmCommandService {
         return DmResponseDto.of(findDm);
     }
 
+    public DmResponseDto updateProfile(DmUpdateProfileRequestDto requestDto, MultipartFile profile) {
+        Dm findDm = validateDm(requestDto.getDmId());
 
+//        String profileUrl = fileUploadService.save(profile);
+        String profileUrl = "http://image.png";
+
+        findDm.setProfile(profileUrl);
+
+        return DmResponseDto.of(findDm);
+    }
 
     private void saveDmUser(List<User> users, Dm dm) {
         List<DmUser> dmUsers = users.stream()
@@ -80,12 +92,6 @@ public class DmCommandService {
         return userQueryService.findUsers(userIds);
     }
 
-
-    private Dm validateDm(Long dmId){
-        return dmRepository.findById(dmId)
-                .orElseThrow(() -> new DmException(Code.NOT_FOUND, "Not Found Dm"));
-    }
-
     public void delete(DmDeleteRequestDto requestDto) {
         Dm findDm = validateDm(requestDto.getDmId());
 
@@ -93,4 +99,18 @@ public class DmCommandService {
     }
 
 
+    public void deleteProfile(DmDeleteProfileRequestDto requestDto) {
+        Dm findDm = validateDm(requestDto.getDmId());
+
+        if(findDm.getProfile().equals(requestDto.getProfile())) {
+            findDm.setProfile(null);
+        } else{
+            throw new DmException(Code.VALIDATION_ERROR, "Dm profileUrl not equals.");
+        }
+    }
+
+    private Dm validateDm(Long dmId){
+        return dmRepository.findById(dmId)
+                .orElseThrow(() -> new DmException(Code.NOT_FOUND, "Not Found Dm"));
+    }
 }

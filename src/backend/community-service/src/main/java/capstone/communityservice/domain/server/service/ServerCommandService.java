@@ -5,6 +5,7 @@ import capstone.communityservice.domain.category.entity.Category;
 import capstone.communityservice.domain.category.service.CategoryCommandService;
 import capstone.communityservice.domain.channel.entity.Channel;
 import capstone.communityservice.domain.channel.entity.ChannelType;
+import capstone.communityservice.domain.channel.repository.ChannelRepository;
 import capstone.communityservice.domain.channel.service.ChannelCommandService;
 import capstone.communityservice.domain.server.dto.*;
 import capstone.communityservice.domain.server.entity.Server;
@@ -45,8 +46,9 @@ public class ServerCommandService {
     private final ChannelCommandService channelCommandService;
 
     private final ServerUserRepository serverUserRepository;
+    private final ChannelRepository channelRepository;
 
-    public ServerResponseDto save(ServerCreateRequestDto requestDto, MultipartFile file) {
+    public ServerResponseDto create(ServerCreateRequestDto requestDto, MultipartFile file) {
         // String profileUrl = file != null ? uploadProfile(file) : null; <- S3 등록 후
         String profileUrl = null;
 
@@ -61,7 +63,7 @@ public class ServerCommandService {
         );
 
         serverUserCommandService.save(ServerUser.of(server, user));
-        categoryInit(server);
+        categoryAndChannelInit(server);
 
         /**
          * 서버 Read
@@ -109,14 +111,27 @@ public class ServerCommandService {
         serverRepository.delete(findServer);
     }
 
-    private void categoryInit(Server server){
+    private void categoryAndChannelInit(Server server){
         CategoryResponseDto initChatCategory
                 = categoryCommandService.save(Category.of(server, "채팅 채널"));
         CategoryResponseDto initVoiceCategory
                 = categoryCommandService.save(Category.of(server, "음성 채널"));
 
-        channelCommandService.save(Channel.of(server, initChatCategory.getId(), ChannelType.CHAT));
-        channelCommandService.save(Channel.of(server, initVoiceCategory.getId(), ChannelType.VOICE));
+        channelRepository.save(
+                Channel.of(
+                        server,
+                        initChatCategory.getId(),
+                        ChannelType.CHAT,
+                        "일반")
+        );
+
+        channelRepository.save(
+                Channel.of(
+                        server,
+                        initVoiceCategory.getId(),
+                        ChannelType.VOICE,
+                        "일반")
+        );
     }
 
     public ServerInviteCodeResponse generatedServerInviteCode(Long serverId) {

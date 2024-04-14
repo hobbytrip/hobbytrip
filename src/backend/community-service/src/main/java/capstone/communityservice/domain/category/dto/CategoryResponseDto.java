@@ -16,15 +16,11 @@ public class CategoryResponseDto {
     private Long id;
 
     @NotNull
-    private Server server;
-
-    @NotNull
     private String name;
 
     public static CategoryResponseDto of(Category category){
         return CategoryResponseDto.builder()
                 .id(category.getId())
-                .server(category.getServer())
                 .name(category.getName())
                 .build();
     }

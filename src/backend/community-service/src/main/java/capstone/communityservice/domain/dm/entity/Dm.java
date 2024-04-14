@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,8 @@ public class Dm extends BaseTimeEntity {
 
     @Column(nullable = false)
     private String name;
+
+    private String profile;
 
     @Column(nullable = false)
     private boolean deleted = Boolean.FALSE;
@@ -51,5 +54,9 @@ public class Dm extends BaseTimeEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setProfile(String profile) {
+        this.profile = profile;
     }
 }
