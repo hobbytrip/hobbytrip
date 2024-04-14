@@ -16,13 +16,13 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/category")
 public class CategoryCommandController {
 
-    private CategoryCommandService categoryCommandService;
+    private final CategoryCommandService categoryCommandService;
 
     @PostMapping
     public DataResponseDto<Object> create(@Valid @RequestBody CategoryCreateRequestDto requestDto){
-        categoryCommandService.create(requestDto);
+        CategoryResponseDto response = categoryCommandService.create(requestDto);
 
-        return DataResponseDto.of("Category create success!");
+        return DataResponseDto.of(response);
     }
 
     @PatchMapping

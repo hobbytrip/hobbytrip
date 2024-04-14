@@ -2,12 +2,14 @@ package capstone.communityservice.domain.dm.controller;
 
 import capstone.communityservice.domain.dm.dto.*;
 import capstone.communityservice.domain.dm.service.DmCommandService;
+import capstone.communityservice.domain.server.dto.ServerCreateRequestDto;
 import capstone.communityservice.domain.server.dto.ServerJoinRequestDto;
 import capstone.communityservice.domain.server.dto.ServerResponseDto;
 import capstone.communityservice.global.common.dto.DataResponseDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,6 +30,7 @@ public class DmCommandController {
     @PostMapping("/join")
     public DataResponseDto<Object> join(@Valid @RequestBody DmJoinRequestDto requestDto){
         DmResponseDto response = dmCommandService.join(requestDto);
+
         return DataResponseDto.of(response);
     }
 
@@ -38,10 +41,27 @@ public class DmCommandController {
         return DataResponseDto.of(response);
     }
 
+    @PatchMapping("/profile")
+    public DataResponseDto<Object> updateProfile(
+            @Valid @RequestPart(value = "requestDto") DmUpdateProfileRequestDto requestDto,
+            @RequestPart(name = "profile") MultipartFile profile
+    ) {
+        DmResponseDto response = dmCommandService.updateProfile(requestDto, profile);
+
+        return DataResponseDto.of(response);
+    }
+
     @DeleteMapping
     public DataResponseDto<Object> delete(@Valid @RequestBody DmDeleteRequestDto requestDto){
         dmCommandService.delete(requestDto);
 
         return DataResponseDto.of("Dm delete success!!");
+    }
+
+    @DeleteMapping("/profile")
+    public DataResponseDto<Object> delete(@Valid @RequestBody DmDeleteProfileRequestDto requestDto){
+        dmCommandService.deleteProfile(requestDto);
+
+        return DataResponseDto.of("Dm profile delete success!!");
     }
 }

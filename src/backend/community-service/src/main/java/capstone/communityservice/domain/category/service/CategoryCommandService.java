@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
-@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
 public class CategoryCommandService {
 
@@ -30,10 +30,12 @@ public class CategoryCommandService {
         return CategoryResponseDto.of(newCategory);
     }
 
-    public void create(CategoryCreateRequestDto requestDto) {
+    public CategoryResponseDto create(CategoryCreateRequestDto requestDto) {
         Server findServer = validateManagerInCategory(requestDto.getServerId(), requestDto.getUserId());
 
-        save(Category.of(findServer, requestDto.getName()));
+        return save(Category.of(
+                findServer, requestDto.getName())
+        );
     }
 
     public void update(CategoryUpdateRequestDto requestDto) {

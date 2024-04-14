@@ -17,10 +17,13 @@ public class DmResponseDto {
     @NotBlank
     private String name;
 
+    private String profile;
+
     public static DmResponseDto of(Dm dm) {
         return DmResponseDto.builder()
                 .dmId(dm.getId())
                 .name(dm.getName())
+                .profile(dm.getProfile())
                 .build();
     }
 }
