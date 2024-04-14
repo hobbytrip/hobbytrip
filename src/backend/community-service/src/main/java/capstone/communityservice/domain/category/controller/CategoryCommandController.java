@@ -27,15 +27,15 @@ public class CategoryCommandController {
 
     @PatchMapping
     public DataResponseDto<Object> update(@Valid @RequestBody CategoryUpdateRequestDto requestDto){
-        categoryCommandService.update(requestDto);
+        CategoryResponseDto response = categoryCommandService.update(requestDto);
 
-        return DataResponseDto.of("Category update success!");
+        return DataResponseDto.of(response);
     }
 
     @DeleteMapping
     public DataResponseDto<Object> delete(@Valid @RequestBody CategoryDeleteRequestDto requestDto){
         categoryCommandService.delete(requestDto);
 
-        return DataResponseDto.of("Category update success!");
+        return DataResponseDto.of("Category delete success!");
     }
 }

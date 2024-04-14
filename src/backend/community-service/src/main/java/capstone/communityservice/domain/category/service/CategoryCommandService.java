@@ -38,11 +38,13 @@ public class CategoryCommandService {
         );
     }
 
-    public void update(CategoryUpdateRequestDto requestDto) {
+    public CategoryResponseDto update(CategoryUpdateRequestDto requestDto) {
         validateManagerInCategory(requestDto.getServerId(), requestDto.getUserId());
 
         Category findCategory = validateCategory(requestDto.getCategoryId());
         findCategory.setName(requestDto.getName());
+
+        return CategoryResponseDto.of(findCategory);
     }
 
     public void delete(CategoryDeleteRequestDto requestDto) {
