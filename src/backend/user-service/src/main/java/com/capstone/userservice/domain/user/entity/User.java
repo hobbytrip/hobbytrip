@@ -68,4 +68,9 @@ public class User {
     public void preUpdate() {
         modifiedAt = LocalDateTime.now();
     }
+
+    public void setStatusMessage(String statusMessage, LocalDateTime modifiedAt) {
+        this.statusMessage = statusMessage;
+        this.modifiedAt = LocalDateTime.now();
+    }
 }

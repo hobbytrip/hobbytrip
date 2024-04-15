@@ -7,33 +7,35 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserResponseDto {
     private Long userId;
     private String email;
     private String nickname;
-    private String username;
+    private String name;
     private String birthdate;
     private boolean notificationEnabled;
     private LocalDateTime createdAt;
 
     public static UserResponseDto of(User user) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        return new UserResponseDto(
-                user.getUserId(),
-                user.getEmail(),
-                user.getNickname(),
-                user.getUsername(),
-                user.getBirthdate() != null ? formatter.format(
-                        user.getBirthdate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()) : null,
+        return UserResponseDto.builder()
+                .userId(user.getUserId())
+                .email(user.getEmail())
+                .nickname(user.getNickname())
+                .name(user.getUsername())
                 // Date를 String으로 변환
-                user.isNotificationEnabled(),
-                user.getCreatedAt()
-        );
+                .birthdate(user.getBirthdate() != null ? formatter.format(
+                        user.getBirthdate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()) : null)
+                .notificationEnabled(user.isNotificationEnabled())
+                .createdAt(user.getCreatedAt())
+                .build();
     }
 }

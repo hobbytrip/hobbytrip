@@ -1,4 +1,4 @@
-package com.capstone.userservice.domain.profile.dto;
+package com.capstone.userservice.domain.profile.dto.response;
 
 
 import com.capstone.userservice.domain.user.entity.User;
@@ -24,16 +24,17 @@ public class ProfileResponseDto {
     private String statusMessage;
     private LocalDateTime modifiedAt;
 
-    public static ProfileResponseDto of(User user) {
-        return new ProfileResponseDto(
-                user.getUserId(),
-                user.getUsername(),
-                user.getNickname(),
-                user.getEmail(),
-                user.getProfileImage(),
-                user.getPhone(),
-                user.getStatusMessage(),
-                user.getModifiedAt()
-        );
+    public static ProfileResponseDto from(User user) {
+        return ProfileResponseDto.builder()
+                .userId(user.getUserId())
+                .name(user.getUsername())
+                .nickname(user.getNickname())
+                .email(user.getEmail())
+                .profileImage(user.getProfileImage())
+                .phone(user.getPhone())
+                .statusMessage(user.getStatusMessage())
+                .modifiedAt(user.getModifiedAt())
+                .build();
+
     }
 }
