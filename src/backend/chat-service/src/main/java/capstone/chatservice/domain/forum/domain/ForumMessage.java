@@ -73,4 +73,8 @@ public class ForumMessage extends BaseModel {
         this.files = files;
         this.setCreatedAt(LocalDateTime.now());
     }
+
+    public void generateSequence(Long messageId) {
+        this.messageId = messageId;
+    }
 }
