@@ -3,6 +3,7 @@ package capstone.chatservice.domain.forum.service;
 import capstone.chatservice.domain.forum.domain.ForumMessage;
 import capstone.chatservice.domain.forum.dto.ForumMessageDto;
 import capstone.chatservice.domain.forum.dto.request.ForumMessageCreateRequest;
+import capstone.chatservice.domain.forum.dto.request.ForumMessageDeleteRequest;
 import capstone.chatservice.domain.forum.dto.request.ForumMessageModifyRequest;
 import capstone.chatservice.domain.forum.repository.ForumMessageRepository;
 import capstone.chatservice.global.util.SequenceGenerator;
@@ -42,6 +43,16 @@ public class ForumMessageService {
                 .orElseThrow(() -> new RuntimeException("no message"));
 
         forumMessage.modify(modifyRequest.getType(), modifyRequest.getContent());
+
+        return ForumMessageDto.from(forumMessageRepository.save(forumMessage));
+    }
+
+    @Transactional
+    public ForumMessageDto delete(ForumMessageDeleteRequest deleteRequest) {
+        ForumMessage forumMessage = forumMessageRepository.findById(deleteRequest.getMessageId())
+                .orElseThrow(() -> new RuntimeException("no message"));
+
+        forumMessage.delete(deleteRequest.getType());
 
         return ForumMessageDto.from(forumMessageRepository.save(forumMessage));
     }

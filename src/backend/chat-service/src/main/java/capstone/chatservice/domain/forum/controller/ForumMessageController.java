@@ -2,6 +2,7 @@ package capstone.chatservice.domain.forum.controller;
 
 import capstone.chatservice.domain.forum.dto.ForumMessageDto;
 import capstone.chatservice.domain.forum.dto.request.ForumMessageCreateRequest;
+import capstone.chatservice.domain.forum.dto.request.ForumMessageDeleteRequest;
 import capstone.chatservice.domain.forum.dto.request.ForumMessageModifyRequest;
 import capstone.chatservice.domain.forum.service.ForumMessageService;
 import capstone.chatservice.infra.kafka.KafkaProducer;
@@ -26,5 +27,10 @@ public class ForumMessageController {
     public void modify(ForumMessageModifyRequest modifyRequest) {
         ForumMessageDto messageDto = forumMessageService.modify(modifyRequest);
         kafkaProducer.sendToForumChatTopic(messageDto);
+    }
+
+    @MessageMapping("/forum/message/delete")
+    public void delete(ForumMessageDeleteRequest deleteRequest) {
+        ForumMessageDto messageDto = forumMessageService.delete(deleteRequest);
     }
 }

@@ -83,4 +83,9 @@ public class ForumMessage extends BaseModel {
         this.content = content;
         this.setModifiedAt(LocalDateTime.now());
     }
+
+    public void delete(String type) {
+        this.type = type;
+        this.isDeleted = true;
+    }
 }
