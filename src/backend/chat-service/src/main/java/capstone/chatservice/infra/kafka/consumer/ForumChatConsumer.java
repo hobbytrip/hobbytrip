@@ -1,4 +1,4 @@
-package capstone.chatservice.infra.kafka;
+package capstone.chatservice.infra.kafka.consumer;
 
 import capstone.chatservice.domain.forum.dto.ForumMessageDto;
 import capstone.chatservice.domain.forum.dto.response.ForumMessageCreateResponse;
