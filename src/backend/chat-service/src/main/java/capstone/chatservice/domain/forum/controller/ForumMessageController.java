@@ -7,7 +7,10 @@ import capstone.chatservice.domain.forum.dto.request.ForumMessageModifyRequest;
 import capstone.chatservice.domain.forum.service.ForumMessageService;
 import capstone.chatservice.infra.kafka.KafkaProducer;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -33,5 +36,13 @@ public class ForumMessageController {
     public void delete(ForumMessageDeleteRequest deleteRequest) {
         ForumMessageDto messageDto = forumMessageService.delete(deleteRequest);
         kafkaProducer.sendToForumChatTopic(messageDto);
+    }
+
+    @GetMapping("/api/chat/forum/messages/forum")
+    public Page<ForumMessageDto> getMessages(@RequestParam(value = "forumId") Long forumId,
+                                             @RequestParam(defaultValue = "0") int page,
+                                             @RequestParam(defaultValue = "30") int size) {
+
+        return forumMessageService.getMessages(forumId, page, size);
     }
 }
