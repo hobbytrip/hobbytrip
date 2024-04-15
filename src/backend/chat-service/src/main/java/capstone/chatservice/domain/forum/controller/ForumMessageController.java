@@ -45,4 +45,12 @@ public class ForumMessageController {
 
         return forumMessageService.getMessages(forumId, page, size);
     }
+
+    @GetMapping("/api/chat/forum/comments/message")
+    public Page<ForumMessageDto> getComments(@RequestParam(value = "parentId") Long parentId,
+                                             @RequestParam(defaultValue = "0") int page,
+                                             @RequestParam(defaultValue = "30") int size) {
+
+        return forumMessageService.getComments(parentId, page, size);
+    }
 }

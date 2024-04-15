@@ -85,11 +85,25 @@ public class ForumMessageService {
         return messageDtos;
     }
 
+    public Page<ForumMessageDto> getComments(Long parentId, int page, int size) {
+        Page<ForumMessageDto> messageDtos = messagesToMessageDtos("comment", parentId, page, size);
+        List<Long> messageIds = getMessageIds(messageDtos);
+
+        Map<Long, List<EmojiDto>> emojiMap = getEmojisForMessages(messageIds);
+        for (ForumMessageDto messageDto : messageDtos) {
+            messageDto.setEmojis(emojiMap.getOrDefault(messageDto.getMessageId(), Collections.emptyList()));
+        }
+
+        return messageDtos;
+    }
+
     private Page<ForumMessageDto> messagesToMessageDtos(String type, Long id, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         Page<ForumMessage> messages = null;
         if (type.equals("message")) {
             messages = forumMessageRepository.findByForumIdAndIsDeletedAndParentId(id, pageable);
+        } else if (type.equals("comment")) {
+            messages = forumMessageRepository.findByParentIdAndIsDeleted(id, pageable);
         }
 
         return (messages != null) ? messages.map(ForumMessageDto::from) : Page.empty(pageable);
