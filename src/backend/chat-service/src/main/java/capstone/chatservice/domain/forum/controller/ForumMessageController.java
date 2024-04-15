@@ -32,5 +32,6 @@ public class ForumMessageController {
     @MessageMapping("/forum/message/delete")
     public void delete(ForumMessageDeleteRequest deleteRequest) {
         ForumMessageDto messageDto = forumMessageService.delete(deleteRequest);
+        kafkaProducer.sendToForumChatTopic(messageDto);
     }
 }

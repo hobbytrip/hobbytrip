@@ -2,6 +2,7 @@ package capstone.chatservice.infra.kafka;
 
 import capstone.chatservice.domain.forum.dto.ForumMessageDto;
 import capstone.chatservice.domain.forum.dto.response.ForumMessageCreateResponse;
+import capstone.chatservice.domain.forum.dto.response.ForumMessageDeleteResponse;
 import capstone.chatservice.domain.forum.dto.response.ForumMessageModifyResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,10 @@ public class ForumChatConsumer {
             case "modify" -> {
                 ForumMessageModifyResponse modifyResponse = ForumMessageModifyResponse.from(messageDto);
                 messagingTemplate.convertAndSend("/topic/server/" + serverId, modifyResponse);
+            }
+            case "delete" -> {
+                ForumMessageDeleteResponse deleteResponse = ForumMessageDeleteResponse.from(messageDto);
+                messagingTemplate.convertAndSend("/topic/server/" + serverId, deleteResponse);
             }
         }
     }
