@@ -35,6 +35,7 @@ public class KafkaProducerConfig {
         return config;
     }
 
+    @Bean
     public ProducerFactory<String, ServerMessageDto> serverChatProducerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfig());
     }
@@ -54,6 +55,7 @@ public class KafkaProducerConfig {
         return new KafkaTemplate<>(directChatProducerFactory());
     }
 
+    @Bean
     public ProducerFactory<String, EmojiDto> emojiChatProducerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfig());
     }
