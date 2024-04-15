@@ -1,8 +1,14 @@
 import create from "zustand";
 
 const useUserStore = create((set) => ({
-  userData: null,
-  setUserData: (data) => set(() => ({ userData: data })),
+  userData: {
+    userInfo: null,
+  },
+
+  setUserInfo: (info) =>
+    set(() => ({
+      userInfo: info,
+    })),
 }));
 
 export default useUserStore;

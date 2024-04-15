@@ -1,13 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import userLoginStore from "../../actions/useLoginStore";
 import s from "./LoginForm.module.css";
 
 function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const login = userLoginStore((state) => state.login);
-  const error = userLoginStore((state) => state.error);
   const navigate = useNavigate();
 
   const handleInput = (e) => {
@@ -15,17 +12,21 @@ function LoginForm() {
     if (name === "email") setEmail(value);
     if (name === "password") setPassword(value);
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await login(email, password);
-    if (!error) {
-      navigate("/user/profile");
+    setError(null);
+    try {
+      await login(email, password); //스토어 login 함수 사용
+      navigate("/main"); // 로그인 성공 시 메인 페이지로 리다이렉트
+    } catch (e) {
+      setError("로그인 실패: " + e.message);
     }
   };
+
   const moveToSignUp = () => {
-    navigate("/register");
+    navigate("/register"); // 회원가입 페이지로 이동
   };
+
   return (
     <div className={s.container}>
       <form onSubmit={handleSubmit} className={s.form}>

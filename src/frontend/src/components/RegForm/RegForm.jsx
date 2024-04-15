@@ -1,19 +1,20 @@
 import { useState } from "react";
-import axios from "axios"; // axios 임포트 추가
 import s from "./RegForm.module.css";
 import { useNavigate } from "react-router-dom";
 import useUserStore from "../../actions/useUserStore";
 import NotificationBox from "../NotificationBox/NotificationBox";
+import useAxios from "../../utils/instance";
 
 function RegForm() {
-  const { setUserData } = useUserStore();
+  const axios = useAxios();
+  const { setUserInfo } = useUserStore();
   const [form, setForm] = useState({
     email: "",
     username: "",
     nickname: "",
     password: "",
     birthdate: "",
-    notificationEnabled: true,
+    notificationEnabled: false,
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -29,12 +30,19 @@ function RegForm() {
     }));
   };
 
+  const moveToLogin = () => {
+    navigate("/login");
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     try {
       const response = await axios.post("http://localhost:3001/users", form);
-      setUserData(response.data);
+      setUserInfo({
+        ...response.data,
+        profileImage: default_img,
+      });
       console.log("회원가입 성공:", response.data);
       navigate("/login");
     } catch (error) {
@@ -109,6 +117,9 @@ function RegForm() {
 
         <button type="submit" className={s.signUpBtn} disabled={isLoading}>
           가입하기
+        </button>
+        <button type="submit" onClick={moveToLogin} className={s.helpBtn}>
+          로그인하기
         </button>
         {error && <p>오류: {error}</p>}
       </form>
