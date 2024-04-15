@@ -6,6 +6,7 @@ import com.capstone.userservice.domain.user.dto.UserRequestDto;
 import com.capstone.userservice.domain.user.dto.UserResponseDto;
 import com.capstone.userservice.domain.user.service.AuthService;
 import com.capstone.userservice.global.common.dto.TokenDto;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,8 +27,8 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<TokenDto> login(@RequestBody UserRequestDto userRequestDto) {
-        return ResponseEntity.ok(authService.login(userRequestDto));
+    public ResponseEntity<TokenDto> login(@RequestBody UserRequestDto userRequestDto, HttpServletResponse response) {
+        return ResponseEntity.ok(authService.login(userRequestDto, response));
     }
 
     @PostMapping("/reissue")

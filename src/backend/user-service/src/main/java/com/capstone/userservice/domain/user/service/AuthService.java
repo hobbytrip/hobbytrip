@@ -7,9 +7,10 @@ import com.capstone.userservice.domain.user.dto.UserResponseDto;
 import com.capstone.userservice.domain.user.entity.User;
 import com.capstone.userservice.domain.user.repository.UserRepository;
 import com.capstone.userservice.global.common.dto.TokenDto;
-import com.capstone.userservice.global.entity.RefreshToken;
+import com.capstone.userservice.global.common.entity.RefreshToken;
 import com.capstone.userservice.global.respository.RefreshTokenRepository;
 import com.capstone.userservice.global.util.TokenUtil;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,7 +29,6 @@ public class AuthService {
     private final TokenUtil tokenUtil;
     private final RefreshTokenRepository refreshTokenRepository;
 
-
     @Transactional
     public UserResponseDto signup(UserRequestDto userRequestDto) {
         if (userRepository.existsByEmail(userRequestDto.getEmail())) {
@@ -40,7 +40,7 @@ public class AuthService {
     }
 
     @Transactional
-    public TokenDto login(UserRequestDto userRequestDto) {
+    public TokenDto login(UserRequestDto userRequestDto, HttpServletResponse response) {
         // 1. Login ID/PW 를 기반으로 AuthenticationToken 생성
         UsernamePasswordAuthenticationToken authenticationToken = userRequestDto.toAuthentication();
 
@@ -52,10 +52,14 @@ public class AuthService {
         TokenDto tokenDto = tokenUtil.generateToken(userRequestDto, authentication);
 
         // 4. RefreshToken 저장
+
+        // 4. RefreshToken 저장
         RefreshToken refreshToken = RefreshToken.builder()
                 .key(authentication.getName())
                 .value(tokenDto.getRefreshToken())
                 .build();
+
+        tokenUtil.setHeaderAccessToken(response, tokenDto.getAccessToken());
 
         refreshTokenRepository.save(refreshToken);
 
@@ -64,7 +68,8 @@ public class AuthService {
     }
 
     @Transactional
-    public TokenDto reissue(TokenRequestDto tokenRequestDto, UserRequestDto userRequestDto) {
+    public TokenDto reissue(TokenRequestDto tokenRequestDto, UserRequestDto userRequestDto,
+                            HttpServletResponse response) {
         // 1. Refersh Token 검증
         if (!tokenUtil.validateToken(tokenRequestDto.getRefreshToken())) {
             throw new RuntimeException("Refresh Token 이 유효하지 않습니다.");
@@ -91,6 +96,9 @@ public class AuthService {
 
         // 7. 저장소 정보 업데이트
         RefreshToken newRefreshToken = refreshToken.updateValue(tokenDto.getRefreshToken());
+
+        tokenUtil.setHeaderAccessToken(response, tokenDto.getAccessToken());
+
         refreshTokenRepository.save(newRefreshToken);
 
         // 8. 토큰 발급
