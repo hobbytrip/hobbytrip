@@ -1,6 +1,3 @@
-import useSignalDeviceStore from "../../../actions/sessionState";
-
-const { camera, setCamera, mice, setMice } = useSignalDeviceStore(store => store);
 let stream;
 
 async function getStream(){

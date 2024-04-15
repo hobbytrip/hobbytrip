@@ -1,13 +1,14 @@
-import ConnectionBtn from '../../components/signal/ConnectionBtn';
-import VideoComponent from '../../components/signal/VideoComponent'
+import Btn from '../../components/signal/ConnectionBtn';
+import VideoComponent from '../../components/signal/VideoComponent';
 
-const SignalView = () => {
+const MediaView = () => {
     return(
         <>
-        <ConnectionBtn />
+        <Btn.StartBtn />
+        <Btn.EndBtn />
         <VideoComponent />
         </>
     )
 }
 
-export default SignalView;
+export default MediaView;
