@@ -25,5 +25,6 @@ public class ForumMessageController {
     @MessageMapping("/forum/message/modify")
     public void modify(ForumMessageModifyRequest modifyRequest) {
         ForumMessageDto messageDto = forumMessageService.modify(modifyRequest);
+        kafkaProducer.sendToForumChatTopic(messageDto);
     }
 }
