@@ -3,6 +3,7 @@ package capstone.chatservice.domain.forum.service;
 import capstone.chatservice.domain.forum.domain.ForumMessage;
 import capstone.chatservice.domain.forum.dto.ForumMessageDto;
 import capstone.chatservice.domain.forum.dto.request.ForumMessageCreateRequest;
+import capstone.chatservice.domain.forum.dto.request.ForumMessageModifyRequest;
 import capstone.chatservice.domain.forum.repository.ForumMessageRepository;
 import capstone.chatservice.global.util.SequenceGenerator;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,16 @@ public class ForumMessageService {
                 .build();
 
         forumMessage.generateSequence(sequenceGenerator.generateSequence(ForumMessage.SEQUENCE_NAME));
+
+        return ForumMessageDto.from(forumMessageRepository.save(forumMessage));
+    }
+
+    @Transactional
+    public ForumMessageDto modify(ForumMessageModifyRequest modifyRequest) {
+        ForumMessage forumMessage = forumMessageRepository.findById(modifyRequest.getMessageId())
+                .orElseThrow(() -> new RuntimeException("no message"));
+
+        forumMessage.modify(modifyRequest.getType(), modifyRequest.getContent());
 
         return ForumMessageDto.from(forumMessageRepository.save(forumMessage));
     }
