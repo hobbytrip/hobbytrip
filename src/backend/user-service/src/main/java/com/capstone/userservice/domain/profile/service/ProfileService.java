@@ -1,9 +1,11 @@
 package com.capstone.userservice.domain.profile.service;
 
 
-import com.capstone.userservice.domain.profile.dto.request.ProfileStatusMessageRequestDto;
-import com.capstone.userservice.domain.profile.dto.response.ProfileResponseDto;
-import com.capstone.userservice.domain.profile.dto.response.ProfileStatusMessageResponseDto;
+import com.capstone.userservice.domain.profile.dto.request.ProfileNicknameRequest;
+import com.capstone.userservice.domain.profile.dto.request.ProfileStatusMessageRequest;
+import com.capstone.userservice.domain.profile.dto.response.ProfileNicknameResponse;
+import com.capstone.userservice.domain.profile.dto.response.ProfileResponse;
+import com.capstone.userservice.domain.profile.dto.response.ProfileStatusMessageResponse;
 import com.capstone.userservice.domain.profile.exception.ProfileException;
 import com.capstone.userservice.domain.profile.repository.ProfileRepository;
 import com.capstone.userservice.domain.user.entity.User;
@@ -12,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
 
 @Slf4j
@@ -22,19 +23,27 @@ public class ProfileService {
     private final ProfileRepository profileRepository;
 
     @Transactional(readOnly = true)
-    public ProfileResponseDto read(Long userId) {
+    public ProfileResponse read(Long userId) {
         User userInfo = validateInProfile(userId);
 
-        ProfileResponseDto profileDto = ProfileResponseDto.from(userInfo);
+        ProfileResponse profileDto = ProfileResponse.from(userInfo);
         return profileDto;
     }
 
     @Transactional
-    public ProfileStatusMessageResponseDto statusMessageModify(@RequestBody ProfileStatusMessageRequestDto requestDto,
-                                                               Long userId) {
+    public ProfileStatusMessageResponse statusMessageModify(ProfileStatusMessageRequest request,
+                                                            Long userId) {
         User userInfo = validateInProfile(userId);
-        userInfo.setStatusMessage(requestDto.getStatusMessage(), requestDto.getModifiedAt());
-        return ProfileStatusMessageResponseDto.from(profileRepository.save(userInfo));
+        userInfo.setStatusMessage(request.getStatusMessage());
+        return ProfileStatusMessageResponse.from(profileRepository.save(userInfo));
+    }
+
+    @Transactional
+    public ProfileNicknameResponse nickNameModify(ProfileNicknameRequest request, Long userId) {
+        User userInfo = validateInProfile(userId);
+        userInfo.setNickname(request.getNickname());
+        return ProfileNicknameResponse.from(profileRepository.save(userInfo));
+
     }
 
 

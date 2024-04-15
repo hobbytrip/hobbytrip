@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ProfileResponseDto {
+public class ProfileResponse {
 
     private Long userId;
     private String name;
@@ -24,8 +24,8 @@ public class ProfileResponseDto {
     private String statusMessage;
     private LocalDateTime modifiedAt;
 
-    public static ProfileResponseDto from(User user) {
-        return ProfileResponseDto.builder()
+    public static ProfileResponse from(User user) {
+        return ProfileResponse.builder()
                 .userId(user.getUserId())
                 .name(user.getUsername())
                 .nickname(user.getNickname())

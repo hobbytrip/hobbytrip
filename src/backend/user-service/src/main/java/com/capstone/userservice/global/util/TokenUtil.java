@@ -1,7 +1,7 @@
 package com.capstone.userservice.global.util;
 
 
-import com.capstone.userservice.domain.user.dto.UserRequestDto;
+import com.capstone.userservice.domain.user.dto.UserRequest;
 import com.capstone.userservice.global.common.dto.TokenDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -49,7 +49,7 @@ public class TokenUtil {
         this.jwtHeader = jwtHeader;
     }
 
-    public TokenDto generateToken(UserRequestDto user, Authentication authentication) {
+    public TokenDto generateToken(UserRequest user, Authentication authentication) {
 
         // Authentication 객체에서 userDetails 추출
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();

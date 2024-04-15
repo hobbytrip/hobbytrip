@@ -1,4 +1,4 @@
 package com.capstone.userservice.domain.profile.dto.request;
 
-public class ProfileImageRequestDto {
+public class ProfileImageRequest {
 }

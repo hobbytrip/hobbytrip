@@ -69,8 +69,13 @@ public class User {
         modifiedAt = LocalDateTime.now();
     }
 
-    public void setStatusMessage(String statusMessage, LocalDateTime modifiedAt) {
+    public void setStatusMessage(String statusMessage) {
         this.statusMessage = statusMessage;
-        this.modifiedAt = LocalDateTime.now();
+        preUpdate();
+    }
+
+    public void setNickname(String nickName) {
+        this.nickname = nickName;
+        preUpdate();
     }
 }

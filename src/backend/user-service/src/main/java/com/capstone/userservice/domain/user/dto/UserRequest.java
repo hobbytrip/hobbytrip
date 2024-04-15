@@ -14,7 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserRequestDto {
+public class UserRequest {
     private Long userId;
     private String email;
     private String nickname;

@@ -1,9 +1,9 @@
 package com.capstone.userservice.domain.user.controller;
 
 
-import com.capstone.userservice.domain.user.dto.TokenRequestDto;
-import com.capstone.userservice.domain.user.dto.UserRequestDto;
-import com.capstone.userservice.domain.user.dto.UserResponseDto;
+import com.capstone.userservice.domain.user.dto.TokenRequest;
+import com.capstone.userservice.domain.user.dto.UserRequest;
+import com.capstone.userservice.domain.user.dto.UserResponse;
 import com.capstone.userservice.domain.user.service.AuthService;
 import com.capstone.userservice.global.common.dto.TokenDto;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,25 +21,25 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/signup")
-    public ResponseEntity<UserResponseDto> signup(@RequestBody UserRequestDto userRequestDto) {
-        return ResponseEntity.ok(authService.signup(userRequestDto));
+    public ResponseEntity<UserResponse> signup(@RequestBody UserRequest userRequest) {
+        return ResponseEntity.ok(authService.signup(userRequest));
     }
 
 
     @PostMapping("/login")
-    public ResponseEntity<TokenDto> login(@RequestBody UserRequestDto userRequestDto, HttpServletResponse response) {
-        return ResponseEntity.ok(authService.login(userRequestDto, response));
+    public ResponseEntity<TokenDto> login(@RequestBody UserRequest userRequest, HttpServletResponse response) {
+        return ResponseEntity.ok(authService.login(userRequest, response));
     }
 
     @PostMapping("/reissue")
-    public ResponseEntity<TokenDto> reissue(@RequestBody TokenRequestDto tokenRequestDto,
-                                            UserRequestDto userRequestDto, HttpServletResponse response) {
-        return ResponseEntity.ok(authService.reissue(tokenRequestDto, userRequestDto, response));
+    public ResponseEntity<TokenDto> reissue(@RequestBody TokenRequest tokenRequest,
+                                            UserRequest userRequest, HttpServletResponse response) {
+        return ResponseEntity.ok(authService.reissue(tokenRequest, userRequest, response));
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Boolean> logout(@RequestBody TokenRequestDto tokenRequestDto) {
-        return ResponseEntity.ok(authService.logout(tokenRequestDto));
+    public ResponseEntity<Boolean> logout(@RequestBody TokenRequest tokenRequest) {
+        return ResponseEntity.ok(authService.logout(tokenRequest));
     }
 
     //true 시 로그인 되어있는 상태

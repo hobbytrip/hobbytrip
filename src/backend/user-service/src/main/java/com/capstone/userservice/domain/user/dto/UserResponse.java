@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserResponseDto {
+public class UserResponse {
     private Long userId;
     private String email;
     private String nickname;
@@ -24,9 +24,9 @@ public class UserResponseDto {
     private boolean notificationEnabled;
     private LocalDateTime createdAt;
 
-    public static UserResponseDto of(User user) {
+    public static UserResponse from(User user) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        return UserResponseDto.builder()
+        return UserResponse.builder()
                 .userId(user.getUserId())
                 .email(user.getEmail())
                 .nickname(user.getNickname())

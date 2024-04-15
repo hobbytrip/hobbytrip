@@ -1,6 +1,5 @@
 package com.capstone.userservice.domain.profile.dto.response;
 
-
 import com.capstone.userservice.domain.user.entity.User;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
@@ -13,14 +12,14 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class ProfileStatusMessageResponseDto {
-    private String statusMessage;
+public class ProfileNicknameResponse {
+
+    private String nickName;
     private LocalDateTime modifiedAt;
 
-
-    public static ProfileStatusMessageResponseDto from(User user) {
-        return ProfileStatusMessageResponseDto.builder()
-                .statusMessage(user.getStatusMessage())
+    public static ProfileNicknameResponse from(User user) {
+        return ProfileNicknameResponse.builder()
+                .nickName(user.getNickname())
                 .modifiedAt(user.getModifiedAt())
                 .build();
     }
