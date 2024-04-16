@@ -33,22 +33,24 @@ public class User {
     @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(name = "email", nullable = false, unique = true, length = 50)
     private String email;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, length = 50)
     private String username;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
     private String nickname;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 255)
     private String password;
 
     @Enumerated(EnumType.STRING)
     private Authority authority;
 
+    @Column(length = 255)
     private String statusMessage;
+    @Column(length = 255)
     private String profileImage;
     private Date birthdate;
     private boolean notificationEnabled;
@@ -74,5 +76,9 @@ public class User {
     public void setNickname(String nickName) {
         this.nickname = nickName;
         preUpdate();
+    }
+
+    public void setNotice(Boolean notice) {
+        this.notificationEnabled = notice;
     }
 }

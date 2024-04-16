@@ -2,8 +2,10 @@ package com.capstone.userservice.domain.profile.controller;
 
 
 import com.capstone.userservice.domain.profile.dto.request.ProfileNicknameRequest;
+import com.capstone.userservice.domain.profile.dto.request.ProfileNoticeRequest;
 import com.capstone.userservice.domain.profile.dto.request.ProfileStatusMessageRequest;
 import com.capstone.userservice.domain.profile.dto.response.ProfileNicknameResponse;
+import com.capstone.userservice.domain.profile.dto.response.ProfileNoticeResponse;
 import com.capstone.userservice.domain.profile.dto.response.ProfileResponse;
 import com.capstone.userservice.domain.profile.dto.response.ProfileStatusMessageResponse;
 import com.capstone.userservice.domain.profile.service.ProfileService;
@@ -50,5 +52,14 @@ public class ProfileController {
         Long userId = tokenUtil.getUserId(token);
 
         return ResponseEntity.ok(profileService.nickNameModify(requestDto, userId));
+    }
+
+    @PatchMapping("/notice")
+    public ResponseEntity<ProfileNoticeResponse> noticeUpdate(
+            @RequestBody ProfileNoticeRequest requestDto, HttpServletRequest request) {
+        String token = request.getHeader(Header);
+        Long userId = tokenUtil.getUserId(token);
+
+        return ResponseEntity.ok(profileService.noticeModify(requestDto, userId));
     }
 }

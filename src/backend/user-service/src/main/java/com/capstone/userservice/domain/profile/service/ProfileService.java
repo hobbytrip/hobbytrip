@@ -2,8 +2,10 @@ package com.capstone.userservice.domain.profile.service;
 
 
 import com.capstone.userservice.domain.profile.dto.request.ProfileNicknameRequest;
+import com.capstone.userservice.domain.profile.dto.request.ProfileNoticeRequest;
 import com.capstone.userservice.domain.profile.dto.request.ProfileStatusMessageRequest;
 import com.capstone.userservice.domain.profile.dto.response.ProfileNicknameResponse;
+import com.capstone.userservice.domain.profile.dto.response.ProfileNoticeResponse;
 import com.capstone.userservice.domain.profile.dto.response.ProfileResponse;
 import com.capstone.userservice.domain.profile.dto.response.ProfileStatusMessageResponse;
 import com.capstone.userservice.domain.profile.exception.ProfileException;
@@ -44,6 +46,13 @@ public class ProfileService {
         userInfo.setNickname(request.getNickname());
         return ProfileNicknameResponse.from(profileRepository.save(userInfo));
 
+    }
+
+    @Transactional
+    public ProfileNoticeResponse noticeModify(ProfileNoticeRequest request, Long userId) {
+        User userInfo = validateInProfile(userId);
+        userInfo.setNotice(request.isNotice());
+        return ProfileNoticeResponse.from(profileRepository.save(userInfo));
     }
 
     public User validateInProfile(Long userId) {
