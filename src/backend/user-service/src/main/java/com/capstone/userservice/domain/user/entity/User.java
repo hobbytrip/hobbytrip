@@ -33,28 +33,27 @@ public class User {
     @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(name = "email", nullable = false, unique = true, length = 50)
     private String email;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, length = 50)
     private String username;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
     private String nickname;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 255)
     private String password;
-
-    @Column(length = 11)
-    private String phone;
 
     @Enumerated(EnumType.STRING)
     private Authority authority;
 
+    @Column(length = 255)
     private String statusMessage;
+    @Column(length = 255)
     private String profileImage;
     private Date birthdate;
-    private boolean notificationEnabled;
+    private Boolean notificationEnabled;
     protected LocalDateTime createdAt;
     protected LocalDateTime modifiedAt;
 
@@ -67,5 +66,20 @@ public class User {
     @PreUpdate
     public void preUpdate() {
         modifiedAt = LocalDateTime.now();
+    }
+
+    public void setStatusMessage(String statusMessage) {
+        this.statusMessage = statusMessage;
+        preUpdate();
+    }
+
+    public void setNickname(String nickName) {
+        this.nickname = nickName;
+        preUpdate();
+    }
+
+    public void setNotice(Boolean notice) {
+        this.notificationEnabled = notice;
+        preUpdate();
     }
 }

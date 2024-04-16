@@ -29,15 +29,18 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
 
     //database
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    
+
     implementation 'mysql:mysql-connector-java:8.0.29'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-redis'
     runtimeOnly 'mysql:mysql-connector-java'
     runtimeOnly 'com.mysql:mysql-connector-j'
 
     // Spring Security
     implementation 'org.springframework.boot:spring-boot-starter-security'
+
 
     // JWT
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'

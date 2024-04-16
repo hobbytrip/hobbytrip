@@ -1,5 +1,4 @@
-package com.capstone.userservice.global.entity;
-
+package com.capstone.userservice.global.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

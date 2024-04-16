@@ -1,7 +1,7 @@
 package com.capstone.userservice.global.util;
 
 
-import com.capstone.userservice.domain.user.dto.UserRequestDto;
+import com.capstone.userservice.domain.user.dto.UserRequest;
 import com.capstone.userservice.global.common.dto.TokenDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -11,6 +11,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletResponse;
 import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,17 +36,20 @@ public class TokenUtil {
     private final Key key;
     private final long accessTokenExpTime;
     private final long refreshTokenExpTime;
+    private final String jwtHeader;
 
     public TokenUtil(@Value("${jwt.secret}") String secretKey,
                      @Value("${jwt.access_token_expiration_time}") long accessTokenExpTime,
-                     @Value("${jwt.refresh_token_expiration_time}") long refreshTokenExpTime) {
+                     @Value("${jwt.refresh_token_expiration_time}") long refreshTokenExpTime,
+                     @Value("jwt.header") String jwtHeader) {
         byte[] keyBytes = Decoders.BASE64URL.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
         this.accessTokenExpTime = accessTokenExpTime;
         this.refreshTokenExpTime = refreshTokenExpTime;
+        this.jwtHeader = jwtHeader;
     }
 
-    public TokenDto generateToken(UserRequestDto user, Authentication authentication) {
+    public TokenDto generateToken(UserRequest user, Authentication authentication) {
 
         // Authentication 객체에서 userDetails 추출
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -150,6 +154,15 @@ public class TokenUtil {
     public String getEmail(String token) {
         Claims claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
         return claims.get(USER_EMAIL, String.class);
+    }
+
+    public Long getUserId(String token) {
+        Long userId = Long.valueOf(Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody().getSubject());
+        return userId;
+    }
+
+    public void setHeaderAccessToken(HttpServletResponse response, String accessToken) {
+        response.setHeader(jwtHeader, accessToken);
     }
 }
 

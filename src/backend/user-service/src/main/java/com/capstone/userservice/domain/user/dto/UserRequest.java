@@ -4,6 +4,7 @@ package com.capstone.userservice.domain.user.dto;
 import com.capstone.userservice.domain.user.entity.Authority;
 import com.capstone.userservice.domain.user.entity.User;
 import java.util.Date;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,8 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
-public class UserRequestDto {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class UserRequest {
     private Long userId;
     private String email;
     private String nickname;
@@ -21,7 +22,7 @@ public class UserRequestDto {
     private Date birthdate;
     private Date createdAt;
     private String password;
-    private boolean notificationEnabled;
+    private Boolean notificationEnabled;
 
     public User toUser(PasswordEncoder passwordEncoder) {
         return User.builder()
