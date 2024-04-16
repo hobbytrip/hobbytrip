@@ -12,4 +12,7 @@ public interface EmojiRepository extends MongoRepository<Emoji, Long> {
 
     @Query("{'directMessageId': {$in: ?0}}")
     List<Emoji> findEmojisByDirectMessageIds(List<Long> messageIds);
+
+    @Query("{'forumMessageId': {$in: ?0}}")
+    List<Emoji> findEmojisByForumMessageIds(List<Long> messageIds);
 }

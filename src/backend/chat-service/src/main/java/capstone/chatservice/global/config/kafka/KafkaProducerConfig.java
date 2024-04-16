@@ -2,6 +2,7 @@ package capstone.chatservice.global.config.kafka;
 
 import capstone.chatservice.domain.dm.dto.DirectMessageDto;
 import capstone.chatservice.domain.emoji.dto.EmojiDto;
+import capstone.chatservice.domain.forum.dto.ForumMessageDto;
 import capstone.chatservice.domain.server.dto.ServerMessageDto;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,6 +35,7 @@ public class KafkaProducerConfig {
         return config;
     }
 
+    @Bean
     public ProducerFactory<String, ServerMessageDto> serverChatProducerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfig());
     }
@@ -53,6 +55,7 @@ public class KafkaProducerConfig {
         return new KafkaTemplate<>(directChatProducerFactory());
     }
 
+    @Bean
     public ProducerFactory<String, EmojiDto> emojiChatProducerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfig());
     }
@@ -60,5 +63,15 @@ public class KafkaProducerConfig {
     @Bean
     public KafkaTemplate<String, EmojiDto> emojiChatKafkaTemplate() {
         return new KafkaTemplate<>(emojiChatProducerFactory());
+    }
+
+    @Bean
+    public ProducerFactory<String, ForumMessageDto> forumChatProducerFactory() {
+        return new DefaultKafkaProducerFactory<>(producerConfig());
+    }
+
+    @Bean
+    public KafkaTemplate<String, ForumMessageDto> forumChatKafkaTemplate() {
+        return new KafkaTemplate<>(forumChatProducerFactory());
     }
 }
