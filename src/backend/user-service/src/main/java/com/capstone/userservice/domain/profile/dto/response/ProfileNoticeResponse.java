@@ -15,12 +15,12 @@ import lombok.NoArgsConstructor;
 public class ProfileNoticeResponse {
 
     private Long userId;
-    private boolean notice;
+    private Boolean notice;
 
     public static ProfileNoticeResponse from(User user) {
         return ProfileNoticeResponse.builder()
                 .userId(user.getUserId())
-                .notice(user.isNotificationEnabled())
+                .notice(user.getNotificationEnabled())
                 .build();
     }
 }

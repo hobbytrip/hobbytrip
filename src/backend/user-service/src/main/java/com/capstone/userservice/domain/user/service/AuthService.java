@@ -10,7 +10,6 @@ import com.capstone.userservice.global.util.TokenUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final TokenUtil tokenUtil;
     private final RefreshTokenRepository refreshTokenRepository;
 

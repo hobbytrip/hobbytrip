@@ -21,7 +21,7 @@ public class UserResponse {
     private String nickname;
     private String name;
     private String birthdate;
-    private boolean notificationEnabled;
+    private Boolean notificationEnabled;
     private LocalDateTime createdAt;
 
     public static UserResponse from(User user) {
@@ -34,7 +34,7 @@ public class UserResponse {
                 // Date를 String으로 변환
                 .birthdate(user.getBirthdate() != null ? formatter.format(
                         user.getBirthdate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()) : null)
-                .notificationEnabled(user.isNotificationEnabled())
+                .notificationEnabled(user.getNotificationEnabled())
                 .createdAt(user.getCreatedAt())
                 .build();
     }

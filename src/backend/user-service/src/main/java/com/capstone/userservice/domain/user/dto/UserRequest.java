@@ -22,7 +22,7 @@ public class UserRequest {
     private Date birthdate;
     private Date createdAt;
     private String password;
-    private boolean notificationEnabled;
+    private Boolean notificationEnabled;
 
     public User toUser(PasswordEncoder passwordEncoder) {
         return User.builder()

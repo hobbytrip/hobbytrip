@@ -53,7 +53,7 @@ public class User {
     @Column(length = 255)
     private String profileImage;
     private Date birthdate;
-    private boolean notificationEnabled;
+    private Boolean notificationEnabled;
     protected LocalDateTime createdAt;
     protected LocalDateTime modifiedAt;
 
