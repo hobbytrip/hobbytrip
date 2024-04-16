@@ -20,7 +20,6 @@ public class ProfileResponse {
     private String nickname;
     private String email;
     private String profileImage;
-    private String phone;
     private String statusMessage;
     private LocalDateTime modifiedAt;
 
@@ -31,7 +30,6 @@ public class ProfileResponse {
                 .nickname(user.getNickname())
                 .email(user.getEmail())
                 .profileImage(user.getProfileImage())
-                .phone(user.getPhone())
                 .statusMessage(user.getStatusMessage())
                 .modifiedAt(user.getModifiedAt())
                 .build();

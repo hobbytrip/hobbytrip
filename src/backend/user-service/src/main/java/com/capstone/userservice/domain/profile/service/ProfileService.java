@@ -46,7 +46,6 @@ public class ProfileService {
 
     }
 
-
     public User validateInProfile(Long userId) {
         return profileRepository.findById(userId)
                 .orElseThrow(() -> new ProfileException(Code.NOT_FOUND,

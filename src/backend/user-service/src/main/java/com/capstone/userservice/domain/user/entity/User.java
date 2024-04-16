@@ -45,9 +45,6 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @Column(length = 11)
-    private String phone;
-
     @Enumerated(EnumType.STRING)
     private Authority authority;
 
