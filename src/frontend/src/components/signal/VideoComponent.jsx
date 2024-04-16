@@ -1,63 +1,43 @@
-let stream;
-
-async function getStream(){
-    stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: true
-    })
-}
-
-useEffect(() => {
-    getStream();
-}, [])
-
 const CameraBtn = () => {
     const onClick = () => {
-        setCamera(!camera);
-        stream.getVideoTracks().forEach(track => {
-            track.enabled = !camera;
-        });
     }
     return(
         <>
-        { camera ? (
-            <button onClick={onClick}> Camera Off </button>
-        ) : (
-            <button onClick={onClick}> Camera On </button>
-        )}
+        <button >
+            <img src='../../../src/assets/media/startCamera.png' />
+        </button>
         </>
     )
 }
 
 const MiceBtn = () => {
     const onClick = () => {
-        setMice(!mice);
-        stream.getAudioTracks().forEach(track => {
-            track.enabled = !mice;
-        });
     }
     return(
         <>
-        { mice ? (
+        {/* { mice ? (
             <button onClick={onClick}> Mice Off </button>
         ) : (
             <button onClick={onClick}> Mice On </button>
-        )}
+        )} */}
+        <button>
+            <img src='../../../src/assets/media/startMice.png' />
+        </button>
         </>
     )
 }
     
-const VideoComponent = () =>{
-    return(
-        <>
-        <openvidu-webcomponent style="display: none"/> 
-        <video autoPlay />
-        <div>
-            <CameraBtn />
-            <MiceBtn />
-        </div>
-        </>
-    )
-}
+// const VideoComponent = () =>{
+//     return(
+//         <>
+//         <openvidu-webcomponent style="display: none"/> 
+//         <video autoPlay />
+//         <div>
+//             <CameraBtn />
+//             <MiceBtn />
+//         </div>
+//         </>
+//     )
+// }
 
-export default VideoComponent;
+export default { MiceBtn, CameraBtn };

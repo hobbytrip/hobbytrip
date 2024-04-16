@@ -8,7 +8,7 @@ function App() {
       <Routes>
         {/* <Route path="/" element={<StartView />} /> */}
         {/* <Route path="/login" element={<Login />} /> */}
-        <Route path="/videocall" element={<MediaView />}/>
+        <Route path="/vid" element={<MediaView />}/>
       </Routes>
     </Router>
   );
