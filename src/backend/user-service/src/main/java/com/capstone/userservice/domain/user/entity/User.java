@@ -80,5 +80,6 @@ public class User {
 
     public void setNotice(Boolean notice) {
         this.notificationEnabled = notice;
+        preUpdate();
     }
 }

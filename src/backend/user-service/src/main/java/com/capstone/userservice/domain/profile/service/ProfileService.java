@@ -51,7 +51,7 @@ public class ProfileService {
     @Transactional
     public ProfileNoticeResponse noticeModify(ProfileNoticeRequest request, Long userId) {
         User userInfo = validateInProfile(userId);
-        userInfo.setNotice(request.isNotice());
+        userInfo.setNotice(request.getNotice());
         return ProfileNoticeResponse.from(profileRepository.save(userInfo));
     }
 
