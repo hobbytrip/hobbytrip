@@ -13,7 +13,7 @@ const useAuthStore = create((set, get) => {
 
     login: async (email, password) => {
       try {
-        const response = await axios.post("http://localhost:3001/login", {
+        const response = await axios.post("/login", {
           email,
           password,
         });
@@ -38,11 +38,17 @@ const useAuthStore = create((set, get) => {
       }
     },
 
-    logout: () => {
-      removeCookie("accessToken", { path: "/" });
-      removeCookie("refreshToken", { path: "/" });
-      set({ accessToken: undefined, refreshToken: undefined });
-      console.log("로그아웃 완료");
+    logout: async (accessToken, refreshToken) => {
+      const response = await axios.post("/logout", {
+        accessToken,
+        refreshToken,
+      });
+      if (response.data == true) {
+        removeCookie("accessToken", { path: "/" });
+        removeCookie("refreshToken", { path: "/" });
+        set({ accessToken: undefined, refreshToken: undefined });
+        console.log("로그아웃 완료");
+      }
     },
   };
 });

@@ -80,3 +80,16 @@ a {
   font-size: 12px;
   color: var(--main-purple);
 }
+a2 {
+  font-size: 12px;
+  color: var(--mid-gray);
+}
+button {
+  border-style: none;
+  font-family: "Pretendard";
+}
+input {
+  border-style: none;
+  outline: none;
+  font-family: "Pretendard";
+}

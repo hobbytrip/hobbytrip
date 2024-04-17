@@ -1,53 +1,14 @@
 {
-  "users": [
-    {
-      "id": 1,
-      "email": "1234@gmail.com",
-      "username": "1234",
-      "nickname": "5678",
-      "password": "1234",
-      "birthdate": "2001-03-22",
-      "notificationEnabled": true
-    },
-    {
-      "email": "12345@gmailcom",
-      "username": "12345",
-      "nickname": "12345",
-      "password": "12345",
-      "birthdate": "2001-04-21",
-      "notificationEnabled": true,
-      "id": 2
-    },
-    {
-      "email": "123456@gmail.com",
-      "username": "123456",
-      "nickname": "123456",
-      "password": "123456",
-      "birthdate": "2000-04-21",
-      "notificationEnabled": true,
-      "id": 3
-    }
-  ],
-  "login": [
-    {
-      "email": "1234@gmail.com",
-      "password": "1234"
-    },
-    {
-      "email": "12345@gmailcom",
-      "password": "12345"
-    }
-  ],
   "profile": [
     {
       "id": "사용자 ID",
       "name": "사용자명",
       "nickname": "별명",
       "email": "이메일@example.com",
-      "profileImage": "프로필 이미지 경로",
-      "phone": "010-1234-2123",
+      "profileImage": "/image/default-logo.png",
       "statusMessage": "상태 메시지",
-      "modifiedAt": "2023-03-29T15:00:00Z"
+      "modifiedAt": "2023-03-29T15:00:00Z",
+      "notificationEnabled": true
     }
   ]
 }

@@ -38,10 +38,9 @@ function RegForm() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await axios.post("http://localhost:3001/users", form);
+      const response = await axios.post("/users", form);
       setUserInfo({
         ...response.data,
-        profileImage: default_img,
       });
       console.log("회원가입 성공:", response.data);
       navigate("/login");
