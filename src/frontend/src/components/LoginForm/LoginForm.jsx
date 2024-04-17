@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import s from "./LoginForm.module.css";
+import useAuthStore from "../../actions/useAuthStore";
 
 function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
+  const { login } = useAuthStore();
   const navigate = useNavigate();
 
   const handleInput = (e) => {

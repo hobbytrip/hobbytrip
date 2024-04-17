@@ -35,19 +35,25 @@ const useAuthStore = create((set, get) => {
         }
       } catch (error) {
         console.error("로그인 실패", error);
+        throw error;
       }
     },
 
-    logout: async (accessToken, refreshToken) => {
-      const response = await axios.post("/logout", {
-        accessToken,
-        refreshToken,
-      });
-      if (response.data == true) {
-        removeCookie("accessToken", { path: "/" });
-        removeCookie("refreshToken", { path: "/" });
-        set({ accessToken: undefined, refreshToken: undefined });
-        console.log("로그아웃 완료");
+    logout: async () => {
+      try {
+        const { accessToken, refreshToken } = get();
+        const response = await axios.post("/logout", {
+          accessToken,
+          refreshToken,
+        });
+        if (response.data) {
+          removeCookie("accessToken", { path: "/" });
+          removeCookie("refreshToken", { path: "/" });
+          set({ accessToken: undefined, refreshToken: undefined });
+          console.log("로그아웃 완료");
+        }
+      } catch (error) {
+        console.error("로그아웃 실패", error);
       }
     },
   };
