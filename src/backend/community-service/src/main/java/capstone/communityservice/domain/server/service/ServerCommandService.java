@@ -111,6 +111,9 @@ public class ServerCommandService {
         serverRepository.delete(findServer);
     }
 
+    /**
+     * Server내 자체 Category Repository 사용할지 고민
+     */
     private void categoryAndChannelInit(Server server){
         CategoryResponseDto initChatCategory
                 = categoryCommandService.save(Category.of(server, "채팅 채널"));
@@ -120,7 +123,7 @@ public class ServerCommandService {
         channelRepository.save(
                 Channel.of(
                         server,
-                        initChatCategory.getId(),
+                        initChatCategory.getCategoryId(),
                         ChannelType.CHAT,
                         "일반")
         );
@@ -128,7 +131,7 @@ public class ServerCommandService {
         channelRepository.save(
                 Channel.of(
                         server,
-                        initVoiceCategory.getId(),
+                        initVoiceCategory.getCategoryId(),
                         ChannelType.VOICE,
                         "일반")
         );

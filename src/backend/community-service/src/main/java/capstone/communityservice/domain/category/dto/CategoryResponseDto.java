@@ -13,14 +13,14 @@ import lombok.*;
 public class CategoryResponseDto {
 
     @NotNull
-    private Long id;
+    private Long categoryId;
 
     @NotNull
     private String name;
 
     public static CategoryResponseDto of(Category category){
         return CategoryResponseDto.builder()
-                .id(category.getId())
+                .categoryId(category.getId())
                 .name(category.getName())
                 .build();
     }

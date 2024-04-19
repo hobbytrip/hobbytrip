@@ -14,11 +14,30 @@ import java.util.Map;
 @Configuration
 public class KafkaTopicConfig {
 
+    /*
+          community-server-event: "communityServerEvent"
+      community-dm-event: "communityDmEvent"
+      community-channel-event: "communityChannelEvent"
+      community-category-event: "communityCategoryEvent"
+      community-forum-event: "communityForumEvent"
+     */
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapAddress;
 
-    @Value("${spring.kafka.topic.community-chat}")
-    private String topicCommunityChat;
+    @Value("${spring.kafka.topic.community-server-event}")
+    private String communityServerEventTopic;
+
+    @Value("${spring.kafka.topic.community-dm-event}")
+    private String communityDmEventTopic;
+
+    @Value("${spring.kafka.topic.community-channel-event}")
+    private String communityChannelEventTopic;
+
+    @Value("${spring.kafka.topic.community-category-event}")
+    private String communityCategoryEventTopic;
+
+    @Value("${spring.kafka.topic.community-forum-event}")
+    private String communityForumEventTopic;
 
     @Bean
     public KafkaAdmin kafkaAdmin(){
@@ -28,8 +47,40 @@ public class KafkaTopicConfig {
     }
 
     @Bean
-    public NewTopic serverChatTopic() {
-        return TopicBuilder.name(topicCommunityChat)
+    public NewTopic communityServerEventTopic() {
+        return TopicBuilder.name(communityServerEventTopic)
+                .partitions(1)
+                .replicas(1)
+                .build();
+    }
+
+    @Bean
+    public NewTopic communityDmEventTopic() {
+        return TopicBuilder.name(communityDmEventTopic)
+                .partitions(1)
+                .replicas(1)
+                .build();
+    }
+
+    @Bean
+    public NewTopic communityChannelEventTopic() {
+        return TopicBuilder.name(communityChannelEventTopic)
+                .partitions(1)
+                .replicas(1)
+                .build();
+    }
+
+    @Bean
+    public NewTopic communityCategoryEventTopic() {
+        return TopicBuilder.name(communityCategoryEventTopic)
+                .partitions(1)
+                .replicas(1)
+                .build();
+    }
+
+    @Bean
+    public NewTopic communityForumEventTopic() {
+        return TopicBuilder.name(communityForumEventTopic)
                 .partitions(1)
                 .replicas(1)
                 .build();

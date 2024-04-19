@@ -1,29 +1,27 @@
-package capstone.communityservice.domain.channel.dto;
+package capstone.communityservice.global.common.dto.kafka;
 
-import capstone.communityservice.domain.category.dto.CategoryResponseDto;
 import capstone.communityservice.domain.channel.entity.Channel;
 import capstone.communityservice.domain.channel.entity.ChannelType;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
-public class ChannelResponseDto {
-    @NotNull
+public class CommunityChannelEventDto {
+
+    private String type;
+
     private Long channelId;
 
     private Long categoryId;
 
-    @NotNull
     private ChannelType channelType;
 
-    @NotBlank
     private String name;
 
-    public static ChannelResponseDto of(Channel channel){
-        return ChannelResponseDto.builder()
+    public static CommunityChannelEventDto of(String type, Channel channel){
+        return CommunityChannelEventDto.builder()
+                .type(type)
                 .channelId(channel.getId())
                 .categoryId(channel.getCategoryId())
                 .channelType(channel.getChannelType())
