@@ -1,0 +1,64 @@
+.container {
+    color: white;
+    text-align: center;
+    margin-bottom: 7%;
+    /* height: 90%; */
+}
+
+.container h1 {
+    text-align: left; 
+    margin-bottom: 2%;
+}
+
+.myPlanetList {
+    display: flex;
+    justify-content: center;
+    height: 90%;
+}
+
+.planetList {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 70%; 
+    background-color: #000000;
+    opacity: 50%;
+}
+
+.planetList button {
+    border-radius: 50%;
+    border: none;
+    height: auto;
+    width: 150%;
+    margin: 0;
+    overflow: hidden;
+    font-size: larger;
+}
+
+.leftBtn,
+.rightBtn {
+    border: none;
+    background: none;
+    width: 10%;
+    height: 100px;
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    background-color: #000000;
+    opacity: 50%;
+    color: white;
+}
+
+.leftBtn {
+    border-radius: 50% 0 0 50%;
+}
+
+.rightBtn {
+    border-radius: 0 50% 50% 0;
+}
+
+.createPlanet {
+    background-color: var(--dark-gray);
+    color: white;
+    width: 100%;
+}

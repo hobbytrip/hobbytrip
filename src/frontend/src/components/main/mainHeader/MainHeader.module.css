@@ -1,0 +1,59 @@
+.header {
+    text-align: center;
+    padding: 5%;
+}
+
+.container {
+    /* container-type: inner; */
+    display: flex;
+    justify-content: space-between;
+    flex: 1;
+    align-items: center;
+}
+
+.inputForm {
+    width: 70%; 
+    border-radius: 10px 0 0 10px;
+    margin: 0 10% 0 10%;
+    align-items: center;
+}
+
+.inputForm div {
+    display: flex; 
+}
+
+.inputForm input {
+    width: 80%; 
+    border: none;
+    border-radius: 20px 0 0 20px;
+    background-color: #000000;
+    opacity: 50%;
+}
+
+.inputForm button {
+    border-radius: 0 20px 20px 0;
+    border: none;
+    width: 20%; 
+    background-color: #000000;
+    opacity: 50%;
+}
+
+.inputForm img {
+    width: 30%;
+    height: auto;
+    margin: 5%;
+    /* align-items: right; */
+}
+
+.menuBtn {
+    border: none;
+    border-radius: 10px;
+    width: 3%;  
+    background-color: #000000;
+    opacity: 50%; 
+    flex: 1; 
+}
+
+.menuBtn img {
+    width: 60%;
+}
