@@ -6,10 +6,11 @@ import com.capstone.userservice.domain.user.dto.UserDeleteRequest;
 import com.capstone.userservice.domain.user.dto.UserRequest;
 import com.capstone.userservice.domain.user.dto.UserResponse;
 import com.capstone.userservice.domain.user.service.UserService;
+import com.capstone.userservice.global.common.dto.DataResponseDto;
 import com.capstone.userservice.global.common.dto.TokenDto;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,22 +23,26 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<UserResponse> signup(@RequestBody UserRequest userRequest) {
-        return ResponseEntity.ok(userService.signup(userRequest));
+    public DataResponseDto<Object> signup(@Valid @RequestBody UserRequest userRequest) {
+        UserResponse response = userService.signup(userRequest);
+        return DataResponseDto.of(response);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenDto> login(@RequestBody UserRequest userRequest, HttpServletResponse response) {
-        return ResponseEntity.ok(userService.login(userRequest, response));
+    public DataResponseDto<TokenDto> login(@Valid @RequestBody UserRequest userRequest, HttpServletResponse response) {
+        TokenDto tokenDto = userService.login(userRequest, response);
+        return DataResponseDto.of(tokenDto);
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Boolean> logout(@RequestBody TokenRequest tokenRequest) {
-        return ResponseEntity.ok(userService.logout(tokenRequest));
+    public DataResponseDto<Object> logout(@Valid @RequestBody TokenRequest tokenRequest) {
+        Boolean response = userService.logout(tokenRequest);
+        return DataResponseDto.of(response);
     }
 
     @PostMapping("/delete")
-    public ResponseEntity<Boolean> delete(@RequestBody UserDeleteRequest request) {
-        return ResponseEntity.ok(userService.deleteUser(request));
+    public DataResponseDto<Object> delete(@Valid @RequestBody UserDeleteRequest request) {
+        Boolean response = userService.deleteUser(request);
+        return DataResponseDto.of(response);
     }
 }

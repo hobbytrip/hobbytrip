@@ -9,8 +9,10 @@ import com.capstone.userservice.domain.profile.dto.response.ProfileNoticeRespons
 import com.capstone.userservice.domain.profile.dto.response.ProfileResponse;
 import com.capstone.userservice.domain.profile.dto.response.ProfileStatusMessageResponse;
 import com.capstone.userservice.domain.profile.service.ProfileService;
+import com.capstone.userservice.global.common.dto.DataResponseDto;
 import com.capstone.userservice.global.util.TokenUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,29 +39,34 @@ public class ProfileController {
     }
 
     @PatchMapping("/statusMessage")
-    public ResponseEntity<ProfileStatusMessageResponse> messageUpdate(
-            @RequestBody ProfileStatusMessageRequest requestDto, HttpServletRequest request) {
+    public DataResponseDto<Object> messageUpdate(@RequestBody ProfileStatusMessageRequest requestDto,
+                                                 HttpServletRequest request) {
         String token = request.getHeader(Header);
         Long userId = tokenUtil.getUserId(token);
 
-        return ResponseEntity.ok(profileService.statusMessageModify(requestDto, userId));
+        ProfileStatusMessageResponse response = profileService.statusMessageModify(requestDto, userId);
+
+        return DataResponseDto.of(response);
     }
 
     @PatchMapping("/nickname")
-    public ResponseEntity<ProfileNicknameResponse> nickNameUpdate(
-            @RequestBody ProfileNicknameRequest requestDto, HttpServletRequest request) {
+    public DataResponseDto<Object> nickNameUpdate(@Valid @RequestBody ProfileNicknameRequest requestDto,
+                                                  HttpServletRequest request) {
         String token = request.getHeader(Header);
         Long userId = tokenUtil.getUserId(token);
 
-        return ResponseEntity.ok(profileService.nickNameModify(requestDto, userId));
+        ProfileNicknameResponse response = profileService.nickNameModify(requestDto, userId);
+
+        return DataResponseDto.of(response);
     }
 
     @PatchMapping("/notice")
-    public ResponseEntity<ProfileNoticeResponse> noticeUpdate(
+    public DataResponseDto<Object> noticeUpdate(
             @RequestBody ProfileNoticeRequest requestDto, HttpServletRequest request) {
         String token = request.getHeader(Header);
         Long userId = tokenUtil.getUserId(token);
 
-        return ResponseEntity.ok(profileService.noticeModify(requestDto, userId));
+        ProfileNoticeResponse response = profileService.noticeModify(requestDto, userId);
+        return DataResponseDto.of(response);
     }
 }
