@@ -10,13 +10,16 @@ public class CommunityCategoryEventDto {
 
     private String type;
 
+    private Long serverId;
+
     private Long categoryId;
 
     private String name;
 
-    public static CommunityCategoryEventDto of(String type, Category category){
+    public static CommunityCategoryEventDto of(String type, Category category, Long serverId){
         return CommunityCategoryEventDto.builder()
                 .type(type)
+                .serverId(serverId)
                 .categoryId(category.getId())
                 .name(category.getName())
                 .build();

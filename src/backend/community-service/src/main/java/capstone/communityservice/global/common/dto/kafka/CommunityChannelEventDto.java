@@ -11,6 +11,8 @@ public class CommunityChannelEventDto {
 
     private String type;
 
+    private Long serverId;
+
     private Long channelId;
 
     private Long categoryId;
@@ -19,9 +21,10 @@ public class CommunityChannelEventDto {
 
     private String name;
 
-    public static CommunityChannelEventDto of(String type, Channel channel){
+    public static CommunityChannelEventDto of(String type, Channel channel, Long serverId){
         return CommunityChannelEventDto.builder()
                 .type(type)
+                .serverId(serverId)
                 .channelId(channel.getId())
                 .categoryId(channel.getCategoryId())
                 .channelType(channel.getChannelType())

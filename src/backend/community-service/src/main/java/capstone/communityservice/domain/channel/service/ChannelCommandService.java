@@ -13,9 +13,12 @@ import capstone.communityservice.domain.server.entity.Server;
 import capstone.communityservice.domain.server.exception.ServerException;
 import capstone.communityservice.domain.server.repository.ServerRepository;
 import capstone.communityservice.domain.server.service.ServerQueryService;
+import capstone.communityservice.global.common.dto.kafka.CommunityChannelEventDto;
+import capstone.communityservice.global.common.dto.kafka.CommunityDmEventDto;
 import capstone.communityservice.global.exception.Code;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +27,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class ChannelCommandService {
+    private static final String channelKafkaTopic = "communityChannelEventTopic";
+
+    private final KafkaTemplate<String, CommunityChannelEventDto> channelKafkaTemplate;
+
     private final ServerQueryService serverQueryService;
 
     private final ChannelRepository channelRepository;
@@ -37,6 +44,8 @@ public class ChannelCommandService {
 
         Channel newChannel = channelRepository.save(createChannel(findServer, requestDto));
 
+        channelKafkaTemplate.send(channelKafkaTopic, CommunityChannelEventDto.of("channel-create", newChannel, findServer.getId()));
+
         return ChannelResponseDto.of(newChannel);
     }
 
@@ -48,6 +57,8 @@ public class ChannelCommandService {
 
         findChannel.modifyChannel(requestDto.getCategoryId(), requestDto.getName());
 
+        channelKafkaTemplate.send(channelKafkaTopic, CommunityChannelEventDto.of("channel-update", findChannel, requestDto.getServerId()));
+
         return ChannelResponseDto.of(findChannel);
     }
 
@@ -55,6 +66,8 @@ public class ChannelCommandService {
         validateManagerInChannel(requestDto.getServerId(), requestDto.getUserId());
 
         Channel findChannel = validateChannel(requestDto.getChannelId());
+
+        channelKafkaTemplate.send(channelKafkaTopic, CommunityChannelEventDto.of("channel-delete", findChannel, requestDto.getServerId()));
 
         channelRepository.delete(findChannel);
     }
