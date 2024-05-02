@@ -1,15 +1,12 @@
-package capstone.chatservice.domain.dm.service;
+package capstone.chatservice.domain.dm.service.query.impl;
 
 import capstone.chatservice.domain.dm.domain.DirectMessage;
 import capstone.chatservice.domain.dm.dto.DirectMessageDto;
-import capstone.chatservice.domain.dm.dto.request.DirectMessageCreateRequest;
-import capstone.chatservice.domain.dm.dto.request.DirectMessageDeleteRequest;
-import capstone.chatservice.domain.dm.dto.request.DirectMessageModifyRequest;
 import capstone.chatservice.domain.dm.repository.DirectMessageRepository;
+import capstone.chatservice.domain.dm.service.query.DirectMessageQueryService;
 import capstone.chatservice.domain.emoji.domain.Emoji;
 import capstone.chatservice.domain.emoji.dto.EmojiDto;
 import capstone.chatservice.domain.emoji.repository.EmojiRepository;
-import capstone.chatservice.global.util.SequenceGenerator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,53 +19,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class DirectMessageService {
+public class DirectMessageQueryServiceImpl implements DirectMessageQueryService {
 
-    private final SequenceGenerator sequenceGenerator;
     private final EmojiRepository emojiRepository;
     private final DirectMessageRepository messageRepository;
 
-    @Transactional
-    public DirectMessageDto save(DirectMessageCreateRequest createRequest) {
-        DirectMessage directMessage = DirectMessage.builder()
-                .dmRoomId(createRequest.getDmRoomId())
-                .parentId(createRequest.getParentId())
-                .userId(createRequest.getUserId())
-                .content(createRequest.getContent())
-                .writer(createRequest.getWriter())
-                .type(createRequest.getType())
-                .profileImage(createRequest.getProfileImage())
-                .build();
-
-        directMessage.generateSequence(sequenceGenerator.generateSequence(DirectMessage.SEQUENCE_NAME));
-
-        return DirectMessageDto.from(messageRepository.save(directMessage));
-    }
-
-    @Transactional
-    public DirectMessageDto modify(DirectMessageModifyRequest modifyRequest) {
-        DirectMessage directMessage = messageRepository.findById(modifyRequest.getMessageId())
-                .orElseThrow(() -> new RuntimeException("no message"));
-
-        directMessage.modify(modifyRequest.getType(), modifyRequest.getContent());
-
-        return DirectMessageDto.from(messageRepository.save(directMessage));
-    }
-
-    @Transactional
-    public DirectMessageDto delete(DirectMessageDeleteRequest deleteRequest) {
-        DirectMessage directMessage = messageRepository.findById(deleteRequest.getMessageId())
-                .orElseThrow(() -> new RuntimeException(" no message"));
-
-        directMessage.delete(deleteRequest.getType());
-
-        return DirectMessageDto.from(messageRepository.save(directMessage));
-    }
-
+    @Override
     public Page<DirectMessageDto> getDirectMessages(Long roomId, int page, int size) {
         Page<DirectMessageDto> messageDtos = messagesToMessageDtos("message", roomId, page, size);
         List<Long> messageIds = getMessageIds(messageDtos);
@@ -83,6 +42,7 @@ public class DirectMessageService {
         return messageDtos;
     }
 
+    @Override
     public Page<DirectMessageDto> getComments(Long parentId, int page, int size) {
         Page<DirectMessageDto> messageDtos = messagesToMessageDtos("comment", parentId, page, size);
         List<Long> messageIds = getMessageIds(messageDtos);
@@ -95,7 +55,7 @@ public class DirectMessageService {
         return messageDtos;
     }
 
-    public Page<DirectMessageDto> messagesToMessageDtos(String type, Long id, int page, int size) {
+    private Page<DirectMessageDto> messagesToMessageDtos(String type, Long id, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         Page<DirectMessage> messages = null;
         if (type.equals("message")) {
@@ -107,7 +67,7 @@ public class DirectMessageService {
         return (messages != null) ? messages.map(DirectMessageDto::from) : Page.empty(pageable);
     }
 
-    public Map<Long, List<EmojiDto>> getEmojisForDirectMessages(List<Long> messageIds) {
+    private Map<Long, List<EmojiDto>> getEmojisForDirectMessages(List<Long> messageIds) {
         List<Emoji> emojis = emojiRepository.findEmojisByDirectMessageIds(messageIds);
         Map<Long, List<EmojiDto>> emojiMap = new HashMap<>();
 
@@ -124,7 +84,7 @@ public class DirectMessageService {
         return emojiMap;
     }
 
-    public Map<Long, Long> getMessageCounts(List<Long> messageIds) {
+    private Map<Long, Long> getMessageCounts(List<Long> messageIds) {
         List<DirectMessage> messages = messageRepository.countMessagesByParentIds(messageIds);
         Map<Long, Long> messageCounts = new HashMap<>();
 
@@ -141,7 +101,7 @@ public class DirectMessageService {
         return messageCounts;
     }
 
-    public List<Long> getMessageIds(Page<DirectMessageDto> messageDtos) {
+    private List<Long> getMessageIds(Page<DirectMessageDto> messageDtos) {
         return messageDtos.getContent().stream()
                 .map(DirectMessageDto::getMessageId)
                 .collect(Collectors.toList());
