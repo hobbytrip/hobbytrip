@@ -23,19 +23,19 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public DataResponseDto<Object> signup(@Valid @RequestBody UserRequest userRequest) {
+    public DataResponseDto<Object> signup(@RequestBody UserRequest userRequest) {
         UserResponse response = userService.signup(userRequest);
         return DataResponseDto.of(response);
     }
 
     @PostMapping("/login")
-    public DataResponseDto<TokenDto> login(@Valid @RequestBody UserRequest userRequest, HttpServletResponse response) {
+    public DataResponseDto<TokenDto> login(@RequestBody UserRequest userRequest, HttpServletResponse response) {
         TokenDto tokenDto = userService.login(userRequest, response);
         return DataResponseDto.of(tokenDto);
     }
 
     @PostMapping("/logout")
-    public DataResponseDto<Object> logout(@Valid @RequestBody TokenRequest tokenRequest) {
+    public DataResponseDto<Object> logout(@RequestBody TokenRequest tokenRequest) {
         Boolean response = userService.logout(tokenRequest);
         return DataResponseDto.of(response);
     }
