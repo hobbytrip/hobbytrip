@@ -32,7 +32,7 @@ public class ServerUserCommandService {
 
         findServerUser.setName(requestDto.getName());
 
-        return ServerUserResponseDto.of(findServerUser);
+        return ServerUserResponseDto.of(findServerUser, requestDto.getServerId(), requestDto.getUserId());
     }
 
     public void delete(ServerUserDeleteRequestDto requestDto) {

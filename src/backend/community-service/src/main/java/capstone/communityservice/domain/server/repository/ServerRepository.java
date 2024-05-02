@@ -10,10 +10,10 @@ import java.util.List;
 
 public interface ServerRepository extends JpaRepository<Server, Long> {
 
-    @Query(value = "select distinct(s.*) " +
+    @Query(value = "select s.* " +
             "from server s " +
             "join server_user su on s.server_id = su.server_id " +
-            "where s.open = true " +
+            "where s.open = true and su.deleted = false " +
             "group by s.server_id " +
             "order by count(su.server_id) desc limit 9",
             nativeQuery = true)
