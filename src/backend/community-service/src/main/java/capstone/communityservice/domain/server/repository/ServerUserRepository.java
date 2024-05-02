@@ -11,10 +11,11 @@ import java.util.Optional;
 public interface ServerUserRepository extends JpaRepository<ServerUser, Long> {
 
     @Query("select su.server from ServerUser su where su.server.id =:serverId and su.user.id =:userId")
-    public Optional<Server> validateServerUser(Long serverId, Long userId);
+    Optional<Server> validateServerUser(Long serverId, Long userId);
 
     @Query("select su from ServerUser su join fetch su.user where su.server.id =:serverId and su.user.id =:userId")
     Optional<ServerUser> findByServerIdAndUserId(Long serverId, Long userId);
+
 
 //    @Query("select s from ServerUser su join fetch su.user u join fetch su.server s where u.id =: userId")
 //    public List<Server> findServerUserByUser(Long userId);

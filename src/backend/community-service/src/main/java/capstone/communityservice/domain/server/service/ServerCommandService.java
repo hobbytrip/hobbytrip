@@ -15,12 +15,15 @@ import capstone.communityservice.domain.server.repository.ServerRepository;
 import capstone.communityservice.domain.server.repository.ServerUserRepository;
 import capstone.communityservice.domain.user.entity.User;
 import capstone.communityservice.domain.user.service.UserQueryService;
+import capstone.communityservice.global.common.dto.kafka.CommunityServerEventDto;
 import capstone.communityservice.global.common.service.FileUploadService;
 import capstone.communityservice.global.common.service.RedisService;
 import capstone.communityservice.global.exception.Code;
 import capstone.communityservice.global.util.RandomUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,17 +37,19 @@ import java.util.Optional;
 public class ServerCommandService {
 
     private static final String INVITE_LINK_PREFIX = "serverId=%d";
+    private static final String serverKafkaTopic = "communityServerEventTopic";
 
-    private final UserQueryService userQueryService;
     private final FileUploadService fileUploadService;
     private final RedisService redisService;
+    private final KafkaTemplate<String, CommunityServerEventDto> serverKafkaTemplate;
 
-    private final ServerRepository serverRepository;
+    private final UserQueryService userQueryService;
     private final ServerUserCommandService serverUserCommandService;
     private final ServerQueryService serverQueryService;
     private final CategoryCommandService categoryCommandService;
     private final ChannelCommandService channelCommandService;
 
+    private final ServerRepository serverRepository;
     private final ServerUserRepository serverUserRepository;
     private final ChannelRepository channelRepository;
 
@@ -100,6 +105,8 @@ public class ServerCommandService {
                 requestDto.getDescription()
         );
 
+        serverKafkaTemplate.send(serverKafkaTopic, CommunityServerEventDto.of("server-update", findServer));
+
         return ServerResponseDto.of(findServer);
     }
 
@@ -107,6 +114,8 @@ public class ServerCommandService {
         Server findServer = serverQueryService.validateExistServer(requestDto.getServerId());
 
         validateManager(findServer.getManagerId(), requestDto.getUserId());
+
+        serverKafkaTemplate.send(serverKafkaTopic, CommunityServerEventDto.of("server-delete", findServer));
 
         serverRepository.delete(findServer);
     }

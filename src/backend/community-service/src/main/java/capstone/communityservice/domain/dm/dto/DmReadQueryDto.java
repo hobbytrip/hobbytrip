@@ -1,26 +1,22 @@
 package capstone.communityservice.domain.dm.dto;
 
 import capstone.communityservice.domain.dm.entity.Dm;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class DmResponseDto {
+public class DmReadQueryDto {
 
-    @NotNull
     private Long dmId;
 
-    @NotBlank
     private String name;
 
     private String profile;
 
-    public static DmResponseDto of(Dm dm) {
-        return DmResponseDto.builder()
+    public static DmReadQueryDto of(Dm dm){
+        return DmReadQueryDto.builder()
                 .dmId(dm.getId())
                 .name(dm.getName())
                 .profile(dm.getProfile())
