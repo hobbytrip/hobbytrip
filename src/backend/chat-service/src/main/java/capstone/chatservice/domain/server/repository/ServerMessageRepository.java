@@ -17,6 +17,6 @@ public interface ServerMessageRepository extends MongoRepository<ServerMessage, 
     @Query("{ 'parentId': ?0, 'isDeleted': false }")
     Page<ServerMessage> findByParentIdAndIsDeleted(Long parentId, Pageable pageable);
 
-    @Query(value = "{ 'parentId': { $in: ?0 } }")
-    List<ServerMessage> countMessagesByParentIds(List<Long> parentIds);
+    @Query(value = "{ 'parentId': { $in: ?0 }, 'isDeleted': false }")
+    List<ServerMessage> findCommentCountByParentIdsAndIsDeleted(List<Long> parentIds);
 }

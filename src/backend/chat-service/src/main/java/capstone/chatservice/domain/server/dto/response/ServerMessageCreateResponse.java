@@ -4,14 +4,12 @@ import capstone.chatservice.domain.server.dto.ServerMessageDto;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ServerMessageCreateResponse {
@@ -31,19 +29,20 @@ public class ServerMessageCreateResponse {
     private LocalDateTime createdAt;
 
     public static ServerMessageCreateResponse from(ServerMessageDto message) {
-        return ServerMessageCreateResponse.builder()
-                .messageId(message.getMessageId())
-                .serverId(message.getServerId())
-                .channelId(message.getChannelId())
-                .userId(message.getUserId())
-                .parentId(message.getParentId())
-                .profileImage(message.getProfileImage())
-                .type(message.getType())
-                .writer(message.getWriter())
-                .content(message.getContent())
-                .isDeleted(message.isDeleted())
-                .files(message.getFiles())
-                .createdAt(message.getCreatedAt())
-                .build();
+        return new ServerMessageCreateResponse(
+                message.getMessageId(),
+                message.getServerId(),
+                message.getChannelId(),
+                message.getUserId(),
+                message.getParentId(),
+                0L,
+                message.getProfileImage(),
+                message.getType(),
+                message.getWriter(),
+                message.getContent(),
+                message.isDeleted(),
+                message.getFiles(),
+                message.getCreatedAt()
+        );
     }
 }

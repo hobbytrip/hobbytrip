@@ -5,14 +5,12 @@ import capstone.chatservice.domain.emoji.dto.EmojiDto;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class DirectMessageDto {
@@ -33,19 +31,21 @@ public class DirectMessageDto {
     private LocalDateTime modifiedAt;
 
     public static DirectMessageDto from(DirectMessage message) {
-        return DirectMessageDto.builder()
-                .messageId(message.getMessageId())
-                .dmRoomId(message.getDmRoomId())
-                .userId(message.getUserId())
-                .parentId(message.getParentId())
-                .profileImage(message.getProfileImage())
-                .type(message.getType())
-                .writer(message.getWriter())
-                .content(message.getContent())
-                .isDeleted(message.isDeleted())
-                .files(message.getFiles())
-                .createdAt(message.getCreatedAt())
-                .modifiedAt(message.getModifiedAt())
-                .build();
+        return new DirectMessageDto(
+                message.getMessageId(),
+                message.getParentId(),
+                message.getDmRoomId(),
+                message.getUserId(),
+                0L,
+                message.getProfileImage(),
+                message.getType(),
+                message.getWriter(),
+                message.getContent(),
+                message.isDeleted(),
+                message.getFiles(),
+                null,
+                message.getCreatedAt(),
+                message.getModifiedAt()
+        );
     }
 }

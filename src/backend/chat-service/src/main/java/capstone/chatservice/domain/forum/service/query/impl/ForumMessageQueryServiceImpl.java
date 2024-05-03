@@ -1,15 +1,12 @@
-package capstone.chatservice.domain.forum.service;
+package capstone.chatservice.domain.forum.service.query.impl;
 
 import capstone.chatservice.domain.emoji.domain.Emoji;
 import capstone.chatservice.domain.emoji.dto.EmojiDto;
 import capstone.chatservice.domain.emoji.repository.EmojiRepository;
 import capstone.chatservice.domain.forum.domain.ForumMessage;
 import capstone.chatservice.domain.forum.dto.ForumMessageDto;
-import capstone.chatservice.domain.forum.dto.request.ForumMessageCreateRequest;
-import capstone.chatservice.domain.forum.dto.request.ForumMessageDeleteRequest;
-import capstone.chatservice.domain.forum.dto.request.ForumMessageModifyRequest;
 import capstone.chatservice.domain.forum.repository.ForumMessageRepository;
-import capstone.chatservice.global.util.SequenceGenerator;
+import capstone.chatservice.domain.forum.service.query.ForumMessageQueryService;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,69 +19,30 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class ForumMessageService {
+public class ForumMessageQueryServiceImpl implements ForumMessageQueryService {
 
-    private final SequenceGenerator sequenceGenerator;
     private final EmojiRepository emojiRepository;
     private final ForumMessageRepository forumMessageRepository;
 
-    @Transactional
-    public ForumMessageDto save(ForumMessageCreateRequest createRequest) {
-        ForumMessage forumMessage = ForumMessage.builder()
-                .serverId(createRequest.getServerId())
-                .forumId(createRequest.getForumId())
-                .channelId(createRequest.getChannelId())
-                .userId(createRequest.getUserId())
-                .parentId(createRequest.getParentId())
-                .profileImage(createRequest.getProfileImage())
-                .type(createRequest.getType())
-                .content(createRequest.getContent())
-                .writer(createRequest.getWriter())
-                .build();
-
-        forumMessage.generateSequence(sequenceGenerator.generateSequence(ForumMessage.SEQUENCE_NAME));
-
-        return ForumMessageDto.from(forumMessageRepository.save(forumMessage));
-    }
-
-    @Transactional
-    public ForumMessageDto modify(ForumMessageModifyRequest modifyRequest) {
-        ForumMessage forumMessage = forumMessageRepository.findById(modifyRequest.getMessageId())
-                .orElseThrow(() -> new RuntimeException("no message"));
-
-        forumMessage.modify(modifyRequest.getType(), modifyRequest.getContent());
-
-        return ForumMessageDto.from(forumMessageRepository.save(forumMessage));
-    }
-
-    @Transactional
-    public ForumMessageDto delete(ForumMessageDeleteRequest deleteRequest) {
-        ForumMessage forumMessage = forumMessageRepository.findById(deleteRequest.getMessageId())
-                .orElseThrow(() -> new RuntimeException("no message"));
-
-        forumMessage.delete(deleteRequest.getType());
-
-        return ForumMessageDto.from(forumMessageRepository.save(forumMessage));
-    }
-
+    @Override
     public Page<ForumMessageDto> getMessages(Long forumId, int page, int size) {
         Page<ForumMessageDto> messageDtos = messagesToMessageDtos("message", forumId, page, size);
         List<Long> messageIds = getMessageIds(messageDtos);
 
         Map<Long, List<EmojiDto>> emojiMap = getEmojisForMessages(messageIds);
-        Map<Long, Long> messageCounts = getMessageCounts(messageIds);
+        Map<Long, Long> commentCount = getCommentCountForMessages(messageIds);
         for (ForumMessageDto messageDto : messageDtos) {
             messageDto.setEmojis(emojiMap.getOrDefault(messageDto.getMessageId(), Collections.emptyList()));
-            messageDto.setCount(messageCounts.getOrDefault(messageDto.getMessageId(), 0L));
+            messageDto.setCount(commentCount.getOrDefault(messageDto.getMessageId(), 0L));
         }
 
         return messageDtos;
     }
 
+    @Override
     public Page<ForumMessageDto> getComments(Long parentId, int page, int size) {
         Page<ForumMessageDto> messageDtos = messagesToMessageDtos("comment", parentId, page, size);
         List<Long> messageIds = getMessageIds(messageDtos);
@@ -126,9 +84,9 @@ public class ForumMessageService {
         return emojiMap;
     }
 
-    private Map<Long, Long> getMessageCounts(List<Long> messageIds) {
-        List<ForumMessage> messages = forumMessageRepository.countMessagesByParentIds(messageIds);
-        Map<Long, Long> messageCounts = new HashMap<>();
+    private Map<Long, Long> getCommentCountForMessages(List<Long> messageIds) {
+        List<ForumMessage> messages = forumMessageRepository.findCommentCountByParentIdsAndIsDeleted(messageIds);
+        Map<Long, Long> commentCount = new HashMap<>();
 
         for (Long messageId : messageIds) {
             long count = 0L;
@@ -137,10 +95,10 @@ public class ForumMessageService {
                     count += 1;
                 }
             }
-            messageCounts.put(messageId, count);
+            commentCount.put(messageId, count);
         }
 
-        return messageCounts;
+        return commentCount;
     }
 
     private List<Long> getMessageIds(Page<ForumMessageDto> messageDtos) {

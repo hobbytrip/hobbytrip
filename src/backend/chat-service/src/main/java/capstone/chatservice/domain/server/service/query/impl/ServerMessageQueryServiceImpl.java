@@ -1,15 +1,12 @@
-package capstone.chatservice.domain.server.service;
+package capstone.chatservice.domain.server.service.query.impl;
 
 import capstone.chatservice.domain.emoji.domain.Emoji;
 import capstone.chatservice.domain.emoji.dto.EmojiDto;
 import capstone.chatservice.domain.emoji.repository.EmojiRepository;
 import capstone.chatservice.domain.server.domain.ServerMessage;
 import capstone.chatservice.domain.server.dto.ServerMessageDto;
-import capstone.chatservice.domain.server.dto.request.ServerMessageCreateRequest;
-import capstone.chatservice.domain.server.dto.request.ServerMessageDeleteRequest;
-import capstone.chatservice.domain.server.dto.request.ServerMessageModifyRequest;
 import capstone.chatservice.domain.server.repository.ServerMessageRepository;
-import capstone.chatservice.global.util.SequenceGenerator;
+import capstone.chatservice.domain.server.service.query.ServerMessageQueryService;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,75 +14,35 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
-public class ServerMessageService {
+public class ServerMessageQueryServiceImpl implements ServerMessageQueryService {
 
-    private final SequenceGenerator sequenceGenerator;
     private final EmojiRepository emojiRepository;
     private final ServerMessageRepository messageRepository;
 
-    @Transactional
-    public ServerMessageDto save(ServerMessageCreateRequest createRequest) {
-        ServerMessage serverMessage = ServerMessage.builder()
-                .serverId(createRequest.getServerId())
-                .channelId(createRequest.getChannelId())
-                .userId(createRequest.getUserId())
-                .parentId(createRequest.getParentId())
-                .profileImage(createRequest.getProfileImage())
-                .type(createRequest.getType())
-                .content(createRequest.getContent())
-                .writer(createRequest.getWriter())
-                .build();
-
-        serverMessage.generateSequence(sequenceGenerator.generateSequence(ServerMessage.SEQUENCE_NAME));
-
-        return ServerMessageDto.from(messageRepository.save(serverMessage));
-    }
-
-    @Transactional
-    public ServerMessageDto modify(ServerMessageModifyRequest modifyRequest) {
-        ServerMessage serverMessage = messageRepository.findById(modifyRequest.getMessageId())
-                .orElseThrow(() -> new RuntimeException("no message"));
-
-        serverMessage.modify(modifyRequest.getType(), modifyRequest.getContent());
-
-        return ServerMessageDto.from(messageRepository.save(serverMessage));
-    }
-
-    @Transactional
-    public ServerMessageDto delete(ServerMessageDeleteRequest deleteRequest) {
-        ServerMessage serverMessage = messageRepository.findById(deleteRequest.getMessageId())
-                .orElseThrow(() -> new RuntimeException("no message"));
-
-        serverMessage.delete(deleteRequest.getType());
-
-        return ServerMessageDto.from(messageRepository.save(serverMessage));
-    }
-
+    @Override
     public Page<ServerMessageDto> getMessages(Long channelId, int page, int size) {
         Page<ServerMessageDto> messageDtos = messagesToMessageDtos("message", channelId, page, size);
         List<Long> messageIds = getMessageIds(messageDtos);
 
         Map<Long, List<EmojiDto>> emojiMap = getEmojisForMessages(messageIds);
-        Map<Long, Long> messageCounts = getMessageCounts(messageIds);
+        Map<Long, Long> commentCount = getCommentCountForMessages(messageIds);
         for (ServerMessageDto messageDto : messageDtos) {
             messageDto.setEmojis(emojiMap.getOrDefault(messageDto.getMessageId(), Collections.emptyList()));
-            messageDto.setCount(messageCounts.getOrDefault(messageDto.getMessageId(), 0L));
+            messageDto.setCount(commentCount.getOrDefault(messageDto.getMessageId(), 0L));
         }
 
         return messageDtos;
     }
 
+    @Override
     public Page<ServerMessageDto> getComments(Long parentId, int page, int size) {
         Page<ServerMessageDto> messageDtos = messagesToMessageDtos("comment", parentId, page, size);
         List<Long> messageIds = getMessageIds(messageDtos);
@@ -127,9 +84,9 @@ public class ServerMessageService {
         return emojiMap;
     }
 
-    private Map<Long, Long> getMessageCounts(List<Long> messageIds) {
-        List<ServerMessage> messages = messageRepository.countMessagesByParentIds(messageIds);
-        Map<Long, Long> messageCounts = new HashMap<>();
+    private Map<Long, Long> getCommentCountForMessages(List<Long> messageIds) {
+        List<ServerMessage> messages = messageRepository.findCommentCountByParentIdsAndIsDeleted(messageIds);
+        Map<Long, Long> commentCount = new HashMap<>();
 
         for (Long messageId : messageIds) {
             long count = 0L;
@@ -138,10 +95,10 @@ public class ServerMessageService {
                     count += 1;
                 }
             }
-            messageCounts.put(messageId, count);
+            commentCount.put(messageId, count);
         }
 
-        return messageCounts;
+        return commentCount;
     }
 
     private List<Long> getMessageIds(Page<ServerMessageDto> messageDtos) {
