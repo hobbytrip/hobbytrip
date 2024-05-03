@@ -5,14 +5,12 @@ import capstone.chatservice.domain.forum.domain.ForumMessage;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ForumMessageDto {
@@ -35,21 +33,23 @@ public class ForumMessageDto {
     private LocalDateTime modifiedAt;
 
     public static ForumMessageDto from(ForumMessage message) {
-        return ForumMessageDto.builder()
-                .messageId(message.getMessageId())
-                .forumId(message.getForumId())
-                .serverId(message.getServerId())
-                .channelId(message.getChannelId())
-                .userId(message.getUserId())
-                .parentId(message.getParentId())
-                .profileImage(message.getProfileImage())
-                .type(message.getType())
-                .writer(message.getWriter())
-                .content(message.getContent())
-                .isDeleted(message.isDeleted())
-                .files(message.getFiles())
-                .createdAt(message.getCreatedAt())
-                .modifiedAt(message.getModifiedAt())
-                .build();
+        return new ForumMessageDto(
+                message.getMessageId(),
+                message.getForumId(),
+                message.getServerId(),
+                message.getChannelId(),
+                message.getUserId(),
+                message.getParentId(),
+                0L,
+                message.getProfileImage(),
+                message.getType(),
+                message.getWriter(),
+                message.getContent(),
+                message.isDeleted(),
+                message.getFiles(),
+                null,
+                message.getCreatedAt(),
+                message.getModifiedAt()
+        );
     }
 }
