@@ -33,10 +33,10 @@ public class ServerMessageQueryServiceImpl implements ServerMessageQueryService 
         List<Long> messageIds = getMessageIds(messageDtos);
 
         Map<Long, List<EmojiDto>> emojiMap = getEmojisForMessages(messageIds);
-        Map<Long, Long> messageCounts = getMessageCounts(messageIds);
+        Map<Long, Long> commentCount = getCommentCountForMessages(messageIds);
         for (ServerMessageDto messageDto : messageDtos) {
             messageDto.setEmojis(emojiMap.getOrDefault(messageDto.getMessageId(), Collections.emptyList()));
-            messageDto.setCount(messageCounts.getOrDefault(messageDto.getMessageId(), 0L));
+            messageDto.setCount(commentCount.getOrDefault(messageDto.getMessageId(), 0L));
         }
 
         return messageDtos;
@@ -84,8 +84,8 @@ public class ServerMessageQueryServiceImpl implements ServerMessageQueryService 
         return emojiMap;
     }
 
-    private Map<Long, Long> getMessageCounts(List<Long> messageIds) {
-        List<ServerMessage> messages = messageRepository.countMessagesByParentIds(messageIds);
+    private Map<Long, Long> getCommentCountForMessages(List<Long> messageIds) {
+        List<ServerMessage> messages = messageRepository.findCommentCountByParentIdsAndIsDeleted(messageIds);
         Map<Long, Long> messageCounts = new HashMap<>();
 
         for (Long messageId : messageIds) {
