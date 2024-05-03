@@ -34,20 +34,22 @@ public class ServerMessageDto {
     private LocalDateTime modifiedAt;
 
     public static ServerMessageDto from(ServerMessage message) {
-        return ServerMessageDto.builder()
-                .messageId(message.getMessageId())
-                .serverId(message.getServerId())
-                .channelId(message.getChannelId())
-                .userId(message.getUserId())
-                .parentId(message.getParentId())
-                .profileImage(message.getProfileImage())
-                .type(message.getType())
-                .writer(message.getWriter())
-                .content(message.getContent())
-                .isDeleted(message.isDeleted())
-                .files(message.getFiles())
-                .createdAt(message.getCreatedAt())
-                .modifiedAt(message.getModifiedAt())
-                .build();
+        return new ServerMessageDto(
+                message.getMessageId(),
+                message.getServerId(),
+                message.getChannelId(),
+                message.getUserId(),
+                message.getParentId(),
+                0L,
+                message.getProfileImage(),
+                message.getType(),
+                message.getWriter(),
+                message.getContent(),
+                message.isDeleted(),
+                message.getFiles(),
+                null,
+                message.getCreatedAt(),
+                message.getModifiedAt()
+        );
     }
 }
