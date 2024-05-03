@@ -2,14 +2,12 @@ package capstone.chatservice.domain.emoji.dto.response;
 
 import capstone.chatservice.domain.emoji.dto.EmojiDto;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmojiCreateResponse {
@@ -26,17 +24,17 @@ public class EmojiCreateResponse {
     private String type;
 
     public static EmojiCreateResponse from(EmojiDto emojiDto) {
-        return EmojiCreateResponse.builder()
-                .emojiId(emojiDto.getEmojiId())
-                .serverId(emojiDto.getServerId())
-                .channelId(emojiDto.getChannelId())
-                .dmId(emojiDto.getDmId())
-                .serverMessageId(emojiDto.getServerMessageId())
-                .forumMessageId(emojiDto.getForumMessageId())
-                .directMessageId(emojiDto.getDirectMessageId())
-                .userId(emojiDto.getUserId())
-                .typeId(emojiDto.getTypeId())
-                .type(emojiDto.getType())
-                .build();
+        return new EmojiCreateResponse(
+                emojiDto.getEmojiId(),
+                emojiDto.getServerId(),
+                emojiDto.getChannelId(),
+                emojiDto.getDmId(),
+                emojiDto.getServerMessageId(),
+                emojiDto.getForumMessageId(),
+                emojiDto.getDirectMessageId(),
+                emojiDto.getUserId(),
+                emojiDto.getTypeId(),
+                emojiDto.getType()
+        );
     }
 }

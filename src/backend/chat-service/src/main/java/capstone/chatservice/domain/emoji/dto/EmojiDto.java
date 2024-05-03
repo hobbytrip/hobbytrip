@@ -2,14 +2,12 @@ package capstone.chatservice.domain.emoji.dto;
 
 import capstone.chatservice.domain.emoji.domain.Emoji;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmojiDto {
@@ -26,17 +24,17 @@ public class EmojiDto {
     private String type;
 
     public static EmojiDto from(Emoji emoji) {
-        return EmojiDto.builder()
-                .emojiId(emoji.getEmojiId())
-                .serverId(emoji.getServerId())
-                .channelId(emoji.getChannelId())
-                .dmId(emoji.getDmId())
-                .serverMessageId(emoji.getServerMessageId())
-                .forumMessageId(emoji.getForumMessageId())
-                .directMessageId(emoji.getDirectMessageId())
-                .userId(emoji.getUserId())
-                .typeId(emoji.getTypeId())
-                .type(emoji.getType())
-                .build();
+        return new EmojiDto(
+                emoji.getEmojiId(),
+                emoji.getServerId(),
+                emoji.getChannelId(),
+                emoji.getDmId(),
+                emoji.getServerMessageId(),
+                emoji.getForumMessageId(),
+                emoji.getDirectMessageId(),
+                emoji.getUserId(),
+                emoji.getTypeId(),
+                emoji.getType()
+        );
     }
 }
