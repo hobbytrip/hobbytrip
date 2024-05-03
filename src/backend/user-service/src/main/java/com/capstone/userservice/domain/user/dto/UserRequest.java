@@ -3,6 +3,8 @@ package com.capstone.userservice.domain.user.dto;
 
 import com.capstone.userservice.domain.user.entity.Authority;
 import com.capstone.userservice.domain.user.entity.User;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.util.Date;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -15,12 +17,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserRequest {
+    @NotNull
     private Long userId;
+    @NotNull
     private String email;
+    @NotNull
     private String nickname;
+    @NotBlank
     private String username;
     private Date birthdate;
     private Date createdAt;
+    @NotNull
     private String password;
     private Boolean notificationEnabled;
 

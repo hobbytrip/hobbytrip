@@ -4,6 +4,7 @@ package com.capstone.userservice.domain.profile.service;
 import com.capstone.userservice.domain.profile.dto.request.ProfileNicknameRequest;
 import com.capstone.userservice.domain.profile.dto.request.ProfileNoticeRequest;
 import com.capstone.userservice.domain.profile.dto.request.ProfileStatusMessageRequest;
+import com.capstone.userservice.domain.profile.dto.response.ProfileImageResponse;
 import com.capstone.userservice.domain.profile.dto.response.ProfileNicknameResponse;
 import com.capstone.userservice.domain.profile.dto.response.ProfileNoticeResponse;
 import com.capstone.userservice.domain.profile.dto.response.ProfileResponse;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @Slf4j
@@ -23,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ProfileService {
     private final ProfileRepository profileRepository;
+    private final S3ImageService s3ImageService;
 
     @Transactional(readOnly = true)
     public ProfileResponse read(Long userId) {
@@ -45,7 +48,6 @@ public class ProfileService {
         User userInfo = validateInProfile(userId);
         userInfo.setNickname(request.getNickname());
         return ProfileNicknameResponse.from(profileRepository.save(userInfo));
-
     }
 
     @Transactional
@@ -55,9 +57,18 @@ public class ProfileService {
         return ProfileNoticeResponse.from(profileRepository.save(userInfo));
     }
 
+    @Transactional
+    public ProfileImageResponse imageModify(MultipartFile image, Long userId) {
+        User userInfo = validateInProfile(userId);
+        String s3Image = s3ImageService.upload(image);
+        userInfo.setProfileImage(s3Image);
+        return ProfileImageResponse.from(profileRepository.save(userInfo));
+    }
+
     public User validateInProfile(Long userId) {
         return profileRepository.findById(userId)
                 .orElseThrow(() -> new ProfileException(Code.NOT_FOUND,
                         "Not Found Profile"));
     }
+
 }

@@ -1,5 +1,6 @@
 package com.capstone.userservice.domain.user.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,7 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TokenRequest {
 
+    @NotNull
     private String accessToken;
+    @NotNull
     private String refreshToken;
 }
 

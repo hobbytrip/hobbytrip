@@ -19,15 +19,20 @@ public enum Code {
     // USER_NICKNAME_DUPLICATED(13010, HttpStatus.BAD_REQUEST, "User nickname duplicated"),
 
     OK(0, HttpStatus.OK, "Ok"),
+    //100번대
+    VALIDATION_ERROR(20011, HttpStatus.BAD_REQUEST, "Validation error"),
 
-    BAD_REQUEST(10000, HttpStatus.BAD_REQUEST, "Bad request"),
-    VALIDATION_ERROR(10001, HttpStatus.BAD_REQUEST, "Validation error"),
-    NOT_FOUND(10002, HttpStatus.NOT_FOUND, "Requested resource is not found"),
+    //400번대
+    BAD_REQUEST(20040, HttpStatus.BAD_REQUEST, "Bad request"),
+    UNAUTHORIZED(20041, HttpStatus.UNAUTHORIZED, "User unauthorized"),
+    FORBIDDEN(20043, HttpStatus.FORBIDDEN, "Access denied"),
+    NOT_FOUND(20044, HttpStatus.NOT_FOUND, "Requested resource is not found"),
+    //500번대
+    INTERNAL_ERROR(20050, HttpStatus.INTERNAL_SERVER_ERROR, "Internal error"),
+    DATA_ACCESS_ERROR(20051, HttpStatus.INTERNAL_SERVER_ERROR, "Data access error"),
+    PUT_OBJECT_EXCEPTION(20052, HttpStatus.INTERNAL_SERVER_ERROR, "Object Put error"),
+    IO_EXCEPTION_ON_IMAGE_DELETE(20053, HttpStatus.INTERNAL_SERVER_ERROR, "Image Delete error");
 
-    INTERNAL_ERROR(20000, HttpStatus.INTERNAL_SERVER_ERROR, "Internal error"),
-    DATA_ACCESS_ERROR(20001, HttpStatus.INTERNAL_SERVER_ERROR, "Data access error"),
-    UNAUTHORIZED(40000, HttpStatus.UNAUTHORIZED, "User unauthorized"),
-    FORBIDDEN(40001, HttpStatus.FORBIDDEN, "Access denied");
 
     private final Integer code;
     private final HttpStatus httpStatus;

@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class ProfileNicknameRequest {
+public class ProfileImageRequest {
     @NotNull
-    private String nickname;
+    private String imageUrl;
 }

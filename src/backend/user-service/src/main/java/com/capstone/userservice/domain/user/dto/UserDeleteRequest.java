@@ -1,5 +1,6 @@
 package com.capstone.userservice.domain.user.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class UserDeleteRequest {
+    @NotNull
     private String email;
+    @NotNull
     private String password;
 }

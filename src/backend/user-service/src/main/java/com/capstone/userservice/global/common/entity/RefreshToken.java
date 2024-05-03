@@ -1,21 +1,16 @@
 package com.capstone.userservice.global.common.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
 
 @Getter
-@NoArgsConstructor
-@Entity
+@RedisHash(value = "refreshToken", timeToLive = 14440)
 public class RefreshToken {
-    @Id
-    @Column(name = "refresh_key")
-    private String key;
 
-    @Column(name = "refresh_value")
+    @Id
+    private String key;
     private String value;
 
     @Builder

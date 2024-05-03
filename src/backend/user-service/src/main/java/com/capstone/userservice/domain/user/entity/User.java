@@ -70,16 +70,17 @@ public class User {
 
     public void setStatusMessage(String statusMessage) {
         this.statusMessage = statusMessage;
-        preUpdate();
     }
 
     public void setNickname(String nickName) {
         this.nickname = nickName;
-        preUpdate();
     }
 
     public void setNotice(Boolean notice) {
         this.notificationEnabled = notice;
-        preUpdate();
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
     }
 }
