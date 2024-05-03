@@ -86,7 +86,7 @@ public class ServerMessageQueryServiceImpl implements ServerMessageQueryService 
 
     private Map<Long, Long> getCommentCountForMessages(List<Long> messageIds) {
         List<ServerMessage> messages = messageRepository.findCommentCountByParentIdsAndIsDeleted(messageIds);
-        Map<Long, Long> messageCounts = new HashMap<>();
+        Map<Long, Long> commentCount = new HashMap<>();
 
         for (Long messageId : messageIds) {
             long count = 0L;
@@ -95,10 +95,10 @@ public class ServerMessageQueryServiceImpl implements ServerMessageQueryService 
                     count += 1;
                 }
             }
-            messageCounts.put(messageId, count);
+            commentCount.put(messageId, count);
         }
 
-        return messageCounts;
+        return commentCount;
     }
 
     private List<Long> getMessageIds(Page<ServerMessageDto> messageDtos) {

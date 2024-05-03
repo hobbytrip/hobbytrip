@@ -33,10 +33,10 @@ public class ForumMessageQueryServiceImpl implements ForumMessageQueryService {
         List<Long> messageIds = getMessageIds(messageDtos);
 
         Map<Long, List<EmojiDto>> emojiMap = getEmojisForMessages(messageIds);
-        Map<Long, Long> messageCounts = getMessageCounts(messageIds);
+        Map<Long, Long> commentCount = getCommentCountForMessages(messageIds);
         for (ForumMessageDto messageDto : messageDtos) {
             messageDto.setEmojis(emojiMap.getOrDefault(messageDto.getMessageId(), Collections.emptyList()));
-            messageDto.setCount(messageCounts.getOrDefault(messageDto.getMessageId(), 0L));
+            messageDto.setCount(commentCount.getOrDefault(messageDto.getMessageId(), 0L));
         }
 
         return messageDtos;
@@ -84,9 +84,9 @@ public class ForumMessageQueryServiceImpl implements ForumMessageQueryService {
         return emojiMap;
     }
 
-    private Map<Long, Long> getMessageCounts(List<Long> messageIds) {
-        List<ForumMessage> messages = forumMessageRepository.countMessagesByParentIds(messageIds);
-        Map<Long, Long> messageCounts = new HashMap<>();
+    private Map<Long, Long> getCommentCountForMessages(List<Long> messageIds) {
+        List<ForumMessage> messages = forumMessageRepository.findCommentCountByParentIdsAndIsDeleted(messageIds);
+        Map<Long, Long> commentCount = new HashMap<>();
 
         for (Long messageId : messageIds) {
             long count = 0L;
@@ -95,10 +95,10 @@ public class ForumMessageQueryServiceImpl implements ForumMessageQueryService {
                     count += 1;
                 }
             }
-            messageCounts.put(messageId, count);
+            commentCount.put(messageId, count);
         }
 
-        return messageCounts;
+        return commentCount;
     }
 
     private List<Long> getMessageIds(Page<ForumMessageDto> messageDtos) {

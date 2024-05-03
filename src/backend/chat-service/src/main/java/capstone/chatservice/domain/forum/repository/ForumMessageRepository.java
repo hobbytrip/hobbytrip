@@ -17,6 +17,6 @@ public interface ForumMessageRepository extends MongoRepository<ForumMessage, Lo
     @Query("{ 'parentId': ?0, 'isDeleted': false }")
     Page<ForumMessage> findByParentIdAndIsDeleted(Long parentId, Pageable pageable);
 
-    @Query(value = "{ 'parentId': { $in: ?0 } }")
-    List<ForumMessage> countMessagesByParentIds(List<Long> parentIds);
+    @Query(value = "{ 'parentId': { $in: ?0 }, 'isDeleted': false }")
+    List<ForumMessage> findCommentCountByParentIdsAndIsDeleted(List<Long> parentIds);
 }
