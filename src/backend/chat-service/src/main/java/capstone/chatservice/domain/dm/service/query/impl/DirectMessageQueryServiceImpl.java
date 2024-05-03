@@ -33,10 +33,10 @@ public class DirectMessageQueryServiceImpl implements DirectMessageQueryService 
         List<Long> messageIds = getMessageIds(messageDtos);
 
         Map<Long, List<EmojiDto>> emojiMap = getEmojisForDirectMessages(messageIds);
-        Map<Long, Long> messageCounts = getMessageCounts(messageIds);
+        Map<Long, Long> commentCount = getCommentCountForMessages(messageIds);
         for (DirectMessageDto messageDto : messageDtos) {
             messageDto.setEmojis(emojiMap.getOrDefault(messageDto.getMessageId(), Collections.emptyList()));
-            messageDto.setCount(messageCounts.getOrDefault(messageDto.getMessageId(), 0L));
+            messageDto.setCount(commentCount.getOrDefault(messageDto.getMessageId(), 0L));
         }
 
         return messageDtos;
@@ -84,9 +84,9 @@ public class DirectMessageQueryServiceImpl implements DirectMessageQueryService 
         return emojiMap;
     }
 
-    private Map<Long, Long> getMessageCounts(List<Long> messageIds) {
-        List<DirectMessage> messages = messageRepository.countMessagesByParentIds(messageIds);
-        Map<Long, Long> messageCounts = new HashMap<>();
+    private Map<Long, Long> getCommentCountForMessages(List<Long> messageIds) {
+        List<DirectMessage> messages = messageRepository.findCommentCountByParentIdsAndIsDeleted(messageIds);
+        Map<Long, Long> commentCount = new HashMap<>();
 
         for (Long messageId : messageIds) {
             long count = 0L;
@@ -95,10 +95,10 @@ public class DirectMessageQueryServiceImpl implements DirectMessageQueryService 
                     count += 1;
                 }
             }
-            messageCounts.put(messageId, count);
+            commentCount.put(messageId, count);
         }
 
-        return messageCounts;
+        return commentCount;
     }
 
     private List<Long> getMessageIds(Page<DirectMessageDto> messageDtos) {
