@@ -3,8 +3,10 @@ package com.capstone.userservice.domain.user.service;
 
 import com.capstone.userservice.domain.user.dto.TokenRequest;
 import com.capstone.userservice.domain.user.dto.UserRequest;
+import com.capstone.userservice.domain.user.exception.UserException;
 import com.capstone.userservice.global.common.dto.TokenDto;
 import com.capstone.userservice.global.common.entity.RefreshToken;
+import com.capstone.userservice.global.exception.Code;
 import com.capstone.userservice.global.respository.RefreshTokenRepository;
 import com.capstone.userservice.global.util.TokenUtil;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,7 +28,7 @@ public class AuthService {
                             HttpServletResponse response) {
         // 1. Refersh Token 검증
         if (!tokenUtil.validateToken(tokenRequest.getRefreshToken())) {
-            throw new RuntimeException("Refresh Token 이 유효하지 않습니다.");
+            throw new UserException(Code.UNAUTHORIZED, "Refresh Token 이 유효하지 않습니다.");
         }
 
         //2. Access Token 에서 UserDetails 객체 가져오기
@@ -38,11 +40,11 @@ public class AuthService {
 
         // 4. 저장소에서 User ID 를 기반으로 Refresh Token 값 가져옴
         RefreshToken refreshToken = refreshTokenRepository.findByKey(authentication.getName())
-                .orElseThrow(() -> new RuntimeException("로그아웃 된 사용자입니다."));
+                .orElseThrow(() -> new UserException(Code.UNAUTHORIZED, "로그아웃 된 사용자입니다."));
 
         // 5. Refresh Token 일치 검사
         if (!refreshToken.getValue().equals(tokenRequest.getRefreshToken())) {
-            throw new RuntimeException("토큰의 유저 정보가 일치하지 않습니다.");
+            throw new UserException(Code.UNAUTHORIZED, "토큰의 유저 정보가 일치하지 않습니다.");
         }
 
         // 6. 새로운 토큰 생성
@@ -78,7 +80,7 @@ public class AuthService {
                 return true;
             }
         } catch (Exception e) {
-            return false;
+            throw new UserException(Code.UNAUTHORIZED, "토큰의 정보가 유효하지 않습니다.");
         }
         return false;
     }

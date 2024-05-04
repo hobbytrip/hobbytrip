@@ -74,7 +74,7 @@ public class ProfileService {
     public User validateInProfile(Long userId) {
         return profileRepository.findById(userId)
                 .orElseThrow(() -> new ProfileException(Code.NOT_FOUND,
-                        "Not Found Profile"));
+                        "해당 사용자의 프로필을 찾을 수 없습니다."));
     }
 
 }

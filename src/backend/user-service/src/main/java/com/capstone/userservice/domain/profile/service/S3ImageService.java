@@ -9,7 +9,6 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.util.IOUtils;
 import com.capstone.userservice.domain.profile.exception.S3Exception;
 import com.capstone.userservice.domain.user.entity.User;
-import com.capstone.userservice.domain.user.repository.UserRepository;
 import com.capstone.userservice.global.exception.Code;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -34,7 +33,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class S3ImageService {
 
     private final AmazonS3 amazonS3;
-    private final UserRepository userRepository;
 
     @Value("${cloud.aws.s3.bucketName}")
     private String bucketName;
@@ -44,7 +42,7 @@ public class S3ImageService {
     public String upload(MultipartFile image) {
         //파일 검증
         if (image.isEmpty() || Objects.isNull(image.getOriginalFilename())) {
-            throw new S3Exception(Code.NOT_FOUND);
+            throw new S3Exception(Code.NOT_FOUND, "파일을 찾을 수 없습니다.");
         }
         //S3 에 저장된 이미지의 public url 반환
         return this.uploadImage(image);
@@ -56,7 +54,7 @@ public class S3ImageService {
 
             return this.uploadImageToS3(image);
         } catch (IOException e) {
-            throw new S3Exception(Code.BAD_REQUEST);
+            throw new S3Exception(Code.BAD_REQUEST, "이미지 업로드에 실패 했습니다.");
         }
     }
 
@@ -64,14 +62,14 @@ public class S3ImageService {
     private void validateImageFileExtention(String filename) {
         int lastDotIndex = filename.lastIndexOf(".");
         if (lastDotIndex == -1) {
-            throw new S3Exception(Code.NOT_FOUND);
+            throw new S3Exception(Code.NOT_FOUND, "이미지 검정에 실패 했습니다.");
         }
 
         String extention = filename.substring(lastDotIndex + 1).toLowerCase();
         List<String> allowedExtentionList = Arrays.asList("jpg", "jpeg", "png", "gif");
 
         if (!allowedExtentionList.contains(extention)) {
-            throw new S3Exception(Code.VALIDATION_ERROR);
+            throw new S3Exception(Code.VALIDATION_ERROR, "지원되는 이미지 형식이 아닙니다.");
         }
     }
 
@@ -100,7 +98,7 @@ public class S3ImageService {
             //실제 S3 에 이미지 데이터 put
             amazonS3.putObject(putObjectRequest);
         } catch (Exception e) {
-            throw new S3Exception(Code.PUT_OBJECT_EXCEPTION);
+            throw new S3Exception(Code.PUT_OBJECT_EXCEPTION, "이미지 업로드에 실패 했습니다.");
         } finally {
             byteArrayInputStream.close();
             is.close();
@@ -118,7 +116,7 @@ public class S3ImageService {
             return true;
 
         } catch (Exception e) {
-            throw new S3Exception(Code.IO_EXCEPTION_ON_IMAGE_DELETE);
+            throw new S3Exception(Code.IO_EXCEPTION_ON_IMAGE_DELETE, "이미지 삭제에 실패 했습니다.");
         }
     }
 
@@ -128,7 +126,7 @@ public class S3ImageService {
             String decodingKey = URLDecoder.decode(url.getPath(), "UTF-8");
             return decodingKey.substring(1); // 맨 앞의 '/' 제거
         } catch (MalformedURLException | UnsupportedEncodingException e) {
-            throw new S3Exception(Code.IO_EXCEPTION_ON_IMAGE_DELETE);
+            throw new S3Exception(Code.NOT_FOUND, "존재하지 않는 이미지 입니다.");
         }
     }
 }
