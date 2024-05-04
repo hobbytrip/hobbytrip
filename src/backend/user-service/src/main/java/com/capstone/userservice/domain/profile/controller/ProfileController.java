@@ -85,9 +85,9 @@ public class ProfileController {
         return DataResponseDto.of(response);
     }
 
-    @GetMapping("/image/delete")
+    @GetMapping("/image")
     public DataResponseDto<Object> imageDelete(HttpServletRequest request,
-                                               @RequestParam String image) {
+                                               @RequestParam("delete") String image) {
         String token = request.getHeader(Header);
         Long userId = tokenUtil.getUserId(token);
 
