@@ -8,6 +8,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.util.IOUtils;
 import com.capstone.userservice.domain.profile.exception.S3Exception;
+import com.capstone.userservice.domain.user.entity.User;
 import com.capstone.userservice.domain.user.repository.UserRepository;
 import com.capstone.userservice.global.exception.Code;
 import java.io.ByteArrayInputStream;
@@ -37,6 +38,8 @@ public class S3ImageService {
 
     @Value("${cloud.aws.s3.bucketName}")
     private String bucketName;
+    @Value("${cloud.aws.s3.defaultImage}")
+    private String defaultImage;
 
     public String upload(MultipartFile image) {
         //파일 검증
@@ -107,10 +110,13 @@ public class S3ImageService {
         return amazonS3.getUrl(bucketName, s3FileName).toString();
     }
 
-    public void deleteImageFromS3(String imageAddress) {
-        String key = getKeyFromImageAddress(imageAddress);
+    public Boolean deleteImageFromS3(String url, User user) {
+        String key = getKeyFromImageAddress(url);
         try {
             amazonS3.deleteObject(new DeleteObjectRequest(bucketName, key));
+            user.setProfileImage(defaultImage);
+            return true;
+
         } catch (Exception e) {
             throw new S3Exception(Code.IO_EXCEPTION_ON_IMAGE_DELETE);
         }
@@ -125,6 +131,4 @@ public class S3ImageService {
             throw new S3Exception(Code.IO_EXCEPTION_ON_IMAGE_DELETE);
         }
     }
-
-
 }

@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -81,6 +82,16 @@ public class ProfileController {
         Long userId = tokenUtil.getUserId(token);
 
         ProfileImageResponse response = profileService.imageModify(image, userId);
+        return DataResponseDto.of(response);
+    }
+
+    @GetMapping("/image/delete")
+    public DataResponseDto<Object> imageDelete(HttpServletRequest request,
+                                               @RequestParam String image) {
+        String token = request.getHeader(Header);
+        Long userId = tokenUtil.getUserId(token);
+
+        Boolean response = profileService.imageDelete(image, userId);
         return DataResponseDto.of(response);
     }
 }
