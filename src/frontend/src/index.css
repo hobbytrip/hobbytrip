@@ -51,11 +51,6 @@
   --dark-gray: #434343;
   --hot-pink: #ff1cc0;
   --yellow-color: #ffe500;
-  /* font-synthesis: none;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    --vh: 100%; */
 }
 * {
   margin: 0;
@@ -87,6 +82,7 @@ a2 {
 button {
   border-style: none;
   font-family: "Pretendard";
+  cursor: pointer;
 }
 input {
   border-style: none;

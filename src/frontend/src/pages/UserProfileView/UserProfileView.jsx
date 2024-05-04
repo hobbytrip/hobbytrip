@@ -19,14 +19,12 @@ function UserProfileView() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        if (!user) {
-          const response = await axios.get("/profile");
-          if (response.data) {
-            setUserInfo(response.data);
-            console.log(response.data);
-          } else {
-            console.error("No user data returned");
-          }
+        const response = await axios.get("/user/profile");
+        if (response.data) {
+          setUserInfo(response.data);
+          console.log(response.data);
+        } else {
+          console.error("No user data returned");
         }
       } catch (error) {
         console.error("Error fetching user data:", error);

@@ -7,7 +7,7 @@ const useUserStore = create((set) => ({
   updateUserInfo: async (endpoint, updates) => {
     try {
       const response = await axios.patch(`/user/profile/${endpoint}`, updates);
-      if (response.status === 200) {
+      if (response.success === "true") {
         set((state) => ({
           user: { ...state.user, ...updates },
         }));
