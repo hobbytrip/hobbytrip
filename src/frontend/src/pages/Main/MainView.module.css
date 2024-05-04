@@ -2,6 +2,6 @@
     display: flex; 
     flex-direction: column;
     background-color: var(--main-purple);
-    padding: 0 8% 0 8%;
+    width: 390px;
+    height: 844px;
 }
-

@@ -2,7 +2,7 @@ import sessionFunc from '../../../hooks/mediaSession';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import useMediaConnectedStore from '../../../actions/mediaState';
-import styles from './ConnectionBtn.module.css';
+import style from './ConnectionBtn.module.css';
 
 const SERVER_URL = 'http://localhost:3000/';
 
@@ -62,7 +62,6 @@ const StartBtn = () => {
             header: {
                 'Authorization': 'Basic EncodeBase64', // + EncodeBase64(OPENVIDUAPP:<YOUR_SECRET>), 토큰?
                 'Content-Type': 'application/json',
-                'Token': '' // 토큰 내용
             },
             body: {
                 "type": "WEBRTC",
@@ -87,8 +86,8 @@ const StartBtn = () => {
         setMediaConnected(true);
     }
     return(
-        <button onClick={onClick} className='styles.button'> 
-            <img src='../../../src/assets/media/startCall.png'/>
+        <button onClick={onClick} className={style.button}> 
+            <img src='../../../src/assets/image/media/startCall.png' className={style.img}/>
         </button>
     )
 }
@@ -98,8 +97,8 @@ const EndBtn = () => {
         setMediaConnected(false);
     }
     return(
-        <button onClick={onClick} className='.button'>
-            <img src='../../../src/assets/media/endCall.png' />
+        <button onClick={onClick} className={style.button}>
+            <img src='../../../src/assets/image/media/endCall.png' className={style.img} />
         </button>
     )
 }

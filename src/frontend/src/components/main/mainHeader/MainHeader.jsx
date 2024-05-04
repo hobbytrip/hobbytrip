@@ -1,44 +1,44 @@
 import style from './MainHeader.module.css';
+import { IoMdMenu } from "react-icons/io";
+import { IoSearchOutline } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
 
-const Logo = () => {
-    return (
-        <img src='' className={style.logo}/>
-    );
-}
 
 const SearchForm = () => {
     return (
-        <form className={style.inputForm}>
-            <div>
-                <input type="text" placeholder="다른 행성 찾아보기" />
-                <button type="submit">
-                    <img src='../../../src/assets/image/main/search.png' alt="Search" />
-                </button>
+        <form>
+            <div className={style.searchContainer}>
+                <div className={style.searchForm}>
+                    <input type="text" placeholder="다른 행성 찾아보기" className={style.searchInput}/>
+                    <button type="submit" className={style.searchBtn}>
+                        <IoSearchOutline style={{ width: '12.3px', height: '12px', color: '#E6E6E6' }}  />
+                    </button>
+                </div>
             </div>
         </form>
     );
 }
 
 const MenuBtn = () => {
+    const navigator = useNavigate();
     function onClick(){
-
+        navigator('/menu');
     }
     return (
         <button className={style.menuBtn} onClick={onClick}>
-            <img src='../../../src/assets/image/main/menu.png' alt="Menu" />
+            <IoMdMenu style={{ width: '15px', height: '12.63px' }} color='white'/>
         </button>
     );
 }
 
 const MainHeader = () => {
     return (
-        <header className={style.header}>
-            <div className={style.container}>
-                <Logo />
-                <SearchForm />
-                <MenuBtn />
-            </div>
-        </header>
+        <div className={style.wrapper}>
+            <img src='./../../../../src/assets/image/main/logo.png'
+                className={style.logo} alt='logo'/>
+            <SearchForm />
+            <MenuBtn />
+        </div>
     );
 }
 

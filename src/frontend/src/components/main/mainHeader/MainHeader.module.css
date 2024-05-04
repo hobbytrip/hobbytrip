@@ -1,59 +1,64 @@
-.header {
-    text-align: center;
-    padding: 5%;
-}
-
-.container {
-    /* container-type: inner; */
+.wrapper {
     display: flex;
-    justify-content: space-between;
-    flex: 1;
     align-items: center;
+    padding: 30px 26px 0px 26px;
+    gap: 10px;
+    height: Fixed 89px;
 }
 
-.inputForm {
-    width: 70%; 
-    border-radius: 10px 0 0 10px;
-    margin: 0 10% 0 10%;
-    align-items: center;
+.wrapper button {
+    cursor: pointer;
 }
 
-.inputForm div {
+.logo {
+    width: 79px;
+    height: 74px;
+    top: 7.5px;
+}
+
+.searchContainer {
     display: flex; 
+    align-items: center;
+    justify-content: center;
+    width: 236px;
+    height: 33px;
+    background: #00000080;
+    border-radius: 10px;
 }
 
-.inputForm input {
-    width: 80%; 
+.searchForm {
+    display: flex;
+    width: 213px;
+    height: 14px;
+}
+
+.searchInput {
+    color: #A3A3A3;
+    background: none; 
     border: none;
-    border-radius: 20px 0 0 20px;
-    background-color: #000000;
-    opacity: 50%;
+    font-family: Pretendard;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 14.32px;
+    flex: 1;
 }
 
-.inputForm button {
-    border-radius: 0 20px 20px 0;
-    border: none;
-    width: 20%; 
-    background-color: #000000;
-    opacity: 50%;
-}
-
-.inputForm img {
-    width: 30%;
-    height: auto;
-    margin: 5%;
-    /* align-items: right; */
+.searchBtn {
+    border: none; 
+    background: none;
+    width: 16.39px;
+    height: 16px;
+    top: 8.5px;
+    left: 211.5px;
 }
 
 .menuBtn {
-    border: none;
+    align-items: center;
+    width: 28px;
+    height: 32px;
+    padding: 5px 3px;
+    gap: 10px;
     border-radius: 10px;
-    width: 3%;  
-    background-color: #000000;
-    opacity: 50%; 
-    flex: 1; 
-}
-
-.menuBtn img {
-    width: 60%;
+    background: #00000080;
+    border: none;
 }
