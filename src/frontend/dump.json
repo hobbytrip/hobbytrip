@@ -1,0 +1,14 @@
+{
+  "profile": [
+    {
+      "id": "사용자 ID",
+      "name": "사용자명",
+      "nickname": "별명",
+      "email": "이메일@example.com",
+      "profileImage": "/image/default-logo.png",
+      "statusMessage": "상태 메시지",
+      "modifiedAt": "2023-03-29T15:00:00Z",
+      "notificationEnabled": true
+    }
+  ]
+}

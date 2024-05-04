@@ -1,0 +1,57 @@
+.wrapper {
+  background-color: #fff;
+  border-radius: 10px;
+  width: 310px;
+  align-items: center;
+  justify-content: center;
+  padding-left: 20px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+.notiContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 60px;
+}
+.notiBox {
+  flex: none;
+  align-self: stretch;
+  flex-grow: 0;
+}
+.list {
+  color: var(--mid-gray);
+}
+.detail {
+  color: var(--mid-gray);
+  font-weight: 400;
+  font-size: 10px;
+}
+.checkBox {
+  display: none;
+}
+.checkLabel {
+  display: flex;
+  align-items: center;
+  margin-top: -20px;
+}
+
+.checkIcon::before {
+  content: "✓";
+  color: white;
+  padding-left: 3px;
+  display: block;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-color: var(--mid-gray);
+  border-radius: 50%;
+  box-sizing: border-box;
+  position: relative;
+  cursor: pointer;
+}
+.checkLabel input:checked + .checkIcon::before {
+  background: url("../../assets/image/symbols_check.svg") var(--main-purple)
+    no-repeat center;
+  border: none;
+}
