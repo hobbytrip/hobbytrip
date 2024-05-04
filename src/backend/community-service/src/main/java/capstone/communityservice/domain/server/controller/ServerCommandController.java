@@ -21,12 +21,14 @@ public class ServerCommandController {
             @RequestPart(name = "profile", required = false) MultipartFile profile
     ){
         ServerResponseDto response = serverCommandService.create(requestDto, profile);
+
         return DataResponseDto.of(response);
     }
 
     @PostMapping("/join")
     public DataResponseDto<Object> join(@Valid @RequestBody ServerJoinRequestDto requestDto){
         ServerResponseDto response = serverCommandService.join(requestDto);
+
         return DataResponseDto.of(response);
     }
 
@@ -42,12 +44,14 @@ public class ServerCommandController {
             @Valid @RequestPart("requestDto") ServerUpdateRequestDto requestDto,
             @RequestPart(name = "profile", required = false) MultipartFile file){
         ServerResponseDto response = serverCommandService.update(requestDto, file);
+
         return DataResponseDto.of(response);
     }
 
     @DeleteMapping
     public DataResponseDto<Object> delete(@Valid @RequestBody ServerDeleteRequestDto requestDto){
         serverCommandService.delete(requestDto);
+
         return DataResponseDto.of("Server delete success!!");
     }
 }

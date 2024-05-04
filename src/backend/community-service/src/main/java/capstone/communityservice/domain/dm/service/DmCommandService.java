@@ -68,6 +68,8 @@ public class DmCommandService {
 
         dmKafkaTemplate.send(dmKafkaTopic, CommunityDmEventDto.of("dm-update", findDm));
 
+        printKafkaLog("update");
+
         return DmResponseDto.of(findDm);
     }
 
@@ -121,5 +123,9 @@ public class DmCommandService {
     private Dm validateDm(Long dmId){
         return dmRepository.findById(dmId)
                 .orElseThrow(() -> new DmException(Code.NOT_FOUND, "Not Found Dm"));
+    }
+
+    private void printKafkaLog(String type) {
+        log.info("Kafka event send about Dm {}", type);
     }
 }

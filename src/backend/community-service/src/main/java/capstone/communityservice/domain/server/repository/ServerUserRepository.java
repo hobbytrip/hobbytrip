@@ -16,6 +16,12 @@ public interface ServerUserRepository extends JpaRepository<ServerUser, Long> {
     @Query("select su from ServerUser su join fetch su.user where su.server.id =:serverId and su.user.id =:userId")
     Optional<ServerUser> findByServerIdAndUserId(Long serverId, Long userId);
 
+    @Query(value = "select su.user_id " +
+            "from server_user su " +
+            "where su.server_id = :serverId ",
+            nativeQuery = true)
+    List<Long> findUserIdsByServerId(Long serverId);
+
 
 //    @Query("select s from ServerUser su join fetch su.user u join fetch su.server s where u.id =: userId")
 //    public List<Server> findServerUserByUser(Long userId);

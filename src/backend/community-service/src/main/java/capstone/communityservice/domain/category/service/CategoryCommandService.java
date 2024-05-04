@@ -36,8 +36,11 @@ public class CategoryCommandService {
 
         categoryKafkaTemplate.send(categoryKafkaTopic, CommunityCategoryEventDto.of("category-create",
                 newCategory,
-                newCategory.getServer().getId())
+                newCategory.getServer().getId()
+                )
         );
+
+        printKafkaLog("create");
 
         return CategoryResponseDto.of(newCategory);
     }
@@ -58,6 +61,8 @@ public class CategoryCommandService {
 
         categoryKafkaTemplate.send(categoryKafkaTopic, CommunityCategoryEventDto.of("category-update", findCategory, requestDto.getServerId()));
 
+        printKafkaLog("update");
+
         return CategoryResponseDto.of(findCategory);
     }
 
@@ -67,6 +72,8 @@ public class CategoryCommandService {
         Category findCategory = validateCategory(requestDto.getCategoryId());
 
         categoryKafkaTemplate.send(categoryKafkaTopic, CommunityCategoryEventDto.of("category-delete", findCategory, requestDto.getServerId()));
+
+        printKafkaLog("delete");
 
         categoryRepository.delete(findCategory);
     }
@@ -84,5 +91,9 @@ public class CategoryCommandService {
     private Category validateCategory(Long categoryId){
         return categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new DmException(Code.NOT_FOUND, "Not Found Category"));
+    }
+
+    private void printKafkaLog(String type) {
+        log.info("Kafka event send about Category {}", type);
     }
 }

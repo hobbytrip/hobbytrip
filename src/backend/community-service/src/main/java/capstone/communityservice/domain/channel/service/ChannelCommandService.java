@@ -59,6 +59,8 @@ public class ChannelCommandService {
 
         channelKafkaTemplate.send(channelKafkaTopic, CommunityChannelEventDto.of("channel-update", findChannel, requestDto.getServerId()));
 
+        printKafkaLog("update");
+
         return ChannelResponseDto.of(findChannel);
     }
 
@@ -67,10 +69,18 @@ public class ChannelCommandService {
 
         Channel findChannel = validateChannel(requestDto.getChannelId());
 
-        channelKafkaTemplate.send(channelKafkaTopic, CommunityChannelEventDto.of("channel-delete", findChannel, requestDto.getServerId()));
+        channelKafkaTemplate.send(channelKafkaTopic,
+                CommunityChannelEventDto.of(
+                        "channel-delete",
+                        findChannel,
+                        requestDto.getServerId()
+                )
+        );
+        printKafkaLog("delete");
 
         channelRepository.delete(findChannel);
     }
+
 
     private Channel createChannel(Server findServer, ChannelCreateRequestDto requestDto){
         return Channel.of(
@@ -79,6 +89,17 @@ public class ChannelCommandService {
                 requestDto.getChannelType(),
                 requestDto.getName()
         );
+    }
+
+    public void sendUserLocEvent(Long userId, Long channelId) {
+        channelKafkaTemplate.send(channelKafkaTopic,
+                CommunityChannelEventDto.of(
+                        "channel-read",
+                        userId,
+                        channelId)
+        );
+
+        printKafkaLog("read");
     }
 
     private Channel validateChannel(Long channelId){
@@ -110,5 +131,9 @@ public class ChannelCommandService {
                             new CategoryException(Code.NOT_FOUND, "Category Not Found")
                     );
         }
+    }
+
+    private void printKafkaLog(String type) {
+        log.info("Kafka event send about Channel {}", type);
     }
 }

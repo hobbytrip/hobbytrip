@@ -68,7 +68,7 @@ public class ServerCommandService {
         );
 
         serverUserCommandService.save(ServerUser.of(server, user));
-        categoryAndChannelInit(server);
+        categoryAndChannelInit(server, user.getId());
 
         /**
          * 서버 Read
@@ -87,6 +87,10 @@ public class ServerCommandService {
         verifyInvitationCode(findServer.getId(), requestDto);
 
         serverUserCommandService.save(ServerUser.of(findServer, findUser));
+
+        Channel defaultChannel = findServer.getChannels().get(0);
+
+        channelCommandService.sendUserLocEvent(findUser.getId(), defaultChannel.getId());
 
         return ServerResponseDto.of(findServer);
     }
@@ -107,6 +111,8 @@ public class ServerCommandService {
 
         serverKafkaTemplate.send(serverKafkaTopic, CommunityServerEventDto.of("server-update", findServer));
 
+        printKafkaLog("update");
+
         return ServerResponseDto.of(findServer);
     }
 
@@ -117,19 +123,20 @@ public class ServerCommandService {
 
         serverKafkaTemplate.send(serverKafkaTopic, CommunityServerEventDto.of("server-delete", findServer));
 
+        printKafkaLog("delete");
         serverRepository.delete(findServer);
     }
 
     /**
      * Server내 자체 Category Repository 사용할지 고민
      */
-    private void categoryAndChannelInit(Server server){
+    private void categoryAndChannelInit(Server server, Long userId){
         CategoryResponseDto initChatCategory
                 = categoryCommandService.save(Category.of(server, "채팅 채널"));
         CategoryResponseDto initVoiceCategory
                 = categoryCommandService.save(Category.of(server, "음성 채널"));
 
-        channelRepository.save(
+        Channel newChannel = channelRepository.save(
                 Channel.of(
                         server,
                         initChatCategory.getCategoryId(),
@@ -144,6 +151,8 @@ public class ServerCommandService {
                         ChannelType.VOICE,
                         "일반")
         );
+
+        channelCommandService.sendUserLocEvent(userId, newChannel.getId());
     }
 
     public ServerInviteCodeResponse generatedServerInviteCode(Long serverId) {
@@ -234,4 +243,7 @@ public class ServerCommandService {
         }
     }
 
+    private void printKafkaLog(String type) {
+        log.info("Kafka event send about Server {}", type);
+    }
 }

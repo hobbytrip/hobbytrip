@@ -1,7 +1,5 @@
 package capstone.communityservice.domain.channel.entity;
 
-import capstone.communityservice.domain.category.entity.Category;
-import capstone.communityservice.domain.channel.exception.ChannelException;
 import capstone.communityservice.domain.server.entity.Server;
 import capstone.communityservice.global.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
