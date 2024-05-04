@@ -1,11 +1,19 @@
 @font-face {
   font-family: "Pretendard";
+  font-weight: 700;
+  font-display: swap;
+  src:
+    local("Pretendard Bold"),
+    url(./assets/fonts/woff2/Pretendard-Bold.woff2) format("woff2");
+}
+
+@font-face {
+  font-family: "Pretendard";
   font-weight: 600;
   font-display: swap;
   src:
     local("Pretendard SemiBold"),
-    url(./fonts/woff2/Pretendard-SemiBold.woff2) format("woff2"),
-    url(./woff/Pretendard-SemiBold.woff) format("woff");
+    url(./assets/fonts/woff2/Pretendard-SemiBold.woff2) format("woff2");
 }
 
 @font-face {
@@ -14,8 +22,7 @@
   font-display: swap;
   src:
     local("Pretendard Medium"),
-    url(./fonts/woff2/Pretendard-Medium.woff2) format("woff2"),
-    url(./woff/Pretendard-Medium.woff) format("woff");
+    url(./assets/fonts/woff2/Pretendard-Medium.woff2) format("woff2");
 }
 
 @font-face {
@@ -24,8 +31,7 @@
   font-display: swap;
   src:
     local("Pretendard Regular"),
-    url(./fonts/woff2/Pretendard-Regular.woff2) format("woff2"),
-    url(./woff/Pretendard-Regular.woff) format("woff");
+    url(./assets/fonts/woff2/Pretendard-Regular.woff2) format("woff2");
 }
 
 @font-face {
@@ -34,38 +40,52 @@
   font-display: swap;
   src:
     local("Pretendard Light"),
-    url(./fonts/woff2/Pretendard-Light.woff2) format("woff2"),
-    url(./woff/Pretendard-Light.woff) format("woff");
-}
-
-@font-face {
-  font-family: "Pretendard";
-  font-weight: 200;
-  font-display: swap;
-  src:
-    local("Pretendard ExtraLight"),
-    url(./fonts/woff2/Pretendard-ExtraLight.woff2) format("woff2"),
-    url(./woff/Pretendard-ExtraLight.woff) format("woff");
-}
-
-@font-face {
-  font-family: "Pretendard";
-  font-weight: 100;
-  font-display: swap;
-  src:
-    local("Pretendard Thin"),
-    url(./fonts/woff2/Pretendard-Thin.woff2) format("woff2"),
-    url(./woff/Pretendard-Thin.woff) format("woff");
+    url(./assets/fonts/woff2/Pretendard-Light.woff2) format("woff2");
 }
 
 :root {
   font-family: Pretendard;
-  /* font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  --vh: 100%; */
+  --main-purple: #4a0074;
+  --light-gray: #ededed;
+  --mid-gray: #898989;
+  --dark-gray: #434343;
+  --hot-pink: #ff1cc0;
+  --yellow-color: #ffe500;
 }
 * {
   margin: 0;
+}
+
+h1 {
+  font-size: 24px;
+}
+h2 {
+  font-size: 20px;
+}
+h3 {
+  font-size: 16px;
+}
+h4 {
+  font-size: 12px;
+}
+h5 {
+  font-size: 10px;
+}
+a {
+  font-size: 12px;
+  color: var(--main-purple);
+}
+a2 {
+  font-size: 12px;
+  color: var(--mid-gray);
+}
+button {
+  border-style: none;
+  font-family: "Pretendard";
+  cursor: pointer;
+}
+input {
+  border-style: none;
+  outline: none;
+  font-family: "Pretendard";
 }

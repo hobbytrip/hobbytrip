@@ -1,0 +1,20 @@
+.profileCard {
+  width: 310px;
+  height: 75px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: row;
+  /* justify-content: flex-start; */
+  align-items: center;
+  gap: 20px;
+  background-color: #fff;
+  padding-left: 20px;
+}
+.rightContainer {
+  display: flex;
+  flex-direction: column;
+}
+.statusMessage {
+  color: var(--dark-gray);
+  font-weight: 400;
+}

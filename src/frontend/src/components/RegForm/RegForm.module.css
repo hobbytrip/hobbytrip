@@ -1,0 +1,59 @@
+.list {
+  color: var(--mid-gray);
+}
+.container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.forms {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  padding: 30px 35px 60px;
+  gap: 10px;
+  width: 391px;
+  flex: none;
+  order: 1;
+  flex-grow: 0;
+}
+.box {
+  height: 35px;
+  border-style: none;
+  border-radius: 5px;
+  background-color: var(--light-gray);
+  font-family: "Pretendard";
+  outline: none;
+}
+.box:focus {
+  border: 2px solid var(--main-purple);
+}
+.signUpBtn {
+  border-style: none;
+  height: 35px;
+  background-color: var(--main-purple);
+  border-radius: 5px;
+  color: white;
+  font-family: "Pretendard";
+}
+.signUpBtn:focus {
+  cursor: pointer;
+}
+.helpBtn {
+  border-style: none;
+  height: 35px;
+  font-family: "Pretendard";
+  color: var(--main-purple);
+  font-size: 12px;
+  font-weight: 600;
+  background-color: transparent;
+  text-align: left;
+}
+.errorMsg {
+  color: red;
+  text-align: center;
+}
