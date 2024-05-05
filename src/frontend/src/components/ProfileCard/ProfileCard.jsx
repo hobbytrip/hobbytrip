@@ -1,6 +1,6 @@
 import React from "react";
 import s from "./ProfileCard.module.css";
-import DefaultIcon from "../DefaultIcon/DefaultIcon";
+import DefaultIcon from "../Common/DefaultIcon";
 
 function ProfileCard({ profile }) {
   return (
