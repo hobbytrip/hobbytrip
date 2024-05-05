@@ -39,7 +39,7 @@ public class AuthService {
         userRequest.setEmail(userEmail);
 
         // 4. 저장소에서 User ID 를 기반으로 Refresh Token 값 가져옴
-        RefreshToken refreshToken = refreshTokenRepository.findByKey(authentication.getName())
+        RefreshToken refreshToken = refreshTokenRepository.findById(authentication.getName())
                 .orElseThrow(() -> new UserException(Code.UNAUTHORIZED, "로그아웃 된 사용자입니다."));
 
         // 5. Refresh Token 일치 검사
@@ -73,7 +73,7 @@ public class AuthService {
             Authentication authentication = tokenUtil.getAuthentication(accessToken);
 
             // 2. 저장소에서 UserId 를 기반으로 Refresh Token 값 가져옴
-            Optional<RefreshToken> refreshToken = refreshTokenRepository.findByKey(authentication.getName());
+            Optional<RefreshToken> refreshToken = refreshTokenRepository.findById(authentication.getName());
 
             //객체가 값을 가지고 있으면 true
             if (refreshToken.isPresent()) {

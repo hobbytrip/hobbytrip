@@ -47,7 +47,6 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private Authority authority;
-
     @Column(length = 255)
     private String statusMessage;
     @Column(length = 255)

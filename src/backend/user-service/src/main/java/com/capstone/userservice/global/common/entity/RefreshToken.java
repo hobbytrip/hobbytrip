@@ -23,4 +23,12 @@ public class RefreshToken {
         this.value = token;
         return this;
     }
+
+    public String getRefreshToken() {
+        return value;
+    }
+
+    public String getUserID() {
+        return key;
+    }
 }
