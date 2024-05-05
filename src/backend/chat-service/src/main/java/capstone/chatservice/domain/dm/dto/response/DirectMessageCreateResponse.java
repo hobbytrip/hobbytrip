@@ -1,6 +1,7 @@
 package capstone.chatservice.domain.dm.dto.response;
 
 import capstone.chatservice.domain.dm.dto.DirectMessageDto;
+import capstone.chatservice.domain.model.UploadFile;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -23,7 +24,7 @@ public class DirectMessageCreateResponse {
     private String writer;
     private String content;
     private boolean isDeleted;
-    private List<String> files;
+    private List<UploadFile> files;
     private LocalDateTime createdAt;
 
     public static DirectMessageCreateResponse from(DirectMessageDto message) {
