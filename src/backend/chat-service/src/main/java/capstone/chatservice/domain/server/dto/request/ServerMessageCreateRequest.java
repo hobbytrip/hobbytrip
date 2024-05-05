@@ -1,5 +1,7 @@
 package capstone.chatservice.domain.server.dto.request;
 
+import capstone.chatservice.domain.model.UploadFile;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,4 +21,5 @@ public class ServerMessageCreateRequest {
     private String type;
     private String writer;
     private String content;
+    private List<UploadFile> files = null;
 }

@@ -1,6 +1,7 @@
 package capstone.chatservice.domain.server.dto;
 
 import capstone.chatservice.domain.emoji.dto.EmojiDto;
+import capstone.chatservice.domain.model.UploadFile;
 import capstone.chatservice.domain.server.domain.ServerMessage;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,7 +29,7 @@ public class ServerMessageDto {
     private String writer;
     private String content;
     private boolean isDeleted;
-    private List<String> files;
+    private List<UploadFile> files;
     private List<EmojiDto> emojis;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;

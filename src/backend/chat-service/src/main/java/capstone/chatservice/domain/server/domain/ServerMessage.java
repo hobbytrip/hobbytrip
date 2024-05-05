@@ -1,6 +1,7 @@
 package capstone.chatservice.domain.server.domain;
 
 import capstone.chatservice.domain.model.BaseModel;
+import capstone.chatservice.domain.model.UploadFile;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AccessLevel;
@@ -51,11 +52,11 @@ public class ServerMessage extends BaseModel {
     private boolean isDeleted = Boolean.FALSE;
 
     @Field
-    private List<String> files;
+    private List<UploadFile> files;
 
     @Builder
     public ServerMessage(Long serverId, Long channelId, Long userId, Long parentId, String profileImage, String type,
-                         String writer, String content, List<String> files) {
+                         String writer, String content, List<UploadFile> files) {
 
         this.serverId = serverId;
         this.channelId = channelId;
