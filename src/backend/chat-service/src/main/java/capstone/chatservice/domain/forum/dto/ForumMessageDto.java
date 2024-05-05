@@ -2,6 +2,7 @@ package capstone.chatservice.domain.forum.dto;
 
 import capstone.chatservice.domain.emoji.dto.EmojiDto;
 import capstone.chatservice.domain.forum.domain.ForumMessage;
+import capstone.chatservice.domain.model.UploadFile;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -27,7 +28,7 @@ public class ForumMessageDto {
     private String writer;
     private String content;
     private boolean isDeleted;
-    private List<String> files;
+    private List<UploadFile> files;
     private List<EmojiDto> emojis;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;

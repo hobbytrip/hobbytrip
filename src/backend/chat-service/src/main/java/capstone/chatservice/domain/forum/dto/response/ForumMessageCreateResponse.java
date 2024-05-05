@@ -1,6 +1,7 @@
 package capstone.chatservice.domain.forum.dto.response;
 
 import capstone.chatservice.domain.forum.dto.ForumMessageDto;
+import capstone.chatservice.domain.model.UploadFile;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -26,7 +27,7 @@ public class ForumMessageCreateResponse {
     private String writer;
     private String content;
     private boolean isDeleted;
-    private List<String> files;
+    private List<UploadFile> files;
     private LocalDateTime createdAt;
 
     public static ForumMessageCreateResponse from(ForumMessageDto message) {
