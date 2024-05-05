@@ -16,6 +16,7 @@ public class ServerUpdateRequestDto {
     @NotBlank
     private String name;
 
+    @NotBlank
     private String profile;
 
     private boolean open;

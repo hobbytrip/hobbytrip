@@ -20,10 +20,10 @@ public class ServerUserResponseDto {
     @NotBlank
     private String name;
 
-    public static ServerUserResponseDto of(ServerUser findServerUser) {
+    public static ServerUserResponseDto of(ServerUser findServerUser, Long serverId, Long userId) {
         return ServerUserResponseDto.builder()
-                .serverId(findServerUser.getId())
-                .userId(findServerUser.getUser().getId())
+                .serverId(serverId)
+                .userId(userId)
                 .name(findServerUser.getName())
                 .build();
     }

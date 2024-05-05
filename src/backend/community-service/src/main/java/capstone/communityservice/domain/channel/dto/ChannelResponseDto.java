@@ -11,18 +11,9 @@ import lombok.Getter;
 @Getter
 @Builder
 public class ChannelResponseDto {
-    /*
-    return Channel.of(
-                findServer,
-                requestDto.getCategoryId(),
-                requestDto.getChannelType(),
-                requestDto.getName()
-        );
-     */
     @NotNull
     private Long channelId;
 
-    @NotNull
     private Long categoryId;
 
     @NotNull

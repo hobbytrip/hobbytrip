@@ -8,11 +8,14 @@ import capstone.communityservice.domain.dm.repository.DmRepository;
 import capstone.communityservice.domain.dm.repository.DmUserRepository;
 import capstone.communityservice.domain.user.entity.User;
 import capstone.communityservice.domain.user.service.UserQueryService;
+import capstone.communityservice.global.common.dto.kafka.CommunityDmEventDto;
+import capstone.communityservice.global.common.dto.kafka.CommunityServerEventDto;
 import capstone.communityservice.global.common.service.FileUploadService;
 import capstone.communityservice.global.exception.Code;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,6 +28,9 @@ import java.util.stream.Collectors;
 @Transactional
 @RequiredArgsConstructor
 public class DmCommandService {
+    private static final String dmKafkaTopic = "communityDmEventTopic";
+
+    private final KafkaTemplate<String, CommunityDmEventDto> dmKafkaTemplate;
 
     private final DmRepository dmRepository;
     private final DmUserRepository dmUserRepository;
@@ -42,6 +48,7 @@ public class DmCommandService {
         return DmResponseDto.of(newDm);
     }
 
+
     public DmResponseDto join(DmJoinRequestDto requestDto) {
         List<User> users = findUsers(requestDto.getUserIds());
         String dmName = createDmName(users);
@@ -58,6 +65,10 @@ public class DmCommandService {
     public DmResponseDto update(DmUpdateRequestDto requestDto) {
         Dm findDm = validateDm(requestDto.getDmId());
         findDm.setName(requestDto.getName());
+
+        dmKafkaTemplate.send(dmKafkaTopic, CommunityDmEventDto.of("dm-update", findDm));
+
+        printKafkaLog("update");
 
         return DmResponseDto.of(findDm);
     }
@@ -112,5 +123,9 @@ public class DmCommandService {
     private Dm validateDm(Long dmId){
         return dmRepository.findById(dmId)
                 .orElseThrow(() -> new DmException(Code.NOT_FOUND, "Not Found Dm"));
+    }
+
+    private void printKafkaLog(String type) {
+        log.info("Kafka event send about Dm {}", type);
     }
 }
