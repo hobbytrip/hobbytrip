@@ -18,6 +18,7 @@ const useUserStore = create((set) => ({
       console.log("Error updating user data:", error);
     }
   },
+  //유저 커뮤니티 회원가입
   postUserIdToCommunity: async () => {
     try {
       const { userId } = useUserStore.getState().user;
