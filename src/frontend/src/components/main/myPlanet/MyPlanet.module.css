@@ -1,77 +1,76 @@
 .wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    padding: 30px 0px;
-    gap: 10px;
-    height: calc(164 - 60px);
-    font-family: Pretendard;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  padding: 30px 0px;
+  gap: 15px;
 }
 
-.container h3 {
-    width: 316px;
-    height: 19px;
-    color: #FFFFFF;
-    font-weight: 700;
-    line-height: 19.09px;
-    text-align: left;
-    margin-bottom: 5px;
+.wrapper h3 {
+  height: 19px;
+  width: 316px;
+  color: #FFFFFF;
+  font-weight: 700;
+  line-height: 19.09px;
+  text-align: left;
+  margin-bottom: 15px;
+  font-family: "Pretendard"
 }
 
 .planetContainer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 15px;
-    border-radius: 30px;
-    background: #00000080;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: calc(326 - 30px);
+  padding: 12px 15px;
+  border-radius: 30px;
+  gap: 10px;
+  background: #00000080;
 }
 
 .leftBtn,
 .rightBtn {
-    width: 15px;
-    height: 15px;
-    background: none;
-    border: none;
-    margin: 10px;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  background: none;
+  border: none;
+  color: #D7D7D7;
+  padding: 0;
 }
 
 .leftBtn {
-    top: 30.62px;
-    left: 20px;
+  justify-content: flex-start; 
 }
 
-.rightBtn {
-    top: 19px;
-    left: 262.19px;
+.rightBtn{
+  justify-content: flex-end;
 }
 
 .planetList {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 246px;
-    height: 46px;
-    flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 246px;
+  height: 46px;
 }
 
 .planetList button {
-    width: 40px;
-    height: 40px;
-    padding: 3px 0px;   
-    margin-right: 10px;
-    border-radius: 300px;
-    border: 1px;
+  width: 40px;
+  height: 40px;
+  padding: 3px 0px;   
+  margin-right: 10px;
+  border-radius: 300px;
+  border: 1px;
 }
 
 .planetList .createPlanet {
-    align-items: center;
-    width: 46px;
-    height: 46px;
-    gap: 10px;
-    border-radius: 300px;
-    background-color: var(--dark-gray);
-    margin: 0;
+  align-items: center;
+  width: 46px;
+  height: 46px;
+  gap: 10px;
+  border-radius: 300px;
+  background-color: var(--dark-gray);
 }
-

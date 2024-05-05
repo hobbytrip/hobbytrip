@@ -1,0 +1,28 @@
+.wrapper {
+  display: flex;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+}
+.logo {
+  width: 240px;
+}
+.container {
+  width: 390px;
+  padding-left: 35px;
+  padding-right: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.contents {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+.description {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--main-purple);
+}

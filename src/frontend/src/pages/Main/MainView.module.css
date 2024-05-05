@@ -1,7 +1,0 @@
-.container {
-    display: flex; 
-    flex-direction: column;
-    background-color: var(--main-purple);
-    width: 390px;
-    height: 844px;
-}

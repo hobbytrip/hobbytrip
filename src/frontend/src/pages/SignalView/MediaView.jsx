@@ -1,7 +1,7 @@
-import Btn from '../../components/signal/ConnectionBtn/ConnectionBtn';
-import videoBtn from '../../components/signal/VideoComponent';
+import Btn from '../../components/Signal/ConnectionBtn/ConnectionBtn';
+import videoBtn from '../../components/Signal/VideoComponent';
 import useMediaConnectedStore from '../../actions/mediaState';
-import VideoComponent from '../../components/signal/VideoComponent';
+import VideoComponent from '../../components/Signal/VideoComponent';
 
 const MediaView = () => {
     const { mediaConnected } = useMediaConnectedStore(state => state);
