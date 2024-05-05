@@ -23,7 +23,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: calc(326 - 30px);
+  width: 296px;
   padding: 12px 15px;
   border-radius: 30px;
   gap: 10px;

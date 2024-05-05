@@ -8,9 +8,9 @@ const MainView = () => {
     <>
     <div className={style.wrapper}>
       <div className={style.container}>
-        <MainHeader className={style.mainHeader}/>
-        <MyPlanet className={style.myPlanet} />
-        <MyFriend className={style.myFriend} />
+        <MainHeader />
+        <MyPlanet />
+        <MyFriend />
       </div>
     </div>
     </>

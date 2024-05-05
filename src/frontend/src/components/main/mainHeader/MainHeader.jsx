@@ -5,6 +5,11 @@ import { useNavigate } from "react-router-dom";
 
 
 const SearchForm = () => {
+  // MyPlanet의 SearchForm과 동일한 클래스 이름으로 설정
+  // searchContainer: 검색창의 틀
+  // searchForm: 검색창 안의 input, button 범위
+  // searchInput: 검색창의 input
+  // searchBtn: 검색창의 돋보기 버튼
   return (
     <form>
       <div className={style.searchContainer}>
