@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useAxios from "../../../../utils/instance";
 import { AiOutlineClose } from "react-icons/ai";
-import useServerData from "../../../../hooks/getServerData";
+import useServerData from "../../../../hooks/useServerData";
 
 function CreateServer() {
   const [name, setName] = useState("");
@@ -42,7 +42,7 @@ function CreateServer() {
       if (response.status == 200) {
         const serverId = response.data.data.serverId;
         navigate(`/planet/${serverId}`); // 라우팅
-        useServerData(serverId, id); //customHook
+        // useServerData(serverId, id); //customHook
       } else {
         console.log("행성 만들기 실패.");
       }

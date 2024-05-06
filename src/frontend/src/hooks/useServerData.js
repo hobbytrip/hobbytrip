@@ -15,7 +15,7 @@ const useServerData = (serverId, userId) => {
     const fetchServerData = async () => {
       try {
         const response = await axios.get(
-          `/api/community/server/${serverId}/${userId}`
+          `/community/server/${serverId}/${userId}`
         );
         const responseData = response.data.data;
         setServerData({
