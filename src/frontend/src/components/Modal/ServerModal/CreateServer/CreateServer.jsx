@@ -1,8 +1,8 @@
 import s from "./CreateServer.module.css";
-import useUserStore from "../../../actions/useUserStore";
+import useUserStore from "../../../../actions/useUserStore";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useAxios from "../../../utils/instance";
+import useAxios from "../../../../utils/instance";
 import { AiOutlineClose } from "react-icons/ai";
 
 function CreateServer() {
@@ -16,8 +16,8 @@ function CreateServer() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // const id = useUserStore.getState().user.userId; //userId from userData
-      const id = 1; //test용
+      const id = useUserStore.getState().user.userId; //userId from userData
+      // const id = 1; //test용
       const formData = new FormData();
       formData.append(
         "requestDto",
