@@ -13,7 +13,7 @@ const useAuthStore = create((set, get) => {
 
     login: async (email, password) => {
       try {
-        const response = await axios.post("/login", {
+        const response = await axios.post("/user/login", {
           email,
           password,
         });

@@ -83,6 +83,7 @@ button {
   border-style: none;
   font-family: "Pretendard";
   cursor: pointer;
+  border-radius: 5px;
 }
 input {
   border-style: none;

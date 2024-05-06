@@ -38,11 +38,11 @@ function RegForm() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await axios.post("/users", form);
+      const response = await axios.post("/user/signup", form);
       setUserInfo({
-        ...response.data,
+        ...response.data.data,
       });
-      console.log("회원가입 성공:", response.data);
+      console.log("회원가입 성공:", response.data.data);
       navigate("/login");
     } catch (error) {
       console.error(
