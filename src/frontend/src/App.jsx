@@ -1,13 +1,12 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-// import StartView from "./components/StartView/StartView";
+import MainView from "./pages/MainView/MainView.jsx";
 
 function App() {
   return (
     <Router>
       <Routes>
-        {/* <Route path="/" element={<StartView />} /> */}
-        {/* <Route path="/login" element={<Login />} /> */}
+        <Route path="/main" element={<MainView />} />
       </Routes>
     </Router>
   );
