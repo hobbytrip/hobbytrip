@@ -4,6 +4,7 @@ import capstone.chatservice.domain.server.dto.ServerMessageDto;
 import capstone.chatservice.domain.server.dto.response.ServerMessageCreateResponse;
 import capstone.chatservice.domain.server.dto.response.ServerMessageDeleteResponse;
 import capstone.chatservice.domain.server.dto.response.ServerMessageModifyResponse;
+import capstone.chatservice.domain.server.dto.response.ServerMessageTypingResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -16,7 +17,6 @@ import org.springframework.stereotype.Component;
 public class ServerChatConsumer {
 
     private final SimpMessageSendingOperations messagingTemplate;
-
 
     @KafkaListener(topics = "${spring.kafka.topic.server-chat}", groupId = "${spring.kafka.consumer.group-id.server-chat}", containerFactory = "serverChatListenerContainerFactory")
     public void serverChatListener(ServerMessageDto messageDto) {
@@ -34,6 +34,10 @@ public class ServerChatConsumer {
             case "delete" -> {
                 ServerMessageDeleteResponse deleteResponse = ServerMessageDeleteResponse.from(messageDto);
                 messagingTemplate.convertAndSend("/topic/server/" + serverId, deleteResponse);
+            }
+            case "typing" -> {
+                ServerMessageTypingResponse typingResponse = ServerMessageTypingResponse.from(messageDto);
+                messagingTemplate.convertAndSend("/topic/server/" + serverId, typingResponse);
             }
         }
     }
