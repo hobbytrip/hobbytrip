@@ -47,13 +47,6 @@ public class ServerQueryService {
     private final ChannelRepository channelRepository;
     private final CategoryRepository categoryRepository;
 
-    public Server validateExistServer(Long serverId){
-        return serverRepository.findById(serverId)
-                .orElseThrow(() ->
-                        new ServerException(Code.NOT_FOUND, "Server Not Found")
-                );
-    }
-
     public ServerReadResponseDto read(Long serverId, Long userId) {
         Server findServer = validateExistServer(serverId);
 
@@ -61,7 +54,7 @@ public class ServerQueryService {
 
         List<Long> userIds = serverUserRepository.findUserIdsByServerId(serverId);
 
-        ServerUserStateResponseDto usersOnOff = stateServiceFakeClient.checkOnOff(
+        ServerUserStateResponseDto usersOnOff = stateServiceFakeClient.checkServerOnOff(
                 ServerUserStateRequestDto.of(serverId, userIds)
         );
 
@@ -69,7 +62,7 @@ public class ServerQueryService {
         // ServerUserLocDto userLocation = stateServiceClient.userLocation(userId);
         ServerUserLocDto userLocation = stateServiceFakeClient.userLocation(userId);
 
-        Page<ServerMessageDto> messages = chatServiceFakeClient.getMessages(
+        Page<ServerMessageDto> messages = chatServiceFakeClient.getServerMessages(
                 userLocation.getChannelId()
         );
 
@@ -114,6 +107,13 @@ public class ServerQueryService {
         if(!managerId.equals(userId)){
             throw new ServerException(Code.UNAUTHORIZED, "Not Manager");
         }
+    }
+
+    public Server validateExistServer(Long serverId){
+        return serverRepository.findById(serverId)
+                .orElseThrow(() ->
+                        new ServerException(Code.NOT_FOUND, "Server Not Found")
+                );
     }
 
     private void validateServerUser(Long serverId, Long userId) {

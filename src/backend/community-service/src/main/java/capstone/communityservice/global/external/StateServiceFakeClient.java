@@ -1,8 +1,6 @@
 package capstone.communityservice.global.external;
 
-import capstone.communityservice.global.external.dto.ServerUserLocDto;
-import capstone.communityservice.global.external.dto.ServerUserStateRequestDto;
-import capstone.communityservice.global.external.dto.ServerUserStateResponseDto;
+import capstone.communityservice.global.external.dto.*;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -13,7 +11,7 @@ import java.util.Set;
 @Component
 public class StateServiceFakeClient {
 
-    public ServerUserStateResponseDto checkOnOff(ServerUserStateRequestDto requestDto){
+    public ServerUserStateResponseDto checkServerOnOff(ServerUserStateRequestDto requestDto){
 //        Map<Long, String> connectionStates;
 //        Map<String, Set<String>> channelStates;
         Map<Long, String> connectionStates = new HashMap<>();
@@ -30,6 +28,22 @@ public class StateServiceFakeClient {
         }
 
         return new ServerUserStateResponseDto(connectionStates, channelStates);
+    }
+
+    public DmUserStateResponseDto checkDmOnOff(DmUserStateRequestDto requestDto){
+        Map<Long, String> connectionStates = new HashMap<>();
+
+        List<Long> userIds = requestDto.getUserIds();
+
+        for(Long userId : userIds){
+            if(userId % 2 == 1){
+                connectionStates.put(userId, "online");
+            } else{
+                connectionStates.put(userId, "offline");
+            }
+        }
+
+        return new DmUserStateResponseDto(connectionStates);
     }
 
     public ServerUserLocDto userLocation(Long userId){
