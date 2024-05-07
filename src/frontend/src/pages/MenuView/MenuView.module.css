@@ -1,0 +1,24 @@
+.wrapper {
+  display: flex; 
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #FFFFFF;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 844px;
+  padding: 0px 30px;
+}
+
+.logo {
+  display: flex;
+  justify-content: center;
+}
+
+.logo img {
+  width: 148px;
+  height: 95px;
+}
