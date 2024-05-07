@@ -4,6 +4,7 @@ import capstone.chatservice.domain.forum.dto.ForumMessageDto;
 import capstone.chatservice.domain.forum.dto.response.ForumMessageCreateResponse;
 import capstone.chatservice.domain.forum.dto.response.ForumMessageDeleteResponse;
 import capstone.chatservice.domain.forum.dto.response.ForumMessageModifyResponse;
+import capstone.chatservice.domain.forum.dto.response.ForumMessageTypingResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -33,6 +34,10 @@ public class ForumChatConsumer {
             case "delete" -> {
                 ForumMessageDeleteResponse deleteResponse = ForumMessageDeleteResponse.from(messageDto);
                 messagingTemplate.convertAndSend("/topic/server/" + serverId, deleteResponse);
+            }
+            case "typing" -> {
+                ForumMessageTypingResponse typingResponse = ForumMessageTypingResponse.from(messageDto);
+                messagingTemplate.convertAndSend("/topic/server/" + serverId, typingResponse);
             }
         }
     }

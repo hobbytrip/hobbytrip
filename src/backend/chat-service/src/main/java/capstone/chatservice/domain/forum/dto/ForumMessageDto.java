@@ -2,6 +2,7 @@ package capstone.chatservice.domain.forum.dto;
 
 import capstone.chatservice.domain.emoji.dto.EmojiDto;
 import capstone.chatservice.domain.forum.domain.ForumMessage;
+import capstone.chatservice.domain.forum.dto.request.ForumMessageTypingRequest;
 import capstone.chatservice.domain.model.UploadFile;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -51,6 +52,27 @@ public class ForumMessageDto {
                 null,
                 message.getCreatedAt(),
                 message.getModifiedAt()
+        );
+    }
+
+    public static ForumMessageDto from(ForumMessageTypingRequest typingRequest) {
+        return new ForumMessageDto(
+                null,
+                typingRequest.getForumId(),
+                typingRequest.getServerId(),
+                null,
+                null,
+                null,
+                0L,
+                null,
+                typingRequest.getType(),
+                typingRequest.getWriter(),
+                null,
+                false,
+                null,
+                null,
+                null,
+                null
         );
     }
 }
