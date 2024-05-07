@@ -4,19 +4,19 @@ import com.capstone.userservice.domain.friend.entity.FriendshipStatus;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Data
 @Builder
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class WaitingFriendListResponse {
-
-    private Long friendshipId;
+public class FriendshipResponse {
+    private Long id;
+    private String userEmail;
     private String friendEmail;
     private FriendshipStatus status;
-    private String imageUrl;
-
+    private Boolean isFrom;
+    private Long user;
 
 }

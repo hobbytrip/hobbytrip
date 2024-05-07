@@ -3,6 +3,8 @@ package com.capstone.userservice.domain.friend.entity;
 
 import com.capstone.userservice.domain.user.entity.User;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -27,10 +29,11 @@ public class Friendship {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User users;
+    private User user;
 
     private String userEmail;
     private String friendEmail;
+    @Enumerated(EnumType.STRING)
     private FriendshipStatus status;
     private boolean isFrom;
 
