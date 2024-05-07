@@ -1,11 +1,11 @@
 .wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
   height: 48px;
   width: 330px;
   padding: 10px 0px;
   gap: 250px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
 }
 
 .exitBtn {

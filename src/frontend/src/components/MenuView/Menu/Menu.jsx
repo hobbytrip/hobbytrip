@@ -5,7 +5,15 @@ import { FaBell } from "react-icons/fa";
 import { ImExit } from "react-icons/im";
 import { IoSettings, IoCheckmarkCircleOutline, IoCheckmarkCircle } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
+// IoCheckmarkCircleOutline - 체크 안 했을 때 (비어있음)
+// IoCheckmarkCircle - 체크 했을 때 (색 채워짐)
+// 용으로 일단 같이 받아놨는데 편한대로 사용하거나 삭제해주세용
 
+
+// userContainer: 유저의 큰 틀 - 높이, 넓이, 패딩 맞춤용
+// user: 유저의 작은 틀
+// imgContainer: 유저 이미지 - 임의로 default-logo 삽입
+// userData: 유저 이름, 상태 담는 틀
 const User = () => {
   return(
     <>
@@ -24,6 +32,9 @@ const User = () => {
   )
 }
 
+// menuListWrapper: 메뉴 리스트를 담는 틀 
+// icon: 아이콘 크기, 색 설정용 클래스
+// alarm: 알람 설정 - 다른 건 button으로 했는데 div로 구현
 const MenuList = () => {
   const navigate = useNavigate();
   
@@ -61,6 +72,9 @@ const MenuList = () => {
   )
 }
 
+// wrapper: 유저 & 메뉴 창의 틀
+// User: 유저 사진, 이름, 상태
+// MenuList: 홈, 공개 행성 등의 메뉴 리스트
 const Menu = () =>{
   return(
     <div className={style.wrapper}>

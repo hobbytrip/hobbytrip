@@ -7,9 +7,9 @@
 }
 
 .container {
-  height: 844px;
   display: flex;
   flex-direction: column;
+  height: 844px;
   padding: 0px 30px;
 }
 
