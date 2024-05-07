@@ -4,6 +4,7 @@ import capstone.chatservice.domain.dm.dto.DirectMessageDto;
 import capstone.chatservice.domain.dm.dto.response.DirectMessageCreateResponse;
 import capstone.chatservice.domain.dm.dto.response.DirectMessageDeleteResponse;
 import capstone.chatservice.domain.dm.dto.response.DirectMessageModifyResponse;
+import capstone.chatservice.domain.dm.dto.response.DirectMessageTypingResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -33,6 +34,10 @@ public class DirectChatConsumer {
             case "delete" -> {
                 DirectMessageDeleteResponse deleteResponse = DirectMessageDeleteResponse.from(messageDto);
                 messagingTemplate.convertAndSend("/topic/direct/" + dmRoomId, deleteResponse);
+            }
+            case "typing" -> {
+                DirectMessageTypingResponse typingResponse = DirectMessageTypingResponse.from(messageDto);
+                messagingTemplate.convertAndSend("/topic/direct/" + dmRoomId, typingResponse);
             }
         }
     }

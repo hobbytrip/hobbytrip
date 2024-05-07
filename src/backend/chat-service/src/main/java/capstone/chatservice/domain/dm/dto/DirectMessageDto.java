@@ -1,6 +1,7 @@
 package capstone.chatservice.domain.dm.dto;
 
 import capstone.chatservice.domain.dm.domain.DirectMessage;
+import capstone.chatservice.domain.dm.dto.request.DirectMessageTypingRequest;
 import capstone.chatservice.domain.emoji.dto.EmojiDto;
 import capstone.chatservice.domain.model.UploadFile;
 import java.time.LocalDateTime;
@@ -47,6 +48,25 @@ public class DirectMessageDto {
                 null,
                 message.getCreatedAt(),
                 message.getModifiedAt()
+        );
+    }
+
+    public static DirectMessageDto from(DirectMessageTypingRequest typingRequest) {
+        return new DirectMessageDto(
+                null,
+                null,
+                typingRequest.getDmRoomId(),
+                null,
+                0L,
+                null,
+                typingRequest.getType(),
+                typingRequest.getWriter(),
+                null,
+                false,
+                null,
+                null,
+                null,
+                null
         );
     }
 }
