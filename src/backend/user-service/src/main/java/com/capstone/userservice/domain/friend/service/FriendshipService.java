@@ -25,7 +25,7 @@ public class FriendshipService {
     private final TokenUtil tokenUtil;
 
     @Transactional
-    public Boolean createFriendship(String token, String toEmail) {
+    public String createFriendship(String token, String toEmail) {
         try {
             //현재 로그인 되어 있는 사람 확인
             String fromEmail = tokenUtil.getEmail(token);
@@ -65,9 +65,9 @@ public class FriendshipService {
             friendshipTo.setCounterpartId(friendshipFrom.getId());
             friendshipFrom.setCounterpartId(friendshipTo.getId());
 
-            return true;
+            return "ok";
         } catch (Exception e) {
-            return false;
+            return "친구 요청 실패";
         }
     }
 
@@ -78,7 +78,6 @@ public class FriendshipService {
         User user = userRepository.findById(userId).orElseThrow(()
                 -> new FriendException(Code.NOT_FOUND, "회원 조회를 실패했습니다."));
         List<Friendship> friendshipList = user.getFriendshipList();
-
         List<WaitingFriendListResponse> result = new ArrayList<>();
 
         for (Friendship x : friendshipList) {
@@ -110,6 +109,22 @@ public class FriendshipService {
         //둘다 상태를 ACCEPT로 변경
         friendship.acceptFriendshipRequest();
         counterFriendship.acceptFriendshipRequest();
+
+        return "ok";
+    }
+
+    @Transactional
+    public String deleteFriendship(Long friendshipId) {
+        // 누른 친구 요청과 매칭되는 상대방 친구 요청을 둘 다 가져온다.
+        Friendship friendship = friendshipRepository.findById(friendshipId).orElseThrow(() ->
+                new FriendException(Code.NOT_FOUND, "친구 요청 조회를 실패했습니다."));
+        Friendship counterFriendship = friendshipRepository.findById(friendship.getCounterpartId())
+                .orElseThrow(() ->
+                        new FriendException(Code.NOT_FOUND, "친구 요청 조회를 실패했습니다."));
+
+        //둘다 삭제
+        friendshipRepository.delete(friendship);
+        friendshipRepository.delete(counterFriendship);
 
         return "ok";
     }

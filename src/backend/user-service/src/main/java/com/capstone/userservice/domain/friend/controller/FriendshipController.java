@@ -35,5 +35,10 @@ public class FriendshipController {
         String token = request.getHeader(Header);
         return DataResponseDto.of(friendshipService.getWaitingFriendList(token));
     }
+
+    @PostMapping("/delete/{friendshipId}")
+    public DataResponseDto<Object> deleteFriendship(@Valid @PathVariable("friendshipId") Long friendshipId) {
+        return DataResponseDto.of(friendshipService.deleteFriendship(friendshipId));
+    }
 }
 
