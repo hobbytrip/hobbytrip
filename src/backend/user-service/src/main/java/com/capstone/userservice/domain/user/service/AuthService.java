@@ -1,8 +1,8 @@
 package com.capstone.userservice.domain.user.service;
 
 
-import com.capstone.userservice.domain.user.dto.TokenRequest;
-import com.capstone.userservice.domain.user.dto.UserRequest;
+import com.capstone.userservice.domain.user.dto.request.TokenRequest;
+import com.capstone.userservice.domain.user.dto.request.UserRequest;
 import com.capstone.userservice.domain.user.exception.UserException;
 import com.capstone.userservice.global.common.dto.TokenDto;
 import com.capstone.userservice.global.common.entity.RefreshToken;

@@ -1,4 +1,4 @@
-package com.capstone.userservice.domain.user.dto;
+package com.capstone.userservice.domain.user.dto.response;
 
 
 import com.capstone.userservice.domain.user.entity.User;

@@ -1,10 +1,10 @@
 package com.capstone.userservice.domain.user.service;
 
 
-import com.capstone.userservice.domain.user.dto.TokenRequest;
-import com.capstone.userservice.domain.user.dto.UserDeleteRequest;
-import com.capstone.userservice.domain.user.dto.UserRequest;
-import com.capstone.userservice.domain.user.dto.UserResponse;
+import com.capstone.userservice.domain.user.dto.request.TokenRequest;
+import com.capstone.userservice.domain.user.dto.request.UserDeleteRequest;
+import com.capstone.userservice.domain.user.dto.request.UserRequest;
+import com.capstone.userservice.domain.user.dto.response.UserResponse;
 import com.capstone.userservice.domain.user.entity.User;
 import com.capstone.userservice.domain.user.exception.UserException;
 import com.capstone.userservice.domain.user.repository.UserRepository;
@@ -53,8 +53,6 @@ public class UserService {
 
             // 3. 인증 정보를 기반으로 JWT 토큰 생성
             TokenDto tokenDto = tokenUtil.generateToken(userRequest, authentication);
-
-            // 4. RefreshToken 저장
 
             // 4. RefreshToken 저장
             RefreshToken refreshToken = RefreshToken.builder()
