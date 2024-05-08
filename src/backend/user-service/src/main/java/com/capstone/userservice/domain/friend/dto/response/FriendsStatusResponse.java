@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserFriendsStatusResponse {
+public class FriendsStatusResponse {
     private List<FriendStatusDto> friendsStatus;
 }

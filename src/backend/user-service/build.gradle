@@ -61,6 +61,8 @@ dependencies {
     implementation 'org.springframework.kafka:spring-kafka'
     testImplementation 'org.springframework.kafka:spring-kafka-test'
 
+    //feign client
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.0.2'
 }
 
 tasks.named('test') {
