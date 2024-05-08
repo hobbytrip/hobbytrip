@@ -6,6 +6,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class UserStatusConsumer {
-    
+public class FriendStatusConsumer {
+
 }

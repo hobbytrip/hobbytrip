@@ -1,7 +1,7 @@
 package com.capstone.userservice.global.config;
 
 
-import com.capstone.userservice.global.common.dto.kafka.UserStatusEventDto;
+import com.capstone.userservice.global.common.dto.kafka.FriendStatusEventDto;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -33,12 +33,12 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public ProducerFactory<String, UserStatusEventDto> userServerEventProducerFactory() {
+    public ProducerFactory<String, FriendStatusEventDto> userServerEventProducerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfig());
     }
 
     @Bean
-    public KafkaTemplate<String, UserStatusEventDto> userServerEventKafkaTemplate() {
+    public KafkaTemplate<String, FriendStatusEventDto> userServerEventKafkaTemplate() {
         return new KafkaTemplate<>(userServerEventProducerFactory());
     }
 }

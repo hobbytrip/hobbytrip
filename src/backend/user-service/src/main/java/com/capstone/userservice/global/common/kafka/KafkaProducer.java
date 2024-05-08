@@ -1,7 +1,7 @@
 package com.capstone.userservice.global.common.kafka;
 
 
-import com.capstone.userservice.global.common.dto.kafka.UserStatusEventDto;
+import com.capstone.userservice.global.common.dto.kafka.FriendStatusEventDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -13,9 +13,9 @@ public class KafkaProducer {
     @Value("${spring.kafka.topic.user-status}")
     private String userStatusTopic;
 
-    private final KafkaTemplate<String, UserStatusEventDto> userStatusTemplate;
+    private final KafkaTemplate<String, FriendStatusEventDto> userStatusTemplate;
 
-    public void sendToUserStatusTopic(UserStatusEventDto userStatusEventDto) {
-        userStatusTemplate.send(userStatusTopic, userStatusEventDto);
+    public void sendToUserStatusTopic(FriendStatusEventDto friendStatusEventDto) {
+        userStatusTemplate.send(userStatusTopic, friendStatusEventDto);
     }
 }

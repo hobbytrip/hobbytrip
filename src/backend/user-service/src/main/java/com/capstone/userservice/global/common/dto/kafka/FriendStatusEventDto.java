@@ -15,12 +15,12 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserStatusEventDto {
+public class FriendStatusEventDto {
     private Long userId;
     private List<Long> friendshipId;
 
-    public static UserStatusEventDto from(User user) {
-        return UserStatusEventDto.builder()
+    public static FriendStatusEventDto from(User user) {
+        return FriendStatusEventDto.builder()
                 .friendshipId(user.getFriendshipList().stream()
                         .map(Friendship::getId)
                         .collect(Collectors.toList()))
