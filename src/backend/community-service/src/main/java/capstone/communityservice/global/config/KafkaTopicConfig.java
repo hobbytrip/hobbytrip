@@ -71,11 +71,11 @@ public class KafkaTopicConfig {
                 .build();
     }
 
-//    @Bean
-//    public NewTopic communityForumEventTopic() {
-//        return TopicBuilder.name(communityForumEventTopic)
-//                .partitions(1)
-//                .replicas(1)
-//                .build();
-//    }
+    @Bean
+    public NewTopic communityForumEventTopic() {
+        return TopicBuilder.name(communityForumEventTopic)
+                .partitions(1)
+                .replicas(1)
+                .build();
+    }
 }

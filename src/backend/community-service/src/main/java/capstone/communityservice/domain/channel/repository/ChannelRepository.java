@@ -10,4 +10,11 @@ public interface ChannelRepository extends JpaRepository<Channel, Long> {
 
     @Query("select c from Channel c where c.server.id = :serverId")
     List<Channel> findByServerId(Long serverId);
+
+
+    @Query(value = "select s.manager_id " +
+            "from channel c inner join server s on c.server_id = s.server_id " +
+            "where c.channel_id = :channelId",
+            nativeQuery = true)
+    Long validateChannelManager(Long channelId);
 }

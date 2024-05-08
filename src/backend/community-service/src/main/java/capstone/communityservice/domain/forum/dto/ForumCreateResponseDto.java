@@ -15,11 +15,13 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class ForumCreateResponseDto {
+    private Long forumId;
+
     private Long channelId;
 
     private String title;
 
-    private String userName;
+    private String writer;
 
     private String content;
 
@@ -30,9 +32,10 @@ public class ForumCreateResponseDto {
 
     public static ForumCreateResponseDto of(Forum forum, String userName){
         return ForumCreateResponseDto.builder()
+                .forumId(forum.getId())
                 .channelId(forum.getChannelId())
                 .title(forum.getTitle())
-                .userName(userName)
+                .writer(userName)
                 .content(forum.getContent())
                 .createAt(forum.getCreatedAt())
                 .updateAt(forum.getUpdatedAt())

@@ -74,6 +74,22 @@ public class ForumCommandService {
         return ForumUpdateResponseDto.of(findForum, files);
     }
 
+    public void delete(ForumDeleteRequestDto requestDto){
+        Forum findForum = validateExistForum(requestDto.getForumId());
+
+        validateDelete(findForum, requestDto.getUserId(), requestDto.getChannelId());
+
+        forumRepository.delete(findForum);
+    }
+
+    private void validateDelete(Forum forum, Long userId, Long channelId) {
+        if(!Objects.equals(forum.getUserId(), userId) &&
+                 !channelRepository.validateChannelManager(channelId).equals(userId)
+        ){
+            throw new ForumException(Code.VALIDATION_ERROR, "Not Forum Owner");
+        }
+    }
+
     private List<File> updateFiles(List<Long> filesId, List<MultipartFile> fileList, Forum forum) {
         if(filesId != null){
             fileRepository.deleteAll(
@@ -84,6 +100,7 @@ public class ForumCommandService {
 
             return files;
         }
+        return null;
     }
 
     private void validateExistChannel(Long channelId){
@@ -103,8 +120,6 @@ public class ForumCommandService {
     private void validateOwnerUser(Forum forum, Long userId){
         if(!Objects.equals(forum.getUserId(), userId)){
             throw new ForumException(Code.VALIDATION_ERROR, "Not Forum Owner");
-        } else{
-            userQueryService.findUserByOriginalId(userId);
         }
     }
 

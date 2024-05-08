@@ -1,8 +1,5 @@
 package capstone.communityservice.domain.forum.entity;
 
-import capstone.communityservice.domain.channel.entity.Channel;
-import capstone.communityservice.domain.server.entity.Server;
-import capstone.communityservice.domain.server.entity.ServerUser;
 import capstone.communityservice.global.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -37,6 +34,9 @@ public class Forum extends BaseTimeEntity {
 
     @Column(nullable = false)
     private String content;
+
+    @Column(nullable = false)
+    private boolean deleted = Boolean.FALSE;
 
     @OneToMany(mappedBy = "forum", orphanRemoval = true)
     private List<File> files = new ArrayList<>();

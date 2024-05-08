@@ -1,12 +1,7 @@
 package capstone.communityservice.domain.forum.controller;
 
-import capstone.communityservice.domain.forum.dto.ForumCreateRequestDto;
-import capstone.communityservice.domain.forum.dto.ForumCreateResponseDto;
-import capstone.communityservice.domain.forum.dto.ForumUpdateRequestDto;
-import capstone.communityservice.domain.forum.dto.ForumUpdateResponseDto;
+import capstone.communityservice.domain.forum.dto.*;
 import capstone.communityservice.domain.forum.service.ForumCommandService;
-import capstone.communityservice.domain.server.dto.ServerCreateRequestDto;
-import capstone.communityservice.domain.server.dto.ServerResponseDto;
 import capstone.communityservice.global.common.dto.DataResponseDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +36,13 @@ public class ForumCommandController {
         ForumUpdateResponseDto response = forumCommandService.update(requestDto, filesId, files);
 
         return DataResponseDto.of(response);
+    }
+
+    @DeleteMapping
+    public DataResponseDto<Object> delete(@RequestBody ForumDeleteRequestDto requestDto){
+        forumCommandService.delete(requestDto);
+
+        return DataResponseDto.of("Forum delete success!!");
     }
 
 }

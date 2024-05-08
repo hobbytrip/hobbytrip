@@ -19,6 +19,6 @@ public class Emoji {
     @JoinColumn(name = "forum_id", nullable = false)
     private Forum forum;
 
-    @Column(columnDefinition = "VARCHAR(8) CHARACTER SET utf8mb4")
+    @Column(nullable = false)
     private String emojiType;
 }
