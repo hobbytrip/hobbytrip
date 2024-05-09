@@ -52,20 +52,20 @@ public class ServerQueryService {
 
         validateServerUser(serverId, userId);
 
-        List<Long> userIds = serverUserRepository.findUserIdsByServerId(serverId);
-
-        ServerUserStateResponseDto usersOnOff = stateServiceFakeClient.checkServerOnOff(
-                ServerUserStateRequestDto.of(serverId, userIds)
-        );
+        ServerUserStateResponseDto usersOnOff = getUsersOnOff(serverId);
 
         // 유저 최근 채널 위치 불러오는 로직
-        // ServerUserLocDto userLocation = stateServiceClient.userLocation(userId);
-        ServerUserLocDto userLocation = stateServiceFakeClient.userLocation(userId);
+        Page<ServerMessageDto> messages = getMessages(userId);
 
-        Page<ServerMessageDto> messages = chatServiceFakeClient.getServerMessages(
-                userLocation.getChannelId()
+        return createServerReadResponseDto(
+                serverId,
+                findServer,
+                usersOnOff,
+                messages
         );
+    }
 
+    private ServerReadResponseDto createServerReadResponseDto(Long serverId, Server findServer, ServerUserStateResponseDto usersOnOff, Page<ServerMessageDto> messages) {
         List<ChannelResponseDto> channels = channelRepository.findByServerId(serverId)
                 .stream()
                 .map(ChannelResponseDto::of)
@@ -101,6 +101,25 @@ public class ServerQueryService {
         Page<Server> servers = serverRepository.findServerWithPaging(name, pageable);
 
         return PageResponseDto.of(servers, ServerWithCountResponseDto::of);
+    }
+
+    private ServerUserStateResponseDto getUsersOnOff(Long serverId) {
+        List<Long> userIds = serverUserRepository.findUserIdsByServerId(serverId);
+
+        ServerUserStateResponseDto usersOnOff = stateServiceFakeClient.checkServerOnOff(
+                ServerUserStateRequestDto.of(serverId, userIds)
+        );
+        return usersOnOff;
+    }
+
+    private Page<ServerMessageDto> getMessages(Long userId) {
+        // ServerUserLocDto userLocation = stateServiceClient.userLocation(userId);
+        ServerUserLocDto userLocation = stateServiceFakeClient.userLocation(userId);
+
+        Page<ServerMessageDto> messages = chatServiceFakeClient.getServerMessages(
+                userLocation.getChannelId()
+        );
+        return messages;
     }
 
     public void validateManager(Long managerId, Long userId){

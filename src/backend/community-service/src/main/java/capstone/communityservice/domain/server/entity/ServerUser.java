@@ -3,6 +3,7 @@ package capstone.communityservice.domain.server.entity;
 import capstone.communityservice.domain.server.dto.ServerUserCreateRequestDto;
 import capstone.communityservice.domain.user.entity.User;
 import capstone.communityservice.global.common.entity.BaseTimeEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;

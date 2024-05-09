@@ -19,9 +19,9 @@ public interface ServerRepository extends JpaRepository<Server, Long> {
             nativeQuery = true)
     List<Server> findTopOpenServer();
 
-    @Query("select distinct(s) from Server s join fetch s.serverUsers where s.name like CONCAT('%', :name, '%')")
+    @Query("select s from Server s where s.name like CONCAT('%', :name, '%') and s.open = true")
     Page<Server> findServerWithPaging(String name, Pageable pageable);
 
-    @Query("select distinct(s) from Server s join fetch s.serverUsers su where su.user.id = :userId")
+    @Query("select distinct(s) from Server s join fetch s.serverUsers su where su.user.id = :userId and s.deleted = false")
     List<Server> findServersWithUserId(Long userId);
 }
