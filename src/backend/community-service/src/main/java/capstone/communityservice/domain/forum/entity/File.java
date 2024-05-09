@@ -1,5 +1,6 @@
 package capstone.communityservice.domain.forum.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
@@ -18,6 +19,7 @@ public class File {
     @Column(name = "file_id")
     private Long id;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "forum_id", nullable = false)
     private Forum forum;

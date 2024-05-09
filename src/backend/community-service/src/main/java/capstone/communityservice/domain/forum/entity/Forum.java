@@ -1,5 +1,6 @@
 package capstone.communityservice.domain.forum.entity;
 
+import capstone.communityservice.domain.user.entity.User;
 import capstone.communityservice.global.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -29,8 +30,9 @@ public class Forum extends BaseTimeEntity {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false, updatable = false)
-    private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Column(nullable = false)
     private String content;
@@ -50,12 +52,12 @@ public class Forum extends BaseTimeEntity {
 
     //===생성 메서드===//
 
-    public static Forum of(Long channelId, String title, Long userId, String content){
+    public static Forum of(Long channelId, String title, User user, String content){
         Forum forum = new Forum();
 
         forum.setChannelId(channelId);
         forum.setTitle(title);
-        forum.setUserId(userId);
+        forum.setUser(user);
         forum.setContent(content);
 
         return forum;
@@ -70,8 +72,8 @@ public class Forum extends BaseTimeEntity {
         this.title = title;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public void setContent(String content) {

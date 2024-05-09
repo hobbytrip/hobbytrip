@@ -7,6 +7,12 @@ import lombok.Getter;
 @Getter
 public class ForumUpdateRequestDto {
     @NotNull
+    private Long serverId;
+
+    @NotNull
+    private Long channelId;
+
+    @NotNull
     private Long forumId;
 
     @NotBlank

@@ -6,6 +6,9 @@ import lombok.Getter;
 @Getter
 public class ForumDeleteRequestDto {
     @NotNull
+    private Long serverId;
+
+    @NotNull
     private Long channelId;
 
     @NotNull
