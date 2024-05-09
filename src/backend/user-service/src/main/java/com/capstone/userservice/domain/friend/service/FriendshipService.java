@@ -1,6 +1,8 @@
 package com.capstone.userservice.domain.friend.service;
 
 
+import com.capstone.userservice.domain.friend.dto.FriendStatusDto;
+import com.capstone.userservice.domain.friend.dto.response.FriendsStatusResponse;
 import com.capstone.userservice.domain.friend.dto.response.WaitingFriendListResponse;
 import com.capstone.userservice.domain.friend.entity.Friendship;
 import com.capstone.userservice.domain.friend.entity.FriendshipStatus;
@@ -8,10 +10,12 @@ import com.capstone.userservice.domain.friend.exception.FriendException;
 import com.capstone.userservice.domain.friend.repository.FriendshipRepository;
 import com.capstone.userservice.domain.user.entity.User;
 import com.capstone.userservice.domain.user.repository.UserRepository;
+import com.capstone.userservice.global.common.dto.kafka.FriendReadResponse;
 import com.capstone.userservice.global.exception.Code;
 import com.capstone.userservice.global.util.TokenUtil;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +27,7 @@ public class FriendshipService {
     private final UserRepository userRepository;
     private final FriendshipRepository friendshipRepository;
     private final TokenUtil tokenUtil;
+    private final FriendsStatusClient friendsStatusClient;
 
     @Transactional
     public String createFriendship(String token, String toEmail) {
@@ -81,7 +86,7 @@ public class FriendshipService {
         List<WaitingFriendListResponse> result = new ArrayList<>();
 
         for (Friendship x : friendshipList) {
-            //요청을 받았으면서 수락 대기 중인 요청만 조회
+            //받은 요청이면서 수락 대기 중인 요청만 조회
             if (x.isFrom() && x.getStatus() == FriendshipStatus.WAITING) {
                 User friend = userRepository.findByEmail(x.getFriendEmail()).orElseThrow(()
                         -> new FriendException(Code.NOT_FOUND, "회원 조회를 실패했습니다."));
@@ -94,6 +99,39 @@ public class FriendshipService {
                 result.add(response);
             }
         }
+        return result;
+    }
+
+    @Transactional
+    public List<FriendReadResponse> getFriendList(String token) {
+        Long userId = tokenUtil.getUserId(token);
+
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new FriendException(Code.NOT_FOUND, "회원 조회를 실패했습니다."));
+        List<Friendship> friendshipList = user.getFriendshipList();
+
+        FriendsStatusResponse friendStatus = friendsStatusClient.getFriendStatus(userId);
+
+        List<FriendReadResponse> result = friendshipList.stream()
+                //받은 요청이면서 승인 된 요청만
+                .filter(f -> f.isFrom() && f.getStatus() == FriendshipStatus.ACCEPT)
+                .map(f -> {
+                    User friend = userRepository.findByEmail(f.getFriendEmail()).orElseThrow(() ->
+                            new FriendException(Code.NOT_FOUND, "회원 조회를 실패했습니다."));
+
+                    FriendStatusDto status = friendStatus.getFriendsStatus().stream()
+                            .filter(s -> s.getFriendId().equals(friend.getUserId()))
+                            .findFirst()
+                            .orElse(null);
+
+                    return FriendReadResponse.builder()
+                            .userId(userId)
+                            .friendId(status.getFriendId())
+                            .friendImageUrl(friend.getProfileImage())
+                            .friendName(friend.getUsername())
+                            .isOffline(status.getIsOffline())
+                            .build();
+                }).collect(Collectors.toList());
         return result;
     }
 

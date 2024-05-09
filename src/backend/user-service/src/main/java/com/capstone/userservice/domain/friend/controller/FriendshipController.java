@@ -30,6 +30,12 @@ public class FriendshipController {
         return DataResponseDto.of(friendshipService.approveFriendship(friendshipId));
     }
 
+    @GetMapping("/friendList")
+    public DataResponseDto<Object> getFriendList(HttpServletRequest request) {
+        String token = request.getHeader(Header);
+        return DataResponseDto.of(friendshipService.getFriendList(token));
+    }
+
     @GetMapping("/received")
     public DataResponseDto<Object> getWaitingFriendInfo(HttpServletRequest request) {
         String token = request.getHeader(Header);

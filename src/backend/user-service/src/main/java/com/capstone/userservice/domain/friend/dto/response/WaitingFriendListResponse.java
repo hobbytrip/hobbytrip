@@ -17,6 +17,4 @@ public class WaitingFriendListResponse {
     private String friendEmail;
     private FriendshipStatus status;
     private String imageUrl;
-
-
 }
