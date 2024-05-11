@@ -40,7 +40,7 @@ function CreateServer() {
         },
       });
       if (response.status == 200) {
-        const serverId = response.data.data.serverId;
+        const serverId = response.data.serverId;
         navigate(`/planet/${serverId}`); // 라우팅
         // useServerData(serverId, id); //customHook
       } else {

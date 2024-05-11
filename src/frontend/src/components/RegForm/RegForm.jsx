@@ -40,9 +40,9 @@ function RegForm() {
     try {
       const response = await axios.post("/user/signup", form);
       setUserInfo({
-        ...response.data.data,
+        ...response.data,
       });
-      console.log("회원가입 성공:", response.data.data);
+      console.log("회원가입 성공:", response.data);
       navigate("/login");
     } catch (error) {
       console.error(

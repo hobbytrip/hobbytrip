@@ -20,8 +20,8 @@ function UserProfileView() {
       try {
         const response = await axios.get("/user/profile");
         if (response.status == 200) {
-          setUserInfo(response.data.data);
-          console.log(response.data.data);
+          setUserInfo(response.data);
+          console.log(response.data);
         } else {
           console.error("No user data returned");
         }

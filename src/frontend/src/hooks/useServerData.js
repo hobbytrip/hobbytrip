@@ -17,7 +17,7 @@ const useServerData = (serverId, userId) => {
         const response = await axios.get(
           `/community/server/${serverId}/${userId}`
         );
-        const responseData = response.data.data;
+        const responseData = response.data;
         setServerData({
           serverInfo: responseData.server,
           serverCategories: responseData.categories,
