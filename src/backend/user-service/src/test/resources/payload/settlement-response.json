@@ -1,0 +1,18 @@
+[
+  {
+    "friendId": 6,
+    "isOffline": true
+  },
+  {
+    "friendId": 7,
+    "isOffline": true
+  },
+  {
+    "friendId": 8,
+    "isOffline": false
+  },
+  {
+    "friendId": 9,
+    "isOffline": false
+  }
+]
