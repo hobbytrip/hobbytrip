@@ -16,7 +16,7 @@ public class ForumQueryController {
 
     private final ForumQueryService forumQueryService;
 
-    @GetMapping("/forumId")
+    @GetMapping("/{forumId}")
     public DataResponseDto<Object> read(@PathVariable("forumId") Long forumId){
         ForumReadResponseDto response = forumQueryService.read(forumId);
 

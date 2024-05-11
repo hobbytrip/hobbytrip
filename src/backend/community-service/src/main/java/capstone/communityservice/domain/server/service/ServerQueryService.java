@@ -4,6 +4,7 @@ import capstone.communityservice.domain.category.dto.CategoryResponseDto;
 import capstone.communityservice.domain.category.repository.CategoryRepository;
 import capstone.communityservice.domain.channel.dto.ChannelResponseDto;
 import capstone.communityservice.domain.channel.repository.ChannelRepository;
+import capstone.communityservice.domain.server.dto.OpenServerQueryDto;
 import capstone.communityservice.domain.server.dto.ServerReadResponseDto;
 import capstone.communityservice.domain.server.dto.ServerResponseDto;
 import capstone.communityservice.domain.server.entity.ServerUser;
@@ -85,10 +86,10 @@ public class ServerQueryService {
         );
     }
 
-    public List<ServerResponseDto> search() {
+    public List<OpenServerQueryDto> search() {
         return serverRepository.findTopOpenServer()
                 .stream()
-                .map(ServerResponseDto::of)
+                .map(OpenServerQueryDto::of)
                 .collect(Collectors.toList());
     }
 
