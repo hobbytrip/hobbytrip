@@ -41,8 +41,13 @@ function CreateServer() {
       });
       if (response.status == 200) {
         const serverId = response.data.serverId;
-        navigate(`/planet/${serverId}`); // 라우팅
-        // useServerData(serverId, id); //customHook
+        //customHook으로 서버 정보 읽기
+        const { defaultChannelInfo } = useServerData(
+          serverId,
+          id
+        ).serverChannels; //첫번째 기본 채널 정보를 불러온다.
+        const defaultChannelId = defaultChannelInfo[0].channelId; //default 채널의 id를 뽑아
+        navigate(`/planet/${serverId}/${defaultChannelId}`); //라우팅 시킴.
       } else {
         console.log("행성 만들기 실패.");
       }
