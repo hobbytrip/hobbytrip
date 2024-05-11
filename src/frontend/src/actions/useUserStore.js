@@ -8,7 +8,7 @@ const useUserStore = create((set) => ({
     try {
       const response = await axios.get(`/user/profile`);
       if (response.status === 200) {
-        const userData = response.data.data;
+        const userData = response.data;
         set({ user: userData });
       } else {
         console.log("Falied to fetch user data");
