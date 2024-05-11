@@ -4,6 +4,7 @@ import capstone.communityservice.domain.category.dto.CategoryResponseDto;
 import capstone.communityservice.domain.category.repository.CategoryRepository;
 import capstone.communityservice.domain.channel.dto.ChannelResponseDto;
 import capstone.communityservice.domain.channel.repository.ChannelRepository;
+import capstone.communityservice.domain.server.dto.OpenServerQueryDto;
 import capstone.communityservice.domain.server.dto.ServerReadResponseDto;
 import capstone.communityservice.domain.server.dto.ServerResponseDto;
 import capstone.communityservice.domain.server.entity.ServerUser;
@@ -47,32 +48,25 @@ public class ServerQueryService {
     private final ChannelRepository channelRepository;
     private final CategoryRepository categoryRepository;
 
-    public Server validateExistServer(Long serverId){
-        return serverRepository.findById(serverId)
-                .orElseThrow(() ->
-                        new ServerException(Code.NOT_FOUND, "Server Not Found")
-                );
-    }
-
     public ServerReadResponseDto read(Long serverId, Long userId) {
         Server findServer = validateExistServer(serverId);
 
         validateServerUser(serverId, userId);
 
-        List<Long> userIds = serverUserRepository.findUserIdsByServerId(serverId);
-
-        ServerUserStateResponseDto usersOnOff = stateServiceFakeClient.checkOnOff(
-                ServerUserStateRequestDto.of(serverId, userIds)
-        );
+        ServerUserStateResponseDto usersOnOff = getUsersOnOff(serverId);
 
         // 유저 최근 채널 위치 불러오는 로직
-        // ServerUserLocDto userLocation = stateServiceClient.userLocation(userId);
-        ServerUserLocDto userLocation = stateServiceFakeClient.userLocation(userId);
+        Page<ServerMessageDto> messages = getMessages(userId);
 
-        Page<ServerMessageDto> messages = chatServiceFakeClient.getMessages(
-                userLocation.getChannelId()
+        return createServerReadResponseDto(
+                serverId,
+                findServer,
+                usersOnOff,
+                messages
         );
+    }
 
+    private ServerReadResponseDto createServerReadResponseDto(Long serverId, Server findServer, ServerUserStateResponseDto usersOnOff, Page<ServerMessageDto> messages) {
         List<ChannelResponseDto> channels = channelRepository.findByServerId(serverId)
                 .stream()
                 .map(ChannelResponseDto::of)
@@ -92,10 +86,10 @@ public class ServerQueryService {
         );
     }
 
-    public List<ServerResponseDto> search() {
+    public List<OpenServerQueryDto> search() {
         return serverRepository.findTopOpenServer()
                 .stream()
-                .map(ServerResponseDto::of)
+                .map(OpenServerQueryDto::of)
                 .collect(Collectors.toList());
     }
 
@@ -110,10 +104,36 @@ public class ServerQueryService {
         return PageResponseDto.of(servers, ServerWithCountResponseDto::of);
     }
 
+    private ServerUserStateResponseDto getUsersOnOff(Long serverId) {
+        List<Long> userIds = serverUserRepository.findUserIdsByServerId(serverId);
+
+        ServerUserStateResponseDto usersOnOff = stateServiceFakeClient.checkServerOnOff(
+                ServerUserStateRequestDto.of(serverId, userIds)
+        );
+        return usersOnOff;
+    }
+
+    private Page<ServerMessageDto> getMessages(Long userId) {
+        // ServerUserLocDto userLocation = stateServiceClient.userLocation(userId);
+        ServerUserLocDto userLocation = stateServiceFakeClient.userLocation(userId);
+
+        Page<ServerMessageDto> messages = chatServiceFakeClient.getServerMessages(
+                userLocation.getChannelId()
+        );
+        return messages;
+    }
+
     public void validateManager(Long managerId, Long userId){
         if(!managerId.equals(userId)){
             throw new ServerException(Code.UNAUTHORIZED, "Not Manager");
         }
+    }
+
+    public Server validateExistServer(Long serverId){
+        return serverRepository.findById(serverId)
+                .orElseThrow(() ->
+                        new ServerException(Code.NOT_FOUND, "Server Not Found")
+                );
     }
 
     private void validateServerUser(Long serverId, Long userId) {

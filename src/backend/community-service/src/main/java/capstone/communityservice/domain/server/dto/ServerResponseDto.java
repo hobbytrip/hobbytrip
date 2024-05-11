@@ -11,22 +11,16 @@ import lombok.*;
 @AllArgsConstructor
 public class ServerResponseDto {
 
-    @NotNull
     private Long serverId;
 
-    @NotNull
     private Long managerId;
 
-    @NotBlank
     private String profile;
 
-    @NotBlank
     private String description;
 
-    @NotBlank
     private String name;
 
-    @NotBlank
     private boolean open;
 
     public static ServerResponseDto of(Server server){

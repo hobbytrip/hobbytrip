@@ -14,13 +14,6 @@ import java.util.Map;
 @Configuration
 public class KafkaTopicConfig {
 
-    /*
-          community-server-event: "communityServerEvent"
-      community-dm-event: "communityDmEvent"
-      community-channel-event: "communityChannelEvent"
-      community-category-event: "communityCategoryEvent"
-      community-forum-event: "communityForumEvent"
-     */
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapAddress;
 
@@ -78,11 +71,11 @@ public class KafkaTopicConfig {
                 .build();
     }
 
-//    @Bean
-//    public NewTopic communityForumEventTopic() {
-//        return TopicBuilder.name(communityForumEventTopic)
-//                .partitions(1)
-//                .replicas(1)
-//                .build();
-//    }
+    @Bean
+    public NewTopic communityForumEventTopic() {
+        return TopicBuilder.name(communityForumEventTopic)
+                .partitions(1)
+                .replicas(1)
+                .build();
+    }
 }

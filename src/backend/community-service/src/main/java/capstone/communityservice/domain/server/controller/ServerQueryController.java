@@ -1,5 +1,6 @@
 package capstone.communityservice.domain.server.controller;
 
+import capstone.communityservice.domain.server.dto.OpenServerQueryDto;
 import capstone.communityservice.domain.server.dto.ServerInviteCodeResponse;
 import capstone.communityservice.domain.server.dto.ServerReadResponseDto;
 import capstone.communityservice.domain.server.dto.ServerResponseDto;
@@ -26,7 +27,7 @@ public class ServerQueryController {
 
     @GetMapping("/open")
     public DataResponseDto<Object> search(){
-        List<ServerResponseDto> response = serverQueryService.search();
+        List<OpenServerQueryDto> response = serverQueryService.search();
 
         return DataResponseDto.of(response);
     }

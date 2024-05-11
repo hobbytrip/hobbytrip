@@ -1,9 +1,6 @@
 package capstone.communityservice.global.config;
 
-import capstone.communityservice.global.common.dto.kafka.CommunityCategoryEventDto;
-import capstone.communityservice.global.common.dto.kafka.CommunityChannelEventDto;
-import capstone.communityservice.global.common.dto.kafka.CommunityDmEventDto;
-import capstone.communityservice.global.common.dto.kafka.CommunityServerEventDto;
+import capstone.communityservice.global.common.dto.kafka.*;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -74,5 +71,15 @@ public class KafkaProducerConfig {
     @Bean
     public KafkaTemplate<String, CommunityCategoryEventDto> communityCategoryEventKafkaTemplate() {
         return new KafkaTemplate<>(communityCategoryEventProducerFactory());
+    }
+
+    @Bean
+    public ProducerFactory<String, CommunityForumEventDto> communityForumEventProducerFactory() {
+        return new DefaultKafkaProducerFactory<>(producerConfig());
+    }
+
+    @Bean
+    public KafkaTemplate<String, CommunityForumEventDto> communityForumEventKafkaTemplate() {
+        return new KafkaTemplate<>(communityForumEventProducerFactory());
     }
 }

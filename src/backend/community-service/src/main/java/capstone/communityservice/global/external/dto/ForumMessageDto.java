@@ -6,9 +6,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
-public class ServerMessageDto {
+public class ForumMessageDto {
 
     private Long messageId;
+    private Long forumId;
     private Long serverId;
     private Long channelId;
     private Long userId;
