@@ -3,6 +3,7 @@ import useAxios from "../../../utils/instance";
 
 const ChatInput = ({ serverId, channelId, userId }) => {
   const axios = useAxios();
+  const user = useUserStore((state) => state.user);
   const [content, setContent] = useState("");
 
   const sendMessage = async () => {
@@ -12,9 +13,9 @@ const ChatInput = ({ serverId, channelId, userId }) => {
         channelId,
         userId,
         parentId: 0, //채팅의 parentId:0, 댓글의 parentId: 댓글 개수
-        profileImage: "profile.jpg",
+        profileImage: user.profileImage,
         type: "send",
-        writer: "JohnDoe",
+        writer: user.name,
         content,
       });
       console.log(response.data);
