@@ -1,0 +1,58 @@
+.wrapper {
+  justify-content: center;
+  width: 390px;
+  height: 720px;
+  background-color: var(--black);
+  border-radius: 20px 20px 0 0;
+  color: #FFFFFF;
+}
+
+.wrapper button {
+  background: none;
+  border: none;
+  color: #FFFFFF;
+}
+
+.headerContainer {
+  display: flex;
+  align-items: center;
+  width: 324px;
+  height: 37px;
+  gap: 5px;
+  padding: 9px 33px;
+  color: #FFFFFF;
+}
+
+.headerContainer h4 {
+  align-items: center;
+  width: 255px;
+  height: 19px;
+}
+
+.videoContainer {
+  align-items: center;
+  height: 580px;
+}
+
+.mediaDeviceContainer {
+  display: flex;
+  justify-content: center;
+  align-items: end;
+  width: 237px;
+  height: 45px;
+  gap: 15px;
+}
+
+.mediaDeviceContainer button {
+  align-items: center;
+  justify-content: center;
+  background-color: var(--dark-gray);
+  width: 45px;
+  height: 45px;
+  border-radius: 300px;
+}
+
+.mediaDeviceContainer button :only-child {
+  width: 25px;
+  height: 25px;
+}

@@ -5,7 +5,7 @@ import StartView from "./components/StartView/StartView";
 import LoginView from "./pages/LoginView/Loginview";
 import RegView from "./pages/RegView/RegView";
 import UserProfileView from "./pages/UserProfileView/UserProfileView";
-import MediaView from "./pages/SignalView/MediaView";
+import MediaView from "./pages/MediaView/MediaView";
 import MainView from "./pages/MainView/MainView";
 
 axios.defaults.withCredentials = true;
