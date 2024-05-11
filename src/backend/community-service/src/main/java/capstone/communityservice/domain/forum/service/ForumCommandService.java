@@ -50,6 +50,7 @@ public class ForumCommandService {
     private final FileRepository fileRepository;
     private final ServerRepository serverRepository;
 
+    // 마크다운을 읽으려면 XSS 보안 처리를 해줘야 함
     public ForumCreateResponseDto create(ForumCreateRequestDto requestDto, List<MultipartFile> fileList) {
         validateServerAndChannel(requestDto.getServerId(), requestDto.getChannelId());
 

@@ -19,7 +19,7 @@ public class ServerMessageDto {
     private String writer;
     private String content;
     private boolean isDeleted;
-    private List<String> files;
+    private List<UploadFile> files;
     private List<EmojiDto> emojis;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
