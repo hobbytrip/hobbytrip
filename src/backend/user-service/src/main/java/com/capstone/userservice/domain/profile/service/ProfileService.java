@@ -14,13 +14,11 @@ import com.capstone.userservice.domain.profile.repository.ProfileRepository;
 import com.capstone.userservice.domain.user.entity.User;
 import com.capstone.userservice.global.exception.Code;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 
-@Slf4j
 @RequiredArgsConstructor
 @Service
 public class ProfileService {

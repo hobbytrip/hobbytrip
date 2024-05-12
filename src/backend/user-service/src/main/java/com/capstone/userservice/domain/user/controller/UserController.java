@@ -1,10 +1,10 @@
 package com.capstone.userservice.domain.user.controller;
 
 
-import com.capstone.userservice.domain.user.dto.TokenRequest;
-import com.capstone.userservice.domain.user.dto.UserDeleteRequest;
-import com.capstone.userservice.domain.user.dto.UserRequest;
-import com.capstone.userservice.domain.user.dto.UserResponse;
+import com.capstone.userservice.domain.user.dto.request.TokenRequest;
+import com.capstone.userservice.domain.user.dto.request.UserDeleteRequest;
+import com.capstone.userservice.domain.user.dto.request.UserRequest;
+import com.capstone.userservice.domain.user.dto.response.UserResponse;
 import com.capstone.userservice.domain.user.service.UserService;
 import com.capstone.userservice.global.common.dto.DataResponseDto;
 import com.capstone.userservice.global.common.dto.TokenDto;

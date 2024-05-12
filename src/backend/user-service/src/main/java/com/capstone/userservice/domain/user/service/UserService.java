@@ -1,10 +1,10 @@
 package com.capstone.userservice.domain.user.service;
 
 
-import com.capstone.userservice.domain.user.dto.TokenRequest;
-import com.capstone.userservice.domain.user.dto.UserDeleteRequest;
-import com.capstone.userservice.domain.user.dto.UserRequest;
-import com.capstone.userservice.domain.user.dto.UserResponse;
+import com.capstone.userservice.domain.user.dto.request.TokenRequest;
+import com.capstone.userservice.domain.user.dto.request.UserDeleteRequest;
+import com.capstone.userservice.domain.user.dto.request.UserRequest;
+import com.capstone.userservice.domain.user.dto.response.UserResponse;
 import com.capstone.userservice.domain.user.entity.User;
 import com.capstone.userservice.domain.user.exception.UserException;
 import com.capstone.userservice.domain.user.repository.UserRepository;
@@ -55,8 +55,6 @@ public class UserService {
             TokenDto tokenDto = tokenUtil.generateToken(userRequest, authentication);
 
             // 4. RefreshToken 저장
-
-            // 4. RefreshToken 저장
             RefreshToken refreshToken = RefreshToken.builder()
                     .key(authentication.getName())
                     .value(tokenDto.getRefreshToken())
@@ -84,7 +82,7 @@ public class UserService {
         Authentication authentication = tokenUtil.getAuthentication(tokenRequest.getAccessToken());
 
         // 3. 저장소에서 해당 User의 Refresh Token 가져오기
-        RefreshToken refreshToken = refreshTokenRepository.findByKey(authentication.getName())
+        RefreshToken refreshToken = refreshTokenRepository.findById(authentication.getName())
                 .orElseThrow(() -> new UserException(Code.NOT_FOUND, "로그아웃 하려는 사용자의 Refresh Token이 존재하지 않습니다."));
 
         // 4. 제출된 Refresh Token 일치 검사
@@ -93,7 +91,7 @@ public class UserService {
         }
 
         // 5. Refresh Token 삭제
-        refreshTokenRepository.delete(refreshToken);
+        refreshTokenRepository.delete(refreshToken.getUserID());
 
         return true;
     }
