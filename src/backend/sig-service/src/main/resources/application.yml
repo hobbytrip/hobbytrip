@@ -3,3 +3,10 @@ spring:
     redis:
       host: localhost
       port: 6379
+server:
+  port: 5000
+  ssl:
+    enabled: false
+
+OPENVIDU_URL: http://localhost:4443/
+OPENVIDU_SECRET: MY_SECRET
