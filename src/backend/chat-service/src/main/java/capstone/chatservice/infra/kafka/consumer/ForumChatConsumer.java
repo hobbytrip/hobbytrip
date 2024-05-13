@@ -5,6 +5,7 @@ import capstone.chatservice.domain.forum.dto.response.ForumMessageCreateResponse
 import capstone.chatservice.domain.forum.dto.response.ForumMessageDeleteResponse;
 import capstone.chatservice.domain.forum.dto.response.ForumMessageModifyResponse;
 import capstone.chatservice.domain.forum.dto.response.ForumMessageTypingResponse;
+import capstone.chatservice.global.common.dto.DataResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -25,19 +26,19 @@ public class ForumChatConsumer {
         switch (messageType) {
             case "send" -> {
                 ForumMessageCreateResponse createResponse = ForumMessageCreateResponse.from(messageDto);
-                messagingTemplate.convertAndSend("/topic/server/" + serverId, createResponse);
+                messagingTemplate.convertAndSend("/topic/server/" + serverId, DataResponseDto.of(createResponse));
             }
             case "modify" -> {
                 ForumMessageModifyResponse modifyResponse = ForumMessageModifyResponse.from(messageDto);
-                messagingTemplate.convertAndSend("/topic/server/" + serverId, modifyResponse);
+                messagingTemplate.convertAndSend("/topic/server/" + serverId, DataResponseDto.of(modifyResponse));
             }
             case "delete" -> {
                 ForumMessageDeleteResponse deleteResponse = ForumMessageDeleteResponse.from(messageDto);
-                messagingTemplate.convertAndSend("/topic/server/" + serverId, deleteResponse);
+                messagingTemplate.convertAndSend("/topic/server/" + serverId, DataResponseDto.of(deleteResponse));
             }
             case "typing" -> {
                 ForumMessageTypingResponse typingResponse = ForumMessageTypingResponse.from(messageDto);
-                messagingTemplate.convertAndSend("/topic/server/" + serverId, typingResponse);
+                messagingTemplate.convertAndSend("/topic/server/" + serverId, DataResponseDto.of(typingResponse));
             }
         }
     }

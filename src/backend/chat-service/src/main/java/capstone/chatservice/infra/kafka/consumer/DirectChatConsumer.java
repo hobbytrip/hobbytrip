@@ -5,6 +5,7 @@ import capstone.chatservice.domain.dm.dto.response.DirectMessageCreateResponse;
 import capstone.chatservice.domain.dm.dto.response.DirectMessageDeleteResponse;
 import capstone.chatservice.domain.dm.dto.response.DirectMessageModifyResponse;
 import capstone.chatservice.domain.dm.dto.response.DirectMessageTypingResponse;
+import capstone.chatservice.global.common.dto.DataResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -25,19 +26,19 @@ public class DirectChatConsumer {
         switch (messageType) {
             case "send" -> {
                 DirectMessageCreateResponse createResponse = DirectMessageCreateResponse.from(messageDto);
-                messagingTemplate.convertAndSend("/topic/direct/" + dmRoomId, createResponse);
+                messagingTemplate.convertAndSend("/topic/direct/" + dmRoomId, DataResponseDto.of(createResponse));
             }
             case "modify" -> {
                 DirectMessageModifyResponse modifyResponse = DirectMessageModifyResponse.from(messageDto);
-                messagingTemplate.convertAndSend("/topic/direct/" + dmRoomId, modifyResponse);
+                messagingTemplate.convertAndSend("/topic/direct/" + dmRoomId, DataResponseDto.of(modifyResponse));
             }
             case "delete" -> {
                 DirectMessageDeleteResponse deleteResponse = DirectMessageDeleteResponse.from(messageDto);
-                messagingTemplate.convertAndSend("/topic/direct/" + dmRoomId, deleteResponse);
+                messagingTemplate.convertAndSend("/topic/direct/" + dmRoomId, DataResponseDto.of(deleteResponse));
             }
             case "typing" -> {
                 DirectMessageTypingResponse typingResponse = DirectMessageTypingResponse.from(messageDto);
-                messagingTemplate.convertAndSend("/topic/direct/" + dmRoomId, typingResponse);
+                messagingTemplate.convertAndSend("/topic/direct/" + dmRoomId, DataResponseDto.of(typingResponse));
             }
         }
     }

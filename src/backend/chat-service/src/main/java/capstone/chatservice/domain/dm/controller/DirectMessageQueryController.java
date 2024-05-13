@@ -3,6 +3,8 @@ package capstone.chatservice.domain.dm.controller;
 import capstone.chatservice.domain.dm.dto.DirectMessageDto;
 import capstone.chatservice.domain.dm.dto.request.DirectMessageTypingRequest;
 import capstone.chatservice.domain.dm.service.query.DirectMessageQueryService;
+import capstone.chatservice.global.common.dto.DataResponseDto;
+import capstone.chatservice.global.common.dto.PageResponseDto;
 import capstone.chatservice.infra.kafka.KafkaProducer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,19 +21,23 @@ public class DirectMessageQueryController {
     private final DirectMessageQueryService queryService;
 
     @GetMapping("/api/chat/direct/messages/room")
-    public Page<DirectMessageDto> getMessages(@RequestParam(value = "roomId") Long roomId,
-                                              @RequestParam(defaultValue = "0") int page,
-                                              @RequestParam(defaultValue = "30") int size) {
+    public DataResponseDto<Object> getMessages(@RequestParam(value = "roomId") Long roomId,
+                                               @RequestParam(defaultValue = "0") int page,
+                                               @RequestParam(defaultValue = "30") int size) {
 
-        return queryService.getDirectMessages(roomId, page, size);
+        Page<DirectMessageDto> directMessages = queryService.getDirectMessages(roomId, page, size);
+        PageResponseDto pageResponseDto = PageResponseDto.of(directMessages);
+        return DataResponseDto.of(pageResponseDto);
     }
 
     @GetMapping("/api/chat/direct/comments")
-    public Page<DirectMessageDto> getComments(@RequestParam(value = "parentId") Long parentId,
-                                              @RequestParam(defaultValue = "0") int page,
-                                              @RequestParam(defaultValue = "30") int size) {
+    public DataResponseDto<Object> getComments(@RequestParam(value = "parentId") Long parentId,
+                                               @RequestParam(defaultValue = "0") int page,
+                                               @RequestParam(defaultValue = "30") int size) {
 
-        return queryService.getComments(parentId, page, size);
+        Page<DirectMessageDto> comments = queryService.getComments(parentId, page, size);
+        PageResponseDto pageResponseDto = PageResponseDto.of(comments);
+        return DataResponseDto.of(pageResponseDto);
     }
 
     @MessageMapping("/direct/message/typing")
