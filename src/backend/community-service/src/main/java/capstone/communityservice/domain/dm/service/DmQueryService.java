@@ -41,7 +41,7 @@ public class DmQueryService {
         List<Long> userIds = dmUserRepository.findUserIdsByDmId(dmId);
 
         DmUserStateResponseDto usersOnOff = stateServiceFakeClient.checkDmOnOff(
-                DmUserStateRequestDto.of(findDm.getId(), userIds)
+                DmUserStateRequestDto.of(userIds)
         );
 
         Page<DmMessageDto> messages = chatServiceFakeClient.getDmMessages(

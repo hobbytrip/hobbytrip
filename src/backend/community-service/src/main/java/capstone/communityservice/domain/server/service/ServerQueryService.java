@@ -3,6 +3,9 @@ package capstone.communityservice.domain.server.service;
 import capstone.communityservice.domain.category.dto.CategoryResponseDto;
 import capstone.communityservice.domain.category.repository.CategoryRepository;
 import capstone.communityservice.domain.channel.dto.ChannelResponseDto;
+import capstone.communityservice.domain.channel.entity.Channel;
+import capstone.communityservice.domain.channel.entity.ChannelType;
+import capstone.communityservice.domain.channel.exception.ChannelException;
 import capstone.communityservice.domain.channel.repository.ChannelRepository;
 import capstone.communityservice.domain.server.dto.OpenServerQueryDto;
 import capstone.communityservice.domain.server.dto.ServerReadResponseDto;
@@ -107,20 +110,34 @@ public class ServerQueryService {
     private ServerUserStateResponseDto getUsersOnOff(Long serverId) {
         List<Long> userIds = serverUserRepository.findUserIdsByServerId(serverId);
 
-        ServerUserStateResponseDto usersOnOff = stateServiceFakeClient.checkServerOnOff(
+        return stateServiceFakeClient.checkServerOnOff(
                 ServerUserStateRequestDto.of(serverId, userIds)
         );
-        return usersOnOff;
     }
 
     private Page<ServerMessageDto> getMessages(Long userId) {
         // ServerUserLocDto userLocation = stateServiceClient.userLocation(userId);
         ServerUserLocDto userLocation = stateServiceFakeClient.userLocation(userId);
 
-        Page<ServerMessageDto> messages = chatServiceFakeClient.getServerMessages(
+        validateChatChannel(userLocation.getChannelId());
+
+        return chatServiceFakeClient.getServerMessages(
                 userLocation.getChannelId()
         );
-        return messages;
+    }
+
+    private void validateChatChannel(Long channelId) {
+        Channel findChannel = channelRepository.findById(channelId)
+                .orElseThrow(
+                        () -> new ChannelException(
+                                Code.NOT_FOUND, "Not Found Channel")
+                );
+
+        if(!findChannel.getChannelType()
+                .equals(ChannelType.CHAT))
+        {
+            throw new ChannelException(Code.INTERNAL_ERROR, "Not Chat Channel");
+        }
     }
 
     public void validateManager(Long managerId, Long userId){

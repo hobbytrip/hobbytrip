@@ -6,6 +6,5 @@ public interface OpenServerQuery {
     String getProfile();
     String getDescription();
     boolean isOpen();
-
     Long getUserCount();
 }

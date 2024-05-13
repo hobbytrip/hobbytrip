@@ -9,12 +9,10 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class DmUserStateRequestDto {
-    private Long dmId;
     private List<Long> userIds;
 
-    public static DmUserStateRequestDto of(Long dmId, List<Long> userIds){
+    public static DmUserStateRequestDto of(List<Long> userIds){
         return DmUserStateRequestDto.builder()
-                .dmId(dmId)
                 .userIds(userIds)
                 .build();
     }
