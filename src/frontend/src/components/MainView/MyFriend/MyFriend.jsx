@@ -44,7 +44,7 @@ const FriendSearch = () => {
 const FriendList = () => {
   // friendListContainer: 친구 목록 전체 틀
   // friendContainer: 친구 하나의 틀
-  // friendImg: 친구의 사진
+  // friendImg: 친구의 사진 -> 올라가있는 사진은 예시로 로고를 넣음
   // friendData: 친구 이름, 한소가 들어간 틀
   // friendName: 친구 이름
   // friendIntro: 친구 한소
@@ -55,7 +55,7 @@ const FriendList = () => {
         <li className={style.friendContainer}>
           <div className={style.friendImg}>
             <img  
-              src='./../../../../src/assets/image/main/logo.png'
+              src='./../../../../src/assets/image/logo_white.png'
               alt="친구 이미지"/>  
           </div>
           <div className={style.friendData}>

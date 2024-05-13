@@ -1,12 +1,11 @@
-/* wrapper의 경우 전체 크기 조정 때문에 padding 등의 범위를 임의로 바꿨습니다 */
 .wrapper {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 89px;
-  width: 390px;
-  padding: 30px, 26px, 0px, 26px;
+  height: calc(89 - 30px);
+  width: calc(390 - 52px);
+  padding: 15px 13.5px 0px 13.5px;
   gap: 10px;
   top: 7.5px;
 }
@@ -65,7 +64,7 @@
   width: 28px;
   height: 32px;
   padding: 5px 3px;
-  /* gap: 10px; */
+  gap: 10px;
   border-radius: 10px;
   background: #00000080;
   border: none;

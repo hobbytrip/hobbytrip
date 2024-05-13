@@ -1,4 +1,4 @@
-import { create } from "zustand";
+import create from "zustand";
 import { useCookies } from "react-cookie";
 
 const useAuthStore = create((set, get) => {

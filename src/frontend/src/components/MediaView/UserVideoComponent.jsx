@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import VideoComponent from './VideoComponent';
 
-class UserVideo extends Component {
+class UserVideoComponent extends Component {
     // getNicknameTag() {
     //     // Gets the nickName of the user
     //     return JSON.parse(this.props.streamManager.stream.connection.data).clientData;
@@ -21,4 +21,4 @@ class UserVideo extends Component {
   }
 }
 
-export default UserVideo;
+export default UserVideoComponent;

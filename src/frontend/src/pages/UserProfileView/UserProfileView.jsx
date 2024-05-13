@@ -6,8 +6,9 @@ import useUserStore from "../../actions/useUserStore";
 import NotificationBox from "../../components/NotificationBox/NotificationBox";
 
 function UserProfileView() {
-  const axios = useAxios();
-  const { user, setUserInfo, updateUserInfo } = useUserStore();
+  // const axios = useAxios();
+  const user = useUserStore((state) => state.user);
+  const { updateUserInfo } = useUserStore();
   const [isEditingName, setIsEditingName] = useState(false);
   const [isEditingStatusMsg, setIsEditingStatusMsg] = useState(false);
   const [editedName, setEditedName] = useState("");
@@ -15,24 +16,6 @@ function UserProfileView() {
   const [editedNoti, setEditedNoti] = useState(
     user ? user.notificationEnabled : false
   );
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.get("/user/profile");
-        if (response.data) {
-          setUserInfo(response.data);
-          console.log(response.data);
-        } else {
-          console.error("No user data returned");
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
-
-    fetchUserData();
-  }, [user, setUserInfo]);
 
   const handleNameChange = (e) => {
     setEditedName(e.target.value);

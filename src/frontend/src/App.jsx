@@ -6,6 +6,7 @@ import LoginView from "./pages/LoginView/Loginview";
 import RegView from "./pages/RegView/RegView";
 import UserProfileView from "./pages/UserProfileView/UserProfileView";
 import MediaView from "./pages/MediaView/MediaView";
+import MenuView from "./pages/MenuView/MenuView.jsx";
 import MainView from "./pages/MainView/MainView";
 
 axios.defaults.withCredentials = true;
@@ -18,8 +19,9 @@ function App() {
         <Route path="/login" element={<LoginView />} />
         <Route path="/register" element={<RegView />} />
         <Route path="/user/profile" element={<UserProfileView />} />
-        <Route path="/vid" element={<MediaView />}/>
+        <Route path="/:serverId/:channelId/vid" element={<MediaView />} />
         <Route path="/main" element={<MainView />} />
+        <Route path="/menu" element={<MenuView />} />
       </Routes>
     </Router>
   );

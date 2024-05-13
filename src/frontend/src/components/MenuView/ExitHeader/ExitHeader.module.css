@@ -1,0 +1,19 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 48px;
+  width: 330px;
+  padding: 10px 0px;
+  gap: 250px;
+}
+
+.exitBtn {
+  height: 30px;
+  width: 30px;
+  padding: 5px 3px;
+  gap: 10px;
+  background: none;
+  border: none;
+  color: var(--dark-gray);
+}
