@@ -34,6 +34,9 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+	/* tika */
+	implementation group: 'org.apache.tika', name: 'tika-core', version: '1.24'
+
 	//===DB===//
 
 	/* h2 */

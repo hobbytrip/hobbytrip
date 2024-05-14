@@ -6,9 +6,14 @@ import capstone.communityservice.global.util.MultipartUtil;
 import com.amazonaws.SdkBaseException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tika.Tika;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -16,21 +21,29 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileUploadService {
 
     private final AmazonS3ResourceStorage amazonS3ResourceStorage;
+    private static final Tika tika = new Tika();
 
     public String save(MultipartFile multipartFile){
-        verifiedExtension(multipartFile);
+        String contentType = verifiedExtension(multipartFile);
 
-        String fullPath = MultipartUtil.createPath(multipartFile);
+        String fullPath = MultipartUtil.createPath(contentType);
 
         return amazonS3ResourceStorage.store(fullPath, multipartFile);
     }
 
-    private void verifiedExtension(MultipartFile multipartFile) {
-        String contentType = multipartFile.getContentType();
+    private String verifiedExtension(MultipartFile multipartFile) {
+        try {
+            String detectedType = tika.detect(multipartFile.getInputStream());
 
-        // 확장자가 jpeg, png인 파일들만 받아서 처리
-        if(ObjectUtils.isEmpty(contentType) | (!contentType.contains("image/jpeg") & !contentType.contains("image/png")))
-            throw new GlobalException(Code.VALIDATION_ERROR, "Use jpeg, png");
+            // 확장자가 jpeg, png인 파일들만 받아서 처리
+            if (ObjectUtils.isEmpty(detectedType) || (!detectedType.equals("image/jpeg") && !detectedType.equals("image/png"))) {
+                throw new GlobalException(Code.VALIDATION_ERROR, "Use jpeg, png");
+            }
+
+            return detectedType;
+        } catch (IOException e) {
+            throw new GlobalException(Code.IO_ERROR, "File processing error");
+        }
     }
 
     public String delete(String fireUrl){
@@ -41,9 +54,9 @@ public class FileUploadService {
     public String update(MultipartFile multipartFile, String fireUrl){
         awsS3Delete(fireUrl);
 
-        verifiedExtension(multipartFile);
+        String contentType = verifiedExtension(multipartFile);
 
-        String fullPath = MultipartUtil.createPath(multipartFile);
+        String fullPath = MultipartUtil.createPath(contentType);
         return amazonS3ResourceStorage.store(fullPath, multipartFile);
     }
 

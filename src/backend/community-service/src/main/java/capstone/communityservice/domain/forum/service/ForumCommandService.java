@@ -67,7 +67,7 @@ public class ForumCommandService {
                 )
         );
 
-        // List<File> files = file != null ? uploadProfile(fileList, newForum) : null; <- S3 등록 후
+//        List<File> files = file != null ? uploadProfile(fileList, newForum) : null; // <- S3 등록 후
         List<FileResponseDto> files = uploadFile(fileList, newForum).stream()
                 .map(FileResponseDto::of)
                 .toList();
@@ -179,24 +179,24 @@ public class ForumCommandService {
     private List<File> uploadFile(List<MultipartFile> fileList, Forum forum) {
         List<File> files = new ArrayList<>();
 
-//        for(MultipartFile file : fileList){
-//            String fileUrl = fileUploadService.save(file);
-//            File newFile = File.of(forum, fileUrl);
-//            fileRepository.save(newFile);
-//
-//            files.add(newFile);
-//        }
+        for(MultipartFile file : fileList){
+            String fileUrl = fileUploadService.save(file);
+            File newFile = File.of(forum, fileUrl);
+            fileRepository.save(newFile);
+
+            files.add(newFile);
+        }
 
         // return files; <- S3 등록 후
 
-        File newFile = File.of(forum, "http://image.png");
-        fileRepository.save(newFile);
-
-        File newFile2 = File.of(forum, "http://image.png");
-        fileRepository.save(newFile2);
-
-        files.add(newFile);
-        files.add(newFile2);
+//        File newFile = File.of(forum, "http://image.png");
+//        fileRepository.save(newFile);
+//
+//        File newFile2 = File.of(forum, "http://image.png");
+//        fileRepository.save(newFile2);
+//
+//        files.add(newFile);
+//        files.add(newFile2);
 
         return files;
     }

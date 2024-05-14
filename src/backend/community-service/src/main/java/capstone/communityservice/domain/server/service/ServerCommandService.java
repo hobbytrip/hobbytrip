@@ -54,8 +54,9 @@ public class ServerCommandService {
     private final ChannelRepository channelRepository;
 
     public ServerResponseDto create(ServerCreateRequestDto requestDto, MultipartFile file) {
-        // String profileUrl = file != null ? uploadProfile(file) : null; <- S3 등록 후
-        String profileUrl = null;
+         String profileUrl = file != null ? uploadProfile(file) : null; // <- S3 등록 후
+        // String profileUrl = null;
+        System.out.println(profileUrl);
 
         User user = userQueryService.findUserByOriginalId(requestDto.getUserId());
 
@@ -219,8 +220,8 @@ public class ServerCommandService {
     }
 
     private String uploadProfile(MultipartFile file) {
-        // return fileUploadService.save(profile); <- S3 등록 후
-        return "http://image.png"; // 예시 URL
+         return fileUploadService.save(file); // <- S3 등록 후
+//        return "http://image.png"; // 예시 URL
     }
 
     private String updateProfile(MultipartFile file, String serverProfile, Server server) {

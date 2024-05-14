@@ -24,9 +24,9 @@ public class MultipartUtil {
     }
 
     // 파일 경로 생성
-    public static String createPath(MultipartFile multipartFile) {
+    public static String createPath(String contentType) {
         final String fileId = MultipartUtil.createFileId();
-        final String format = MultipartUtil.getFormat(multipartFile.getContentType());
+        final String format = MultipartUtil.getFormat(contentType);
         return String.format("%s/%s.%s", BASE_DIR, fileId, format);
     }
 }
