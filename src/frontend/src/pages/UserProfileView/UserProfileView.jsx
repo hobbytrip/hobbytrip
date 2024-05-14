@@ -6,8 +6,9 @@ import useUserStore from "../../actions/useUserStore";
 import NotificationBox from "../../components/NotificationBox/NotificationBox";
 
 function UserProfileView() {
-  const axios = useAxios();
-  const { user, setUserInfo, updateUserInfo } = useUserStore();
+  // const axios = useAxios();
+  const user = useUserStore((state) => state.user);
+  const { updateUserInfo } = useUserStore();
   const [isEditingName, setIsEditingName] = useState(false);
   const [isEditingStatusMsg, setIsEditingStatusMsg] = useState(false);
   const [editedName, setEditedName] = useState("");
@@ -32,7 +33,7 @@ function UserProfileView() {
 
     fetchUserData();
   }, [user, setUserInfo]);
-
+  
   const handleNameChange = (e) => {
     setEditedName(e.target.value);
   };
