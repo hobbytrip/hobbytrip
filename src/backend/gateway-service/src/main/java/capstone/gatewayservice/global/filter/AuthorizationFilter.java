@@ -55,8 +55,8 @@ public class AuthorizationFilter extends AbstractGatewayFilterFactory<Authorizat
                 log.error("API Gateway - RefreshToken validation error");
             } else{
                 try {
-                    if (StringUtils.hasText(accessToken) && doNotLogout(accessToken)
-                            && jwtTokenProvider.validateToken(accessToken)) {
+                    if (StringUtils.hasText(accessToken) && jwtTokenProvider.validateToken(accessToken)
+                            && doNotLogout(accessToken)) {
                         return chain.filter(exchange); // Token is valid, continue to the next filter
                     }
                 }
