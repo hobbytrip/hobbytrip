@@ -38,7 +38,7 @@ function RegForm() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await axios.post("/users", form);
+      const response = await axios.post("/user/signup", form);
       setUserInfo({
         ...response.data,
       });
