@@ -32,6 +32,7 @@ public class ForumMessageCommandServiceImpl implements ForumMessageCommandServic
                 .type(createRequest.getType())
                 .content(createRequest.getContent())
                 .writer(createRequest.getWriter())
+                .files(createRequest.getFiles())
                 .build();
 
         forumMessage.generateSequence(sequenceGenerator.generateSequence(ForumMessage.SEQUENCE_NAME));

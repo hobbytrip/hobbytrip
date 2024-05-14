@@ -31,6 +31,7 @@ public class ServerMessageCommandServiceImpl implements ServerMessageCommandServ
                 .type(createRequest.getType())
                 .content(createRequest.getContent())
                 .writer(createRequest.getWriter())
+                .files(createRequest.getFiles())
                 .build();
 
         serverMessage.generateSequence(sequenceGenerator.generateSequence(ServerMessage.SEQUENCE_NAME));

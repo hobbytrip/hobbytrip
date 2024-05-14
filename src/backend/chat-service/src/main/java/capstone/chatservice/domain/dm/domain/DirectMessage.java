@@ -1,6 +1,7 @@
 package capstone.chatservice.domain.dm.domain;
 
 import capstone.chatservice.domain.model.BaseModel;
+import capstone.chatservice.domain.model.UploadFile;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AccessLevel;
@@ -48,11 +49,11 @@ public class DirectMessage extends BaseModel {
     private boolean isDeleted = Boolean.FALSE;
 
     @Field
-    private List<String> files;
+    private List<UploadFile> files;
 
     @Builder
     public DirectMessage(Long dmRoomId, Long parentId, Long userId, String profileImage,
-                         String type, String writer, String content, List<String> files) {
+                         String type, String writer, String content, List<UploadFile> files) {
 
         this.dmRoomId = dmRoomId;
         this.parentId = parentId;

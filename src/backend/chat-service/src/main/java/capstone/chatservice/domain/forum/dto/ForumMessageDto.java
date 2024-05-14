@@ -2,6 +2,8 @@ package capstone.chatservice.domain.forum.dto;
 
 import capstone.chatservice.domain.emoji.dto.EmojiDto;
 import capstone.chatservice.domain.forum.domain.ForumMessage;
+import capstone.chatservice.domain.forum.dto.request.ForumMessageTypingRequest;
+import capstone.chatservice.domain.model.UploadFile;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -27,7 +29,7 @@ public class ForumMessageDto {
     private String writer;
     private String content;
     private boolean isDeleted;
-    private List<String> files;
+    private List<UploadFile> files;
     private List<EmojiDto> emojis;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
@@ -50,6 +52,27 @@ public class ForumMessageDto {
                 null,
                 message.getCreatedAt(),
                 message.getModifiedAt()
+        );
+    }
+
+    public static ForumMessageDto from(ForumMessageTypingRequest typingRequest) {
+        return new ForumMessageDto(
+                null,
+                typingRequest.getForumId(),
+                typingRequest.getServerId(),
+                null,
+                null,
+                null,
+                0L,
+                null,
+                typingRequest.getType(),
+                typingRequest.getWriter(),
+                null,
+                false,
+                null,
+                null,
+                null,
+                null
         );
     }
 }

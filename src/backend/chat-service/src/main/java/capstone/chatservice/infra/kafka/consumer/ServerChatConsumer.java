@@ -4,6 +4,8 @@ import capstone.chatservice.domain.server.dto.ServerMessageDto;
 import capstone.chatservice.domain.server.dto.response.ServerMessageCreateResponse;
 import capstone.chatservice.domain.server.dto.response.ServerMessageDeleteResponse;
 import capstone.chatservice.domain.server.dto.response.ServerMessageModifyResponse;
+import capstone.chatservice.domain.server.dto.response.ServerMessageTypingResponse;
+import capstone.chatservice.global.common.dto.DataResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -17,7 +19,6 @@ public class ServerChatConsumer {
 
     private final SimpMessageSendingOperations messagingTemplate;
 
-
     @KafkaListener(topics = "${spring.kafka.topic.server-chat}", groupId = "${spring.kafka.consumer.group-id.server-chat}", containerFactory = "serverChatListenerContainerFactory")
     public void serverChatListener(ServerMessageDto messageDto) {
         String messageType = messageDto.getType();
@@ -25,15 +26,19 @@ public class ServerChatConsumer {
         switch (messageType) {
             case "send" -> {
                 ServerMessageCreateResponse createResponse = ServerMessageCreateResponse.from(messageDto);
-                messagingTemplate.convertAndSend("/topic/server/" + serverId, createResponse);
+                messagingTemplate.convertAndSend("/topic/server/" + serverId, DataResponseDto.of(createResponse));
             }
             case "modify" -> {
                 ServerMessageModifyResponse modifyResponse = ServerMessageModifyResponse.from(messageDto);
-                messagingTemplate.convertAndSend("/topic/server/" + serverId, modifyResponse);
+                messagingTemplate.convertAndSend("/topic/server/" + serverId, DataResponseDto.of(modifyResponse));
             }
             case "delete" -> {
                 ServerMessageDeleteResponse deleteResponse = ServerMessageDeleteResponse.from(messageDto);
-                messagingTemplate.convertAndSend("/topic/server/" + serverId, deleteResponse);
+                messagingTemplate.convertAndSend("/topic/server/" + serverId, DataResponseDto.of(deleteResponse));
+            }
+            case "typing" -> {
+                ServerMessageTypingResponse typingResponse = ServerMessageTypingResponse.from(messageDto);
+                messagingTemplate.convertAndSend("/topic/server/" + serverId, DataResponseDto.of(typingResponse));
             }
         }
     }

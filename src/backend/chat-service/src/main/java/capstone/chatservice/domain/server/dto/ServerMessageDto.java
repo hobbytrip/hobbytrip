@@ -1,7 +1,9 @@
 package capstone.chatservice.domain.server.dto;
 
 import capstone.chatservice.domain.emoji.dto.EmojiDto;
+import capstone.chatservice.domain.model.UploadFile;
 import capstone.chatservice.domain.server.domain.ServerMessage;
+import capstone.chatservice.domain.server.dto.request.ServerMessageTypingRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -28,7 +30,7 @@ public class ServerMessageDto {
     private String writer;
     private String content;
     private boolean isDeleted;
-    private List<String> files;
+    private List<UploadFile> files;
     private List<EmojiDto> emojis;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
@@ -50,6 +52,26 @@ public class ServerMessageDto {
                 null,
                 message.getCreatedAt(),
                 message.getModifiedAt()
+        );
+    }
+
+    public static ServerMessageDto from(ServerMessageTypingRequest typingRequest) {
+        return new ServerMessageDto(
+                null,
+                typingRequest.getServerId(),
+                typingRequest.getChannelId(),
+                null,
+                null,
+                0L,
+                null,
+                typingRequest.getType(),
+                typingRequest.getWriter(),
+                null,
+                false,
+                null,
+                null,
+                null,
+                null
         );
     }
 }

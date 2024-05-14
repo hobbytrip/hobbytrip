@@ -1,5 +1,6 @@
 package capstone.chatservice.domain.server.dto.response;
 
+import capstone.chatservice.domain.model.UploadFile;
 import capstone.chatservice.domain.server.dto.ServerMessageDto;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,7 +26,7 @@ public class ServerMessageCreateResponse {
     private String writer;
     private String content;
     private boolean isDeleted;
-    private List<String> files;
+    private List<UploadFile> files;
     private LocalDateTime createdAt;
 
     public static ServerMessageCreateResponse from(ServerMessageDto message) {

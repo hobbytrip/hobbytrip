@@ -3,6 +3,7 @@ package capstone.chatservice.infra.kafka.consumer;
 import capstone.chatservice.domain.emoji.dto.EmojiDto;
 import capstone.chatservice.domain.emoji.dto.response.EmojiCreateResponse;
 import capstone.chatservice.domain.emoji.dto.response.EmojiDeleteResponse;
+import capstone.chatservice.global.common.dto.DataResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -25,17 +26,17 @@ public class EmojiChatConsumer {
             case "save" -> {
                 EmojiCreateResponse createResponse = EmojiCreateResponse.from(emojiDto);
                 if (emojiDto.getServerId() > 0) {
-                    messagingTemplate.convertAndSend("/topic/server/" + serverId, createResponse);
+                    messagingTemplate.convertAndSend("/topic/server/" + serverId, DataResponseDto.of(createResponse));
                 } else {
-                    messagingTemplate.convertAndSend("/topic/direct/" + dmId, createResponse);
+                    messagingTemplate.convertAndSend("/topic/direct/" + dmId, DataResponseDto.of(createResponse));
                 }
             }
             case "delete" -> {
                 EmojiDeleteResponse deleteResponse = EmojiDeleteResponse.from(emojiDto);
                 if (emojiDto.getServerId() > 0) {
-                    messagingTemplate.convertAndSend("/topic/server/" + serverId, deleteResponse);
+                    messagingTemplate.convertAndSend("/topic/server/" + serverId, DataResponseDto.of(deleteResponse));
                 } else {
-                    messagingTemplate.convertAndSend("/topic/direct/" + dmId, deleteResponse);
+                    messagingTemplate.convertAndSend("/topic/direct/" + dmId, DataResponseDto.of(deleteResponse));
                 }
             }
         }

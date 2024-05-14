@@ -30,6 +30,7 @@ public class DirectMessageCommandServiceImpl implements DirectMessageCommandServ
                 .writer(createRequest.getWriter())
                 .type(createRequest.getType())
                 .profileImage(createRequest.getProfileImage())
+                .files(createRequest.getFiles())
                 .build();
 
         directMessage.generateSequence(sequenceGenerator.generateSequence(DirectMessage.SEQUENCE_NAME));
