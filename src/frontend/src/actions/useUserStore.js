@@ -35,7 +35,7 @@ const useUserStore = create((set) => ({
   postUserIdToCommunity: async () => {
     try {
       const { originalId } = useUserStore.getState().user;
-      const response = await axios.post("/community/user", { originalId });
+      const response = await axios.post("/user", { originalId });
       console.log("POST request to /community/user successful:", response);
     } catch (error) {
       console.error("Error posting userId to /community/user:", error);
