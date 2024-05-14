@@ -18,11 +18,24 @@ const useUserStore = create((set) => ({
       console.log("Error updating user data:", error);
     }
   },
-  //유저 커뮤니티 회원가입
+  getUserInfo: async () => {
+    try {
+      const response = await axios.get(`/user/profile`);
+      if (response.status === 200) {
+        const userData = response.data;
+        set({ user: userData });
+      } else {
+        console.log("Failed to fetch user data");
+      }
+    } catch (error) {
+      console.log("Error fetching user data:", error);
+    }
+  },
+  //   //유저 커뮤니티 회원가입
   postUserIdToCommunity: async () => {
     try {
-      const { userId } = useUserStore.getState().user;
-      const response = await axios.post("/community/user", { userId });
+      const { originalId } = useUserStore.getState().user;
+      const response = await axios.post("/community/user", { originalId });
       console.log("POST request to /community/user successful:", response);
     } catch (error) {
       console.error("Error posting userId to /community/user:", error);
