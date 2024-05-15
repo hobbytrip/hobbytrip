@@ -279,6 +279,16 @@ export default function MediaCall() {
     );
 }
 
+const header = () =>{
+  return(
+    <>
+    <div className={style.header}>
+      {/* <img src='./../' */}
+    </div>
+    </>
+  )
+}
+
 
 {/* <div id="video-container" className="col-md-6">
     {publisher !== undefined ? (
