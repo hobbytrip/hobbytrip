@@ -1,4 +1,4 @@
-package com.capstone.notificationservice.global.config;
+package com.capstone.notificationservice.global.config.kafka;
 
 
 import com.capstone.notificationservice.domain.dm.dto.DmNotificationDto;
