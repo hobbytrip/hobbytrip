@@ -1,18 +1,19 @@
-package com.capstone.notificationservice.domain.dm.dto;
+package com.capstone.notificationservice.domain.dm.dto.request;
+
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class ServerNotificationDto {
+public class DmNotificationRequest {
     private Long notificationId;
     private Long userId;
-    private Long serverId;
-    private String type;
     private String content;
     private String url;
 }

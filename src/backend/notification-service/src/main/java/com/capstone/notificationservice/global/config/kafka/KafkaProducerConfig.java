@@ -2,7 +2,7 @@ package com.capstone.notificationservice.global.config.kafka;
 
 
 import com.capstone.notificationservice.domain.dm.dto.DmNotificationDto;
-import com.capstone.notificationservice.domain.dm.dto.ServerNotificationDto;
+import com.capstone.notificationservice.domain.server.dto.ServerNotificationDto;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.kafka.common.serialization.StringSerializer;

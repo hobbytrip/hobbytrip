@@ -16,10 +16,10 @@ public class kafkaTopicConfig {
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
 
-    @Value("${spring.kafka.topic.dm-notification}")
+    @Value("${spring.kafka.topic.direct-chat}")
     private String dmNotificationTopic;
 
-    @Value("${spring.kafka.topic.server-notification}")
+    @Value("${spring.kafka.topic.server-chat}")
     private String serverNotificationTopic;
 
     @Bean
@@ -44,7 +44,4 @@ public class kafkaTopicConfig {
                 .replicas(1)
                 .build();
     }
-
-
-
 }

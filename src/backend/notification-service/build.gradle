@@ -28,6 +28,7 @@ dependencies {
 	implementation 'org.springframework.session:spring-session-core'
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 	compileOnly 'org.projectlombok:lombok'
+	implementation group: 'org.springframework.boot', name:'spring-boot-starter-web'
 
 	//database
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'

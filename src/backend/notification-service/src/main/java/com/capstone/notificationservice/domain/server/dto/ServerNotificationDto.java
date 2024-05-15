@@ -1,5 +1,4 @@
-package com.capstone.notificationservice.domain.dm.dto;
-
+package com.capstone.notificationservice.domain.server.dto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -9,10 +8,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class DmNotificationDto {
+public class ServerNotificationDto {
     private Long notificationId;
-    private Long dmRoomId;
     private Long userId;
+    private Long serverId;
+    private String type;
     private String content;
     private String url;
 }
