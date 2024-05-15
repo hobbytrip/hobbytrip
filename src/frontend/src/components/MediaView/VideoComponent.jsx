@@ -7,17 +7,17 @@ class VideoComponent extends Component {
     this.videoRef = React.createRef();
   }
 
-  // componentDidUpdate(props) {
-  //   if (props && !!this.videoRef) {
-  //     this.props.streamManager.addVideoElement(this.videoRef.current);
-  //   }
-  // }
+  componentDidUpdate(props) {
+    if (props && !!this.videoRef) {
+      this.props.streamManager.addVideoElement(this.videoRef.current);
+    }
+  }
 
-  // componentDidMount() {
-  //   if (this.props && !!this.videoRef) {
-  //     this.props.streamManager.addVideoElement(this.videoRef.current);
-  //   }
-  // }
+  componentDidMount() {
+    if (this.props && !!this.videoRef) {
+      this.props.streamManager.addVideoElement(this.videoRef.current);
+    }
+  }
 
   render() {
     return <video autoPlay={true} ref={this.videoRef} />;
