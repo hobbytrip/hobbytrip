@@ -15,6 +15,10 @@ public class DmNotificationController {
 
     private final NotificationService notificationService;
 
+    /**
+     * @title 로그인 한 유저 sse 연결
+     * Last-Event-ID: 클라이언트가 마지막으로 수시한 데이터의 ID값 (항상 들어있지 않음)
+     */
     @GetMapping(value = "/subscribe", produces = "text/event-stream")
     public SseEmitter subscribe(@RequestParam String userId,
                                 @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {

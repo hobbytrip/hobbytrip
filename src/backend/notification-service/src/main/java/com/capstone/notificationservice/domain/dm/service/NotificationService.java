@@ -12,22 +12,26 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @RequiredArgsConstructor
 public class NotificationService {
     private final EmitterRepository emitterRepository;
+    private final NotificationRepository notificationRepository;
     private final Long DEFAULT_TIMEOUT = 60L * 1000 * 60;
 
     public SseEmitter subscribe(String userId, String lastEventId) {
-        String emitterCreatedTimeByUserId = makeTimeIncludeUserId(userId);
+        //emitterUserID Create
+        String emitterUserId = makeTimeIncludeUserId(userId);
+
+        //SseEmitter 객체 만들고 반환, id 를 key 로 SseEmitter value 로 저장
         SseEmitter emitter = emitterRepository.save(userId, new SseEmitter(DEFAULT_TIMEOUT));
-        emitter.onCompletion(() -> emitterRepository.deleteByEmitterCreatedTimeWithMemberName(emitterCreatedTimeByUserId));
-        emitter.onTimeout(()-> emitterRepository.deleteByEmitterCreatedTimeWithMemberName(emitterCreatedTimeByUserId));
+        emitter.onCompletion(() -> emitterRepository.deleteByEmitterCreatedTimeWithMemberName(emitterUserId));
+        emitter.onTimeout(()-> emitterRepository.deleteByEmitterCreatedTimeWithMemberName(emitterUserId));
 
         //503 에러 방지를 위한 더미 이벤트 전송
         String eventId = makeTimeIncludeUserId(userId);
-        sendNotification(emitter, userId, emitterCreatedTimeByUserId,
+        sendNotification(emitter, userId, emitterUserId,
                 "EventStream Created. [memberName=" + userId + "]");
 
         // 클라이언트가 미수신한 Event 목록이 존재할 경우 전송하여 Event 유실을 예방
         if(hasLostData(lastEventId)) {
-            sendLostData(lastEventId, userId, emitterCreatedTimeByUserId, emitter);
+            sendLostData(lastEventId, userId, emitterUserId, emitter);
 
         }
 
