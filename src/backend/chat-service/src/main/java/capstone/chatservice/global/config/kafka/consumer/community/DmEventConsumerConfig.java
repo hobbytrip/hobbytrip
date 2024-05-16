@@ -37,7 +37,7 @@ public class DmEventConsumerConfig {
         return new DefaultKafkaConsumerFactory<>(
                 dmEventConsumerConfiguration(),
                 new StringDeserializer(),
-                new JsonDeserializer<>(CommunityDmEventDto.class));
+                new JsonDeserializer<>(CommunityDmEventDto.class, false));
     }
 
     @Bean

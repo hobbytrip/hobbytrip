@@ -37,7 +37,7 @@ public class ForumEventConsumerConfig {
         return new DefaultKafkaConsumerFactory<>(
                 forumEventConsumerConfiguration(),
                 new StringDeserializer(),
-                new JsonDeserializer<>(CommunityForumEventDto.class));
+                new JsonDeserializer<>(CommunityForumEventDto.class, false));
     }
 
     @Bean

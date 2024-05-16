@@ -37,7 +37,7 @@ public class ChannelEventConsumerConfig {
         return new DefaultKafkaConsumerFactory<>(
                 channelEventConsumerConfiguration(),
                 new StringDeserializer(),
-                new JsonDeserializer<>(CommunityChannelEventDto.class));
+                new JsonDeserializer<>(CommunityChannelEventDto.class, false));
     }
 
     @Bean

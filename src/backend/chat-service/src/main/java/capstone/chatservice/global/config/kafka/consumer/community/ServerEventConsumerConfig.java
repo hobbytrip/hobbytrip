@@ -37,7 +37,7 @@ public class ServerEventConsumerConfig {
         return new DefaultKafkaConsumerFactory<>(
                 serverEventConsumerConfiguration(),
                 new StringDeserializer(),
-                new JsonDeserializer<>(CommunityServerEventDto.class));
+                new JsonDeserializer<>(CommunityServerEventDto.class, false));
     }
 
     @Bean

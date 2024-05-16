@@ -37,7 +37,7 @@ public class CategoryEventConsumerConfig {
         return new DefaultKafkaConsumerFactory<>(
                 categoryEventConsumerConfiguration(),
                 new StringDeserializer(),
-                new JsonDeserializer<>(CommunityCategoryEventDto.class));
+                new JsonDeserializer<>(CommunityCategoryEventDto.class, false));
     }
 
     @Bean
