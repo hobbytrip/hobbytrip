@@ -5,7 +5,7 @@ import capstone.chatservice.domain.server.dto.request.ServerMessageTypingRequest
 import capstone.chatservice.domain.server.service.query.ServerMessageQueryService;
 import capstone.chatservice.global.common.dto.DataResponseDto;
 import capstone.chatservice.global.common.dto.PageResponseDto;
-import capstone.chatservice.infra.kafka.KafkaProducer;
+import capstone.chatservice.infra.kafka.producer.KafkaProducer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.messaging.handler.annotation.MessageMapping;

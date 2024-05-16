@@ -7,7 +7,7 @@ import capstone.chatservice.domain.dm.dto.request.DirectMessageModifyRequest;
 import capstone.chatservice.domain.dm.service.command.DirectMessageCommandService;
 import capstone.chatservice.domain.model.UploadFile;
 import capstone.chatservice.infra.S3.FileStore;
-import capstone.chatservice.infra.kafka.KafkaProducer;
+import capstone.chatservice.infra.kafka.producer.KafkaProducer;
 import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
