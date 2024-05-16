@@ -2,12 +2,24 @@ import React, { useState, useEffect } from "react";
 import s from "./CreateChatModal.module.css";
 import * as StompJs from "@stomp/stompjs";
 import SockJS from "sockjs-client";
+import ChatHeader from "../../../Common/ChatRoom/CommunityChatHeader/ChatHeader";
 // import { useParams } from "react-router-dom";
 
-export default function ChatModal({ username, serverId }) {
+export default function ChatModal({ username }) {
   const [client, setClient] = useState(null);
   const [chatMessage, setChatMessage] = useState("");
-  // const param = useParams();
+  // const { serverId } = useParams();
+  const serverId = 1;
+
+  useEffect(() => {
+    connectChat();
+    return () => {
+      if (client && client.connected) {
+        client.deactivate();
+      }
+    };
+  }, []);
+
   const connectChat = async () => {
     try {
       const stompClient = new StompJs.Client({
@@ -24,7 +36,7 @@ export default function ChatModal({ username, serverId }) {
 
       stompClient.onConnect = () => {
         console.log("웹소켓 연결 open되었습니다.");
-        stompClient.subscribe("/topic/server/1", (frame) => {
+        stompClient.subscribe(`/topic/server/${serverId}`, (frame) => {
           try {
             const parsedMessage = JSON.parse(frame.body);
             console.log("parsedMessage", parsedMessage);
@@ -41,16 +53,6 @@ export default function ChatModal({ username, serverId }) {
       console.log(err);
     }
   };
-  useEffect(() => {
-    console.log(username);
-    connectChat();
-
-    return () => {
-      if (client && client.connected) {
-        client.deactivate();
-      }
-    };
-  }, [serverId]);
 
   const sendMessage = () => {
     if (client && client.connected) {
@@ -75,6 +77,9 @@ export default function ChatModal({ username, serverId }) {
 
   return (
     <div className={s.wrapper}>
+      <div className={s.chatHeader}>
+        <ChatHeader />
+      </div>
       <div className={s.inputContainer}>
         <div className={s.inputBox}>
           <input
