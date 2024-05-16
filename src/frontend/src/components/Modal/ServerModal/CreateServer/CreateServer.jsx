@@ -2,9 +2,10 @@ import s from "./CreateServer.module.css";
 import useUserStore from "../../../../actions/useUserStore";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useAxios from "../../../../utils/instance";
+// import useAxios from "../../../../utils/instance";
 import { AiOutlineClose } from "react-icons/ai";
 import useServerData from "../../../../hooks/useServerData";
+import axios from "axios";
 
 function CreateServer() {
   const [name, setName] = useState("");
@@ -12,13 +13,13 @@ function CreateServer() {
   const [category, setCategory] = useState("");
   const [profileImage, setProfileImage] = useState(null);
   const navigate = useNavigate();
-  const axios = useAxios();
+  // const axios = useAxios();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const id = useUserStore.getState().user.userId; //userId from userData
-      // const id = 1; //test용
+      // const id = useUserStore.getState().user.userId; //userId from userData
+      const id = 1; //test용
       const formData = new FormData();
       formData.append(
         "requestDto",
@@ -34,13 +35,18 @@ function CreateServer() {
       for (const [key, value] of formData.entries()) {
         console.log(key, value);
       }
-      const response = await axios.post("/community/server", formData, {
+      const response = await axios.post("/server", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
+        method: "POST",
+        body: formdata,
+        redirect: "follow",
       });
+      console.log(response.status);
       if (response.status == 200) {
         const serverId = response.data.serverId;
+        console.log(serverId);
         //customHook으로 서버 정보 읽기
         const { defaultChannelInfo } = useServerData(
           serverId,
