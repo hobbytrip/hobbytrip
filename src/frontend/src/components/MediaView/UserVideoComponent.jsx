@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import VideoComponent from './VideoComponent';
+import VideoComponent from './VideoComponent/VideoComponent';
 
 class UserVideoComponent extends Component {
   render() {
