@@ -13,6 +13,18 @@
   color: #FFFFFF;
 }
 
+.header {
+  height: 36px;
+  padding: 10px 10px 10px 0px;
+  gap: 260px;
+}
+
+.channelData {
+  height: 34px;
+  padding: 16px 29px;
+  gap: 10px;
+}
+
 .headerContainer {
   display: flex;
   align-items: center;
@@ -29,16 +41,30 @@
   height: 19px;
 }
 
-.videoContainer {
+.mediaContainer {
+  height: 665px;
   align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.videoContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
   height: 580px;
+  width: 390px;
+  gap: 18px;
 }
 
 .mediaDeviceContainer {
+  position: fixed;
   display: flex;
   justify-content: center;
-  align-items: end;
-  width: 237px;
+  align-items: center;
+  bottom: 27px;
+  width: 390px;
   height: 45px;
   gap: 15px;
 }
@@ -55,4 +81,9 @@
 .mediaDeviceContainer button :only-child {
   width: 25px;
   height: 25px;
+}
+
+.userData {
+  width: 183px;
+  height: 343px;
 }
