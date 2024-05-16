@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useCookies } from "react-cookie";
 
 function useAxios() {
-  const [cookies] = useCookies(["accessToken"]);
   const [axiosInstance, setAxiosInstance] = useState(() =>
     axios.create({
       baseURL: "http://localhost:8080",
@@ -17,9 +15,9 @@ function useAxios() {
 
     instance.interceptors.request.use(
       (config) => {
-        const accessToken = cookies.accessToken;
-        if (accessToken) {
-          config.headers["Authorization"] = `Bearer ${accessToken}`;
+        const accesstoken = localStorage.getItem("accesstoken"); //localStorage사용
+        if (accesstoken) {
+          config.headers["Authorization"] = `Bearer ${accesstoken}`;
         }
         return config;
       },
@@ -29,7 +27,7 @@ function useAxios() {
     );
 
     setAxiosInstance(instance);
-  }, [cookies.accessToken]);
+  }, []);
 
   return axiosInstance;
 }
