@@ -2,11 +2,15 @@ package capstone.chatservice.infra.kafka.consumer.community.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
-@Builder
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class CommunityForumEventDto {
     private String type;
 

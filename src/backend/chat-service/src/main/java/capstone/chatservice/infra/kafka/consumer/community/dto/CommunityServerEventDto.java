@@ -1,10 +1,14 @@
 package capstone.chatservice.infra.kafka.consumer.community.dto;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
-@Builder
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class CommunityServerEventDto {
 
     private String type;
