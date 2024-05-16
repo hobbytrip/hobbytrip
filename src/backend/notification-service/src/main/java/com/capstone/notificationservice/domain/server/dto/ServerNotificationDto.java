@@ -1,5 +1,6 @@
 package com.capstone.notificationservice.domain.server.dto;
 
+import com.capstone.notificationservice.domain.common.AlarmType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,7 +13,7 @@ public class ServerNotificationDto {
     private Long notificationId;
     private Long userId;
     private Long serverId;
-    private String type;
+    private MentionType mentionType;
+    private AlarmType alarmType;
     private String content;
-    private String url;
 }
