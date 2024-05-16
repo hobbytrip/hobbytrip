@@ -15,9 +15,9 @@ function useAxios() {
 
     instance.interceptors.request.use(
       (config) => {
-        const accessToken = localStorage.getItem("accessToken"); //localStorage사용
-        if (accessToken) {
-          config.headers["Authorization"] = `Bearer ${accessToken}`;
+        const accesstoken = localStorage.getItem("accesstoken"); //localStorage사용
+        if (accesstoken) {
+          config.headers["Authorization"] = `Bearer ${accesstoken}`;
         }
         return config;
       },
