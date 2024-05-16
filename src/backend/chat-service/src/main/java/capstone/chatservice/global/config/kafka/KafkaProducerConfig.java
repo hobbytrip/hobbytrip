@@ -5,6 +5,7 @@ import capstone.chatservice.domain.emoji.dto.EmojiDto;
 import capstone.chatservice.domain.forum.dto.ForumMessageDto;
 import capstone.chatservice.domain.server.dto.ServerMessageDto;
 import capstone.chatservice.infra.kafka.dto.ConnectionStateEventDto;
+import capstone.chatservice.infra.kafka.dto.ConnectionStateInfo;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -84,5 +85,15 @@ public class KafkaProducerConfig {
     @Bean
     public KafkaTemplate<String, ConnectionStateEventDto> connectionStateEventKafkaTemplate() {
         return new KafkaTemplate<>(connectionStateEventProducerFactory());
+    }
+
+    @Bean
+    public ProducerFactory<String, ConnectionStateInfo> connectionStateInfoProducerFactory() {
+        return new DefaultKafkaProducerFactory<>(producerConfig());
+    }
+
+    @Bean
+    public KafkaTemplate<String, ConnectionStateInfo> connectionStateInfoKafkaTemplate() {
+        return new KafkaTemplate<>(connectionStateInfoProducerFactory());
     }
 }

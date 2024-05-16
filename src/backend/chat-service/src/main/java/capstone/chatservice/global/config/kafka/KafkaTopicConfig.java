@@ -31,6 +31,9 @@ public class KafkaTopicConfig {
     @Value("${spring.kafka.topic.connection-state-event}")
     private String connectionStateEventTopic;
 
+    @Value("${spring.kafka.topic.connection-state-info}")
+    private String connectionStateInfoTopic;
+
     @Bean
     public KafkaAdmin kafkaAdmin() {
         Map<String, Object> configurations = new HashMap<>();
@@ -73,6 +76,14 @@ public class KafkaTopicConfig {
     @Bean
     public NewTopic connectionStateEventTopic() {
         return TopicBuilder.name(connectionStateEventTopic)
+                .partitions(1)
+                .replicas(1)
+                .build();
+    }
+
+    @Bean
+    public NewTopic connectionStateInfoTopic() {
+        return TopicBuilder.name(connectionStateInfoTopic)
                 .partitions(1)
                 .replicas(1)
                 .build();
