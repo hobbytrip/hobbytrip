@@ -16,7 +16,24 @@ function UserProfileView() {
   const [editedNoti, setEditedNoti] = useState(
     user ? user.notificationEnabled : false
   );
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get("/user/profile");
+        if (response.status == 200) {
+          setUserInfo(response.data);
+          console.log(response.data);
+        } else {
+          console.error("No user data returned");
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
 
+    fetchUserData();
+  }, [user, setUserInfo]);
+  
   const handleNameChange = (e) => {
     setEditedName(e.target.value);
   };
