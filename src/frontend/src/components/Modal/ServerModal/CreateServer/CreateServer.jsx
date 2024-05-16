@@ -16,9 +16,11 @@ function CreateServer() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
-      const id = useUserStore.getState().user.userId; //userId from userData
+      // const id = useUserStore.getState().user.userId; //userId from userData
       // const id = 1; //test용
+      const id = window.localStorage.getItem("userId");
       const formData = new FormData();
       formData.append(
         "requestDto",
@@ -36,6 +38,7 @@ function CreateServer() {
       }
       const response = await axios.post("/community/server", formData, {
         headers: {
+          Authorization: `Bearer ${id}`,
           "Content-Type": "multipart/form-data",
         },
       });
