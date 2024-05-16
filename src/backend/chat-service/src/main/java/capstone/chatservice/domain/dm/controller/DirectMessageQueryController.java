@@ -20,7 +20,7 @@ public class DirectMessageQueryController {
     private final KafkaProducer kafkaProducer;
     private final DirectMessageQueryService queryService;
 
-    @GetMapping("/api/chat/direct/messages/room")
+    @GetMapping("/direct/messages/room")
     public DataResponseDto<Object> getMessages(@RequestParam(value = "roomId") Long roomId,
                                                @RequestParam(defaultValue = "0") int page,
                                                @RequestParam(defaultValue = "30") int size) {
@@ -30,7 +30,7 @@ public class DirectMessageQueryController {
         return DataResponseDto.of(pageResponseDto);
     }
 
-    @GetMapping("/api/chat/direct/comments")
+    @GetMapping("/direct/comments")
     public DataResponseDto<Object> getComments(@RequestParam(value = "parentId") Long parentId,
                                                @RequestParam(defaultValue = "0") int page,
                                                @RequestParam(defaultValue = "30") int size) {

@@ -43,7 +43,7 @@ public class ServerMessageCommandController {
         producerService.sendToServerChatTopic(messageDto);
     }
 
-    @PostMapping("/api/chat/server/message/file")
+    @PostMapping("/server/message/file")
     public void uploadFile(@RequestPart ServerMessageCreateRequest createRequest,
                            @RequestPart(value = "files", required = false) List<MultipartFile> files)
             throws IOException {

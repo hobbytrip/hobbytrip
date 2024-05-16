@@ -20,7 +20,7 @@ public class ForumMessageQueryController {
     private final KafkaProducer kafkaProducer;
     private final ForumMessageQueryService queryService;
 
-    @GetMapping("/api/chat/forum/messages/forum")
+    @GetMapping("/forum/messages/forum")
     public DataResponseDto<Object> getMessages(@RequestParam(value = "forumId") Long forumId,
                                                @RequestParam(defaultValue = "0") int page,
                                                @RequestParam(defaultValue = "30") int size) {
@@ -30,7 +30,7 @@ public class ForumMessageQueryController {
         return DataResponseDto.of(pageResponseDto);
     }
 
-    @GetMapping("/api/chat/forum/comments/message")
+    @GetMapping("/forum/comments/message")
     public DataResponseDto<Object> getComments(@RequestParam(value = "parentId") Long parentId,
                                                @RequestParam(defaultValue = "0") int page,
                                                @RequestParam(defaultValue = "30") int size) {

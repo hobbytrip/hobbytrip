@@ -46,7 +46,7 @@ public class DirectMessageCommandController {
         kafkaProducer.sendToDirectChatTopic(messageDto);
     }
 
-    @PostMapping("/api/chat/direct/message/file")
+    @PostMapping("/direct/message/file")
     public void uploadFile(@RequestPart DirectMessageCreateRequest createRequest,
                            @RequestPart(value = "files", required = false) List<MultipartFile> files)
             throws IOException {

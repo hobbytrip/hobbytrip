@@ -43,7 +43,7 @@ public class ForumMessageCommandController {
         kafkaProducer.sendToForumChatTopic(messageDto);
     }
 
-    @PostMapping("/api/chat/forum/message/file")
+    @PostMapping("/forum/message/file")
     public void uploadFile(@RequestPart ForumMessageCreateRequest createRequest,
                            @RequestPart(value = "files", required = false) List<MultipartFile> files)
             throws IOException {

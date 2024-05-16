@@ -20,7 +20,7 @@ public class ServerMessageQueryController {
     private final KafkaProducer producerService;
     private final ServerMessageQueryService queryService;
 
-    @GetMapping("/api/chat/server/messages/channel")
+    @GetMapping("/server/messages/channel")
     public DataResponseDto<Object> getMessages(@RequestParam(value = "channelId") Long channelId,
                                                @RequestParam(defaultValue = "0") int page,
                                                @RequestParam(defaultValue = "30") int size) {
@@ -30,7 +30,7 @@ public class ServerMessageQueryController {
         return DataResponseDto.of(pageResponseDto);
     }
 
-    @GetMapping("/api/chat/server/comments/message")
+    @GetMapping("/server/comments/message")
     public DataResponseDto<Object> getComments(@RequestParam(value = "parentId") Long parentId,
                                                @RequestParam(defaultValue = "0") int page,
                                                @RequestParam(defaultValue = "30") int size) {
