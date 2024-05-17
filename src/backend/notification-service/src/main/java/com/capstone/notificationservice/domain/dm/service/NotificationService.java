@@ -7,7 +7,7 @@ import com.capstone.notificationservice.domain.dm.dto.response.DmNotificationRes
 import com.capstone.notificationservice.domain.dm.entity.Notification;
 import com.capstone.notificationservice.domain.dm.respository.EmitterRepository;
 import com.capstone.notificationservice.domain.dm.respository.NotificationRepository;
-import com.capstone.notificationservice.global.common.entity.User;
+import com.capstone.notificationservice.domain.user.entity.User.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;

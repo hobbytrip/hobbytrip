@@ -3,7 +3,7 @@ package com.capstone.notificationservice.domain.dm.entity;
 
 import com.capstone.notificationservice.domain.common.AlarmType;
 import com.capstone.notificationservice.domain.server.dto.MentionType;
-import com.capstone.notificationservice.global.common.entity.User;
+import com.capstone.notificationservice.domain.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
