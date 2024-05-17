@@ -1,6 +1,7 @@
 package capstone.communityservice.domain.user.controller;
 
 import capstone.communityservice.domain.user.dto.UserReadResponseDto;
+import capstone.communityservice.domain.user.dto.UserServerDmInfo;
 import capstone.communityservice.domain.user.service.UserQueryService;
 import capstone.communityservice.global.common.dto.DataResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -21,5 +22,12 @@ public class UserQueryController {
         UserReadResponseDto response = userQueryService.read(userId);
 
         return DataResponseDto.of(response);
+    }
+
+    @GetMapping("/feign/{userId}")
+    public UserServerDmInfo feignRead(@PathVariable("userId") Long userId){
+        UserServerDmInfo response = userQueryService.feignRead(userId);
+
+        return response;
     }
 }

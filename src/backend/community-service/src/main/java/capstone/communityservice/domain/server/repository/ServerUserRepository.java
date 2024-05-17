@@ -22,6 +22,14 @@ public interface ServerUserRepository extends JpaRepository<ServerUser, Long> {
             nativeQuery = true)
     List<Long> findUserIdsByServerId(Long serverId);
 
+    @Query(value = "select su.server_id " +
+            "from server_user su " +
+            "where su.user_id = :userId ",
+            nativeQuery = true)
+    List<Long> findServerIdsByUserId(Long userId);
+
+
+
 
 //    @Query("select s from ServerUser su join fetch su.user u join fetch su.server s where u.id =: userId")
 //    public List<Server> findServerUserByUser(Long userId);

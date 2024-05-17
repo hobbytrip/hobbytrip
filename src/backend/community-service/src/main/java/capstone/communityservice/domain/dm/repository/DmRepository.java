@@ -10,4 +10,5 @@ public interface DmRepository extends JpaRepository<Dm, Long> {
 
     @Query("select distinct(d) from Dm d join fetch d.dmUsers du where du.user.id = :userId")
     List<Dm> findDmsWithUserId(Long userId);
+
 }
