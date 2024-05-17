@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public enum WhiteListURI {
-    USER_LOGIN("/user/user/login"),
-    USER_SIGNUP("/user/user/signup"),
+    USER_LOGIN("/login"),
+    USER_SIGNUP("/signup"),
     ;
 
     final String uri;

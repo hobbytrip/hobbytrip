@@ -1,6 +1,7 @@
 package capstone.gatewayservice.global.filter;
 
 import capstone.gatewayservice.global.common.JwtTokenProvider;
+import capstone.gatewayservice.global.common.dto.DataResponseDto;
 import capstone.gatewayservice.global.common.dto.ErrorResponseDto;
 import capstone.gatewayservice.global.exception.Code;
 import capstone.gatewayservice.global.external.AuthClient;
@@ -13,9 +14,13 @@ import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFac
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
@@ -29,10 +34,13 @@ public class AuthorizationFilter extends AbstractGatewayFilterFactory<Authorizat
 
     private final AuthClient authClient;
 
-    public AuthorizationFilter(JwtTokenProvider jwtTokenProvider, @Lazy @Qualifier("AuthFeignClient") AuthClient authClient){
+    private final WebClient.Builder webClientBuilder;
+
+    public AuthorizationFilter(JwtTokenProvider jwtTokenProvider, @Lazy @Qualifier("AuthFeignClient") AuthClient authClient, WebClient.Builder webClientBuilder){
         super(Config.class);
         this.jwtTokenProvider = jwtTokenProvider;
         this.authClient = authClient;
+        this.webClientBuilder = webClientBuilder;
     }
 
     @Override
@@ -51,21 +59,34 @@ public class AuthorizationFilter extends AbstractGatewayFilterFactory<Authorizat
             String refreshToken =
                     jwtTokenProvider.resolveRefreshToken(exchange.getRequest());
 
-            if(!StringUtils.hasText(refreshToken)){
+//            System.out.println(accessToken);
+
+            if (!StringUtils.hasText(refreshToken)) {
                 log.error("API Gateway - RefreshToken validation error");
-            } else{
-                try {
-                    if (StringUtils.hasText(accessToken) && jwtTokenProvider.validateToken(accessToken)
-                            && doNotLogout(accessToken)) {
-                        return chain.filter(exchange); // Token is valid, continue to the next filter
-                    }
-                }
-                catch (RuntimeException e){
-                    log.error("API Gateway - AccessToken validation error: {}", e.getMessage());
+                return unauthorizedResponse(exchange);
+            } else {
+                if (StringUtils.hasText(accessToken) && jwtTokenProvider.validateToken(accessToken)) {
+                    return doNotLogout(accessToken, exchange.getRequest())
+                            .flatMap(isValid -> {
+                                if (Boolean.TRUE.equals(isValid)) {
+                                    // Token is valid, continue to the next filter
+                                    return chain.filter(exchange);
+                                } else {
+                                    // Token is not valid, respond with unauthorized
+                                    System.out.println(isValid);
+                                    return unauthorizedResponse(exchange);
+                                }
+                            })
+                            .onErrorResume(e -> {
+                                log.error("API Gateway - AccessToken validation error: {}", e.getMessage());
+                                // Handle runtime exceptions by returning unauthorized response
+                                return unauthorizedResponse(exchange);
+                            });
+                } else {
+                    // If accessToken is not valid or not present
+                    return unauthorizedResponse(exchange);
                 }
             }
-
-            return unauthorizedResponse(exchange); // Token is not valid, respond with unauthorized
         };
     }
 
@@ -78,8 +99,16 @@ public class AuthorizationFilter extends AbstractGatewayFilterFactory<Authorizat
         return false;
     }
 
-    private boolean doNotLogout(String accessToken) {
-        return authClient.isValidToken(accessToken);
+    private Mono<Boolean> doNotLogout(String accessToken, ServerHttpRequest request) {
+        HttpHeaders headers = request.getHeaders();
+
+        return webClientBuilder.build().post()
+                .uri("lb://USER-SERVICE/isLogin")
+                .headers(httpHeaders -> httpHeaders.addAll(headers)) // 기존 헤더들을 모두 추가
+                .body(BodyInserters.fromValue(accessToken))
+                .retrieve()
+                .bodyToMono(DataResponseDto.class)
+                .map(response -> Boolean.TRUE.equals(response.getData()));
     }
 
     // 인증 실패 Response
