@@ -1,5 +1,7 @@
 package capstone.chatservice.domain.server.service.command.impl;
 
+import capstone.chatservice.domain.model.ActionType;
+import capstone.chatservice.domain.model.ChatType;
 import capstone.chatservice.domain.server.domain.ServerMessage;
 import capstone.chatservice.domain.server.dto.ServerMessageDto;
 import capstone.chatservice.domain.server.dto.request.ServerMessageCreateRequest;
@@ -28,9 +30,10 @@ public class ServerMessageCommandServiceImpl implements ServerMessageCommandServ
                 .userId(createRequest.getUserId())
                 .parentId(createRequest.getParentId())
                 .profileImage(createRequest.getProfileImage())
-                .type(createRequest.getType())
                 .content(createRequest.getContent())
                 .writer(createRequest.getWriter())
+                .chatType(ChatType.SERVER)
+                .actionType(ActionType.SEND)
                 .files(createRequest.getFiles())
                 .build();
 
@@ -44,7 +47,7 @@ public class ServerMessageCommandServiceImpl implements ServerMessageCommandServ
         ServerMessage serverMessage = messageRepository.findById(modifyRequest.getMessageId())
                 .orElseThrow(() -> new RuntimeException("no message"));
 
-        serverMessage.modify(modifyRequest.getType(), modifyRequest.getContent());
+        serverMessage.modify(modifyRequest.getContent());
 
         return ServerMessageDto.from(messageRepository.save(serverMessage));
     }
@@ -54,7 +57,7 @@ public class ServerMessageCommandServiceImpl implements ServerMessageCommandServ
         ServerMessage serverMessage = messageRepository.findById(deleteRequest.getMessageId())
                 .orElseThrow(() -> new RuntimeException("no message"));
 
-        serverMessage.delete(deleteRequest.getType());
+        serverMessage.delete();
 
         return ServerMessageDto.from(messageRepository.save(serverMessage));
     }

@@ -1,5 +1,7 @@
 package capstone.chatservice.domain.server.dto.response;
 
+import capstone.chatservice.domain.model.ActionType;
+import capstone.chatservice.domain.model.ChatType;
 import capstone.chatservice.domain.server.dto.ServerMessageDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,12 +15,14 @@ import lombok.Setter;
 public class ServerMessageDeleteResponse {
 
     private Long messageId;
-    private String type;
+    private ChatType chatType;
+    private ActionType actionType;
 
     public static ServerMessageDeleteResponse from(ServerMessageDto messageDto) {
         return new ServerMessageDeleteResponse(
                 messageDto.getMessageId(),
-                messageDto.getType()
+                ChatType.SERVER,
+                ActionType.DELETE
         );
     }
 }

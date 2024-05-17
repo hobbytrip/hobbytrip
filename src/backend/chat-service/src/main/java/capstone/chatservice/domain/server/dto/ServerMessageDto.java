@@ -1,6 +1,7 @@
 package capstone.chatservice.domain.server.dto;
 
 import capstone.chatservice.domain.emoji.dto.EmojiDto;
+import capstone.chatservice.domain.model.ActionType;
 import capstone.chatservice.domain.model.UploadFile;
 import capstone.chatservice.domain.server.domain.ServerMessage;
 import capstone.chatservice.domain.server.dto.request.ServerMessageTypingRequest;
@@ -26,10 +27,10 @@ public class ServerMessageDto {
     private Long parentId;
     private Long count;
     private String profileImage;
-    private String type;
     private String writer;
     private String content;
     private boolean isDeleted;
+    private ActionType actionType;
     private List<UploadFile> files;
     private List<EmojiDto> emojis;
     private LocalDateTime createdAt;
@@ -44,10 +45,10 @@ public class ServerMessageDto {
                 message.getParentId(),
                 0L,
                 message.getProfileImage(),
-                message.getType(),
                 message.getWriter(),
                 message.getContent(),
                 message.isDeleted(),
+                message.getActionType(),
                 message.getFiles(),
                 null,
                 message.getCreatedAt(),
@@ -64,10 +65,10 @@ public class ServerMessageDto {
                 null,
                 0L,
                 null,
-                typingRequest.getType(),
                 typingRequest.getWriter(),
                 null,
                 false,
+                ActionType.TYPING,
                 null,
                 null,
                 null,

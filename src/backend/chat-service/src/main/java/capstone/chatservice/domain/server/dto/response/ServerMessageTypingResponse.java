@@ -1,5 +1,7 @@
 package capstone.chatservice.domain.server.dto.response;
 
+import capstone.chatservice.domain.model.ActionType;
+import capstone.chatservice.domain.model.ChatType;
 import capstone.chatservice.domain.server.dto.ServerMessageDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,14 +17,16 @@ public class ServerMessageTypingResponse {
     private Long serverId;
     private Long channelId;
     private String writer;
-    private String type;
+    private ChatType chatType;
+    private ActionType actionType;
 
     public static ServerMessageTypingResponse from(ServerMessageDto serverMessageDto) {
         return new ServerMessageTypingResponse(
                 serverMessageDto.getServerId(),
                 serverMessageDto.getChannelId(),
                 serverMessageDto.getWriter(),
-                serverMessageDto.getType()
+                ChatType.SERVER,
+                ActionType.TYPING
         );
     }
 }

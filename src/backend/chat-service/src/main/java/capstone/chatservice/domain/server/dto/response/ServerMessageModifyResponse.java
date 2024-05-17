@@ -1,5 +1,7 @@
 package capstone.chatservice.domain.server.dto.response;
 
+import capstone.chatservice.domain.model.ActionType;
+import capstone.chatservice.domain.model.ChatType;
 import capstone.chatservice.domain.server.dto.ServerMessageDto;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
@@ -16,7 +18,8 @@ public class ServerMessageModifyResponse {
     private Long serverId;
     private Long messageId;
     private String content;
-    private String type;
+    private ChatType chatType;
+    private ActionType actionType;
     private LocalDateTime modifiedAt;
 
     public static ServerMessageModifyResponse from(ServerMessageDto message) {
@@ -24,7 +27,8 @@ public class ServerMessageModifyResponse {
                 message.getServerId(),
                 message.getMessageId(),
                 message.getContent(),
-                message.getType(),
+                ChatType.SERVER,
+                ActionType.MODIFY,
                 message.getModifiedAt()
         );
     }
