@@ -10,8 +10,9 @@ import lombok.Setter;
 public class VoiceDto {
     private Long serverId;
     private Long channelId;
-    private Long UserId;
-    private enum voiceConnectionState{
-        voiceJoin,voiceLeave
-    }
+    private Long userId;
+    private VoiceConnectionState voiceConnectionState;
+
+
+
 }

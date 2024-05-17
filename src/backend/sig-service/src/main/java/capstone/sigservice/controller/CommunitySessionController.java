@@ -1,15 +1,18 @@
 package capstone.sigservice.controller;
 
 import capstone.sigservice.dto.VoiceDto;
+import capstone.sigservice.dto.voiceConnectionState;
 import capstone.sigservice.service.CommunitySessionService;
 import java.util.Map;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,7 +36,8 @@ public class CommunitySessionController {
 
     @Autowired
     private KafkaTemplate<String, VoiceDto> kafkaTemplate;
-
+    @Value("${spring.kafka.topic.voice-connection-state-event}")
+    private String voiceConnectionStateTopic;
 
     //Service활용
     @PostMapping("/api/sessions")
@@ -53,10 +57,19 @@ public class CommunitySessionController {
         }
 
         Connection connection = coummintySessionService.createConnection(sessionId,params);
+
+        VoiceDto voiceDto=coummintySessionService.createJoinVoiceDto(params);
+        kafkaTemplate.send(voiceConnectionStateTopic,voiceDto);
         return new ResponseEntity<>(connection.getToken(), HttpStatus.OK);
     }
 
-
+    @DeleteMapping("/api/sessions/{sessionId}/disconnect")
+    public void leaveConnection(@PathVariable("sessionId")String sessionId,
+                                @RequestBody Map<String,Object> params)
+            throws OpenViduJavaClientException, OpenViduHttpException{
+        VoiceDto voiceDto=coummintySessionService.createLeaveVoiceDto(params);
+        kafkaTemplate.send(voiceConnectionStateTopic,voiceDto);
+    }
 
 
 }

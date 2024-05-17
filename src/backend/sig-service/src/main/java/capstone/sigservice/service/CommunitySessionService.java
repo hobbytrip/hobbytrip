@@ -1,5 +1,7 @@
 package capstone.sigservice.service;
 
+import capstone.sigservice.dto.VoiceConnectionState;
+import capstone.sigservice.dto.VoiceDto;
 import io.openvidu.java.client.Connection;
 import io.openvidu.java.client.ConnectionProperties;
 import io.openvidu.java.client.OpenVidu;
@@ -11,7 +13,6 @@ import jakarta.annotation.PostConstruct;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 @Service
 public class CommunitySessionService {
@@ -51,6 +52,22 @@ public class CommunitySessionService {
             return null;
         }
         return session;
+    }
+    public VoiceDto createJoinVoiceDto(Map<String, Object> params){
+        VoiceDto voiceDto=new VoiceDto();
+        voiceDto.setServerId(Long.parseLong(String.valueOf(params.get("serverId"))));
+        voiceDto.setChannelId(Long.parseLong(String.valueOf(params.get("channelId"))));
+        voiceDto.setUserId(Long.parseLong(String.valueOf(params.get("userId"))));
+        voiceDto.setVoiceConnectionState(VoiceConnectionState.VOICE_JOIN);
+        return voiceDto;
+    }
+    public VoiceDto createLeaveVoiceDto(Map<String, Object> params){
+        VoiceDto voiceDto=new VoiceDto();
+        voiceDto.setServerId(Long.parseLong(String.valueOf(params.get("serverId"))));
+        voiceDto.setChannelId(Long.parseLong(String.valueOf(params.get("channelId"))));
+        voiceDto.setUserId(Long.parseLong(String.valueOf(params.get("userId"))));
+        voiceDto.setVoiceConnectionState(VoiceConnectionState.VOICE_LEAVE);
+        return voiceDto;
     }
 
 }
