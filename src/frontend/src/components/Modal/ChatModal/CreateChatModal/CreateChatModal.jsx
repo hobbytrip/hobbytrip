@@ -3,13 +3,14 @@ import s from "./CreateChatModal.module.css";
 import * as StompJs from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import ChatHeader from "../../../Common/ChatRoom/CommunityChatHeader/ChatHeader";
-// import { useParams } from "react-router-dom";
+import ChatHeaderModal from "../ChatHeaderModal/ChatHeaderModal";
+import { useParams } from "react-router-dom";
 
 export default function ChatModal({ username }) {
   const [client, setClient] = useState(null);
   const [chatMessage, setChatMessage] = useState("");
-  // const { serverId } = useParams();
-  const serverId = 1;
+  const { serverId } = useParams();
+  // const serverId = 1;
 
   useEffect(() => {
     connectChat();
@@ -77,9 +78,11 @@ export default function ChatModal({ username }) {
 
   return (
     <div className={s.wrapper}>
-      <div className={s.chatHeader}>
+      <div className={s.topContainer}>
         <ChatHeader />
+        <ChatHeaderModal />
       </div>
+
       <div className={s.inputContainer}>
         <div className={s.inputBox}>
           <input

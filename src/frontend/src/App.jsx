@@ -18,7 +18,7 @@ function App() {
         <Route path="/login" element={<LoginView />} />
         <Route path="/register" element={<RegView />} />
         <Route path="/user/profile" element={<UserProfileView />} /> */}
-        <Route path="/test/1" element={<ChatRoom username={"tmp"} />} />
+        <Route path="/test/:serverId" element={<ChatRoom username={"tmp"} />} />
       </Routes>
     </Router>
   );

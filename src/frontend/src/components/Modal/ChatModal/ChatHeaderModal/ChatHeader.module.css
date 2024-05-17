@@ -1,0 +1,28 @@
+.wrapper {
+  height: 65px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 115px;
+}
+.infoBox {
+  margin-left: -8px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: left;
+  gap: 8px;
+}
+.serverIcon {
+  width: 35px;
+  height: 35px;
+}
+.serverName {
+  color: white;
+}
+.modal {
+  color: white;
+  width: 20px;
+  height: 20px;
+  margin-left: 5px;
+}
