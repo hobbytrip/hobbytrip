@@ -5,7 +5,7 @@ import capstone.chatservice.domain.dm.dto.request.DirectMessageTypingRequest;
 import capstone.chatservice.domain.dm.service.query.DirectMessageQueryService;
 import capstone.chatservice.global.common.dto.DataResponseDto;
 import capstone.chatservice.global.common.dto.PageResponseDto;
-import capstone.chatservice.infra.kafka.producer.KafkaProducer;
+import capstone.chatservice.infra.kafka.producer.chat.ChatEventProducer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class DirectMessageQueryController {
 
-    private final KafkaProducer kafkaProducer;
+    private final ChatEventProducer chatEventProducer;
     private final DirectMessageQueryService queryService;
 
     @GetMapping("/direct/messages/room")
@@ -43,6 +43,6 @@ public class DirectMessageQueryController {
     @MessageMapping("/direct/message/typing")
     public void typing(DirectMessageTypingRequest typingRequest) {
         DirectMessageDto directMessageDto = DirectMessageDto.from(typingRequest);
-        kafkaProducer.sendToDirectChatTopic(directMessageDto);
+        chatEventProducer.sendToDirectChatTopic(directMessageDto);
     }
 }

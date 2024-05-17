@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class AlarmProducer {
+public class AlarmEventProducer {
 
     @Value("${spring.kafka.topic.dm-alarm-event}")
     private String dmAlarmEventTopic;

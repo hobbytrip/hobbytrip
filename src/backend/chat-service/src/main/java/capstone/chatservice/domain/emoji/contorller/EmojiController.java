@@ -4,7 +4,7 @@ import capstone.chatservice.domain.emoji.dto.EmojiDto;
 import capstone.chatservice.domain.emoji.dto.request.EmojiCreateRequest;
 import capstone.chatservice.domain.emoji.dto.request.EmojiDeleteRequest;
 import capstone.chatservice.domain.emoji.service.EmojiService;
-import capstone.chatservice.infra.kafka.producer.KafkaProducer;
+import capstone.chatservice.infra.kafka.producer.chat.ChatEventProducer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class EmojiController {
 
     private final EmojiService emojiService;
-    private final KafkaProducer producerService;
+    private final ChatEventProducer producerService;
 
     @MessageMapping("/emoji/save")
     public void save(EmojiCreateRequest createRequest) {

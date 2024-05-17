@@ -7,7 +7,7 @@ import capstone.chatservice.domain.server.dto.request.ServerMessageDeleteRequest
 import capstone.chatservice.domain.server.dto.request.ServerMessageModifyRequest;
 import capstone.chatservice.domain.server.service.command.ServerMessageCommandService;
 import capstone.chatservice.infra.S3.FileStore;
-import capstone.chatservice.infra.kafka.producer.KafkaProducer;
+import capstone.chatservice.infra.kafka.producer.chat.ChatEventProducer;
 import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class ServerMessageCommandController {
 
     private final FileStore fileStore;
-    private final KafkaProducer producerService;
+    private final ChatEventProducer producerService;
     private final ServerMessageCommandService commandService;
 
     @MessageMapping("/server/message/send")

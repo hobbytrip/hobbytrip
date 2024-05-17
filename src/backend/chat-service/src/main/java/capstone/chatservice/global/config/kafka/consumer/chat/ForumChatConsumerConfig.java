@@ -1,4 +1,4 @@
-package capstone.chatservice.global.config.kafka.consumer;
+package capstone.chatservice.global.config.kafka.consumer.chat;
 
 import capstone.chatservice.domain.forum.dto.ForumMessageDto;
 import java.util.HashMap;

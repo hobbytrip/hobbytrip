@@ -1,4 +1,4 @@
-package capstone.chatservice.infra.kafka.producer.dto;
+package capstone.chatservice.infra.kafka.producer.state.dto;
 
 import java.util.List;
 import lombok.Builder;

@@ -1,4 +1,4 @@
-package capstone.chatservice.infra.kafka.consumer;
+package capstone.chatservice.infra.kafka.consumer.chat;
 
 import capstone.chatservice.domain.emoji.dto.EmojiDto;
 import capstone.chatservice.domain.emoji.dto.response.EmojiCreateResponse;

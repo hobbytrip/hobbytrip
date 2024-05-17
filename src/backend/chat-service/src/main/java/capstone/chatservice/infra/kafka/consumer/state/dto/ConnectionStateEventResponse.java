@@ -1,6 +1,6 @@
 package capstone.chatservice.infra.kafka.consumer.state.dto;
 
-import capstone.chatservice.infra.kafka.producer.dto.ConnectionStateEventDto;
+import capstone.chatservice.infra.kafka.producer.state.dto.ConnectionStateEventDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

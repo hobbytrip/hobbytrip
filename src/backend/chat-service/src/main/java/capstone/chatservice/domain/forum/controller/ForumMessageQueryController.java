@@ -5,7 +5,7 @@ import capstone.chatservice.domain.forum.dto.request.ForumMessageTypingRequest;
 import capstone.chatservice.domain.forum.service.query.ForumMessageQueryService;
 import capstone.chatservice.global.common.dto.DataResponseDto;
 import capstone.chatservice.global.common.dto.PageResponseDto;
-import capstone.chatservice.infra.kafka.producer.KafkaProducer;
+import capstone.chatservice.infra.kafka.producer.chat.ChatEventProducer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ForumMessageQueryController {
 
-    private final KafkaProducer kafkaProducer;
+    private final ChatEventProducer chatEventProducer;
     private final ForumMessageQueryService queryService;
 
     @GetMapping("/forum/messages/forum")
@@ -43,6 +43,6 @@ public class ForumMessageQueryController {
     @MessageMapping("/forum/message/typing")
     public void typing(ForumMessageTypingRequest typingRequest) {
         ForumMessageDto forumMessageDto = ForumMessageDto.from(typingRequest);
-        kafkaProducer.sendToForumChatTopic(forumMessageDto);
+        chatEventProducer.sendToForumChatTopic(forumMessageDto);
     }
 }

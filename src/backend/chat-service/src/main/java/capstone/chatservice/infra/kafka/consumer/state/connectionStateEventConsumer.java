@@ -1,7 +1,7 @@
 package capstone.chatservice.infra.kafka.consumer.state;
 
 import capstone.chatservice.infra.kafka.consumer.state.dto.ConnectionStateEventResponse;
-import capstone.chatservice.infra.kafka.producer.dto.ConnectionStateEventDto;
+import capstone.chatservice.infra.kafka.producer.state.dto.ConnectionStateEventDto;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
