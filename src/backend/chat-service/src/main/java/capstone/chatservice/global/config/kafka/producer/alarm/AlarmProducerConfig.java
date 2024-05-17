@@ -1,6 +1,7 @@
 package capstone.chatservice.global.config.kafka.producer.alarm;
 
 import capstone.chatservice.infra.kafka.producer.alarm.dto.DmAlarmEventDto;
+import capstone.chatservice.infra.kafka.producer.alarm.dto.ServerAlarmEventDto;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -40,5 +41,15 @@ public class AlarmProducerConfig {
     @Bean
     public KafkaTemplate<String, DmAlarmEventDto> dmAlarmEventKafkaTemplate() {
         return new KafkaTemplate<>(dmAlarmEventProducerFactory());
+    }
+
+    @Bean
+    public ProducerFactory<String, ServerAlarmEventDto> serverAlarmEventProducerFactory() {
+        return new DefaultKafkaProducerFactory<>(producerConfig());
+    }
+
+    @Bean
+    public KafkaTemplate<String, ServerAlarmEventDto> serverAlarmEventKafkaTemplate() {
+        return new KafkaTemplate<>(serverAlarmEventProducerFactory());
     }
 }
