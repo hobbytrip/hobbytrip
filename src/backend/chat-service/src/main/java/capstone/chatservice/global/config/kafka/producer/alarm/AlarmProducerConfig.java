@@ -22,7 +22,7 @@ public class AlarmProducerConfig {
     private String bootstrapServers;
 
     @Bean
-    public Map<String, Object> producerConfig() {
+    public Map<String, Object> alarmEventProducerConfig() {
         Map<String, Object> config = new HashMap<>();
         config.put(org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         config.put(org.apache.kafka.clients.producer.ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
@@ -35,7 +35,7 @@ public class AlarmProducerConfig {
 
     @Bean
     public ProducerFactory<String, DmAlarmEventDto> dmAlarmEventProducerFactory() {
-        return new DefaultKafkaProducerFactory<>(producerConfig());
+        return new DefaultKafkaProducerFactory<>(alarmEventProducerConfig());
     }
 
     @Bean
@@ -45,7 +45,7 @@ public class AlarmProducerConfig {
 
     @Bean
     public ProducerFactory<String, ServerAlarmEventDto> serverAlarmEventProducerFactory() {
-        return new DefaultKafkaProducerFactory<>(producerConfig());
+        return new DefaultKafkaProducerFactory<>(alarmEventProducerConfig());
     }
 
     @Bean
