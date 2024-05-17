@@ -16,11 +16,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  padding-left: 10px;
 }
 .searchIcon {
   color: white;
   font-size: 15px;
   position: absolute;
-  right: 5px;
+  right: 10px;
   top: 6px;
 }

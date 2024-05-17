@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { IoSend } from "react-icons/io5";
 import s from "./CreateChatModal.module.css";
 import * as StompJs from "@stomp/stompjs";
 import SockJS from "sockjs-client";
@@ -6,6 +7,7 @@ import ChatHeader from "../../../Common/ChatRoom/CommunityChatHeader/ChatHeader"
 import ChatHeaderModal from "../ChatHeaderModal/ChatHeaderModal";
 import { useParams } from "react-router-dom";
 import ChatSearchBar from "../ChatSearchBar/ChatSearchBar";
+import ChatChannelInfo from "../ChatChannelInfo/ChatChannelInfo";
 
 export default function ChatModal({ username }) {
   const [client, setClient] = useState(null);
@@ -84,7 +86,10 @@ export default function ChatModal({ username }) {
         <ChatHeaderModal />
         <ChatSearchBar />
       </div>
-      <div className={s.chatContainer}></div>
+      <div className={s.chatContainer}>
+        <ChatChannelInfo />
+        <div className={s.chatListContainer}>채팅리스트</div>
+      </div>
       <div className={s.inputContainer}>
         <div className={s.inputBox}>
           <input
@@ -92,10 +97,11 @@ export default function ChatModal({ username }) {
             id="message"
             value={chatMessage}
             className={s.inputContent}
+            placeholder="메세지 보내기"
             onChange={(e) => setChatMessage(e.target.value)}
           />
         </div>
-        <button onClick={sendMessage}>전송</button>
+        <IoSend className={s.sendBtn} onClick={sendMessage} />
       </div>
     </div>
   );

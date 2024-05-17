@@ -5,11 +5,7 @@ export default function ChatSearchBar() {
   return (
     <div className={s.wrapper}>
       <div className={s.searchContainer}>
-        <input
-          type="text"
-          className={s.searchBar}
-          placeholder="채팅 내용 검색..."
-        />
+        <input type="text" className={s.searchBar} placeholder="검색하기" />
         <FiSearch className={s.searchIcon} />
       </div>
     </div>
