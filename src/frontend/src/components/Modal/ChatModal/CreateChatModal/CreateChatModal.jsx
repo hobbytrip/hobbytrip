@@ -5,6 +5,7 @@ import SockJS from "sockjs-client";
 import ChatHeader from "../../../Common/ChatRoom/CommunityChatHeader/ChatHeader";
 import ChatHeaderModal from "../ChatHeaderModal/ChatHeaderModal";
 import { useParams } from "react-router-dom";
+import ChatSearchBar from "../ChatSearchBar/ChatSearchBar";
 
 export default function ChatModal({ username }) {
   const [client, setClient] = useState(null);
@@ -81,8 +82,9 @@ export default function ChatModal({ username }) {
       <div className={s.topContainer}>
         <ChatHeader />
         <ChatHeaderModal />
+        <ChatSearchBar />
       </div>
-
+      <div className={s.chatContainer}></div>
       <div className={s.inputContainer}>
         <div className={s.inputBox}>
           <input

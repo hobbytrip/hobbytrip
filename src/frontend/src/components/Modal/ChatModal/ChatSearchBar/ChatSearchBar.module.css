@@ -1,0 +1,26 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 70px;
+}
+.searchContainer {
+  position: relative;
+}
+.searchBar {
+  width: 332px;
+  height: 25px;
+  background-color: rgba(0, 0, 0, 0.452);
+  border-radius: 5px;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.searchIcon {
+  color: white;
+  font-size: 15px;
+  position: absolute;
+  right: 5px;
+  top: 6px;
+}
