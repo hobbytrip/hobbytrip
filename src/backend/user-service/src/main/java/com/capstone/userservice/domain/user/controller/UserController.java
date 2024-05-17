@@ -13,11 +13,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
@@ -34,7 +32,7 @@ public class UserController {
         return DataResponseDto.of(tokenDto);
     }
 
-    @PostMapping("/logout")
+    @PostMapping("/user-logout")
     public DataResponseDto<Object> logout(@RequestBody TokenRequest tokenRequest) {
         Boolean response = userService.logout(tokenRequest);
         return DataResponseDto.of(response);

@@ -10,11 +10,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/user")
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
@@ -30,9 +28,9 @@ public class AuthController {
     }
 
     //true 시 로그인 되어있는 상태
-    @PostMapping("/loginCheck")
-    public DataResponseDto<Object> loginCheck(@RequestBody String accessToken) {
-        Boolean response = authService.loginCheck(accessToken);
+    @PostMapping("/isLogin")
+    public DataResponseDto<Object> isLogin(@RequestBody String accessToken) {
+        Boolean response = authService.isLogin(accessToken);
         return DataResponseDto.of(response);
     }
 }
