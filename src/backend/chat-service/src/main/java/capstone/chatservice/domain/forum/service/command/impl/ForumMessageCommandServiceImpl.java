@@ -7,6 +7,8 @@ import capstone.chatservice.domain.forum.dto.request.ForumMessageDeleteRequest;
 import capstone.chatservice.domain.forum.dto.request.ForumMessageModifyRequest;
 import capstone.chatservice.domain.forum.repository.ForumMessageRepository;
 import capstone.chatservice.domain.forum.service.command.ForumMessageCommandService;
+import capstone.chatservice.domain.model.ActionType;
+import capstone.chatservice.domain.model.ChatType;
 import capstone.chatservice.global.util.SequenceGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,9 +31,10 @@ public class ForumMessageCommandServiceImpl implements ForumMessageCommandServic
                 .userId(createRequest.getUserId())
                 .parentId(createRequest.getParentId())
                 .profileImage(createRequest.getProfileImage())
-                .type(createRequest.getType())
                 .content(createRequest.getContent())
                 .writer(createRequest.getWriter())
+                .chatType(ChatType.FORUM)
+                .actionType(ActionType.SEND)
                 .files(createRequest.getFiles())
                 .build();
 
@@ -45,7 +48,7 @@ public class ForumMessageCommandServiceImpl implements ForumMessageCommandServic
         ForumMessage forumMessage = forumMessageRepository.findById(modifyRequest.getMessageId())
                 .orElseThrow(() -> new RuntimeException("no message"));
 
-        forumMessage.modify(modifyRequest.getType(), modifyRequest.getContent());
+        forumMessage.modify(modifyRequest.getContent());
 
         return ForumMessageDto.from(forumMessageRepository.save(forumMessage));
     }
@@ -55,7 +58,7 @@ public class ForumMessageCommandServiceImpl implements ForumMessageCommandServic
         ForumMessage forumMessage = forumMessageRepository.findById(deleteRequest.getMessageId())
                 .orElseThrow(() -> new RuntimeException("no message"));
 
-        forumMessage.delete(deleteRequest.getType());
+        forumMessage.delete();
 
         return ForumMessageDto.from(forumMessageRepository.save(forumMessage));
     }

@@ -21,22 +21,21 @@ public class ForumChatConsumer {
 
     @KafkaListener(topics = "${spring.kafka.topic.forum-chat}", groupId = "${spring.kafka.consumer.group-id.forum-chat}", containerFactory = "forumChatListenerContainerFactory")
     public void forumChatListener(ForumMessageDto messageDto) {
-        String messageType = messageDto.getType();
         Long serverId = messageDto.getServerId();
-        switch (messageType) {
-            case "send" -> {
+        switch (messageDto.getActionType()) {
+            case SEND -> {
                 ForumMessageCreateResponse createResponse = ForumMessageCreateResponse.from(messageDto);
                 messagingTemplate.convertAndSend("/topic/server/" + serverId, DataResponseDto.of(createResponse));
             }
-            case "modify" -> {
+            case MODIFY -> {
                 ForumMessageModifyResponse modifyResponse = ForumMessageModifyResponse.from(messageDto);
                 messagingTemplate.convertAndSend("/topic/server/" + serverId, DataResponseDto.of(modifyResponse));
             }
-            case "delete" -> {
+            case DELETE -> {
                 ForumMessageDeleteResponse deleteResponse = ForumMessageDeleteResponse.from(messageDto);
                 messagingTemplate.convertAndSend("/topic/server/" + serverId, DataResponseDto.of(deleteResponse));
             }
-            case "typing" -> {
+            case TYPING -> {
                 ForumMessageTypingResponse typingResponse = ForumMessageTypingResponse.from(messageDto);
                 messagingTemplate.convertAndSend("/topic/server/" + serverId, DataResponseDto.of(typingResponse));
             }

@@ -3,6 +3,7 @@ package capstone.chatservice.domain.forum.dto;
 import capstone.chatservice.domain.emoji.dto.EmojiDto;
 import capstone.chatservice.domain.forum.domain.ForumMessage;
 import capstone.chatservice.domain.forum.dto.request.ForumMessageTypingRequest;
+import capstone.chatservice.domain.model.ActionType;
 import capstone.chatservice.domain.model.UploadFile;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,10 +26,10 @@ public class ForumMessageDto {
     private Long parentId;
     private Long count;
     private String profileImage;
-    private String type;
     private String writer;
     private String content;
     private boolean isDeleted;
+    private ActionType actionType;
     private List<UploadFile> files;
     private List<EmojiDto> emojis;
     private LocalDateTime createdAt;
@@ -44,10 +45,10 @@ public class ForumMessageDto {
                 message.getParentId(),
                 0L,
                 message.getProfileImage(),
-                message.getType(),
                 message.getWriter(),
                 message.getContent(),
                 message.isDeleted(),
+                message.getActionType(),
                 message.getFiles(),
                 null,
                 message.getCreatedAt(),
@@ -65,10 +66,10 @@ public class ForumMessageDto {
                 null,
                 0L,
                 null,
-                typingRequest.getType(),
                 typingRequest.getWriter(),
                 null,
                 false,
+                ActionType.TYPING,
                 null,
                 null,
                 null,

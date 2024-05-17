@@ -1,6 +1,8 @@
 package capstone.chatservice.domain.forum.domain;
 
+import capstone.chatservice.domain.model.ActionType;
 import capstone.chatservice.domain.model.BaseModel;
+import capstone.chatservice.domain.model.ChatType;
 import capstone.chatservice.domain.model.UploadFile;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -43,13 +45,16 @@ public class ForumMessage extends BaseModel {
     private String profileImage;
 
     @Field
-    private String type;
-
-    @Field
     private String writer;
 
     @Field
     private String content;
+
+    @Field
+    private ChatType chatType;
+
+    @Field
+    private ActionType actionType;
 
     @Field
     private boolean isDeleted = Boolean.FALSE;
@@ -59,7 +64,7 @@ public class ForumMessage extends BaseModel {
 
     @Builder
     public ForumMessage(Long serverId, Long channelId, Long forumId, Long userId,
-                        Long parentId, String profileImage, String type,
+                        Long parentId, String profileImage, ChatType chatType, ActionType actionType,
                         String writer, String content, List<UploadFile> files) {
 
         this.serverId = serverId;
@@ -68,9 +73,10 @@ public class ForumMessage extends BaseModel {
         this.userId = userId;
         this.parentId = parentId;
         this.profileImage = profileImage;
-        this.type = type;
         this.writer = writer;
         this.content = content;
+        this.chatType = chatType;
+        this.actionType = actionType;
         this.files = files;
         this.setCreatedAt(LocalDateTime.now());
     }
@@ -79,14 +85,14 @@ public class ForumMessage extends BaseModel {
         this.messageId = messageId;
     }
 
-    public void modify(String type, String content) {
-        this.type = type;
+    public void modify(String content) {
         this.content = content;
+        this.actionType = ActionType.MODIFY;
         this.setModifiedAt(LocalDateTime.now());
     }
 
-    public void delete(String type) {
-        this.type = type;
+    public void delete() {
+        this.actionType = ActionType.DELETE;
         this.isDeleted = true;
     }
 }
