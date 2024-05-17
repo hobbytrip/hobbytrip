@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class DmNotificationDto {
-    private Long notificationId;
     private Long dmRoomId;
     private Long userId;
     private String content;

@@ -2,6 +2,7 @@ package com.capstone.notificationservice.domain.dm.entity;
 
 
 import com.capstone.notificationservice.domain.common.AlarmType;
+import com.capstone.notificationservice.domain.server.dto.MentionType;
 import com.capstone.notificationservice.global.common.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,6 +33,9 @@ public class Notification{
     @Column(name = "notification_id")
     private Long notificationId;
 
+    private Long dmRoomId;
+    private Long serverId;
+
     private String content;
 
     private String url;
@@ -41,8 +45,11 @@ public class Notification{
     @Enumerated(EnumType.STRING)
     private AlarmType alarmType;
 
+    @Enumerated(EnumType.STRING)
+    private MentionType mentionType;
+
     @ManyToOne
     @JoinColumn(name= "user_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private User user;
+    private User receiver;
 }
