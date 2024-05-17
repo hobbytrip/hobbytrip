@@ -2,6 +2,7 @@ package com.capstone.userservice.domain.friend.service;
 
 
 import com.capstone.userservice.domain.friend.dto.FriendStatusDto;
+import com.capstone.userservice.domain.friend.dto.response.FriendReadResponse;
 import com.capstone.userservice.domain.friend.dto.response.FriendsStatusResponse;
 import com.capstone.userservice.domain.friend.dto.response.WaitingFriendListResponse;
 import com.capstone.userservice.domain.friend.entity.Friendship;
@@ -10,7 +11,6 @@ import com.capstone.userservice.domain.friend.exception.FriendException;
 import com.capstone.userservice.domain.friend.repository.FriendshipRepository;
 import com.capstone.userservice.domain.user.entity.User;
 import com.capstone.userservice.domain.user.repository.UserRepository;
-import com.capstone.userservice.global.common.dto.kafka.FriendReadResponse;
 import com.capstone.userservice.global.exception.Code;
 import com.capstone.userservice.global.util.TokenUtil;
 import java.util.ArrayList;

@@ -67,13 +67,13 @@ public class AuthService {
      * @return 로그인 되어 있으면 True, 로그아웃은 False
      */
     @Transactional
-    public boolean loginCheck(String accessToken) {
+    public boolean isLogin(String accessToken) {
         try {
             // 1. Access Token 에서 UserDetails 객체 가져오기
-            Authentication authentication = tokenUtil.getAuthentication(accessToken);
+            Long userId = tokenUtil.getUserId(accessToken);
 
             // 2. 저장소에서 UserId 를 기반으로 Refresh Token 값 가져옴
-            Optional<RefreshToken> refreshToken = refreshTokenRepository.findById(authentication.getName());
+            Optional<RefreshToken> refreshToken = refreshTokenRepository.findById(String.valueOf(userId));
 
             //객체가 값을 가지고 있으면 true
             if (refreshToken.isPresent()) {

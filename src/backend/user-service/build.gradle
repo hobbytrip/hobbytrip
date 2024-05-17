@@ -26,6 +26,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.session:spring-session-core'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
     compileOnly 'org.projectlombok:lombok'
 
     //database
@@ -34,8 +35,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
     implementation 'mysql:mysql-connector-java:8.0.29'
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-redis'
-    runtimeOnly 'mysql:mysql-connector-java'
+    runtimeOnly 'mysql:mysql-connector-java:8.0.29'
     runtimeOnly 'com.mysql:mysql-connector-j'
 
     // Spring Security
@@ -63,10 +63,27 @@ dependencies {
 
     //feign client
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.0.2'
+
+    // WireMock
+    testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock:3.1.5"
+    testImplementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner:3.1.5"
+
+    //spring cloud
+    implementation 'org.springframework.cloud:spring-cloud-starter-config'
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+ext {
+    set('springCloudVersion', "2023.0.0")
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
 }
 
 compileJava {

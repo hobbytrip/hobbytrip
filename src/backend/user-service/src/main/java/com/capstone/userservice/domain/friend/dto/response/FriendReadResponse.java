@@ -1,14 +1,15 @@
-package com.capstone.userservice.global.common.dto.kafka;
+package com.capstone.userservice.domain.friend.dto.response;
 
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
+@Data
 @Builder
-@Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FriendReadResponse {
