@@ -8,6 +8,8 @@ import capstone.chatservice.domain.dm.service.command.DirectMessageCommandServic
 import capstone.chatservice.domain.model.UploadFile;
 import capstone.chatservice.infra.S3.FileStore;
 import capstone.chatservice.infra.kafka.producer.KafkaProducer;
+import capstone.chatservice.infra.kafka.producer.alarm.AlarmProducer;
+import capstone.chatservice.infra.kafka.producer.alarm.dto.DmAlarmEventDto;
 import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class DirectMessageCommandController {
 
     private final FileStore fileStore;
+    private final AlarmProducer alarmProducer;
     private final KafkaProducer kafkaProducer;
     private final DirectMessageCommandService commandService;
 
@@ -30,6 +33,8 @@ public class DirectMessageCommandController {
 
         DirectMessageDto messageDto = commandService.save(createRequest);
         kafkaProducer.sendToDirectChatTopic(messageDto);
+        DmAlarmEventDto dmAlarmEventDto = DmAlarmEventDto.from(createRequest);
+        alarmProducer.sendToDmAlarmEventTopic(dmAlarmEventDto);
     }
 
     @MessageMapping("/direct/message/modify")
