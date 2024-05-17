@@ -1,6 +1,8 @@
 package capstone.chatservice.domain.dm.dto.response;
 
 import capstone.chatservice.domain.dm.dto.DirectMessageDto;
+import capstone.chatservice.domain.model.ActionType;
+import capstone.chatservice.domain.model.ChatType;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,15 +18,17 @@ public class DirectMessageModifyResponse {
     private Long dmRoomId;
     private Long messageId;
     private String content;
-    private String type;
+    private ChatType chatType;
+    private ActionType actionType;
     private LocalDateTime modifiedAt;
 
     public static DirectMessageModifyResponse from(DirectMessageDto message) {
         return new DirectMessageModifyResponse(
                 message.getDmRoomId(),
                 message.getMessageId(),
-                message.getType(),
                 message.getContent(),
+                ChatType.DM,
+                ActionType.MODIFY,
                 message.getModifiedAt()
         );
     }

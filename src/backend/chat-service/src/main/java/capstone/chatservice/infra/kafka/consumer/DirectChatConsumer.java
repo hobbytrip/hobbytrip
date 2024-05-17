@@ -21,22 +21,21 @@ public class DirectChatConsumer {
 
     @KafkaListener(topics = "${spring.kafka.topic.direct-chat}", groupId = "${spring.kafka.consumer.group-id.direct-chat}", containerFactory = "directChatListenerContainerFactory")
     public void directChatListener(DirectMessageDto messageDto) {
-        String messageType = messageDto.getType();
         Long dmRoomId = messageDto.getDmRoomId();
-        switch (messageType) {
-            case "send" -> {
+        switch (messageDto.getActionType()) {
+            case SEND -> {
                 DirectMessageCreateResponse createResponse = DirectMessageCreateResponse.from(messageDto);
                 messagingTemplate.convertAndSend("/topic/direct/" + dmRoomId, DataResponseDto.of(createResponse));
             }
-            case "modify" -> {
+            case MODIFY -> {
                 DirectMessageModifyResponse modifyResponse = DirectMessageModifyResponse.from(messageDto);
                 messagingTemplate.convertAndSend("/topic/direct/" + dmRoomId, DataResponseDto.of(modifyResponse));
             }
-            case "delete" -> {
+            case DELETE -> {
                 DirectMessageDeleteResponse deleteResponse = DirectMessageDeleteResponse.from(messageDto);
                 messagingTemplate.convertAndSend("/topic/direct/" + dmRoomId, DataResponseDto.of(deleteResponse));
             }
-            case "typing" -> {
+            case TYPING -> {
                 DirectMessageTypingResponse typingResponse = DirectMessageTypingResponse.from(messageDto);
                 messagingTemplate.convertAndSend("/topic/direct/" + dmRoomId, DataResponseDto.of(typingResponse));
             }
