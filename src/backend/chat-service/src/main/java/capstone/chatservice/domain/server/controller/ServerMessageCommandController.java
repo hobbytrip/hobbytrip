@@ -7,7 +7,7 @@ import capstone.chatservice.domain.server.dto.request.ServerMessageDeleteRequest
 import capstone.chatservice.domain.server.dto.request.ServerMessageModifyRequest;
 import capstone.chatservice.domain.server.service.command.ServerMessageCommandService;
 import capstone.chatservice.infra.S3.FileStore;
-import capstone.chatservice.infra.kafka.KafkaProducer;
+import capstone.chatservice.infra.kafka.producer.KafkaProducer;
 import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +43,7 @@ public class ServerMessageCommandController {
         producerService.sendToServerChatTopic(messageDto);
     }
 
-    @PostMapping("/api/chat/server/message/file")
+    @PostMapping("/server/message/file")
     public void uploadFile(@RequestPart ServerMessageCreateRequest createRequest,
                            @RequestPart(value = "files", required = false) List<MultipartFile> files)
             throws IOException {

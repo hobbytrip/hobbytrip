@@ -4,7 +4,7 @@ import capstone.chatservice.domain.emoji.dto.EmojiDto;
 import capstone.chatservice.domain.emoji.dto.request.EmojiCreateRequest;
 import capstone.chatservice.domain.emoji.dto.request.EmojiDeleteRequest;
 import capstone.chatservice.domain.emoji.service.EmojiService;
-import capstone.chatservice.infra.kafka.KafkaProducer;
+import capstone.chatservice.infra.kafka.producer.KafkaProducer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.RestController;
