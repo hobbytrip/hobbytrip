@@ -14,6 +14,8 @@
 }
 .chatListContainer {
   height: 520px;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 .inputContainer {
   background-color: rgb(255, 255, 255);
@@ -36,28 +38,36 @@
   color: var(--dark-gray);
 }
 .msgBox {
-  width: 100%;
-}
-.msgContainer {
+  margin-top: 20px;
+  margin-bottom: 20px;
   display: flex;
-  align-items: center;
-  justify-content: left;
-  gap: 5px;
+  gap: 10px;
 }
-.profileImgContainer {
-  width: 35px;
-  height: 35px;
-  border-radius: 999%;
-  background-color: var(--hot-pink);
-  text-align: center;
-  position: relative;
-  float: left;
+.msgRightContainer {
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  gap: 5px;
+  margin-bottom: 5px;
 }
 .profileImg {
-  width: 75%;
-  height: 75%;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  background-color: var(--hot-pink);
+  border-radius: 999%;
+  width: 30px;
+  height: 30px;
+  padding: 5px;
+  float: left;
+}
+.msgTopInfos {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+}
+.msgDate {
+  font-weight: 500;
+  color: var(--dark-gray);
+}
+.msgContent {
+  font-weight: 500;
 }

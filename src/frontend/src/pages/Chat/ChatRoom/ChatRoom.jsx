@@ -9,6 +9,7 @@ import ChatSearchBar from "../../../components/Modal/ChatModal/ChatSearchBar/Cha
 import CreateChatModal from "../../../components/Modal/ChatModal/CreateChatModal/CreateChatModal";
 import ChatChannelInfo from "../../../components/Modal/ChatModal/ChatChannelInfo/ChatChannelInfo";
 import testImg from "../../../assets/image/default-logo.png";
+import useFormatDate from "../../../hooks/useFormatDate";
 
 const fetchChatHistory = async ({ queryKey }) => {
   const [_, channelId] = queryKey;
@@ -87,31 +88,35 @@ function ChatRoom({ userId }) {
       <div className={s.chatContainer}>
         <ChatChannelInfo />
         <div className={s.chatListContainer}>
-          {chatList.map((message, index) => {
-            if (
-              message &&
-              message.userId !== undefined &&
-              message.content !== undefined
-            ) {
-              return (
-                <div key={index} className={s.msgBox}>
-                  <div className={s.msgContainer}>
-                    <div className={s.profileImgContainer}>
-                      <img
-                        src={testImg}
-                        className={s.profileImg}
-                        alt="profile-image"
-                      />
+          {chatList
+            .slice()
+            .reverse()
+            .map((message, index) => {
+              const formattedDate = useFormatDate(message.createdAt);
+              if (
+                message &&
+                message.userId !== undefined &&
+                message.content !== undefined
+              ) {
+                return (
+                  <div key={index} className={s.msgBox}>
+                    <img
+                      src={testImg}
+                      className={s.profileImg}
+                      alt="profile-image"
+                    />
+                    <div className={s.msgRightContainer}>
+                      <div className={s.msgTopInfos}>
+                        <h3 className={s.msgWriter}>{message.writer}</h3>
+                        <h4 className={s.msgDate}>{formattedDate}</h4>
+                      </div>
+                      <h4 className={s.msgContent}>{message.content}</h4>
                     </div>
-                    <h3 className={s.msgWriter}>{message.writer}</h3>
-                    <h4 className={s.msgDate}>{message.createdAt}</h4>
                   </div>
-                  <h4 className={s.msgContent}>{message.content}</h4>
-                </div>
-              );
-            }
-            return null;
-          })}
+                );
+              }
+              return null;
+            })}
         </div>
         <CreateChatModal
           userId={userId}
