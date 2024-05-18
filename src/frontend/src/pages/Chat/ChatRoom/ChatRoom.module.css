@@ -3,6 +3,7 @@
   width: 390px;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 .chatContainer {
   display: flex;
@@ -33,4 +34,30 @@
   width: 20px;
   height: 25px;
   color: var(--dark-gray);
+}
+.msgBox {
+  width: 100%;
+}
+.msgContainer {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  gap: 5px;
+}
+.profileImgContainer {
+  width: 35px;
+  height: 35px;
+  border-radius: 999%;
+  background-color: var(--hot-pink);
+  text-align: center;
+  position: relative;
+  float: left;
+}
+.profileImg {
+  width: 75%;
+  height: 75%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }

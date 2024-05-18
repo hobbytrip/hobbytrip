@@ -8,7 +8,7 @@ import ChatHeader from "../../../components/Common/ChatRoom/CommunityChatHeader/
 import ChatSearchBar from "../../../components/Modal/ChatModal/ChatSearchBar/ChatSearchBar";
 import CreateChatModal from "../../../components/Modal/ChatModal/CreateChatModal/CreateChatModal";
 import ChatChannelInfo from "../../../components/Modal/ChatModal/ChatChannelInfo/ChatChannelInfo";
-import ChatList from "../../../components/Modal/ChatModal/ChatList/ChatList";
+import testImg from "../../../assets/image/default-logo.png";
 
 const fetchChatHistory = async ({ queryKey }) => {
   const [_, channelId] = queryKey;
@@ -34,6 +34,29 @@ const fetchChatHistory = async ({ queryKey }) => {
 function ChatRoom({ userId }) {
   const { channelId } = useParams();
   const [chatList, setChatList] = useState([]);
+
+  const msgBox = chatList.map((item, idx) => {
+    if (Number(item.writer) !== userId) {
+      return (
+        <div key={idx} className={s.otherchat}>
+          <div className={s.otherimg}>{/* <img src={testImg} alt="" /> */}</div>
+          <div className={s.othermsg}>
+            <span>{item.data}</span>
+          </div>
+          <span className={s.otherdate}>{item.date}</span>
+        </div>
+      );
+    } else {
+      return (
+        <div key={idx} className={s.mychat}>
+          <div className={s.mymsg}>
+            <span>{item.data}</span>
+          </div>
+          <span className={s.mydate}>{item.date}</span>
+        </div>
+      );
+    }
+  });
 
   const { data, error, isLoading } = useQuery({
     queryKey: ["messages", channelId],
@@ -64,23 +87,31 @@ function ChatRoom({ userId }) {
       <div className={s.chatContainer}>
         <ChatChannelInfo />
         <div className={s.chatListContainer}>
-          {/* <ChatList userId={userId} chatList={chatList} /> */}
-          <div>
-            <ul>
-              {chatList.map((message, index) => (
-                <li key={index}>
-                  <strong>
-                    {message &&
-                      message.userId !== undefined &&
-                      message.content !== undefined &&
-                      (message.userId !== userId
-                        ? `${message.writer || "Unknown"}: ${message.content}`
-                        : `나: ${message.content}`)}
-                  </strong>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {chatList.map((message, index) => {
+            if (
+              message &&
+              message.userId !== undefined &&
+              message.content !== undefined
+            ) {
+              return (
+                <div key={index} className={s.msgBox}>
+                  <div className={s.msgContainer}>
+                    <div className={s.profileImgContainer}>
+                      <img
+                        src={testImg}
+                        className={s.profileImg}
+                        alt="profile-image"
+                      />
+                    </div>
+                    <h3 className={s.msgWriter}>{message.writer}</h3>
+                    <h4 className={s.msgDate}>{message.createdAt}</h4>
+                  </div>
+                  <h4 className={s.msgContent}>{message.content}</h4>
+                </div>
+              );
+            }
+            return null;
+          })}
         </div>
         <CreateChatModal
           userId={userId}
