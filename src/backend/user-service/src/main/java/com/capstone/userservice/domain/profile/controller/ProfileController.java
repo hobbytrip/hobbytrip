@@ -38,7 +38,9 @@ public class ProfileController {
     @GetMapping("")
     public ResponseEntity<ProfileResponse> read(HttpServletRequest request) {
         String token = request.getHeader(Header);
-        Long userId = tokenUtil.getUserId(token);
+        String temp = trimToken(token);
+
+        Long userId = tokenUtil.getUserId(temp);
 
         return ResponseEntity.ok(profileService.read(userId));
     }
@@ -47,7 +49,9 @@ public class ProfileController {
     public DataResponseDto<Object> messageUpdate(@RequestBody ProfileStatusMessageRequest requestDto,
                                                  HttpServletRequest request) {
         String token = request.getHeader(Header);
-        Long userId = tokenUtil.getUserId(token);
+        String temp = trimToken(token);
+
+        Long userId = tokenUtil.getUserId(temp);
 
         ProfileStatusMessageResponse response = profileService.statusMessageModify(requestDto, userId);
 
@@ -58,7 +62,9 @@ public class ProfileController {
     public DataResponseDto<Object> nickNameUpdate(@Valid @RequestBody ProfileNicknameRequest requestDto,
                                                   HttpServletRequest request) {
         String token = request.getHeader(Header);
-        Long userId = tokenUtil.getUserId(token);
+        String temp = trimToken(token);
+
+        Long userId = tokenUtil.getUserId(temp);
 
         ProfileNicknameResponse response = profileService.nickNameModify(requestDto, userId);
 
@@ -69,7 +75,9 @@ public class ProfileController {
     public DataResponseDto<Object> noticeUpdate(
             @RequestBody ProfileNoticeRequest requestDto, HttpServletRequest request) {
         String token = request.getHeader(Header);
-        Long userId = tokenUtil.getUserId(token);
+        String temp = trimToken(token);
+
+        Long userId = tokenUtil.getUserId(temp);
 
         ProfileNoticeResponse response = profileService.noticeModify(requestDto, userId);
         return DataResponseDto.of(response);
@@ -79,7 +87,9 @@ public class ProfileController {
     public DataResponseDto<Object> imageUpdate(HttpServletRequest request,
                                                @RequestPart(value = "image", required = false) MultipartFile image) {
         String token = request.getHeader(Header);
-        Long userId = tokenUtil.getUserId(token);
+        String temp = trimToken(token);
+
+        Long userId = tokenUtil.getUserId(temp);
 
         ProfileImageResponse response = profileService.imageModify(image, userId);
         return DataResponseDto.of(response);
@@ -89,9 +99,15 @@ public class ProfileController {
     public DataResponseDto<Object> imageDelete(HttpServletRequest request,
                                                @RequestParam("delete") String image) {
         String token = request.getHeader(Header);
-        Long userId = tokenUtil.getUserId(token);
+        String temp = trimToken(token);
+
+        Long userId = tokenUtil.getUserId(temp);
 
         Boolean response = profileService.imageDelete(image, userId);
         return DataResponseDto.of(response);
+    }
+
+    public String trimToken(String token) {
+        return token.split(" ")[1].trim();
     }
 }
