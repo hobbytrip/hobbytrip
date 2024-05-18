@@ -1,6 +1,6 @@
 package com.capstone.notificationservice.domain.user.entity;
 
-import com.capstone.notificationservice.domain.dm.entity.Notification;
+import com.capstone.notificationservice.domain.dm.entity.DmNotification;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -47,5 +47,5 @@ public class User {
 
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder. Default
-    private List<Notification> notifications = new ArrayList<>();
+    private List<DmNotification> dmNotifications = new ArrayList<>();
 }

@@ -1,7 +1,7 @@
 package com.capstone.notificationservice.domain.dm.respository;
 
-import com.capstone.notificationservice.domain.dm.entity.Notification;
+import com.capstone.notificationservice.domain.dm.entity.DmNotification;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface NotificationRepository extends JpaRepository<Notification, Long> {
+public interface NotificationRepository extends JpaRepository<DmNotification, Long> {
 }

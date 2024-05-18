@@ -4,7 +4,7 @@ package com.capstone.notificationservice.domain.dm.service;
 import com.capstone.notificationservice.domain.common.AlarmType;
 import com.capstone.notificationservice.domain.dm.dto.DmNotificationDto;
 import com.capstone.notificationservice.domain.dm.dto.response.DmNotificationResponse;
-import com.capstone.notificationservice.domain.dm.entity.Notification;
+import com.capstone.notificationservice.domain.dm.entity.DmNotification;
 import com.capstone.notificationservice.domain.dm.exception.DmException;
 import com.capstone.notificationservice.domain.dm.respository.EmitterRepository;
 import com.capstone.notificationservice.domain.dm.respository.NotificationRepository;
@@ -14,8 +14,10 @@ import com.capstone.notificationservice.global.exception.Code;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -84,30 +86,31 @@ public class NotificationService {
 
 
     public void send(Long userId, Long dmRoomId, AlarmType alarmType, String content, List<Long> receiverIds) {
-        List<Object> receivers = receiverIds.stream()
+        List<User> receivers = receiverIds.stream()
                 .map(userService::findUser)
-                .collect(Collectors.<Object>toList());
+                .flatMap(Optional::stream)
+                .collect(Collectors.toList());
 
-        List<Notification> notifications = (List<Notification>) createNotification(dmRoomId, alarmType, content,
-                receivers);
+        List<DmNotification> dmNotifications = notificationRepository.saveAll(createNotification(dmRoomId, alarmType, content, receivers));
 
-        notifications.forEach(notification -> {
+        dmNotifications.forEach(dmNotification -> {
             String receiverId = userId + "_" + System.currentTimeMillis();
             String eventId = receiverId + "_" + System.currentTimeMillis();
             Map<String, SseEmitter> emitters = emitterRepository.findAllEmitterStartWithByUserId(receiverId);
             emitters.forEach(
                     (key, emitter) -> {
-                        emitterRepository.saveEventCache(key, notification);
-                        sendNotification(emitter, eventId, key, DmNotificationResponse.from(notification, receivers));
+                        emitterRepository.saveEventCache(key, dmNotification);
+                        sendNotification(emitter, eventId, key, DmNotificationResponse.from(dmNotification,
+                                Collections.singletonList(receivers)));
                     }
             );
         });
     }
 
-    private List<Notification> createNotification(Long dmRoomId, AlarmType alarmType, String content,
-                                                  List<Object> receivers) {
+    private List<DmNotification> createNotification(Long dmRoomId, AlarmType alarmType, String content,
+                                                    List<User> receivers) {
         return receivers.stream()
-                .map(receiver -> Notification.builder()
+                .map(receiver -> DmNotification.builder()
                         .receiver((User) receiver)
                         .dmRoomId(dmRoomId)
                         .alarmType(alarmType)

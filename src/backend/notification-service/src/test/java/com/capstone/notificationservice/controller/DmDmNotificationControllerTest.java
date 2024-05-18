@@ -21,7 +21,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-public class DmNotificationControllerTest {
+public class DmDmNotificationControllerTest {
 
     @Autowired
     private MockMvc mockMvc;

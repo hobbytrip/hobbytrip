@@ -3,8 +3,10 @@ package com.capstone.notificationservice.domain.dm.respository;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+@Configuration
 public class EmitterRepositoryImpl implements EmitterRepository {
     private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
     private final Map<String, Object> eventCache = new ConcurrentHashMap<>();

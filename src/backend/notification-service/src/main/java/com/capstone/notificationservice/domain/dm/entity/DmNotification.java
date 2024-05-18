@@ -2,7 +2,6 @@ package com.capstone.notificationservice.domain.dm.entity;
 
 
 import com.capstone.notificationservice.domain.common.AlarmType;
-import com.capstone.notificationservice.domain.server.dto.MentionType;
 import com.capstone.notificationservice.domain.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,22 +27,18 @@ import org.hibernate.annotations.OnDeleteAction;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "dmNotification")
-public class Notification{
+public class DmNotification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "notification_id")
     private Long notificationId;
     private Long dmRoomId;
-    private Long serverId;
     private String content;
     private Boolean isRead;
 
     @Enumerated(EnumType.STRING)
     private AlarmType alarmType;
-
-    @Enumerated(EnumType.STRING)
-    private MentionType mentionType;
 
     @ManyToOne
     @JoinColumn(name= "user_id")
