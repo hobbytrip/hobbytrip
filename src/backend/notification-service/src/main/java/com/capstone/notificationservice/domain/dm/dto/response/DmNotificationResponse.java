@@ -18,12 +18,12 @@ public class DmNotificationResponse {
     private Long notificationId;
     private Long dmRoomId;
     private Long userId;
-    private List<Long> receiverIds;
+    private List<Object> receiverIds;
     private String content;
     private AlarmType alarmType;
     private Boolean isRead;
 
-    public static DmNotificationResponse from(Notification notification,  List<Long> receiverIds) {
+    public static DmNotificationResponse from(Notification notification, List<Object> receiverIds) {
         return DmNotificationResponse.builder()
                 .notificationId(notification.getNotificationId())
                 .dmRoomId(notification.getDmRoomId())

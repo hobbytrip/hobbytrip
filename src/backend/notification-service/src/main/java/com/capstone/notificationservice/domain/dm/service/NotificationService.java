@@ -5,13 +5,18 @@ import com.capstone.notificationservice.domain.common.AlarmType;
 import com.capstone.notificationservice.domain.dm.dto.DmNotificationDto;
 import com.capstone.notificationservice.domain.dm.dto.response.DmNotificationResponse;
 import com.capstone.notificationservice.domain.dm.entity.Notification;
+import com.capstone.notificationservice.domain.dm.exception.DmException;
 import com.capstone.notificationservice.domain.dm.respository.EmitterRepository;
 import com.capstone.notificationservice.domain.dm.respository.NotificationRepository;
-import com.capstone.notificationservice.domain.user.entity.User.User;
+import com.capstone.notificationservice.domain.user.entity.User;
+import com.capstone.notificationservice.domain.user.service.UserService;
+import com.capstone.notificationservice.global.exception.Code;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -23,24 +28,25 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 public class NotificationService {
     private final EmitterRepository emitterRepository;
     private final NotificationRepository notificationRepository;
+    private final UserService userService;
     private final Long DEFAULT_TIMEOUT = 60L * 1000 * 60;
 
-    public SseEmitter subscribe(String userId, String lastEventId) {
+    public SseEmitter subscribe(Long userId, String lastEventId) {
         //emitterUserID Create
         String emitterId = makeTimeIncludeUserId(userId);
 
         //SseEmitter 객체 만들고 반환, id 를 key 로 SseEmitter value 로 저장
-        SseEmitter emitter = emitterRepository.save(userId, new SseEmitter(DEFAULT_TIMEOUT));
+        SseEmitter emitter = emitterRepository.save(emitterId, new SseEmitter(DEFAULT_TIMEOUT));
         emitter.onCompletion(() -> emitterRepository.deleteById(emitterId));
-        emitter.onTimeout(()-> emitterRepository.deleteById(emitterId));
+        emitter.onTimeout(() -> emitterRepository.deleteById(emitterId));
 
         //503 에러 방지를 위한 더미 이벤트 전송
         String eventId = makeTimeIncludeUserId(userId);
-        sendNotification(emitter, userId, eventId,
+        sendNotification(emitter, emitterId, eventId,
                 "EventStream Created. [memberName=" + userId + "]");
 
         // 클라이언트가 미수신한 Event 목록이 존재할 경우 전송하여 Event 유실을 예방
-        if(hasLostData(lastEventId)) {
+        if (hasLostData(lastEventId)) {
             sendLostData(lastEventId, userId, emitterId, emitter);
 
         }
@@ -48,9 +54,11 @@ public class NotificationService {
         return emitter;
     }
 
-    private String makeTimeIncludeUserId(String userId) {
+
+    private String makeTimeIncludeUserId(Long userId) {
         return userId + "_" + System.currentTimeMillis();
     }
+
     private void sendNotification(SseEmitter emitter, String eventId, String emitterId, Object data) {
         try {
             emitter.send(SseEmitter.event()
@@ -59,6 +67,7 @@ public class NotificationService {
                     .data(data));
         } catch (IOException e) {
             emitterRepository.deleteById(emitterId);
+            throw new DmException(Code.INTERNAL_ERROR, "연결 오류 !");
         }
     }
 
@@ -66,46 +75,60 @@ public class NotificationService {
         return !lastEventId.isEmpty();
     }
 
-    private void sendLostData(String lastEventId, String userId, String emitterId, SseEmitter emitter) {
-        Map<String, Object> eventCaches = emitterRepository.findAllEventCacheStartWithByUserId(userId);
+    private void sendLostData(String lastEventId, Long userId, String emitterId, SseEmitter emitter) {
+        Map<String, SseEmitter> eventCaches = emitterRepository.findAllEmitterStartWithByUserId(String.valueOf(userId));
         eventCaches.entrySet().stream()
                 .filter(entry -> lastEventId.compareTo(entry.getKey()) < 0)
                 .forEach(entry -> sendNotification(emitter, entry.getKey(), emitterId, entry.getValue()));
     }
 
 
-    public void send(User receiver, AlarmType alarmType, String content) {
+    public void send(Long userId, Long dmRoomId, AlarmType alarmType, String content, List<Long> receiverIds) {
+        List<Object> receivers = receiverIds.stream()
+                .map(userService::findUser)
+                .collect(Collectors.<Object>toList());
 
-        Notification notification = notificationRepository.save(createNotification(receiver, alarmType, content));
+        List<Notification> notifications = (List<Notification>) createNotification(dmRoomId, alarmType, content,
+                receivers);
 
-        String receiverId = String.valueOf(receiver.getUserId());
-        String eventId = receiverId + "_" + System.currentTimeMillis();
-        Map<String, SseEmitter> emitters = emitterRepository.findAllEmitterStartWithByUserId(receiverId);
-        emitters.forEach(
-                (key, emitter) -> {
-                    emitterRepository.saveEventCache(key, notification);
-                    sendNotification(emitter, eventId, key, DmNotificationResponse.from(notification));
-                }
-        );
+        notifications.forEach(notification -> {
+            String receiverId = userId + "_" + System.currentTimeMillis();
+            String eventId = receiverId + "_" + System.currentTimeMillis();
+            Map<String, SseEmitter> emitters = emitterRepository.findAllEmitterStartWithByUserId(receiverId);
+            emitters.forEach(
+                    (key, emitter) -> {
+                        emitterRepository.saveEventCache(key, notification);
+                        sendNotification(emitter, eventId, key, DmNotificationResponse.from(notification, receivers));
+                    }
+            );
+        });
     }
 
-    private Notification createNotification(User receiver, AlarmType alarmType, String content) {
-        return Notification.builder()
-                .receiver(receiver)
-                .alarmType(alarmType)
-                .content(content)
-                .isRead(false)
-                .build();
+    private List<Notification> createNotification(Long dmRoomId, AlarmType alarmType, String content,
+                                                  List<Object> receivers) {
+        return receivers.stream()
+                .map(receiver -> Notification.builder()
+                        .receiver((User) receiver)
+                        .dmRoomId(dmRoomId)
+                        .alarmType(alarmType)
+                        .content(content)
+                        .isRead(false)
+                        .build())
+                .collect(Collectors.toList());
     }
+
 
     @KafkaListener(topics = "${spring.kafka.topic.direct-chat}")
     public void kafkaSend(ConsumerRecord<String, Object> record) throws JsonProcessingException {
         DmNotificationDto dmNotification = new ObjectMapper().readValue(record.value().toString(),
                 DmNotificationDto.class);
 
-        String receiverUserId = String.valueOf(dmNotification.getUserId());
-        String messageContent = dmNotification.getContent();
-        String alarmType = String.valueOf(dmNotification.getAlarmType());
-        send(receiverUserId, messageContent, alarmType);
+        Long sendId = dmNotification.getUserId(); // Long 타입으로 변경
+        Long dmRoomId = dmNotification.getDmRoomId(); // DM 방 ID, DmNotificationDto에 해당 필드가 존재한다고 가정
+        AlarmType alarmType = dmNotification.getAlarmType(); // String을 AlarmType으로 변환
+        String content = dmNotification.getContent();
+        List<Long> receiverIds = dmNotification.getReceiverIds(); // 수신자 ID 목록, DmNotificationDto에 해당 필드가 존재한다고 가정
+
+        send(sendId, dmRoomId, alarmType, content, receiverIds);
     }
 }

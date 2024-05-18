@@ -45,6 +45,7 @@ public class User {
         modifiedAt = LocalDateTime.now();
     }
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder. Default
     private List<Notification> notifications = new ArrayList<>();
 }
