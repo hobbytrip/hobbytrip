@@ -6,7 +6,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 // import RegView from "./pages/RegView/RegView";
 // import UserProfileView from "./pages/UserProfileView/UserProfileView";
 // import CreateServer from "./components/Modal/ServerModal/CreateServer/CreateServer";
-import ChatRoom from "./components/Modal/ChatModal/CreateChatModal/CreateChatModal";
+import ChatRoom from "./pages/Chat/ChatRoom/ChatRoom";
 
 axios.defaults.withCredentials = true;
 
@@ -18,7 +18,10 @@ function App() {
         <Route path="/login" element={<LoginView />} />
         <Route path="/register" element={<RegView />} />
         <Route path="/user/profile" element={<UserProfileView />} /> */}
-        <Route path="/test/:serverId" element={<ChatRoom username={"tmp"} />} />
+        <Route
+          path="/test/:serverId/:channelId"
+          element={<ChatRoom userId={10} />}
+        />
       </Routes>
     </Router>
   );

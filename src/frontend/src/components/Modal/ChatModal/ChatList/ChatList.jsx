@@ -1,5 +1,21 @@
-function ChatList() {
-  //채팅 기록이 있으면 채팅 기록을, 없으면 default 화면을 보여준다.
-}
+import React from "react";
 
-export default ChatList();
+const ChatList = ({ userId, chatList }) => {
+  return (
+    <div>
+      <ul>
+        {chatList.map((message, index) => (
+          <li key={index}>
+            <strong>
+              {message.userId !== userId
+                ? `${message.writer}: ${message.content}`
+                : `나: ${message.content}`}
+            </strong>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+export default ChatList;
