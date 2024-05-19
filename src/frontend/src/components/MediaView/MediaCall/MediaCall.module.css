@@ -1,4 +1,9 @@
 .wrapper {
+  width: 390px;
+  height: 844px;
+}
+
+.container {
   justify-content: center;
   width: 390px;
   height: 712px;
@@ -30,24 +35,14 @@
 }
 
 .mediaContainer {
+  position: relative; 
   display: flex;
   align-items: center;
   flex-direction: column;
   height: 637px;
   padding: 10px;
-  position: relative; /* 부모 요소를 기준으로 자식 요소의 위치를 지정합니다. */
 }
 
-.mediaDeviceContainer {
-  position: absolute; /* 부모 요소를 기준으로 위치를 지정합니다. */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 390px;
-  height: 45px;
-  gap: 19px;
-  bottom: 19px; /* 부모 요소의 바닥에서 19px 위에 위치하도록 설정합니다. */
-}
 .videoContainer {
   display: flex;
   justify-content: center;
@@ -57,6 +52,25 @@
   width: 390px;
   gap: 10px;
 }
+
+.videoContainer .enter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.mediaDeviceContainer {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 390px;
+  height: 45px;
+  gap: 19px;
+  bottom: 19px;
+}
+
 .mediaDeviceContainer button {
   align-items: center;
   justify-content: center;

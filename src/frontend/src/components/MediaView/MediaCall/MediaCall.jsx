@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useLocation, useParams } from 'react-router-dom';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import style from './MediaCall.module.css';
+
 import UserVideoComponent from './../UserVideoComponent';
 import useUserStore from '../../../actions/useUserStore';
 
@@ -16,7 +17,6 @@ const URL = 'http://localhost:5000/';
 
 export default function MediaCall() {
   const [session, setSession] = useState(undefined);
-  const [mainStreamManager, setMainStreamManager] = useState(undefined);
   const [publisher, setPublisher] = useState(undefined);
   const [subscribers, setSubscribers] = useState([]);
   const [userData, setUserData] = useState({});
@@ -30,13 +30,16 @@ export default function MediaCall() {
   const { serverId, channelId } = useParams();
   const newSessionId = `${serverId}${channelId}`;
 
-  const userId = 'userId' + Math.floor(Math.random() * 10); // 테스트 용 -> res.data.userId로 바꿔주세용
-      
+  const userId = 'userId' + Math.floor(Math.random() * 10); // 테스트 용 -> res.data.userId로 전체 변환
+
+  // 유저 정보 가져오기
   useEffect(() => {
     getUserInfo()
       .then(res => {
         const data = {
-          userId: userId,
+          userId: userId, // res.body.userId
+          // nickname: res.body.nickname,
+          // profileImage: res.profileImage,
           serverId: serverId,
           channelId: channelId
         };
@@ -45,12 +48,7 @@ export default function MediaCall() {
       .catch(err => console.error(err));
   }, [getUserInfo, serverId, channelId]);
 
-  const handleMainVideoStream = useCallback((stream) => {
-    if (mainStreamManager !== stream) {
-      setMainStreamManager(stream);
-    }
-  }, [mainStreamManager]);
-
+  // 세션 참여 후 웹소켓과의 통신
   const joinSession = useCallback((e) => {
     e.preventDefault();
 
@@ -75,6 +73,7 @@ export default function MediaCall() {
     setSession(mySession);
   }, []);
 
+  // publisher 설정
   useEffect(() => {
     if (session) {
       getToken().then(async (token) => {
@@ -89,7 +88,6 @@ export default function MediaCall() {
             mirror: false,
           });
           session.publish(publisher);
-          setMainStreamManager(publisher);
           setPublisher(publisher);
         } catch (error) {
           console.log(error);
@@ -97,37 +95,6 @@ export default function MediaCall() {
       });
     }
   }, [session]);
-
-  const leaveSession = useCallback(() => {
-    if (session) {
-      session.disconnect();
-      axios.delete(`${URL}/api/sessions/${newSessionId}/disconnect`, {
-        data: {
-          body: userData
-        }});
-    }
-    OV.current = new OpenVidu();
-
-    setSession(undefined);
-    setSubscribers([]);
-    setMainStreamManager(undefined);
-    setPublisher(undefined);
-  }, [session, userData]);
-
-  const switchCamera = () => {
-    setScreenCam(!screenCam);
-  };
-
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      leaveSession();
-    };
-    window.addEventListener('beforeunload', handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-    };
-  }, [leaveSession]);
 
   const getToken = useCallback(async () => {
     return createSession(newSessionId).then(sessionId =>
@@ -139,18 +106,57 @@ export default function MediaCall() {
     const res = await axios.post(`${URL}api/sessions`, 
     { customSessionId: sessionId }, {
       headers: { 'Content-Type': 'application/json' },
-      body: userData
+      body: {
+        userId: userData.userId,
+        channelId: channelId,
+        serverId: serverId
+      }
     });
     return res.data;
   };
 
   const createToken = async (sessionId) => {
-    const res = await axios.post(`${URL}api/sessions/${sessionId}/${userId}/connections`, {
+    const res = await axios.post(`${URL}api/sessions/${sessionId}/connections`, {
       headers: { 'Content-Type': 'application/json' },
-      body: userData
+      body: {
+        userId: userData.userId,
+        channelId: channelId,
+        serverId: serverId
+      }
     });
     return res.data;
   };
+
+  // 세션 나가기
+  const leaveSession = useCallback(() => {
+    if (session) {
+      session.disconnect();
+      axios.delete(`${URL}/api/sessions/${newSessionId}/disconnect`, {
+        data: {
+          body: {
+            userId: userData.userId,
+            channelId: channelId,
+            serverId: serverId
+          }
+        }});
+    }
+    OV.current = new OpenVidu();
+
+    setSession(undefined);
+    setSubscribers([]);
+    setPublisher(undefined);
+  }, [session, userData]);
+
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      leaveSession();
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [leaveSession]);
 
   const toggleVideo = () => {
     if (publisher) {
@@ -168,11 +174,15 @@ export default function MediaCall() {
     }
   };
 
+  const switchCamera = () => {
+    setScreenCam(!screenCam);
+  };
+
   return (
     <>
-      <Header />
-      <ChannelData />
-      <div className={style.wrapper}>
+    <div className={style.wrapper}>
+    {/* 헤더 같은 뷰들은 이쪽에 넣어주세용 */}
+      <div className={style.container}>
         <div className={style.headerContainer}>
           <HiMiniSpeakerWave style={{ width: '15px', height: '15px' }} />
           <h4> {channelId} </h4>
@@ -188,8 +198,8 @@ export default function MediaCall() {
           {session === undefined ? (
             <>
             <div className={style.videoContainer}>
-              <h2> {channelId} </h2>
-            </div>
+                <h3> 통화에 참여하시겠습니까? </h3>
+              </div>
             <div className={style.mediaDeviceContainer}>
               <button style={{ backgroundColor: 'Green' }} onClick={joinSession}> <IoCall /> </button>
             </div>
@@ -224,22 +234,7 @@ export default function MediaCall() {
           )}
         </div>
       </div>
+      </div>
     </>
   );
 }
-
-const Header = () => (
-  <div style={{
-    height: '36px',
-    padding: '10px 10px 10px 0px',
-    gap: '260px'
-  }}/>
-);
-
-const ChannelData = () => ( 
-  <div style={{
-    height: '34px',
-    padding: '16px 29px',
-    gap: '10px'
-  }}/>
-);
