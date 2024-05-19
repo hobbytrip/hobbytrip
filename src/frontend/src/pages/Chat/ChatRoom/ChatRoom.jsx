@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { IoChatbubbleEllipses } from "react-icons/io5";
 import axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
 import s from "./ChatRoom.module.css";
@@ -103,6 +104,10 @@ function ChatRoom({ userId }) {
           style={{ overflowY: "auto", height: "530px" }}
           onScroll={handleScroll}
         >
+          <div className={s.topInfos}>
+            <IoChatbubbleEllipses className={s.chatIcon} />
+            <h1>일반 채널에 오신 것을 환영합니다!</h1>
+          </div>
           <InfiniteScroll
             dataLength={chatList.length}
             next={updatePage}
