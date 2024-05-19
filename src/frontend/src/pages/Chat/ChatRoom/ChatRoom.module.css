@@ -13,7 +13,7 @@
   border-top-right-radius: 10px;
 }
 .chatListContainer {
-  height: 520px;
+  overflow: auto;
   padding-left: 20px;
   padding-right: 20px;
 }

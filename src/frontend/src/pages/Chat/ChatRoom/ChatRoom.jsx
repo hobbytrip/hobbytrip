@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import InfiniteScroll from "react-infinite-scroll-component";
 import s from "./ChatRoom.module.css";
 import ChatHeaderModal from "../../../components/Modal/ChatModal/ChatHeaderModal/ChatHeaderModal";
 import ChatHeader from "../../../components/Common/ChatRoom/CommunityChatHeader/ChatHeader";
@@ -12,22 +13,24 @@ import testImg from "../../../assets/image/default-logo.png";
 import useFormatDate from "../../../hooks/useFormatDate";
 
 const fetchChatHistory = async ({ queryKey }) => {
-  const [_, channelId] = queryKey;
+  const [_, channelId, page] = queryKey;
   try {
     const response = await axios.get(
       `http://localhost:7070/server/messages/channel`,
       {
         params: {
           channelId,
-          page: 0,
+          page,
           size: 20,
         },
       }
     );
-    console.error("채팅 목록", response.data.data);
-    return response.data.data;
+    const responseData = response.data.data;
+    console.error("Fetched data:", responseData.data);
+    console.error("Is data an array?", Array.isArray(responseData.data));
+    return responseData.data.reverse();
   } catch (err) {
-    console.error("채팅 목록 조회 실패");
+    console.error("채팅 목록 조회 실패", err);
     throw new Error("채팅 목록 조회 실패");
   }
 };
@@ -35,24 +38,53 @@ const fetchChatHistory = async ({ queryKey }) => {
 function ChatRoom({ userId }) {
   const { channelId } = useParams();
   const [chatList, setChatList] = useState([]);
+  const [page, setPage] = useState(0);
+  const chatListContainerRef = useRef(null);
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ["messages", channelId],
+    queryKey: ["messages", channelId, page],
     queryFn: fetchChatHistory,
     staleTime: 1000 * 60 * 5,
+    keepPreviousData: true,
   });
 
   useEffect(() => {
-    if (data && Array.isArray(data.data)) {
-      setChatList(data.data);
+    if (data && Array.isArray(data)) {
+      setChatList((prevChatList) => [...data, ...prevChatList]);
     }
   }, [data]);
 
+  useEffect(() => {
+    if (page === 0 && chatListContainerRef.current) {
+      chatListContainerRef.current.scrollTop =
+        chatListContainerRef.current.scrollHeight;
+    }
+  }, [chatList, page]);
+
   const handleNewMessage = (newMessage) => {
     setChatList((prevChatList) => [...prevChatList, newMessage]);
+    if (chatListContainerRef.current) {
+      chatListContainerRef.current.scrollTop =
+        chatListContainerRef.current.scrollHeight;
+    }
   };
 
-  if (isLoading) return <div>Loading...</div>;
+  const updatePage = () => {
+    setPage((prevPage) => prevPage + 1);
+  };
+
+  const handleScroll = () => {
+    const container = chatListContainerRef.current;
+    if (container.scrollTop === 0 && !isLoading && chatList.length > 0) {
+      const previousHeight = container.scrollHeight;
+      updatePage();
+      setTimeout(() => {
+        container.scrollTop = container.scrollHeight - previousHeight;
+      }, 50);
+    }
+  };
+
+  if (isLoading && chatList.length === 0) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
 
   return (
@@ -64,11 +96,21 @@ function ChatRoom({ userId }) {
       </div>
       <div className={s.chatContainer}>
         <ChatChannelInfo />
-        <div className={s.chatListContainer}>
-          {chatList
-            .slice()
-            .reverse()
-            .map((message, index) => {
+        <div
+          ref={chatListContainerRef}
+          id="chatListContainer"
+          className={s.chatListContainer}
+          style={{ overflowY: "auto", height: "530px" }}
+          onScroll={handleScroll}
+        >
+          <InfiniteScroll
+            dataLength={chatList.length}
+            next={updatePage}
+            hasMore={true}
+            inverse={true}
+            scrollableTarget="chatListContainer"
+          >
+            {chatList.map((message, index) => {
               const formattedDate = useFormatDate(message.createdAt);
               if (
                 message &&
@@ -94,6 +136,7 @@ function ChatRoom({ userId }) {
               }
               return null;
             })}
+          </InfiniteScroll>
         </div>
         <CreateChatModal
           userId={userId}
