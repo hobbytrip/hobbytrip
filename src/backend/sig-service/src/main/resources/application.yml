@@ -4,7 +4,7 @@ spring:
       host: localhost
       port: 6379
   kafka:
-    bootstrap-servers: kafka:9092
+    bootstrap-servers: localhost:9093
     topic:
       voice-connection-state-event: "voiceConnectionStateEventTopic"
 server:
