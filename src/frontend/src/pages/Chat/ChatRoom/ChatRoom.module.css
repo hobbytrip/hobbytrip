@@ -3,7 +3,7 @@
   width: 390px;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 .chatContainer {
   display: flex;
@@ -53,8 +53,8 @@
 .profileImg {
   background-color: var(--hot-pink);
   border-radius: 999%;
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
   padding: 5px;
   float: left;
 }

@@ -93,6 +93,11 @@ export default function ChatModal({ userId, onNewMessage }) {
             className={s.inputContent}
             placeholder="메세지 보내기"
             onChange={(e) => setChatMessage(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                sendMessage();
+              }
+            }}
           />
         </div>
         <IoSend className={s.sendBtn} onClick={sendMessage} />

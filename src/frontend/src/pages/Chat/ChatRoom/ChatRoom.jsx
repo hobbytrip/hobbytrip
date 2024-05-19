@@ -36,29 +36,6 @@ function ChatRoom({ userId }) {
   const { channelId } = useParams();
   const [chatList, setChatList] = useState([]);
 
-  const msgBox = chatList.map((item, idx) => {
-    if (Number(item.writer) !== userId) {
-      return (
-        <div key={idx} className={s.otherchat}>
-          <div className={s.otherimg}>{/* <img src={testImg} alt="" /> */}</div>
-          <div className={s.othermsg}>
-            <span>{item.data}</span>
-          </div>
-          <span className={s.otherdate}>{item.date}</span>
-        </div>
-      );
-    } else {
-      return (
-        <div key={idx} className={s.mychat}>
-          <div className={s.mymsg}>
-            <span>{item.data}</span>
-          </div>
-          <span className={s.mydate}>{item.date}</span>
-        </div>
-      );
-    }
-  });
-
   const { data, error, isLoading } = useQuery({
     queryKey: ["messages", channelId],
     queryFn: fetchChatHistory,
