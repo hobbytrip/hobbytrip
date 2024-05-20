@@ -39,7 +39,7 @@ const MenuBtn = () => {
 const MainHeader = () => {
   return (
     <div className={style.wrapper}>
-      <img src='./../../../../src/assets/image/logo.png'
+      <img src='./../../../../src/assets/image/logo-white.png'
         className={style.logo} alt='logo'/>
       <SearchForm />
       <MenuBtn />

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import style from './VideoComponent.module.css';
 
 class VideoComponent extends Component {
 
@@ -22,7 +21,11 @@ class VideoComponent extends Component {
 
   render() {
     return (
-      <video autoPlay={true} ref={this.videoRef} className={style.video} />
+      <video autoPlay={true} ref={this.videoRef} 
+        style={{
+          width: '180px',
+          height: '150px'
+        }} />
     )
   }
 }
