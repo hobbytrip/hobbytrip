@@ -52,9 +52,6 @@ dependencies {
     implementation 'org.springframework.kafka:spring-kafka'
     testImplementation 'org.springframework.kafka:spring-kafka-test'
 
-    //spring cloud
-    implementation 'org.springframework.cloud:spring-cloud-starter-config'
-
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.mockito:mockito-core'
