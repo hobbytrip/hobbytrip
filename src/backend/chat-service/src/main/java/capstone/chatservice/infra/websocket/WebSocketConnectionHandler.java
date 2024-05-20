@@ -3,9 +3,9 @@ package capstone.chatservice.infra.websocket;
 import capstone.chatservice.infra.client.CommunityServiceClient;
 import capstone.chatservice.infra.client.StateServiceClient;
 import capstone.chatservice.infra.client.UserServerDmInfo;
-import capstone.chatservice.infra.kafka.producer.KafkaProducer;
-import capstone.chatservice.infra.kafka.producer.dto.ConnectionStateEventDto;
-import capstone.chatservice.infra.kafka.producer.dto.ConnectionStateInfo;
+import capstone.chatservice.infra.kafka.producer.state.StateEventProducer;
+import capstone.chatservice.infra.kafka.producer.state.dto.ConnectionStateEventDto;
+import capstone.chatservice.infra.kafka.producer.state.dto.ConnectionStateInfo;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,9 +21,9 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class WebSocketConnectionHandler implements ChannelInterceptor {
 
-    private final KafkaProducer kafkaProducer;
     private final StateServiceClient stateClient;
     private final CommunityServiceClient communityClient;
+    private final StateEventProducer stateEventProducer;
 
     @Override
     public void postSend(Message<?> message, MessageChannel channel, boolean sent) {
@@ -38,7 +38,7 @@ public class WebSocketConnectionHandler implements ChannelInterceptor {
                     .type("CONNECT")
                     .state("online")
                     .build();
-            kafkaProducer.sendToConnectionStateInfoTopic(connectionStateInfo);
+            stateEventProducer.sendToConnectionStateInfoTopic(connectionStateInfo);
 
             UserServerDmInfo ids = communityClient.getServerIdsAndRoomIds(userId);
             ConnectionStateEventDto connectionEventDto = ConnectionStateEventDto.builder()
@@ -46,9 +46,9 @@ public class WebSocketConnectionHandler implements ChannelInterceptor {
                     .type("CONNECT")
                     .state("online")
                     .serverIds(ids.getServerIds())
-                    .roomIds(ids.getRoomIds())
+                    .roomIds(ids.getDmIds())
                     .build();
-            kafkaProducer.sendToConnectionStateEventTopic(connectionEventDto);
+            stateEventProducer.sendToConnectionStateEventTopic(connectionEventDto);
         }
 
         if (StompCommand.DISCONNECT.equals(headerAccessor.getCommand())) {
@@ -69,9 +69,9 @@ public class WebSocketConnectionHandler implements ChannelInterceptor {
                         .type("DISCONNECT")
                         .state("offline")
                         .serverIds(ids.getServerIds())
-                        .roomIds(ids.getRoomIds())
+                        .roomIds(ids.getDmIds())
                         .build();
-                kafkaProducer.sendToConnectionStateEventTopic(connectionEventDto);
+                stateEventProducer.sendToConnectionStateEventTopic(connectionEventDto);
             }
         }
     }
