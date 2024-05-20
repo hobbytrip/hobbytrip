@@ -3,7 +3,6 @@ package com.capstone.notificationservice.domain.dm.dto.response;
 
 import com.capstone.notificationservice.domain.common.AlarmType;
 import com.capstone.notificationservice.domain.dm.entity.DmNotification;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,11 +22,11 @@ public class DmNotificationResponse {
     private AlarmType alarmType;
     private Boolean isRead;
 
-    public static DmNotificationResponse from(DmNotification dmNotification) {
+    public static DmNotificationResponse from(DmNotification dmNotification, Long userId) {
         return DmNotificationResponse.builder()
                 .notificationId(dmNotification.getNotificationId())
                 .dmRoomId(dmNotification.getDmRoomId())
-                .userId(dmNotification.getUserId())
+                .userId(userId)
                 .receiverId(dmNotification.getReceiver().getUserId())
                 .content(dmNotification.getContent())
                 .alarmType(dmNotification.getAlarmType())

@@ -33,9 +33,12 @@ public class DmNotification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "notification_id")
     private Long notificationId;
+
+    @Column(name = "dm_room_id")
     private Long dmRoomId;
-    private Long userId;
+    @Column(name="content")
     private String content;
+    @Column(name="is_read")
     private Boolean isRead;
 
     @Enumerated(EnumType.STRING)

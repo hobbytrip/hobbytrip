@@ -100,7 +100,7 @@ public class NotificationService {
             emitters.forEach(
                     (key, emitter) -> {
                         emitterRepository.saveEventCache(key, dmNotification);
-                        sendNotification(emitter, eventId, key, DmNotificationResponse.from(dmNotification));
+                        sendNotification(emitter, eventId, key, DmNotificationResponse.from(dmNotification, userId));
                     }
             );
         });
@@ -111,7 +111,6 @@ public class NotificationService {
         return receivers.stream()
                 .map(receiver -> DmNotification.builder()
                         .receiver(receiver)
-                        .userId(userId)
                         .dmRoomId(dmRoomId)
                         .alarmType(alarmType)
                         .content(content)
@@ -121,7 +120,7 @@ public class NotificationService {
     }
 
 
-    @KafkaListener(topics = "${spring.kafka.topic.direct-chat}")
+    @KafkaListener(topics = "${spring.kafka.topic.direct-chat}", groupId = "${spring.kafka.consumer.group-id.dm-notification}")
     public void kafkaSend(ConsumerRecord<String, Object> record) throws JsonProcessingException {
         DmNotificationDto dmNotification = new ObjectMapper().readValue(record.value().toString(),
                 DmNotificationDto.class);
