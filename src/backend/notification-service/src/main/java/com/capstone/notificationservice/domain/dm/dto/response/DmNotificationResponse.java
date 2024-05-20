@@ -18,8 +18,7 @@ public class DmNotificationResponse {
     private Long notificationId;
     private Long dmRoomId;
     private Long userId;
-    private Long receiverIds;
-    private String url;
+    private Long receiverId;
     private String content;
     private AlarmType alarmType;
     private Boolean isRead;
@@ -29,8 +28,7 @@ public class DmNotificationResponse {
                 .notificationId(dmNotification.getNotificationId())
                 .dmRoomId(dmNotification.getDmRoomId())
                 .userId(dmNotification.getUserId())
-                .receiverIds(dmNotification.getReceiver().getUserId())
-                .url(dmNotification.getUrl())
+                .receiverId(dmNotification.getReceiver().getUserId())
                 .content(dmNotification.getContent())
                 .alarmType(dmNotification.getAlarmType())
                 .isRead(false)

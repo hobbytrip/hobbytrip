@@ -14,7 +14,6 @@ import com.capstone.notificationservice.global.exception.Code;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -92,7 +91,7 @@ public class NotificationService {
                 .collect(Collectors.toList());
 
         List<DmNotification> dmNotifications = notificationRepository.saveAll(
-                createNotification(dmRoomId, alarmType, content, receivers));
+                createNotification(userId, dmRoomId, alarmType, content, receivers));
 
         dmNotifications.forEach(dmNotification -> {
             String receiverId = userId + "_" + System.currentTimeMillis();
@@ -107,11 +106,12 @@ public class NotificationService {
         });
     }
 
-    private List<DmNotification> createNotification(Long dmRoomId, AlarmType alarmType, String content,
+    private List<DmNotification> createNotification(Long userId, Long dmRoomId, AlarmType alarmType, String content,
                                                     List<User> receivers) {
         return receivers.stream()
                 .map(receiver -> DmNotification.builder()
-                        .receiver((User) receiver)
+                        .receiver(receiver)
+                        .userId(userId)
                         .dmRoomId(dmRoomId)
                         .alarmType(alarmType)
                         .content(content)

@@ -37,7 +37,6 @@ public class DmNotification {
     private Long userId;
     private String content;
     private Boolean isRead;
-    private String url;
 
     @Enumerated(EnumType.STRING)
     private AlarmType alarmType;
