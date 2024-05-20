@@ -18,17 +18,19 @@ public class DmNotificationResponse {
     private Long notificationId;
     private Long dmRoomId;
     private Long userId;
-    private List<Object> receiverIds;
+    private Long receiverIds;
+    private String url;
     private String content;
     private AlarmType alarmType;
     private Boolean isRead;
 
-    public static DmNotificationResponse from(DmNotification dmNotification, List<Object> receiverIds) {
+    public static DmNotificationResponse from(DmNotification dmNotification) {
         return DmNotificationResponse.builder()
                 .notificationId(dmNotification.getNotificationId())
                 .dmRoomId(dmNotification.getDmRoomId())
-                .userId(dmNotification.getReceiver().getUserId())
-                .receiverIds(receiverIds)
+                .userId(dmNotification.getUserId())
+                .receiverIds(dmNotification.getReceiver().getUserId())
+                .url(dmNotification.getUrl())
                 .content(dmNotification.getContent())
                 .alarmType(dmNotification.getAlarmType())
                 .isRead(false)

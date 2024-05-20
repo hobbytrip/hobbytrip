@@ -91,7 +91,8 @@ public class NotificationService {
                 .flatMap(Optional::stream)
                 .collect(Collectors.toList());
 
-        List<DmNotification> dmNotifications = notificationRepository.saveAll(createNotification(dmRoomId, alarmType, content, receivers));
+        List<DmNotification> dmNotifications = notificationRepository.saveAll(
+                createNotification(dmRoomId, alarmType, content, receivers));
 
         dmNotifications.forEach(dmNotification -> {
             String receiverId = userId + "_" + System.currentTimeMillis();
@@ -100,8 +101,7 @@ public class NotificationService {
             emitters.forEach(
                     (key, emitter) -> {
                         emitterRepository.saveEventCache(key, dmNotification);
-                        sendNotification(emitter, eventId, key, DmNotificationResponse.from(dmNotification,
-                                Collections.singletonList(receivers)));
+                        sendNotification(emitter, eventId, key, DmNotificationResponse.from(dmNotification));
                     }
             );
         });

@@ -34,8 +34,10 @@ public class DmNotification {
     @Column(name = "notification_id")
     private Long notificationId;
     private Long dmRoomId;
+    private Long userId;
     private String content;
     private Boolean isRead;
+    private String url;
 
     @Enumerated(EnumType.STRING)
     private AlarmType alarmType;
