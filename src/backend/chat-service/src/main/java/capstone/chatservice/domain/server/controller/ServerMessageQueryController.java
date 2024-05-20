@@ -20,6 +20,14 @@ public class ServerMessageQueryController {
     private final ChatEventProducer producerService;
     private final ServerMessageQueryService queryService;
 
+    @GetMapping("/feign/server/messages/channel")
+    public Page<ServerMessageDto> getFeignMessages(@RequestParam(value = "channelId") Long channelId,
+                                                   @RequestParam(defaultValue = "0") int page,
+                                                   @RequestParam(defaultValue = "30") int size) {
+
+        return queryService.getMessages(channelId, page, size);
+    }
+
     @GetMapping("/server/messages/channel")
     public DataResponseDto<Object> getMessages(@RequestParam(value = "channelId") Long channelId,
                                                @RequestParam(defaultValue = "0") int page,

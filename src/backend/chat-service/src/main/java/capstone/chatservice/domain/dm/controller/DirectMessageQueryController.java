@@ -20,6 +20,15 @@ public class DirectMessageQueryController {
     private final ChatEventProducer chatEventProducer;
     private final DirectMessageQueryService queryService;
 
+    @GetMapping("/feign/direct/messages/room")
+    public Page<DirectMessageDto> getFeignMessages(@RequestParam(value = "roomId") Long roomId,
+                                                   @RequestParam(defaultValue = "0") int page,
+                                                   @RequestParam(defaultValue = "30") int size) {
+
+        return queryService.getDirectMessages(roomId, page, size);
+
+    }
+
     @GetMapping("/direct/messages/room")
     public DataResponseDto<Object> getMessages(@RequestParam(value = "roomId") Long roomId,
                                                @RequestParam(defaultValue = "0") int page,

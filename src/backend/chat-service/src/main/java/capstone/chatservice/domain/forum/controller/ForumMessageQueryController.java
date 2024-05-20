@@ -20,6 +20,14 @@ public class ForumMessageQueryController {
     private final ChatEventProducer chatEventProducer;
     private final ForumMessageQueryService queryService;
 
+    @GetMapping("/feign/forum/messages/forum")
+    public Page<ForumMessageDto> getFeignMessages(@RequestParam(value = "forumId") Long forumId,
+                                                  @RequestParam(defaultValue = "0") int page,
+                                                  @RequestParam(defaultValue = "30") int size) {
+
+        return queryService.getMessages(forumId, page, size);
+    }
+
     @GetMapping("/forum/messages/forum")
     public DataResponseDto<Object> getMessages(@RequestParam(value = "forumId") Long forumId,
                                                @RequestParam(defaultValue = "0") int page,
