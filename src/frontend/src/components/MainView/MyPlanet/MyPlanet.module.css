@@ -12,7 +12,7 @@
 .wrapper h3 {
   height: 19px;
   width: 316px;
-  color: #FFFFFF;
+  color: #ffffff;
   font-weight: 700;
   line-height: 19.09px;
   text-align: left;
@@ -37,15 +37,15 @@
   flex: 1;
   background: none;
   border: none;
-  color: #D7D7D7;
+  color: #d7d7d7;
   padding: 0;
 }
 
 .leftBtn {
-  justify-content: flex-start; 
+  justify-content: flex-start;
 }
 
-.rightBtn{
+.rightBtn {
   justify-content: flex-end;
 }
 
@@ -57,20 +57,35 @@
   height: 46px;
 }
 
-.planetList button {
+.planetList .planetThumb {
   width: 40px;
   height: 40px;
-  padding: 3px 0px;   
   margin-right: 10px;
   border-radius: 300px;
   border: 1px;
+  background-color: var(--hot-pink);
+  position: relative;
 }
 
 .planetList .createPlanet {
-  align-items: center;
-  width: 46px;
-  height: 46px;
+  width: 40px;
+  height: 40px;
   gap: 10px;
   border-radius: 300px;
   background-color: var(--dark-gray);
+  position: relative;
+}
+.plusIcon {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+.planetIcon {
+  width: 35px;
+  height: 35px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
