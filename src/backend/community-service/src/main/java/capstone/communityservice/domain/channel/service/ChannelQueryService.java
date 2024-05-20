@@ -7,6 +7,7 @@ import capstone.communityservice.domain.channel.repository.ChannelRepository;
 import capstone.communityservice.domain.forum.dto.ForumResponseDto;
 import capstone.communityservice.domain.forum.entity.Forum;
 import capstone.communityservice.domain.forum.repository.ForumRepository;
+import capstone.communityservice.domain.server.entity.Server;
 import capstone.communityservice.domain.server.exception.ServerException;
 import capstone.communityservice.global.common.dto.SliceResponseDto;
 import capstone.communityservice.global.exception.Code;
@@ -50,6 +51,7 @@ public class ChannelQueryService {
         return null;
     }
 
+
     private Slice<ForumResponseDto> getForumResponseDtos(Slice<Forum> forums, Pageable pageable) {
         List<ForumResponseDto> forumList = forums.getContent()
                 .stream()
@@ -77,10 +79,10 @@ public class ChannelQueryService {
                 .orElseThrow(() -> new ChannelException(
                         Code.NOT_FOUND, "Not Found Channel")
                 );
-
         return findChannel.
                 getChannelType().
                 equals(ChannelType.FORUM);
     }
+
 
 }

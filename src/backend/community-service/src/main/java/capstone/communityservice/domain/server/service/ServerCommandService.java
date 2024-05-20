@@ -81,7 +81,7 @@ public class ServerCommandService {
 
     public ServerResponseDto join(ServerJoinRequestDto requestDto) {
         Server findServer = validateServerUser(requestDto);
-        validateServerAccess(findServer, requestDto);
+        validateServerJoin(findServer, requestDto);
 
         User findUser = userQueryService.findUserByOriginalId(requestDto.getUserId());
 
@@ -172,7 +172,7 @@ public class ServerCommandService {
         return ServerInviteCodeResponse.of(value);
     }
 
-    private void validateServerAccess(Server server, ServerJoinRequestDto requestDto) {
+    private void validateServerJoin(Server server, ServerJoinRequestDto requestDto) {
         boolean isClosedWithoutCode = !server.isOpen() && requestDto.getInvitationCode() == null;
         if (isClosedWithoutCode) {
             throw new ServerException(Code.VALIDATION_ERROR, "Not open server. Require invitationCode");

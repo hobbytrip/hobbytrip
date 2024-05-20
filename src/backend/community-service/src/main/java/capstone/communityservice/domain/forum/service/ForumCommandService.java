@@ -93,10 +93,17 @@ public class ForumCommandService {
 
         validateOwnerUser(findForum, requestDto.getUserId());
 
-        List<FileResponseDto> files = updateFiles(filesId, fileList, findForum).
-                stream().
-                map(FileResponseDto::of).
-                toList();
+        List<File> response = updateFiles(filesId, fileList, findForum);
+
+        List<FileResponseDto> files;
+        if(response != null) {
+            files = response.
+                    stream().
+                    map(FileResponseDto::of).
+                    toList();
+        } else {
+            files = null;
+        }
 
         findForum.setForum(
                 requestDto.getTitle(),

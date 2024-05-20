@@ -6,6 +6,7 @@ import capstone.communityservice.domain.forum.entity.Forum;
 import capstone.communityservice.domain.forum.exception.ForumException;
 import capstone.communityservice.domain.forum.repository.ForumRepository;
 import capstone.communityservice.global.exception.Code;
+import capstone.communityservice.global.external.ChatServiceClient;
 import capstone.communityservice.global.external.ChatServiceFakeClient;
 import capstone.communityservice.global.external.dto.ForumMessageDto;
 import lombok.RequiredArgsConstructor;
@@ -22,13 +23,13 @@ public class ForumQueryService {
 
     private final ForumRepository forumRepository;
 
-    // private final ChatServiceClient chatServiceClient;
+     private final ChatServiceClient chatServiceClient;
     private final ChatServiceFakeClient chatServiceFakeClient;
 
     public ForumReadResponseDto read(Long forumId) {
         Forum findForum = validateExistForum(forumId);
 
-        Page<ForumMessageDto> messages = chatServiceFakeClient.getForumMessages(forumId);
+        Page<ForumMessageDto> messages = chatServiceClient.getForumMessages(forumId, 0, 30);
 
         return ForumReadResponseDto.of(ForumResponseDto.of(findForum), messages);
     }

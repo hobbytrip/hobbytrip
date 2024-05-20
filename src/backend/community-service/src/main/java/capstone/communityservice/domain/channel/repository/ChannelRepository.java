@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ChannelRepository extends JpaRepository<Channel, Long> {
 
@@ -17,4 +18,5 @@ public interface ChannelRepository extends JpaRepository<Channel, Long> {
             "where c.channel_id = :channelId",
             nativeQuery = true)
     Long validateChannelManager(Long channelId);
+
 }

@@ -11,6 +11,7 @@ import capstone.communityservice.domain.dm.repository.DmUserRepository;
 import capstone.communityservice.domain.server.dto.ServerReadResponseDto;
 import capstone.communityservice.domain.server.dto.ServerResponseDto;
 import capstone.communityservice.global.exception.Code;
+import capstone.communityservice.global.external.ChatServiceClient;
 import capstone.communityservice.global.external.ChatServiceFakeClient;
 import capstone.communityservice.global.external.StateServiceClient;
 import capstone.communityservice.global.external.StateServiceFakeClient;
@@ -30,7 +31,7 @@ import java.util.List;
 public class DmQueryService {
 //    private final StateServiceClient stateServiceClient;
     private final StateServiceFakeClient stateServiceFakeClient;
-    // private final ChatServiceClient chatServiceClient;
+     private final ChatServiceClient chatServiceClient;
     private final ChatServiceFakeClient chatServiceFakeClient;
     private final DmRepository dmRepository;
     private final DmUserRepository dmUserRepository;
@@ -44,8 +45,10 @@ public class DmQueryService {
                 DmUserStateRequestDto.of(userIds)
         );
 
-        Page<DmMessageDto> messages = chatServiceFakeClient.getDmMessages(
-                findDm.getId()
+        Page<DmMessageDto> messages = chatServiceClient.getDmMessages(
+                findDm.getId(),
+                0,
+                30
         );
 
         return DmReadResponseDto.of(

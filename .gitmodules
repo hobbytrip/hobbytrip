@@ -1,0 +1,3 @@
+[submodule "src/backend/community-service/community-service-yml"]
+	path = src/backend/community-service/community-service-yml
+	url = https://github.com/HanYoonSoo/community-service-yml.git

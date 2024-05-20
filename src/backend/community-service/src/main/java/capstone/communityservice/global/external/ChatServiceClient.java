@@ -1,5 +1,7 @@
 package capstone.communityservice.global.external;
 
+import capstone.communityservice.global.common.dto.DataResponseDto;
+import capstone.communityservice.global.common.dto.PageResponseDto;
 import capstone.communityservice.global.external.dto.DmMessageDto;
 import capstone.communityservice.global.external.dto.ForumMessageDto;
 import capstone.communityservice.global.external.dto.ServerMessageDto;
@@ -11,24 +13,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient("chat-service")
 public interface ChatServiceClient {
 
-    @GetMapping("/server/messages/channel")
-    Page<ServerMessageDto> getServerMessages(
-            @RequestParam(value = "channelId") Long channelId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "30") int size
-    );
+    @GetMapping("/feign/server/messages/channel")
+    Page<ServerMessageDto> getServerMessages(@RequestParam(value = "channelId") Long channelId,
+                                                     @RequestParam(defaultValue = "0") int page,
+                                                     @RequestParam(defaultValue = "30") int size);
 
-    @GetMapping("/direct/messages/room")
+    @GetMapping("/feign/direct/messages/room")
     Page<DmMessageDto> getDmMessages(
             @RequestParam(value = "roomId") Long roomId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "30") int size
     );
 
-    @GetMapping("chat/forum/messages/forum")
-    Page<ForumMessageDto> getMessages(
+    @GetMapping("/feign/forum/messages/forum")
+    Page<ForumMessageDto> getForumMessages(
             @RequestParam(value = "forumId") Long forumId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "30") int size
     );
+
 }

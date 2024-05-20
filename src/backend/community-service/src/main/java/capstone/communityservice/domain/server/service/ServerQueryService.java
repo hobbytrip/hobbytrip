@@ -11,6 +11,7 @@ import capstone.communityservice.domain.server.dto.OpenServerQueryDto;
 import capstone.communityservice.domain.server.dto.ServerReadResponseDto;
 import capstone.communityservice.domain.server.dto.ServerResponseDto;
 import capstone.communityservice.domain.server.entity.ServerUser;
+import capstone.communityservice.global.external.ChatServiceClient;
 import capstone.communityservice.global.external.ChatServiceFakeClient;
 import capstone.communityservice.global.external.dto.ServerMessageDto;
 import capstone.communityservice.global.external.dto.ServerUserLocDto;
@@ -43,7 +44,7 @@ public class ServerQueryService {
 
     // private final StateServiceClient stateServiceClient;
     private final StateServiceFakeClient stateServiceFakeClient;
-    // private final ChatServiceClient chatServiceClient;
+     private final ChatServiceClient chatServiceClient;
     private final ChatServiceFakeClient chatServiceFakeClient;
 
     private final ServerRepository serverRepository;
@@ -121,9 +122,14 @@ public class ServerQueryService {
 
         validateChatChannel(userLocation.getChannelId());
 
-        return chatServiceFakeClient.getServerMessages(
-                userLocation.getChannelId()
+        return chatServiceClient.getServerMessages(
+                userLocation.getChannelId(),
+                0,
+                30
         );
+//        return chatServiceFakeClient.getServerMessages(
+//                userLocation.getChannelId()
+//        );
     }
 
     private void validateChatChannel(Long channelId) {
