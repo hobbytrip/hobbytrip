@@ -60,3 +60,11 @@ dependencyManagement {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+processResources.dependsOn('copySecret')
+
+tasks.register('copySecret', Copy) {
+    from './chat-service-yml'
+    include "*.yml"  // 복사할 파일들
+    into 'src/main/resources'  // 복사 위치
+}
