@@ -1,0 +1,3 @@
+[submodule "src/backend/chat-service/chat-service-yml"]
+	path = src/backend/chat-service/chat-service-yml
+	url = https://github.com/acs0209/chat-service-yml.git
