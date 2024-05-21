@@ -1,57 +1,60 @@
 import React, { useEffect, useState } from 'react';
 
+// dmRoomId(dm방 ID)
+// userId(보낸 사람)
+// Content(내용)
+// Url (이동)
+// alarmType(Enum : DM)
+
 const EventComponent = () => {
-  const [isDocumentHidden, setIsDocumentHidden] = useState(document.hidden);
+  const [hidden, setHidden] = useState(document.hidden);
 
   useEffect(() => {
-    const handleVisibilityChange = () => {
-      setIsDocumentHidden(document.hidden);
-    };
+    const eventSource = new EventSource('');
+    eventSource.onopen = () => {
+      console.log('sse connected');
+    }
 
-    const handleEventSourceMessage = (event) => {
-      const notification = event.data;
-      new Notification(notification.channelId, {
-        body: notification.body,
-        tag: notification.channelId,
-        icon: './../../public/image/logo'
-      })
-      if (document.hidden) {
-        
-      } else {
-        // 창이 활성화되어 있을 때 처리
-        console.log('Document is visible, message:', event.data);
+    eventSource.onmessage = async (event) => {
+      const res = await JSON.parse(event.data);
+      let notification;
+
+      const handleNotificationClick = () => {
+        notification.current.onclick = (event) => {
+          event.preventDefault();
+        }
+      };
+
+      switch (res.alarmType){
+        case 'DM':
+          notification = new Notification(res.dmRoomID, {
+            body: res.content,
+            tag: res.dmRoomID,
+            icon: './../../public/image/logo'
+          })
+          break;
+        case 'Media':
+          break;
+        case 'GroupChat':
+          break;
+      }
+      notification.current = new Notification(title, newOption);
+      handleNotificationClick();
+
+      if(document.hidden){
+        setNotifications((prev) => [...prev, res]);
+      }
+      else{
+        // 알림 처리되는지 확인
       }
     };
 
-    // const showNotification = (title, body) => {
-    //   if (Notification.permission === 'granted') {
-    //     new Notification(title, { body });
-    //   } else if (Notification.permission !== 'denied') {
-    //     Notification.requestPermission().then(permission => {
-    //       if (permission === 'granted') {
-    //         new Notification(title, { body });
-    //       }
-    //     });
-    //   }
-    // };
+    eventSource.onerror = (error) => {
+      console.log(error);
+    }
 
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-
-    const eventSource = new EventSource('');
-    eventSource.onmessage = handleEventSourceMessage;
-
-    eventSource.addEventListener('close', () => eventSource.close());
-    return () => {
-      eventSource.close();
-    };
+    return () => eventSource.close();
   }, []);
-
-  return (
-    <div>
-      {/* 컴포넌트의 UI */}
-      <p>{isDocumentHidden ? '창이 떠나있습니다.' : '창이 활성화되어 있습니다.'}</p>
-    </div>
-  );
 };
 
 export default EventComponent;

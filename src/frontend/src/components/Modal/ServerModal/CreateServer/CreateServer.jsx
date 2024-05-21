@@ -34,12 +34,12 @@ function CreateServer() {
       for (const [key, value] of formData.entries()) {
         console.log(key, value);
       }
-      const response = await axios.post("/server", formData, {
+      const response = await axios.post("/api/community/server", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
         method: "POST",
-        body: formdata,
+        body: formData,
         redirect: "follow",
       });
       console.log(response.status);

@@ -1,0 +1,103 @@
+.setting {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.updateForm {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #FFFFFF;
+  width: 351px;
+  height: 347px;
+  gap: 10px;
+  border-radius: 10px;
+}
+
+.inputDiv {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 311px;
+  gap: auto;
+  padding: 13px 20px;
+}
+
+.inputDiv div {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 299px;
+  height: 48px;
+}
+
+.inputDiv input {
+  width: 296px;
+  height: 13px;
+  gap: 10px;
+  padding: 4px 0px;
+  border-bottom: 1px solid var(--dark-gray);
+}
+
+.inputDivImage {
+  height: 69px;
+  gap: auto;
+  padding: 13px 20px;
+}
+
+.addImg {
+  display: flex;
+  flex-direction: row; 
+  justify-content: center;
+  align-items: center;
+  width: 153px;
+  height: 40px;
+  gap: 10px;
+}
+
+.addImg div {
+  width: 40px;
+  height: 40px;
+  border-radius: 300px;
+}
+
+.addImg img {
+  width: 40px;
+  height: 40px;
+  border-radius: 300px;
+}
+
+.addImgBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 103px;
+  height: 21px;
+  gap: 10px;
+  background-color: var(--main-purple);
+  color:#FFFFFF;
+}
+
+.submitBtn {
+  display: flex;
+  justify-content: space-between;
+  width: 94px;
+  height: 40px;
+  gap: 10px;
+}
+
+.submitBtn button {
+  width: 42px;
+  height: 40px;
+  border-radius: 300px;
+  background-color: #FFFFFF;
+  color: var(--main-purple);
+}
+
+.deletePlanet {
+  background-color: #dc143c;
+  color: #FFFFFF;
+}
