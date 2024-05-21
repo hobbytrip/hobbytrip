@@ -12,11 +12,12 @@ public class ConnectionStateInfo {
 
     private Long userId;
     private String sessionId;
-    private String type;
-    private String state;
+    private ConnectionType type;
+    private ConnectionState state;
 
     @Builder
-    public ConnectionStateInfo(Long userId, String sessionId, String type, String state) {
+    public ConnectionStateInfo(Long userId, String sessionId,
+                               ConnectionType type, ConnectionState state) {
         this.userId = userId;
         this.sessionId = sessionId;
         this.type = type;

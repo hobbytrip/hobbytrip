@@ -4,8 +4,10 @@ import capstone.chatservice.infra.client.CommunityServiceClient;
 import capstone.chatservice.infra.client.StateServiceClient;
 import capstone.chatservice.infra.client.UserServerDmInfo;
 import capstone.chatservice.infra.kafka.producer.state.StateEventProducer;
+import capstone.chatservice.infra.kafka.producer.state.dto.ConnectionState;
 import capstone.chatservice.infra.kafka.producer.state.dto.ConnectionStateEventDto;
 import capstone.chatservice.infra.kafka.producer.state.dto.ConnectionStateInfo;
+import capstone.chatservice.infra.kafka.producer.state.dto.ConnectionType;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,16 +37,16 @@ public class WebSocketConnectionHandler implements ChannelInterceptor {
             ConnectionStateInfo connectionStateInfo = ConnectionStateInfo.builder()
                     .userId(userId)
                     .sessionId(sessionId)
-                    .type("CONNECT")
-                    .state("online")
+                    .type(ConnectionType.CONNECT)
+                    .state(ConnectionState.ONLINE)
                     .build();
             stateEventProducer.sendToConnectionStateInfoTopic(connectionStateInfo);
 
             UserServerDmInfo ids = communityClient.getServerIdsAndRoomIds(userId);
             ConnectionStateEventDto connectionEventDto = ConnectionStateEventDto.builder()
                     .userId(userId)
-                    .type("CONNECT")
-                    .state("online")
+                    .type(ConnectionType.CONNECT)
+                    .state(ConnectionState.ONLINE)
                     .serverIds(ids.getServerIds())
                     .roomIds(ids.getDmIds())
                     .build();
@@ -55,8 +57,8 @@ public class WebSocketConnectionHandler implements ChannelInterceptor {
             String sessionId = headerAccessor.getSessionId();
             ConnectionStateInfo connectionStateInfo = ConnectionStateInfo.builder()
                     .sessionId(sessionId)
-                    .type("DISCONNECT")
-                    .state("offline")
+                    .type(ConnectionType.DISCONNECT)
+                    .state(ConnectionState.OFFLINE)
                     .build();
 
             String checkUserId = stateClient.saveConnectionStateInfo(connectionStateInfo).getData();
@@ -66,8 +68,8 @@ public class WebSocketConnectionHandler implements ChannelInterceptor {
                 UserServerDmInfo ids = communityClient.getServerIdsAndRoomIds(userId);
                 ConnectionStateEventDto connectionEventDto = ConnectionStateEventDto.builder()
                         .userId(userId)
-                        .type("DISCONNECT")
-                        .state("offline")
+                        .type(ConnectionType.DISCONNECT)
+                        .state(ConnectionState.OFFLINE)
                         .serverIds(ids.getServerIds())
                         .roomIds(ids.getDmIds())
                         .build();
