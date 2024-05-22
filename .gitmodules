@@ -1,0 +1,3 @@
+[submodule "src/backend/gateway-service/gateway-service-yml"]
+	path = src/backend/gateway-service/gateway-service-yml
+	url = https://github.com/HanYoonSoo/gateway-service-yml.git
