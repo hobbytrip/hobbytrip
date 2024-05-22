@@ -1,4 +1,4 @@
-package com.capstone.notificationservice.domain.dm.respository;
+package com.capstone.notificationservice.domain.dm.repository;
 
 import java.util.Map;
 import org.springframework.stereotype.Repository;

@@ -1,4 +1,4 @@
-package com.capstone.notificationservice.domain.dm.respository;
+package com.capstone.notificationservice.domain.dm.repository;
 
 import com.capstone.notificationservice.domain.dm.entity.DmNotification;
 import org.springframework.data.jpa.repository.JpaRepository;
