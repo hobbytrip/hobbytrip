@@ -1,0 +1,49 @@
+package capstone.stateservice.domain.userstate.service.impl;
+
+import capstone.stateservice.domain.userstate.domain.UserState;
+import capstone.stateservice.domain.userstate.repository.UserStateRedisRepository;
+import capstone.stateservice.domain.userstate.service.UserStateService;
+import capstone.stateservice.global.common.dto.DataResponseDto;
+import capstone.stateservice.infra.kafka.consumer.state.dto.ConnectionStateInfo;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class UserStateServiceImpl implements UserStateService {
+
+    private final UserStateRedisRepository userStateRedisRepository;
+
+    @Override
+    public DataResponseDto<Long> saveUserConnectionState(ConnectionStateInfo connectionStateInfo) {
+        Long userId = null;
+        switch (connectionStateInfo.getType()) {
+            case CONNECT -> handleConnectionState(connectionStateInfo);
+            case DISCONNECT -> userId = handleDisconnectionState(connectionStateInfo);
+        }
+
+        return DataResponseDto.of(userId);
+    }
+
+    private void handleConnectionState(ConnectionStateInfo connectionStateInfo) {
+        UserState userState = userStateRedisRepository.findById(String.valueOf(connectionStateInfo.getUserId()))
+                .orElse(UserState.builder()
+                        .userId(connectionStateInfo.getUserId())
+                        .build());
+
+        userState.modify(connectionStateInfo.getSessionId(), connectionStateInfo.getState());
+        userStateRedisRepository.save(userState);
+    }
+
+    private Long handleDisconnectionState(ConnectionStateInfo connectionStateInfo) {
+        return userStateRedisRepository.findByChatSessionId(connectionStateInfo.getSessionId())
+                .map(userState -> {
+                    userState.modify(connectionStateInfo.getState());
+                    userStateRedisRepository.save(userState);
+                    return userState.getUserId();
+                })
+                .orElse(null);
+    }
+}
