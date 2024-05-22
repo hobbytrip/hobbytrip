@@ -1,8 +1,8 @@
-package capstone.stateservice.domain.userstate.service.impl;
+package capstone.stateservice.domain.userstate.service.command.impl;
 
 import capstone.stateservice.domain.userstate.domain.UserState;
 import capstone.stateservice.domain.userstate.repository.UserStateRepository;
-import capstone.stateservice.domain.userstate.service.UserStateService;
+import capstone.stateservice.domain.userstate.service.command.UserStateCommandService;
 import capstone.stateservice.global.common.dto.DataResponseDto;
 import capstone.stateservice.infra.kafka.consumer.state.dto.ConnectionStateInfo;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserStateServiceImpl implements UserStateService {
+public class UserStateCommandServiceImpl implements UserStateCommandService {
 
     private final UserStateRepository userStateRepository;
 

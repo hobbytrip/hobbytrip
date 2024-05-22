@@ -1,6 +1,6 @@
 package capstone.stateservice.domain.userstate.controller;
 
-import capstone.stateservice.domain.userstate.service.UserStateService;
+import capstone.stateservice.domain.userstate.service.command.UserStateCommandService;
 import capstone.stateservice.global.common.dto.DataResponseDto;
 import capstone.stateservice.infra.kafka.consumer.state.dto.ConnectionStateInfo;
 import lombok.RequiredArgsConstructor;
@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-public class UserStateController {
+public class UserStateCommandController {
 
-    private final UserStateService userStateService;
+    private final UserStateCommandService userStateCommandService;
 
     @PostMapping("/connection/info")
     DataResponseDto<Long> saveUserConnectionState(@RequestBody ConnectionStateInfo connectionStateInfo) {
 
-        return userStateService.saveUserConnectionState(connectionStateInfo);
+        return userStateCommandService.saveUserConnectionState(connectionStateInfo);
     }
 }
