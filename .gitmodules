@@ -1,0 +1,3 @@
+[submodule "src/backend/discovery-service/discovery-service-yml"]
+	path = src/backend/discovery-service/discovery-service-yml
+	url = https://github.com/HanYoonSoo/discovery-service-yml.git
