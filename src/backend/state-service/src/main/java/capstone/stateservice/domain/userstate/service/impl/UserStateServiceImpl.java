@@ -1,7 +1,7 @@
 package capstone.stateservice.domain.userstate.service.impl;
 
 import capstone.stateservice.domain.userstate.domain.UserState;
-import capstone.stateservice.domain.userstate.repository.UserStateRedisRepository;
+import capstone.stateservice.domain.userstate.repository.UserStateRepository;
 import capstone.stateservice.domain.userstate.service.UserStateService;
 import capstone.stateservice.global.common.dto.DataResponseDto;
 import capstone.stateservice.infra.kafka.consumer.state.dto.ConnectionStateInfo;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserStateServiceImpl implements UserStateService {
 
-    private final UserStateRedisRepository userStateRedisRepository;
+    private final UserStateRepository userStateRepository;
 
     @Override
     public DataResponseDto<Long> saveUserConnectionState(ConnectionStateInfo connectionStateInfo) {
@@ -28,20 +28,20 @@ public class UserStateServiceImpl implements UserStateService {
     }
 
     private void handleConnectionState(ConnectionStateInfo connectionStateInfo) {
-        UserState userState = userStateRedisRepository.findById(String.valueOf(connectionStateInfo.getUserId()))
+        UserState userState = userStateRepository.findById(String.valueOf(connectionStateInfo.getUserId()))
                 .orElse(UserState.builder()
                         .userId(connectionStateInfo.getUserId())
                         .build());
 
         userState.modify(connectionStateInfo.getSessionId(), connectionStateInfo.getState());
-        userStateRedisRepository.save(userState);
+        userStateRepository.save(userState);
     }
 
     private Long handleDisconnectionState(ConnectionStateInfo connectionStateInfo) {
-        return userStateRedisRepository.findByChatSessionId(connectionStateInfo.getSessionId())
+        return userStateRepository.findByChatSessionId(connectionStateInfo.getSessionId())
                 .map(userState -> {
                     userState.modify(connectionStateInfo.getState());
-                    userStateRedisRepository.save(userState);
+                    userStateRepository.save(userState);
                     return userState.getUserId();
                 })
                 .orElse(null);
