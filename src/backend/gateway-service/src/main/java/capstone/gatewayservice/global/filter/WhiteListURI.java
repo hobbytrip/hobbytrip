@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 public enum WhiteListURI {
     USER_LOGIN("/login"),
     USER_SIGNUP("/signup"),
+    COMMUNITY_SIGNUP("/user")
     ;
 
     final String uri;
