@@ -41,9 +41,11 @@ public class ServerNotification {
     private Boolean isRead;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "alarm_type")
     private AlarmType alarmType;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "mention_type")
     private MentionType mentionType;
 
     @ManyToOne

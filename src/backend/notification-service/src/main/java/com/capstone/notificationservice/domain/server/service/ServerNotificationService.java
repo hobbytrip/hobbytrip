@@ -1,13 +1,13 @@
 package com.capstone.notificationservice.domain.server.service;
 
 import com.capstone.notificationservice.domain.common.AlarmType;
+import com.capstone.notificationservice.domain.dm.repository.EmitterRepository;
 import com.capstone.notificationservice.domain.server.dto.MentionType;
 import com.capstone.notificationservice.domain.server.dto.ServerNotificationDto;
 import com.capstone.notificationservice.domain.server.dto.response.ServerNotificationResponse;
 import com.capstone.notificationservice.domain.server.entity.ServerNotification;
 import com.capstone.notificationservice.domain.server.exception.ServerException;
-import com.capstone.notificationservice.domain.server.repository.EmitterRepository;
-import com.capstone.notificationservice.domain.server.repository.NotificationRepository;
+import com.capstone.notificationservice.domain.server.repository.ServerNotificationRepository;
 import com.capstone.notificationservice.domain.user.entity.User;
 import com.capstone.notificationservice.domain.user.service.UserService;
 import com.capstone.notificationservice.global.exception.Code;
@@ -29,7 +29,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 public class ServerNotificationService {
     private final EmitterRepository emitterRepository;
-    private final NotificationRepository notificationRepository;
+    private final ServerNotificationRepository serverNotificationRepository;
     private final UserService userService;
     private final Long DEFAULT_TIMEOUT = 60L * 1000 * 60;
 
@@ -92,7 +92,7 @@ public class ServerNotificationService {
                 .flatMap(Optional::stream)
                 .collect(Collectors.toList());
 
-        List<ServerNotification> dmNotifications = notificationRepository.saveAll(
+        List<ServerNotification> dmNotifications = serverNotificationRepository.saveAll(
                 createNotification(serverId, alarmType, mentionType, content, receivers));
 
         dmNotifications.forEach(dmNotification -> {
