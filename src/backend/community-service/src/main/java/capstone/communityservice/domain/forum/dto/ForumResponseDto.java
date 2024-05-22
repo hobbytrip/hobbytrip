@@ -26,6 +26,8 @@ public class ForumResponseDto {
 
     private List<FileResponseDto> files;
 
+    private Long forumMessageCount;
+
     public static ForumResponseDto of(Forum forum){
         return ForumResponseDto.builder()
                 .forumId(forum.getId())
@@ -40,6 +42,24 @@ public class ForumResponseDto {
                         .map(FileResponseDto::of)
                         .toList()
                 )
+                .build();
+    }
+
+    public static ForumResponseDto of(Forum forum, Long forumMessageCount){
+        return ForumResponseDto.builder()
+                .forumId(forum.getId())
+                .channelId(forum.getChannelId())
+                .title(forum.getTitle())
+                .writer(forum.getUser().getName())
+                .content(forum.getContent())
+                .createAt(forum.getCreatedAt())
+                .updateAt(forum.getUpdatedAt())
+                .files(forum.getFiles()
+                        .stream()
+                        .map(FileResponseDto::of)
+                        .toList()
+                )
+                .forumMessageCount(forumMessageCount)
                 .build();
     }
 }

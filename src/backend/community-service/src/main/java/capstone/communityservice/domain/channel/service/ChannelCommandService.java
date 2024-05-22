@@ -7,6 +7,7 @@ import capstone.communityservice.domain.channel.dto.ChannelDeleteRequestDto;
 import capstone.communityservice.domain.channel.dto.ChannelResponseDto;
 import capstone.communityservice.domain.channel.dto.ChannelUpdateRequestDto;
 import capstone.communityservice.domain.channel.entity.Channel;
+import capstone.communityservice.domain.channel.entity.ChannelType;
 import capstone.communityservice.domain.channel.exception.ChannelException;
 import capstone.communityservice.domain.channel.repository.ChannelRepository;
 import capstone.communityservice.domain.server.entity.Server;
@@ -91,12 +92,13 @@ public class ChannelCommandService {
         );
     }
 
-    public void sendUserLocEvent(Long userId, Long channelId) {
+    public void sendUserLocEvent(Long userId, Long channelId, ChannelType channelType) {
         channelKafkaTemplate.send(channelKafkaTopic,
                 CommunityChannelEventDto.of(
                         "channel-read",
                         userId,
-                        channelId)
+                        channelId,
+                        channelType)
         );
 
         printKafkaLog("read");

@@ -34,11 +34,12 @@ public class CommunityChannelEventDto {
                 .build();
     }
 
-    public static CommunityChannelEventDto of(String type, Long userId, Long channelId){
+    public static CommunityChannelEventDto of(String type, Long userId, Long channelId, ChannelType channelType){
         return CommunityChannelEventDto.builder()
                 .type(type)
                 .userId(userId)
                 .channelId(channelId)
+                .channelType(channelType)
                 .build();
     }
 }

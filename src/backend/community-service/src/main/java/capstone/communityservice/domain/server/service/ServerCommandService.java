@@ -91,7 +91,11 @@ public class ServerCommandService {
 
         Channel defaultChannel = findServer.getChannels().get(0);
 
-        channelCommandService.sendUserLocEvent(findUser.getId(), defaultChannel.getId());
+        channelCommandService.sendUserLocEvent(
+                findUser.getId(),
+                defaultChannel.getId(),
+                ChannelType.CHAT
+        );
 
         return ServerResponseDto.of(findServer);
     }
@@ -153,7 +157,11 @@ public class ServerCommandService {
                         "일반")
         );
 
-        channelCommandService.sendUserLocEvent(userId, newChannel.getId());
+        channelCommandService.sendUserLocEvent(
+                userId,
+                newChannel.getId(),
+                ChannelType.CHAT
+        );
     }
 
     public ServerInviteCodeResponse generatedServerInviteCode(Long serverId) {
