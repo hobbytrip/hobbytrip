@@ -2,6 +2,7 @@ package capstone.sigservice.service;
 
 import capstone.sigservice.dto.VoiceConnectionState;
 import capstone.sigservice.dto.VoiceDto;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import io.openvidu.java.client.Connection;
 import io.openvidu.java.client.ConnectionProperties;
@@ -13,9 +14,12 @@ import io.openvidu.java.client.OpenViduRole;
 import io.openvidu.java.client.Session;
 import io.openvidu.java.client.SessionProperties;
 import jakarta.annotation.PostConstruct;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -129,6 +133,61 @@ public class CommunitySessionService {
         JsonObject responseJson = new JsonObject();
         responseJson.addProperty("error", "Exception occurred while creating session");
         return new ResponseEntity<>(responseJson, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    public ResponseEntity<JsonObject> removeUserFromSession(Map<String, Object> sessionNameToken) {
+        String sessionName = (String) sessionNameToken.get("sessionName");
+        String token = (String) sessionNameToken.get("token");
+
+        System.out.println("Removing user | {sessionName, token}=" + sessionNameToken);
+
+        if (mapSessions.get(sessionName) != null && mapSessionNames.get(sessionName) != null) {
+            if (mapSessionNames.get(sessionName).remove(token) != null) {
+                if (mapSessionNames.get(sessionName).isEmpty()) {
+                    mapSessions.remove(sessionName);
+                }
+                return new ResponseEntity<>(HttpStatus.OK);
+            } else {
+                System.out.println("Problems in the app server: the TOKEN wasn't valid");
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        } else {
+            System.out.println("Problems in the app server: the SESSION does not exist");
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    public ResponseEntity<Object> createRoom(Map<String, String> sessionName, Map<String, String> userName) throws URISyntaxException {
+        String sName = sessionName.get("sessionName");
+        String nName = userName.get("nickName");
+        System.out.println("sessionName: " + sName + ", nickName: " + nName);
+
+
+        Gson gson = new Gson();
+        JsonObject json = new JsonObject();
+        json.addProperty("sessionName", sName);
+        json.addProperty("nickName", nName);
+        System.out.println(json);
+
+
+        URI uri = new URI("https://localhost:8080/");
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setLocation(uri);
+        httpHeaders.add("sessionInfo", sName + "," + nName);
+
+        return new ResponseEntity<>(httpHeaders, HttpStatus.OK);
+    }
+    public ResponseEntity<JsonObject> deleteSession(Map<String, Object> sessionName) throws Exception {
+        String session = (String) sessionName.get("sessionName");
+
+        if (mapSessions.get(session) != null && mapSessionNames.get(session) != null) {
+            Session s = mapSessions.get(session);
+            s.close();
+            mapSessions.remove(session);
+            mapSessionNames.remove(session);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            System.out.println("세션이 존재하지 않습니다.");
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }

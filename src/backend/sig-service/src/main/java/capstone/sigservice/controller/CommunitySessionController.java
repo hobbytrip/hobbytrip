@@ -3,6 +3,7 @@ package capstone.sigservice.controller;
 import capstone.sigservice.dto.VoiceDto;
 import capstone.sigservice.service.CommunitySessionService;
 import com.google.gson.JsonObject;
+import java.net.URISyntaxException;
 import java.util.Map;
 
 
@@ -13,9 +14,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.openvidu.java.client.Connection;
@@ -70,10 +73,24 @@ public class CommunitySessionController {
         VoiceDto voiceDto=coummintySessionService.createLeaveVoiceDto(params);
         kafkaTemplate.send(voiceConnectionStateTopic,voiceDto);
     }
-    @PostMapping (value = "/api/sig-service/sessions/{sessionId}/")
+
+    @PostMapping (value = "/api/fit/sessions/getToken")
     public ResponseEntity<JsonObject> getToken(@RequestBody(required = false) Map<String, Object> params)
             throws OpenViduJavaClientException, OpenViduHttpException {
         return coummintySessionService.generateToken(params);
     }
+    @PostMapping("/api/fit/removeUser")
+    public ResponseEntity<JsonObject> removeUser(@RequestBody Map<String, Object> sessionNameToken) {
+        return coummintySessionService.removeUserFromSession(sessionNameToken);
+    }
+    @GetMapping("/api/fit/createRoom")
+    public ResponseEntity<Object> getRoom(@RequestParam Map<String, String> sessionName, @RequestParam Map<String, String> UserName) throws URISyntaxException {
+        return coummintySessionService.createRoom(sessionName, UserName);
+    }
+    @DeleteMapping("api/fit/closeSession")
+    public ResponseEntity<JsonObject> deleteSession(@RequestBody Map<String, Object> sessionName) throws Exception {
+        return coummintySessionService.deleteSession(sessionName);
+    }
+
 
 }
