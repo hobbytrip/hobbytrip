@@ -22,6 +22,12 @@ public class KafkaTopicConfig {
     @Value("${spring.kafka.topic.server-notification}")
     private String serverNotificationTopic;
 
+    @Value("${spring.kafka.topic.direct-chat}")
+    private String directChatTopic;
+
+    @Value("${spring.kafka.topic.server-chat}")
+    private String serverChatTopic;
+
     @Bean
     public KafkaAdmin kafkaAdmin() {
         Map<String, Object> configurations = new HashMap<>();
@@ -40,6 +46,20 @@ public class KafkaTopicConfig {
     @Bean
     public NewTopic serverNotificationTopic() {
         return TopicBuilder.name(serverNotificationTopic)
+                .partitions(1)
+                .replicas(1)
+                .build();
+    }
+    @Bean
+    public NewTopic directChatTopic() {
+        return TopicBuilder.name(directChatTopic)
+                .partitions(1)
+                .replicas(1)
+                .build();
+    }
+    @Bean
+    public NewTopic serverChatTopic() {
+        return TopicBuilder.name(serverChatTopic)
                 .partitions(1)
                 .replicas(1)
                 .build();

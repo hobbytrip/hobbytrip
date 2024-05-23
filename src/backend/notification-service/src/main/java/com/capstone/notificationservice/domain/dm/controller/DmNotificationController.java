@@ -27,6 +27,6 @@ public class DmNotificationController {
         return notificationService.subscribe(userId, lastEventId);
     }
 
-    @PostMapping("/subscribeTest")
+
 
 }
