@@ -2,6 +2,7 @@ package capstone.sigservice.controller;
 
 import capstone.sigservice.dto.VoiceDto;
 import capstone.sigservice.service.CommunitySessionService;
+import com.google.gson.JsonObject;
 import java.util.Map;
 
 
@@ -69,6 +70,10 @@ public class CommunitySessionController {
         VoiceDto voiceDto=coummintySessionService.createLeaveVoiceDto(params);
         kafkaTemplate.send(voiceConnectionStateTopic,voiceDto);
     }
-
+    @PostMapping (value = "/api/sig-service/sessions/{sessionId}/")
+    public ResponseEntity<JsonObject> getToken(@RequestBody(required = false) Map<String, Object> params)
+            throws OpenViduJavaClientException, OpenViduHttpException {
+        return coummintySessionService.generateToken(params);
+    }
 
 }
