@@ -13,10 +13,10 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class KafkaProducer {
 
-    @Value("${spring.kafka.topic.direct-chat}")
+    @Value("${spring.kafka.topic.dm-notification}")
     private String dmNotificationTopic;
 
-    @Value("${spring.kafka.topic.server-chat}")
+    @Value("${spring.kafka.topic.server-notification}")
     private String serverNotificationTopic;
 
     private final KafkaTemplate<String, DmNotificationDto> dmNotificationKafkaTemplate;

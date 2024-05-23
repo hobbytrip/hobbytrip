@@ -7,7 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static reactor.core.publisher.Mono.when;
 
-import com.capstone.notificationservice.domain.dm.service.NotificationService;
+import com.capstone.notificationservice.domain.dm.service.DmNotificationService;
 import org.junit.jupiter.api.Test;
 import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class DmDmNotificationControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private NotificationService notificationService;
+    private DmNotificationService notificationService;
 
     @Test
     public void testSubscribe() throws Exception {
