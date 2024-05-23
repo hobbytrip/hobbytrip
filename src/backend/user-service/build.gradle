@@ -60,6 +60,9 @@ dependencies {
 
     //feign client
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.0.2'
+
+    //jayspt
+    implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5' //For application yaml Encryption
 }
 
 tasks.named('test') {
