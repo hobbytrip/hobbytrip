@@ -17,17 +17,14 @@ public class KafkaProducer {
     private String dmChatTopic;
 
     @Value("${spring.kafka.topic.server-chat}")
-    private String serverNotificationTopic;
+    private String serverChatTopic;
 
     private final KafkaTemplate<String, DmNotificationDto> dmNotificationKafkaTemplate;
     private final KafkaTemplate<String, ServerNotificationDto> serverNotificationKafkaTemplate;
 
-//    public void sendToDmNotificationTopic(DmNotificationDto notificationDto) {
-//        dmNotificationKafkaTemplate.send(dmNotificationTopic, notificationDto);
-//    }
 
-    public void sendToServerNotificationTopic(ServerNotificationDto notificationDto) {
-        serverNotificationKafkaTemplate.send(serverNotificationTopic, notificationDto);
+    public void sendToServerChatTopic(ServerNotificationDto notificationDto) {
+        serverNotificationKafkaTemplate.send(serverChatTopic, notificationDto);
     }
     public void sendToDmChatTopic(DmNotificationDto notificationDto) {
         dmNotificationKafkaTemplate.send(dmChatTopic, notificationDto);

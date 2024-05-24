@@ -22,7 +22,6 @@ public class TestController {
 
     private final KafkaProducer kafkaProducer;
     private final DmNotificationService dmNotificationService;
-    private final EmitterRepositoryImpl emitterRepository;
 
     @PostMapping("/test/send")
     public ResponseEntity<String> sendTestEvent(@RequestParam Long userId,
@@ -40,12 +39,6 @@ public class TestController {
 
         return ResponseEntity.ok("Event sent to Kafka");
     }
-
-//    @GetMapping("/test/events")
-//    public ResponseEntity<Map<String, Object>> getEventCache() {
-//        Map<String, Object> eventCache = emitterRepository.getEventCache();
-//        return ResponseEntity.ok(eventCache);
-//    }
 
     @GetMapping(value = "/test/subscribe", produces = "text/event-stream")
     public SseEmitter subscribe(@RequestParam Long userId,

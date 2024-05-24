@@ -34,7 +34,7 @@ public class DmNotification {
     @Column(name = "notification_id")
     private Long notificationId;
 
-    @Column(name = "dm_room_id")
+    @Column(name = "dmroom_id")
     private Long dmRoomId;
     @Column(name="content")
     private String content;
