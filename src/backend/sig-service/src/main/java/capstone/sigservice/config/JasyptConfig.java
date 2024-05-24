@@ -10,20 +10,17 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @EnableEncryptableProperties
-//@EncryptablePropertySources(@EncryptablePropertySource("classpath:/application.yml"))
 public class JasyptConfig {
 
     @Value("${jasypt.encryptor.password}")
     private String jasyptEncryptorPassword;
 
-
     @Bean("jasyptStringEncryptor")
     public StringEncryptor stringEncryptor() {
-        System.out.println("HELLO JASYPT:"+jasyptEncryptorPassword);
+//        System.out.println("HELLO JASYPT:"+jasyptEncryptorPassword);
         PooledPBEStringEncryptor encryptor = new PooledPBEStringEncryptor();
         SimpleStringPBEConfig config = new SimpleStringPBEConfig();
         config.setPassword(jasyptEncryptorPassword);
-//        config.setAlgorithm("PBEWITHHMACSHA512ANDAES_256");
         config.setAlgorithm("PBEWithMD5AndDES");
         config.setKeyObtentionIterations("1000");
         config.setPoolSize("1");
@@ -32,6 +29,8 @@ public class JasyptConfig {
         config.setIvGeneratorClassName("org.jasypt.iv.RandomIvGenerator");
         config.setStringOutputType("base64");
         encryptor.setConfig(config);
+
+
         return encryptor;
     }
 }
