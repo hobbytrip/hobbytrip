@@ -26,7 +26,7 @@ import org.hibernate.annotations.OnDeleteAction;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "serverNotification")
+@Table(name = "server_notification")
 public class ServerNotification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
