@@ -3,11 +3,10 @@ package capstone.sigservice.Kafka;
 
 
 
-import capstone.sigservice.dto.VoiceDto;
+import capstone.sigservice.dto.VoiceChannelEventDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
@@ -19,11 +18,11 @@ public class KafkaProducer {
     @Value("${spring.kafka.topic.voice-connection-state-event}")
     private String voiceConnectionStateTopic;
 
-    private final KafkaTemplate<String, VoiceDto> voiceConnectionStateKafkaTemplate;
+    private final KafkaTemplate<String, VoiceChannelEventDto> voiceConnectionStateKafkaTemplate;
 
 
 
-    public void sendToVoiceConnectionStateTopic(VoiceDto voiceDto) {
-        voiceConnectionStateKafkaTemplate.send(voiceConnectionStateTopic, voiceDto);
+    public void sendToVoiceConnectionStateTopic(VoiceChannelEventDto voiceChannelEventDto) {
+        voiceConnectionStateKafkaTemplate.send(voiceConnectionStateTopic, voiceChannelEventDto);
     }
 }

@@ -1,7 +1,7 @@
 package capstone.sigservice.config;
 
 
-import capstone.sigservice.dto.VoiceDto;
+import capstone.sigservice.dto.VoiceChannelEventDto;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -34,12 +34,12 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public ProducerFactory<String, VoiceDto>  voiceConnectionStateProducerFactory() {
+    public ProducerFactory<String, VoiceChannelEventDto>  voiceConnectionStateProducerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfig());
     }
 
     @Bean
-    public KafkaTemplate<String, VoiceDto> voiceConnectionStateKafkaTemplate() {
+    public KafkaTemplate<String, VoiceChannelEventDto> voiceConnectionStateKafkaTemplate() {
         return new KafkaTemplate<>(voiceConnectionStateProducerFactory());
     }
 

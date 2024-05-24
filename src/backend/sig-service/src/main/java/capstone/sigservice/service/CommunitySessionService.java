@@ -1,7 +1,7 @@
 package capstone.sigservice.service;
 
 import capstone.sigservice.dto.VoiceConnectionState;
-import capstone.sigservice.dto.VoiceDto;
+import capstone.sigservice.dto.VoiceChannelEventDto;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import io.openvidu.java.client.Connection;
@@ -67,16 +67,16 @@ public class CommunitySessionService {
         }
         return session;
     }
-    public VoiceDto createJoinVoiceDto(Map<String, Object> params){
-        VoiceDto voiceDto=new VoiceDto();
+    public VoiceChannelEventDto createJoinVoiceDto(Map<String, Object> params){
+        VoiceChannelEventDto voiceDto=new VoiceChannelEventDto();
         voiceDto.setServerId(Long.parseLong(String.valueOf(params.get("serverId"))));
         voiceDto.setChannelId(Long.parseLong(String.valueOf(params.get("channelId"))));
         voiceDto.setUserId(Long.parseLong(String.valueOf(params.get("userId"))));
         voiceDto.setVoiceConnectionState(VoiceConnectionState.VOICE_JOIN);
         return voiceDto;
     }
-    public VoiceDto createLeaveVoiceDto(Map<String, Object> params){
-        VoiceDto voiceDto=new VoiceDto();
+    public VoiceChannelEventDto createLeaveVoiceDto(Map<String, Object> params){
+        VoiceChannelEventDto voiceDto=new VoiceChannelEventDto();
         voiceDto.setServerId(Long.parseLong(String.valueOf(params.get("serverId"))));
         voiceDto.setChannelId(Long.parseLong(String.valueOf(params.get("channelId"))));
         voiceDto.setUserId(Long.parseLong(String.valueOf(params.get("userId"))));

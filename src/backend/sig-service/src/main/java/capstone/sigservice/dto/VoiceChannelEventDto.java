@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class VoiceDto {
+public class VoiceChannelEventDto {
     private Long serverId;
     private Long channelId;
     private Long userId;

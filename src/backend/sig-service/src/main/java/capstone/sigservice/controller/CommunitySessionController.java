@@ -1,6 +1,6 @@
 package capstone.sigservice.controller;
 
-import capstone.sigservice.dto.VoiceDto;
+import capstone.sigservice.dto.VoiceChannelEventDto;
 import capstone.sigservice.service.CommunitySessionService;
 import com.google.gson.JsonObject;
 import java.net.URISyntaxException;
@@ -38,7 +38,7 @@ public class CommunitySessionController {
     private CommunitySessionService coummintySessionService;
 
     @Autowired
-    private KafkaTemplate<String, VoiceDto> kafkaTemplate;
+    private KafkaTemplate<String, VoiceChannelEventDto> kafkaTemplate;
     @Value("${spring.kafka.topic.voice-connection-state-event}")
     private String voiceConnectionStateTopic;
 
@@ -61,7 +61,7 @@ public class CommunitySessionController {
 
         Connection connection = coummintySessionService.createConnection(sessionId,params);
 
-        VoiceDto voiceDto=coummintySessionService.createJoinVoiceDto(params);
+        VoiceChannelEventDto voiceDto=coummintySessionService.createJoinVoiceDto(params);
         kafkaTemplate.send(voiceConnectionStateTopic,voiceDto);
         return new ResponseEntity<>(connection.getToken(), HttpStatus.OK);
     }
@@ -70,7 +70,7 @@ public class CommunitySessionController {
     public void leaveConnection(@PathVariable("sessionId")String sessionId,
                                 @RequestBody Map<String,Object> params)
             throws OpenViduJavaClientException, OpenViduHttpException{
-        VoiceDto voiceDto=coummintySessionService.createLeaveVoiceDto(params);
+        VoiceChannelEventDto voiceDto=coummintySessionService.createLeaveVoiceDto(params);
         kafkaTemplate.send(voiceConnectionStateTopic,voiceDto);
     }
 
