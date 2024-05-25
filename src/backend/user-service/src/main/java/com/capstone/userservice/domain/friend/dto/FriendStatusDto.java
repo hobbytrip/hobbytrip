@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FriendStatusDto {
     private Long friendId;
-    private Boolean isOffline;
+    private String connectionState;
 }

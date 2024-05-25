@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class FriendReadResponse {
     private Long userId;
     private Long friendId;
-    private Boolean isOffline;
+    private String connectionState;
     private String friendImageUrl;
     private String friendName;
 

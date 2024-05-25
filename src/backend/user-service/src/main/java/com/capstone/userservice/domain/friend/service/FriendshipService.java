@@ -129,7 +129,7 @@ public class FriendshipService {
                             .friendId(status.getFriendId())
                             .friendImageUrl(friend.getProfileImage())
                             .friendName(friend.getUsername())
-                            .isOffline(status.getIsOffline())
+                            .connectionState(status.getConnectionState())
                             .build();
                 }).collect(Collectors.toList());
         return result;
