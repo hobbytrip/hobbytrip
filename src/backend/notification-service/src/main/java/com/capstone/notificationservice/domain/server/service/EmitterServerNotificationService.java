@@ -22,12 +22,12 @@ import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Service
 @RequiredArgsConstructor
-
-public class ServerNotificationService {
+public class EmitterServerNotificationService {
     private final EmitterRepository emitterRepository;
     private final ServerNotificationRepository serverNotificationRepository;
     private final UserService userService;
@@ -85,6 +85,7 @@ public class ServerNotificationService {
     }
 
 
+    @Transactional
     public void send(Long userId, Long serverId, MentionType mentionType, AlarmType alarmType, String content,
                      List<Long> receiverIds) {
         List<User> receivers = receiverIds.stream()
@@ -94,6 +95,7 @@ public class ServerNotificationService {
 
         List<ServerNotification> dmNotifications = serverNotificationRepository.saveAll(
                 createNotification(serverId, alarmType, mentionType, content, receivers));
+
 
         dmNotifications.forEach(dmNotification -> {
             String receiverId = userId + "_" + System.currentTimeMillis();
@@ -122,6 +124,16 @@ public class ServerNotificationService {
                         .isRead(false)
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public Boolean deleteNotifications(Long userId, Long serverId) {
+        try {
+            serverNotificationRepository.deleteByUserIdAndServerId(userId, serverId);
+            return true;
+        } catch (RuntimeException e) {
+            throw new ServerException(Code.INTERNAL_ERROR, "알림 데이터 삭제에 실패했습니다.");
+        }
     }
 
 
