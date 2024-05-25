@@ -42,11 +42,12 @@ public class ChannelQueryService {
 
             Pageable pageable = PageRequest.of(page, pageLimit, Sort.Direction.DESC, "createdAt");
 
-            // Forum 댓글 개수 읽어오기 로직 추가해야 함
+
             Slice<Forum> forums = getForums(title, pageable);
 
             List<Long> forumIds = getForumIds(forums);
 
+            // Forum 댓글 개수 읽어오기 로직
             ForumChannelResponseDto forumsMessageCount = chatServiceClient.getForumsMessageCount(forumIds);
 
             Slice<ForumResponseDto> forumResponseSlice = getForumResponseDtos(forums, pageable, forumsMessageCount);

@@ -11,12 +11,6 @@ import org.springframework.data.domain.Page;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class ForumReadResponseDto {
 
-    //        public class ServerReadResponseDto {
-//            private ServerResponseDto server;
-//            private List<CategoryResponseDto> categories;
-//            private List<ChannelResponseDto> channels;
-//            private ServerUserStateResponseDto userOnOff;
-//            private Page<ServerMessageDto> messages;
     private ForumResponseDto forum;
     private Page<ForumMessageDto> messages;
 

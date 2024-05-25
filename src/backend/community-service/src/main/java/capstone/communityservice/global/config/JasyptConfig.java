@@ -31,6 +31,7 @@ public class JasyptConfig {
         config.setIvGeneratorClassName("org.jasypt.iv.RandomIvGenerator");
         config.setStringOutputType("base64");
         encryptor.setConfig(config);
+        System.out.println("acceessKey"+ encryptor.encrypt("heelllo"));
         return encryptor;
     }
 }

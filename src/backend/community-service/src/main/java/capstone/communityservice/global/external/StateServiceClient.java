@@ -2,21 +2,23 @@ package capstone.communityservice.global.external;
 
 import capstone.communityservice.global.external.dto.*;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @FeignClient("state-service")
 public interface StateServiceClient {
 
-    @PostMapping("/server")
-    ServerUserStateResponseDto checkServerOnOff(@RequestBody ServerUserStateRequestDto requestDto);
+    @GetMapping("/feign/server/user/state")
+    ServerUsersStateResponse getServerUsersState(
+            @RequestParam Long serverId,
+            @RequestParam List<Long> userIds
+    );
 
-    @PostMapping("/dm")
-    DmUserStateResponseDto checkDmOnOff(@RequestBody DmUserStateRequestDto requestDto);
+    @GetMapping("/feign/user/connection/state")
+    UserConnectionStateResponse getUsersConnectionState(@RequestParam List<Long> userIds);
 
-    @GetMapping("/{userId}")
-    ServerUserLocDto userLocation(@PathVariable("userId") Long userId);
+    @GetMapping("/feign/{serverId}/{userId}")
+    ServerUserLocDto userLocation(@PathVariable("serverId") Long serverId, @PathVariable("userId") Long userId);
 
 }

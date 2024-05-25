@@ -7,7 +7,6 @@ import capstone.communityservice.domain.forum.exception.ForumException;
 import capstone.communityservice.domain.forum.repository.ForumRepository;
 import capstone.communityservice.global.exception.Code;
 import capstone.communityservice.global.external.ChatServiceClient;
-import capstone.communityservice.global.external.ChatServiceFakeClient;
 import capstone.communityservice.global.external.dto.ForumMessageDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +23,6 @@ public class ForumQueryService {
     private final ForumRepository forumRepository;
 
      private final ChatServiceClient chatServiceClient;
-    private final ChatServiceFakeClient chatServiceFakeClient;
 
     public ForumReadResponseDto read(Long forumId) {
         Forum findForum = validateExistForum(forumId);

@@ -7,7 +7,7 @@ import java.util.Set;
 
 @Getter
 @AllArgsConstructor
-public class ServerUserStateResponseDto {
-    Map<Long, String> connectionStates;
-    Map<String, Set<String>> channelStates;
+public class ServerUsersStateResponse {
+    Map<String, Set<String>> voiceChannelUsersState;
+    Map<Long, ConnectionState> usersConnectionState;
 }

@@ -17,9 +17,11 @@ import java.util.List;
 public interface ChatServiceClient {
 
     @GetMapping("/feign/server/messages/channel")
-    Page<ServerMessageDto> getServerMessages(@RequestParam(value = "channelId") Long channelId,
-                                                     @RequestParam(defaultValue = "0") int page,
-                                                     @RequestParam(defaultValue = "30") int size);
+    Page<ServerMessageDto> getServerMessages(
+            @RequestParam(value = "channelId") Long channelId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "30") int size
+    );
 
     @GetMapping("/feign/direct/messages/room")
     Page<DmMessageDto> getDmMessages(
