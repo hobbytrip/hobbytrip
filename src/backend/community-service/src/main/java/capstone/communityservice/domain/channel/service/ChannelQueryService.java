@@ -34,8 +34,16 @@ public class ChannelQueryService {
     private final ChatServiceClient chatServiceClient;
 
     public SliceResponseDto read(Long channelId, Long userId, int pageNo, String title) {
-        if (validateForumChannel(channelId)) {
-            channelCommandService.sendUserLocEvent(channelId, userId, ChannelType.FORUM);
+        Channel findChannel = validateExsitsChannel(channelId);
+
+        if (validateForumChannel(findChannel)) {
+
+            channelCommandService.sendUserLocEvent(
+                    userId,
+                    findChannel.getServer().getId(),
+                    channelId,
+                    ChannelType.FORUM
+            );
 
             int page = pageNo == 0 ? 0 : pageNo - 1;
             int pageLimit = 15;
@@ -94,14 +102,17 @@ public class ChannelQueryService {
     }
 
 
-    private boolean validateForumChannel(Long channelId) {
-        Channel findChannel = channelRepository.findById(channelId)
-                .orElseThrow(() -> new ChannelException(
-                        Code.NOT_FOUND, "Not Found Channel")
-                );
-        return findChannel.
+    private boolean validateForumChannel(Channel channel) {
+        return channel.
                 getChannelType().
                 equals(ChannelType.FORUM);
+    }
+
+    private Channel validateExsitsChannel(Long channelId){
+        return channelRepository.findById(channelId)
+                .orElseThrow(() -> new ChannelException(
+                        Code.NOT_FOUND, "Not Found Channel"
+                ));
     }
 
 
