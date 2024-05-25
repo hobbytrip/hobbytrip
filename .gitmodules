@@ -1,0 +1,3 @@
+[submodule "src/backend/sig-service/submodule-test"]
+	path = src/backend/sig-service/submodule-test
+	url = https://github.com/youcastle03/submodule-test.git
