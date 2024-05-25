@@ -8,11 +8,14 @@ import capstone.chatservice.domain.server.dto.request.ServerMessageModifyRequest
 import capstone.chatservice.domain.server.service.command.ServerMessageCommandService;
 import capstone.chatservice.infra.S3.FileStore;
 import capstone.chatservice.infra.kafka.producer.chat.ChatEventProducer;
+import capstone.chatservice.infra.kafka.producer.state.StateEventProducer;
+import capstone.chatservice.infra.kafka.producer.state.dto.UserLocationEventDto;
 import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,6 +26,7 @@ public class ServerMessageCommandController {
 
     private final FileStore fileStore;
     private final ChatEventProducer producerService;
+    private final StateEventProducer stateEventProducer;
     private final ServerMessageCommandService commandService;
 
     @MessageMapping("/server/message/send")
@@ -52,5 +56,10 @@ public class ServerMessageCommandController {
         createRequest.setFiles(uploadFiles);
         ServerMessageDto messageDto = commandService.save(createRequest);
         producerService.sendToServerChatTopic(messageDto);
+    }
+
+    @PostMapping("/server/user/location")
+    public void saveUserLocation(@RequestBody UserLocationEventDto userLocationEventDto) {
+        stateEventProducer.sendToUserLocationEventTopic(userLocationEventDto);
     }
 }
