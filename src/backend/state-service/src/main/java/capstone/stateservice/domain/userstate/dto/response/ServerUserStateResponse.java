@@ -14,6 +14,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ServerUserStateResponse {
 
-    Map<String, Set<String>> voiceChannelUsersState;
-    Map<Long, ConnectionState> usersConnectionState;
+    private Map<String, Set<String>> voiceChannelUsersState;
+    private Map<Long, ConnectionState> usersConnectionState;
 }

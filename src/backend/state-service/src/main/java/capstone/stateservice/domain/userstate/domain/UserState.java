@@ -1,8 +1,6 @@
 package capstone.stateservice.domain.userstate.domain;
 
-import capstone.stateservice.domain.model.ChannelType;
 import capstone.stateservice.domain.model.ConnectionState;
-import java.util.Map;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,16 +23,12 @@ public class UserState {
 
     private ConnectionState connectionState;
 
-    private Map<Long, Map<Long, ChannelType>> currentChannel;
-
     @Builder
     public UserState(Long userId, String chatSessionId,
-                     ConnectionState connectionState,
-                     Map<Long, Map<Long, ChannelType>> currentChannel) {
+                     ConnectionState connectionState) {
         this.userId = userId;
         this.chatSessionId = chatSessionId;
         this.connectionState = connectionState;
-        this.currentChannel = currentChannel;
     }
 
     public void modify(String chatSessionId, ConnectionState connectionState) {
