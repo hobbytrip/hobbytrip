@@ -2,6 +2,7 @@ package capstone.chatservice.global.config.kafka.producer.state;
 
 import capstone.chatservice.infra.kafka.producer.state.dto.ConnectionStateEventDto;
 import capstone.chatservice.infra.kafka.producer.state.dto.ConnectionStateInfo;
+import capstone.chatservice.infra.kafka.producer.state.dto.UserLocationEventDto;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -51,5 +52,15 @@ public class StateProducerConfig {
     @Bean
     public KafkaTemplate<String, ConnectionStateInfo> connectionStateInfoKafkaTemplate() {
         return new KafkaTemplate<>(connectionStateInfoProducerFactory());
+    }
+
+    @Bean
+    public ProducerFactory<String, UserLocationEventDto> userLocationEventProducerFactory() {
+        return new DefaultKafkaProducerFactory<>(stateEventProducerConfig());
+    }
+
+    @Bean
+    public KafkaTemplate<String, UserLocationEventDto> userLocationEventKafkaTemplate() {
+        return new KafkaTemplate<>(userLocationEventProducerFactory());
     }
 }
