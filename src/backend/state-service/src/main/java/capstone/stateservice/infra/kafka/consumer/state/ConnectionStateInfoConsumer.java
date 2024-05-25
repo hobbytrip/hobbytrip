@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class connectionStateInfoConsumer {
+public class ConnectionStateInfoConsumer {
 
     private final UserStateCommandService userStateCommandService;
 

@@ -13,10 +13,11 @@ import org.springframework.data.redis.core.index.Indexed;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@RedisHash(value = "user_state", timeToLive = 30000)
+@RedisHash(value = "user:state", timeToLive = 3000000)
 public class UserState {
 
     @Id
+    @Indexed
     private Long userId;
 
     @Indexed
