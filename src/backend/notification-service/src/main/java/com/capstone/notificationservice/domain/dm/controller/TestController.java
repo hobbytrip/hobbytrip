@@ -4,11 +4,14 @@ import com.capstone.notificationservice.domain.common.AlarmType;
 import com.capstone.notificationservice.domain.dm.dto.DmNotificationDto;
 import com.capstone.notificationservice.domain.dm.repository.EmitterRepositoryImpl;
 import com.capstone.notificationservice.domain.dm.service.DmNotificationService;
+import com.capstone.notificationservice.global.common.dto.DataResponseDto;
 import com.capstone.notificationservice.global.config.kafka.KafkaProducer;
 import java.util.Arrays;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -45,5 +48,7 @@ public class TestController {
                                 @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
         return dmNotificationService.subscribe(userId, lastEventId);
     }
+
+
 }
 

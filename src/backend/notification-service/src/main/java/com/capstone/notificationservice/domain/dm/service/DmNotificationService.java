@@ -8,6 +8,7 @@ import com.capstone.notificationservice.domain.dm.entity.DmNotification;
 import com.capstone.notificationservice.domain.dm.exception.DmException;
 import com.capstone.notificationservice.domain.dm.repository.EmitterRepository;
 import com.capstone.notificationservice.domain.dm.repository.NotificationRepository;
+import com.capstone.notificationservice.domain.server.exception.ServerException;
 import com.capstone.notificationservice.domain.user.entity.User;
 import com.capstone.notificationservice.domain.user.service.UserService;
 import com.capstone.notificationservice.global.exception.Code;
@@ -22,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Service
@@ -118,7 +120,15 @@ public class DmNotificationService {
                         .build())
                 .collect(Collectors.toList());
     }
-
+    @Transactional
+    public Boolean deleteNotifications(Long userId, Long dmRoomId) {
+        try {
+            notificationRepository.deleteByUserIdAndDmRoomId(userId, dmRoomId);
+            return true;
+        } catch (RuntimeException e) {
+            throw new ServerException(Code.INTERNAL_ERROR, "알림 데이터 삭제에 실패했습니다.");
+        }
+    }
 
     @KafkaListener(topics = "${spring.kafka.topic.direct-chat}", groupId = "${spring.kafka.consumer.group-id.dm-notification}")
     public void kafkaSend(ConsumerRecord<String, Object> record) throws JsonProcessingException {
