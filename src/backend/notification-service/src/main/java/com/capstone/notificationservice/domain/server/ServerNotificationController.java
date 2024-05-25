@@ -26,8 +26,7 @@ public class ServerNotificationController {
 
     @DeleteMapping("/server/{serverId}")
     public DataResponseDto<Boolean> deleteServerNotifications(@PathVariable Long serverId, Long userId) {
-        Boolean result = notificationService.deleteNotifications(userId, serverId);
-        return DataResponseDto.of(result);
+        return DataResponseDto.of(notificationService.deleteNotifications(userId, serverId));
     }
 
 }
