@@ -35,8 +35,25 @@ const fetchChatHistory = async ({ queryKey }) => {
   }
 };
 
+const postUserLocation = async (userId, serverId, channelId) => {
+  try {
+    const response = await axios.post(
+      `http://localhost:7070/server/user/location`,
+      {
+        userId,
+        serverId,
+        channelId,
+      }
+    );
+    console.log("사용자 위치:", response.data);
+  } catch (err) {
+    console.error("사용자 위치 POST 실패", err);
+    throw new Error("사용자 위치 POST 실패");
+  }
+};
+
 function ChatRoom({ userId }) {
-  const { channelId } = useParams();
+  const { serverId, channelId } = useParams();
   const [chatList, setChatList] = useState([]);
   const [page, setPage] = useState(0);
   const chatListContainerRef = useRef(null);
@@ -60,6 +77,10 @@ function ChatRoom({ userId }) {
         chatListContainerRef.current.scrollHeight;
     }
   }, [chatList, page]);
+
+  useEffect(() => {
+    postUserLocation(userId, serverId, channelId);
+  }, [userId, channelId]); //userId와 채널 Id 바뀔 때마다
 
   const handleNewMessage = (newMessage) => {
     setChatList((prevChatList) => [...prevChatList, newMessage]);
@@ -106,12 +127,14 @@ function ChatRoom({ userId }) {
             ))}
           </InfiniteScrollComponent>
         </div>
-        <CreateChatModal
-          userId={userId}
-          chatList={chatList}
-          setChatList={setChatList}
-          onNewMessage={handleNewMessage}
-        />
+        <div className={s.messageSender}>
+          <CreateChatModal
+            userId={userId}
+            chatList={chatList}
+            setChatList={setChatList}
+            onNewMessage={handleNewMessage}
+          />
+        </div>
       </div>
     </div>
   );

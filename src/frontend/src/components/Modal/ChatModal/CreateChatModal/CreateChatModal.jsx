@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { IoSend } from "react-icons/io5";
-import s from "./CreateChatModal.module.css";
+import { useParams } from "react-router-dom";
 import * as StompJs from "@stomp/stompjs";
 import SockJS from "sockjs-client";
-import { useParams } from "react-router-dom";
+
+import MessageSender from "./MessageSender/MessageSender";
 
 export default function ChatModal({ userId, onNewMessage }) {
   const [client, setClient] = useState(null);
-  const [chatList, setChatList] = useState([]); //채팅 기록
-  const [chatMessage, setChatMessage] = useState("");
+  const [chatList, setChatList] = useState([]); // 채팅 기록
+
   const { serverId, channelId } = useParams();
 
   useEffect(() => {
@@ -56,53 +56,30 @@ export default function ChatModal({ userId, onNewMessage }) {
     }
   };
 
-  const sendMessage = () => {
-    if (chatMessage === "") {
-      return;
-    }
-    if (client && client.connected) {
-      const messageBody = {
-        serverId: serverId,
-        channelId: channelId,
-        userId: userId,
-        parentId: 0,
-        profileImage: "ho",
-        writer: "테스트유저",
-        content: chatMessage,
-      };
-      console.error("Message Body:", messageBody);
-      client.publish({
-        destination: "/ws/api/chat/server/message/send",
-        body: JSON.stringify(messageBody),
-      });
-      setChatList((prevChatList) => [...prevChatList, messageBody]);
-      onNewMessage(messageBody);
-      setChatMessage("");
-    }
+  const sendMessage = (messageContent) => {
+    const messageBody = {
+      serverId: serverId,
+      channelId: channelId,
+      userId: userId,
+      parentId: 0,
+      profileImage: "ho",
+      writer: "테스트유저",
+      content: messageContent,
+      fileUrl: uploadedFileUrl, // 파일 업로드된 URL도 메시지에 포함
+    };
+    console.error("Message Body:", messageBody);
+    client.publish({
+      destination: "/ws/api/chat/server/message/send",
+      body: JSON.stringify(messageBody),
+    });
+    setChatList((prevChatList) => [...prevChatList, messageBody]);
+    onNewMessage(messageBody);
+    setUploadedFileUrl(null); // 파일url 초기화
   };
 
   return (
-    <div className={s.wrapper}>
-      <div className={s.inputContainer}>
-        <input type="file" />
-        <div className={s.inputBox}>
-          <input
-            onSubmit={(e) => e.preventDefault()}
-            type="text"
-            id="message"
-            value={chatMessage}
-            className={s.inputContent}
-            placeholder="메세지 보내기"
-            onChange={(e) => setChatMessage(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                sendMessage();
-              }
-            }}
-          />
-        </div>
-        <IoSend className={s.sendBtn} onClick={sendMessage} />
-      </div>
+    <div>
+      <MessageSender onMessageSend={sendMessage} />
     </div>
   );
 }

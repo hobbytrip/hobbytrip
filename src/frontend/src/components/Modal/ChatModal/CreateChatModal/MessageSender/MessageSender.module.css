@@ -1,0 +1,43 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  border-radius: 5px;
+  position: relative;
+}
+
+.filePreview {
+  height: 150px;
+}
+
+.dropdownContent {
+  width: 100px;
+  background-color: var(--light-gray);
+  position: absolute;
+  top: -40px;
+  left: 0;
+  z-index: 9999;
+  border-radius: 5px;
+}
+
+.senderContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.inputContent {
+  width: 90%;
+  height: 40px;
+  background-color: transparent;
+  color: black;
+}
+
+.btn {
+  color: var(--dark-gray);
+  width: 20px;
+  height: 20px;
+}
