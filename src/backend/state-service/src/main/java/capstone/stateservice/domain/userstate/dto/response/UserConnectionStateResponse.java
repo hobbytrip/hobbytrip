@@ -13,5 +13,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UserConnectionStateResponse {
 
-    Map<Long, ConnectionState> usersConnectionState;
+    private Map<Long, ConnectionState> usersConnectionState;
 }
