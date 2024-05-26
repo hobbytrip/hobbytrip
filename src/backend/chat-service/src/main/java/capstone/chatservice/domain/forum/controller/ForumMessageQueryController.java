@@ -2,10 +2,12 @@ package capstone.chatservice.domain.forum.controller;
 
 import capstone.chatservice.domain.forum.dto.ForumMessageDto;
 import capstone.chatservice.domain.forum.dto.request.ForumMessageTypingRequest;
+import capstone.chatservice.domain.forum.dto.response.ForumChannelResponseDto;
 import capstone.chatservice.domain.forum.service.query.ForumMessageQueryService;
 import capstone.chatservice.global.common.dto.DataResponseDto;
 import capstone.chatservice.global.common.dto.PageResponseDto;
 import capstone.chatservice.infra.kafka.producer.chat.ChatEventProducer;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -19,6 +21,12 @@ public class ForumMessageQueryController {
 
     private final ChatEventProducer chatEventProducer;
     private final ForumMessageQueryService queryService;
+
+    @GetMapping("/feign/forum/messages/count")
+    public ForumChannelResponseDto getForumsMessageCount(@RequestParam(value = "forumIds") List<Long> forumIds) {
+
+        return queryService.getForumsMessageCount(forumIds);
+    }
 
     @GetMapping("/feign/forum/messages/forum")
     public Page<ForumMessageDto> getFeignMessages(@RequestParam(value = "forumId") Long forumId,
