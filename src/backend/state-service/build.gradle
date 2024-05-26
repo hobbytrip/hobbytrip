@@ -26,16 +26,21 @@ ext {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    /* spring cloud */
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
+    /* jasypt */
+    implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
 
     /* Redis */
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
-    /* kafka */
+    /* Kafka */
     implementation 'org.springframework.kafka:spring-kafka'
     testImplementation 'org.springframework.kafka:spring-kafka-test'
 
