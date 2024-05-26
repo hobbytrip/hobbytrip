@@ -27,7 +27,7 @@ public class UserStateQueryController {
             @RequestParam Long serverId,
             @RequestParam List<Long> userIds) {
 
-        Map<String, Set<String>> voiceChannelUsersState = voiceStateQueryService.getVoiceChannelUsersState(
+        Map<Long, Set<Long>> voiceChannelUsersState = voiceStateQueryService.getVoiceChannelUsersState(
                 String.valueOf(serverId));
         Map<Long, ConnectionState> usersConnectionState = userStateQueryService.getUsersConnectionState(userIds);
 

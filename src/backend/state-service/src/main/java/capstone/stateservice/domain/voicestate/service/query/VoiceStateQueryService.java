@@ -5,5 +5,5 @@ import java.util.Set;
 
 public interface VoiceStateQueryService {
 
-    Map<String, Set<String>> getVoiceChannelUsersState(String serverId);
+    Map<Long, Set<Long>> getVoiceChannelUsersState(String serverId);
 }

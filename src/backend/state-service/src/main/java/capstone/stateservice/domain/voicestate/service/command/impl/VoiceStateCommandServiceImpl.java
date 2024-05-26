@@ -20,19 +20,19 @@ public class VoiceStateCommandServiceImpl implements VoiceStateCommandService {
 
     @Override
     public void saveVoiceState(VoiceChannelEventDto voiceChannelEventDto) {
-        HashOperations<String, String, Set<String>> hashOperations = redisTemplate.opsForHash();
+        HashOperations<String, Long, Set<Long>> hashOperations = redisTemplate.opsForHash();
         String hashKey = prefix + voiceChannelEventDto.getServerId();
-        String userId = String.valueOf(voiceChannelEventDto.getUserId());
-        String channelId = String.valueOf(voiceChannelEventDto.getChannelId());
-        Set<String> userIds = hashOperations.get(hashKey, channelId);
+        Long userId = voiceChannelEventDto.getUserId();
+        Long channelId = voiceChannelEventDto.getChannelId();
+        Set<Long> userIds = hashOperations.get(hashKey, channelId);
         switch (voiceChannelEventDto.getVoiceConnectionState()) {
             case VOICE_JOIN -> handleVoiceChannelJoin(userId, channelId, userIds, hashKey, hashOperations);
             case VOICE_LEAVE -> handleVoiceChannelLeave(userId, channelId, userIds, hashKey, hashOperations);
         }
     }
 
-    private void handleVoiceChannelJoin(String userId, String channelId, Set<String> userIds, String hashKey,
-                                        HashOperations<String, String, Set<String>> hashOperations) {
+    private void handleVoiceChannelJoin(Long userId, Long channelId, Set<Long> userIds, String hashKey,
+                                        HashOperations<String, Long, Set<Long>> hashOperations) {
         if (userIds != null) {
             userIds.add(userId);
         } else {
@@ -42,8 +42,8 @@ public class VoiceStateCommandServiceImpl implements VoiceStateCommandService {
         hashOperations.put(hashKey, channelId, userIds);
     }
 
-    private void handleVoiceChannelLeave(String userId, String channelId, Set<String> userIds, String hashKey,
-                                         HashOperations<String, String, Set<String>> hashOperations) {
+    private void handleVoiceChannelLeave(Long userId, Long channelId, Set<Long> userIds, String hashKey,
+                                         HashOperations<String, Long, Set<Long>> hashOperations) {
         if (userIds != null) {
             userIds.remove(userId);
             hashOperations.put(hashKey, channelId, userIds);

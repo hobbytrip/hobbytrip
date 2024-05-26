@@ -17,8 +17,8 @@ public class VoiceStateQueryServiceImpl implements VoiceStateQueryService {
     private static final String prefix = "VOICE:STATE";
     private final RedisTemplate<String, Object> redisTemplate;
 
-    public Map<String, Set<String>> getVoiceChannelUsersState(String serverId) {
-        HashOperations<String, String, Set<String>> hashOperations = redisTemplate.opsForHash();
+    public Map<Long, Set<Long>> getVoiceChannelUsersState(String serverId) {
+        HashOperations<String, Long, Set<Long>> hashOperations = redisTemplate.opsForHash();
         String hashKey = prefix + serverId;
         return hashOperations.entries(hashKey);
     }
