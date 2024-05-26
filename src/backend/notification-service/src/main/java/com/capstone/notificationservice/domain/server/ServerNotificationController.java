@@ -28,5 +28,4 @@ public class ServerNotificationController {
     public DataResponseDto<Boolean> deleteServerNotifications(@PathVariable Long serverId, Long userId) {
         return DataResponseDto.of(notificationService.deleteNotifications(userId, serverId));
     }
-
 }

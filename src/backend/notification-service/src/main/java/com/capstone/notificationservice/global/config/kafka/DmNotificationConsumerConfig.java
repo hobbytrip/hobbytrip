@@ -38,7 +38,7 @@ public class DmNotificationConsumerConfig {
         return new DefaultKafkaConsumerFactory<>(
                 dmNotificationConsumerConfiguration(),
                 new StringDeserializer(),
-                new JsonDeserializer<>(DmNotificationDto.class));
+                new JsonDeserializer<>(DmNotificationDto.class, false));
     }
 
     @Bean

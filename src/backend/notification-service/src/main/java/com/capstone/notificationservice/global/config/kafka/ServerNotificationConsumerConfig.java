@@ -38,7 +38,7 @@ public class ServerNotificationConsumerConfig {
         return new DefaultKafkaConsumerFactory<>(
                 serverNotificationConsumerConfiguration(),
                 new StringDeserializer(),
-                new JsonDeserializer<>(ServerNotificationDto.class));
+                new JsonDeserializer<>(ServerNotificationDto.class, false));
     }
 
     @Bean
