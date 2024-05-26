@@ -1,4 +1,3 @@
-// ChatMessage.js
 import React from "react";
 import s from "./ChatMessage.module.css";
 import useFormatDate from "../../../../hooks/useFormatDate";

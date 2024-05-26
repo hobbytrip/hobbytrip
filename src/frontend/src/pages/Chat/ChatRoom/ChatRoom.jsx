@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { IoChatbubbleEllipses } from "react-icons/io5";
 import axios from "axios";
-import InfiniteScroll from "react-infinite-scroll-component";
 import s from "./ChatRoom.module.css";
 import ChatHeaderModal from "../../../components/Modal/ChatModal/ChatHeaderModal/ChatHeaderModal";
 import ChatHeader from "../../../components/Common/ChatRoom/CommunityChatHeader/ChatHeader";
@@ -11,6 +10,7 @@ import ChatSearchBar from "../../../components/Modal/ChatModal/ChatSearchBar/Cha
 import CreateChatModal from "../../../components/Modal/ChatModal/CreateChatModal/CreateChatModal";
 import ChatMessage from "../../../components/Modal/ChatModal/ChatMessage/ChatMessage";
 import ChatChannelInfo from "../../../components/Modal/ChatModal/ChatChannelInfo/ChatChannelInfo";
+import InfiniteScrollComponent from "../../../components/Common/ChatRoom/InfiniteScrollComponent";
 
 const fetchChatHistory = async ({ queryKey }) => {
   const [_, channelId, page] = queryKey;
@@ -73,17 +73,6 @@ function ChatRoom({ userId }) {
     setPage((prevPage) => prevPage + 1);
   };
 
-  const handleScroll = () => {
-    const container = chatListContainerRef.current;
-    if (container.scrollTop === 0 && !isLoading && chatList.length > 0) {
-      const previousHeight = container.scrollHeight;
-      updatePage();
-      setTimeout(() => {
-        container.scrollTop = container.scrollHeight - previousHeight;
-      }, 50);
-    }
-  };
-
   if (isLoading && chatList.length === 0) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
 
@@ -101,23 +90,21 @@ function ChatRoom({ userId }) {
           id="chatListContainer"
           className={s.chatListContainer}
           style={{ overflowY: "auto", height: "530px" }}
-          onScroll={handleScroll}
         >
           <div className={s.topInfos}>
             <IoChatbubbleEllipses className={s.chatIcon} />
             <h1>일반 채널에 오신 것을 환영합니다!</h1>
           </div>
-          <InfiniteScroll
+          <InfiniteScrollComponent
             dataLength={chatList.length}
             next={updatePage}
             hasMore={true}
-            inverse={true}
             scrollableTarget="chatListContainer"
           >
             {chatList.map((message, index) => (
               <ChatMessage key={index} message={message} />
             ))}
-          </InfiniteScroll>
+          </InfiniteScrollComponent>
         </div>
         <CreateChatModal
           userId={userId}
