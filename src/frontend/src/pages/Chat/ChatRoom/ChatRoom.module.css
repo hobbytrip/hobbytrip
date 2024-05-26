@@ -31,3 +31,24 @@
   padding-left: 20px;
   padding-right: 20px;
 }
+.dateHeader {
+  text-align: center;
+  font-weight: bold;
+  color: var(--dark-gray);
+  margin: 25px 0;
+  position: relative;
+}
+.dateHeader::before,
+.dateHeader::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 35%;
+  border-bottom: 1px solid #ccc;
+}
+.dateHeader::before {
+  left: 0;
+}
+.dateHeader::after {
+  right: 0;
+}

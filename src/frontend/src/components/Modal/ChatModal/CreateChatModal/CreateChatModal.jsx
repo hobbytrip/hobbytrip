@@ -48,7 +48,7 @@ export default function ChatModal({ userId, writer, onNewMessage }) {
                   prev.filter((user) => user !== parsedMessage.writer)
                 );
               }, 2000);
-            } else {
+            } else if (parsedMessage.actionType === "SEND") {
               setChatList((prevMsgs) => [...prevMsgs, parsedMessage]);
             }
           } catch (error) {
@@ -64,7 +64,7 @@ export default function ChatModal({ userId, writer, onNewMessage }) {
     }
   };
 
-  const sendMessage = (messageContent, uploadedFileUrl) => {
+  const sendMessage = (messageContent, uploadedFile) => {
     const messageBody = {
       serverId: serverId,
       channelId: channelId,
@@ -74,16 +74,13 @@ export default function ChatModal({ userId, writer, onNewMessage }) {
       writer: writer,
       content: messageContent,
     };
-    if (uploadedFileUrl) {
-      messageBody.fileUrl = uploadedFileUrl;
+    if (uploadedFile) {
+      messageBody.files = [uploadedFile];
     }
-    console.error("Message Body:", messageBody);
     client.publish({
       destination: "/ws/api/chat/server/message/send",
       body: JSON.stringify(messageBody),
     });
-    setChatList((prevChatList) => [...prevChatList, messageBody]);
-    onNewMessage(messageBody);
   };
 
   return (

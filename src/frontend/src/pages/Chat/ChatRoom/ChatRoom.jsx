@@ -27,8 +27,6 @@ const fetchChatHistory = async ({ queryKey }) => {
       }
     );
     const responseData = response.data.data;
-    console.error("Fetched data:", responseData.data);
-    console.error("Is data an array?", Array.isArray(responseData.data));
     return responseData.data.reverse();
   } catch (err) {
     console.error("채팅 목록 조회 실패", err);
@@ -58,7 +56,6 @@ function ChatRoom({ userId }) {
   const [chatList, setChatList] = useState([]);
   const [page, setPage] = useState(0);
   const chatListContainerRef = useRef(null);
-  // const { userId, nickname } = useUserStore.getState().user; 원래는 store에서 가져오기
   const nickname = "테스트유저0526";
 
   const { data, error, isLoading } = useQuery({
@@ -83,7 +80,7 @@ function ChatRoom({ userId }) {
 
   useEffect(() => {
     postUserLocation(userId, serverId, channelId);
-  }, [userId, channelId]); //userId와 채널 Id 바뀔 때마다
+  }, [userId, channelId]);
 
   const handleNewMessage = (newMessage) => {
     setChatList((prevChatList) => [...prevChatList, newMessage]);
@@ -96,6 +93,8 @@ function ChatRoom({ userId }) {
   const updatePage = () => {
     setPage((prevPage) => prevPage + 1);
   };
+  //날짜별로 그룹화
+  const groupedMessages = groupMessagesByDate(chatList);
 
   if (isLoading && chatList.length === 0) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
@@ -125,8 +124,13 @@ function ChatRoom({ userId }) {
             hasMore={true}
             scrollableTarget="chatListContainer"
           >
-            {chatList.map((message, index) => (
-              <ChatMessage key={index} message={message} />
+            {Object.keys(groupedMessages).map((date) => (
+              <div key={date}>
+                <h4 className={s.dateHeader}>{date}</h4>
+                {groupedMessages[date].map((message, index) => (
+                  <ChatMessage key={index} message={message} />
+                ))}
+              </div>
             ))}
           </InfiniteScrollComponent>
         </div>
@@ -143,5 +147,21 @@ function ChatRoom({ userId }) {
     </div>
   );
 }
+
+const groupMessagesByDate = (messages) => {
+  const groupedMessages = {};
+
+  messages.forEach((message) => {
+    const date = new Date(message.createdAt);
+    const dateString = `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
+
+    if (!groupedMessages[dateString]) {
+      groupedMessages[dateString] = [];
+    }
+    groupedMessages[dateString].push(message);
+  });
+
+  return groupedMessages;
+};
 
 export default ChatRoom;

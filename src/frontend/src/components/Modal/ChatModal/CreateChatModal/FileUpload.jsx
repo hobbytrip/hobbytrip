@@ -2,7 +2,6 @@ import React, { useState, useRef } from "react";
 import axios from "axios";
 
 const FileUpload = ({ onFileUpload }) => {
-  const [uploadedFileUrl, setUploadedFileUrl] = useState(null);
   const fileInputRef = useRef(null);
 
   const uploadFile = async (file) => {
@@ -19,8 +18,7 @@ const FileUpload = ({ onFileUpload }) => {
           },
         }
       );
-
-      return response.data.url;
+      return response.data.data;
     } catch (error) {
       console.error("파일 업로드 실패", error);
       throw new Error("파일 업로드 실패");
@@ -30,9 +28,8 @@ const FileUpload = ({ onFileUpload }) => {
   const handleFileUpload = async (event) => {
     const file = event.target.files[0];
     try {
-      const uploadedFileUrl = await uploadFile(file);
-      setUploadedFileUrl(uploadedFileUrl);
-      onFileUpload(uploadedFileUrl);
+      const fileInfo = await uploadFile(file);
+      onFileUpload(fileInfo);
     } catch (error) {
       console.error("파일 업로드 실패", error);
     }
