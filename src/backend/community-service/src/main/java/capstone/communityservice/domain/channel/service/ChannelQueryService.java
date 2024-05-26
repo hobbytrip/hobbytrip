@@ -41,8 +41,7 @@ public class ChannelQueryService {
             channelCommandService.sendUserLocEvent(
                     userId,
                     findChannel.getServer().getId(),
-                    channelId,
-                    ChannelType.FORUM
+                    channelId
             );
 
             int page = pageNo == 0 ? 0 : pageNo - 1;

@@ -19,6 +19,6 @@ public interface StateServiceClient {
     UserConnectionStateResponse getUsersConnectionState(@RequestParam List<Long> userIds);
 
     @GetMapping("/feign/{serverId}/{userId}")
-    ServerUserLocDto userLocation(@PathVariable("serverId") Long serverId, @PathVariable("userId") Long userId);
+    UserLocationDto getUserLocation(@PathVariable("serverId") Long serverId, @PathVariable("userId") Long userId);
 
 }

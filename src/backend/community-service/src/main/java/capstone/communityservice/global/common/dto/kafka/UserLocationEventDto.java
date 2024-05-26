@@ -13,19 +13,16 @@ public class UserLocationEventDto {
     private Long userId;
     private Long serverId;
     private Long channelId;
-    private ChannelType channelType;
 
     public static UserLocationEventDto of(
             Long userId,
             Long serverId,
-            Long channelId,
-            ChannelType channelType
+            Long channelId
     ){
         return UserLocationEventDto.builder()
                 .userId(userId)
                 .serverId(serverId)
                 .channelId(channelId)
-                .channelType(channelType)
                 .build();
     }
 }

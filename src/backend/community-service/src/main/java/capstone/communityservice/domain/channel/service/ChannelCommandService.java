@@ -102,16 +102,15 @@ public class ChannelCommandService {
         );
     }
 
-    public void sendUserLocEvent(Long userId, Long serverId, Long channelId, ChannelType channelType) {
+    public void sendUserLocEvent(Long userId, Long serverId, Long channelId) {
         userLocationKafkaTemplate.send(userLocationKafkaTopic,
                 UserLocationEventDto.of(
                         userId,
                         serverId,
-                        channelId,
-                        channelType)
+                        channelId)
         );
 
-        printKafkaLog("read");
+        printKafkaLog("User Location Send");
     }
 
     private Channel validateChannel(Long channelId){

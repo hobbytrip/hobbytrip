@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class ServerUserLocDto {
+public class UserLocationDto {
 
     private Long channelId;
 }

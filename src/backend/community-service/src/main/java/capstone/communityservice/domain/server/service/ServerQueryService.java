@@ -13,7 +13,7 @@ import capstone.communityservice.domain.server.dto.ServerResponseDto;
 import capstone.communityservice.global.external.ChatServiceClient;
 import capstone.communityservice.global.external.StateServiceClient;
 import capstone.communityservice.global.external.dto.ServerMessageDto;
-import capstone.communityservice.global.external.dto.ServerUserLocDto;
+import capstone.communityservice.global.external.dto.UserLocationDto;
 import capstone.communityservice.global.external.dto.ServerUsersStateResponse;
 import capstone.communityservice.domain.server.dto.ServerWithCountResponseDto;
 import capstone.communityservice.domain.server.entity.Server;
@@ -115,7 +115,7 @@ public class ServerQueryService {
     }
 
     private Page<ServerMessageDto> getMessages(Long serverId, Long userId) {
-        ServerUserLocDto userLocation = stateServiceClient.userLocation(serverId, userId);
+        UserLocationDto userLocation = stateServiceClient.getUserLocation(serverId, userId);
 
         validateChatChannel(userLocation.getChannelId());
 

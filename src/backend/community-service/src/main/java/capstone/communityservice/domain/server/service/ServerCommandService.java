@@ -94,8 +94,7 @@ public class ServerCommandService {
         channelCommandService.sendUserLocEvent(
                 findUser.getId(),
                 findServer.getId(),
-                defaultChannel.getId(),
-                ChannelType.CHAT
+                defaultChannel.getId()
         );
 
         return ServerResponseDto.of(findServer);
@@ -161,8 +160,7 @@ public class ServerCommandService {
         channelCommandService.sendUserLocEvent(
                 userId,
                 server.getId(),
-                newChannel.getId(),
-                ChannelType.CHAT
+                newChannel.getId()
         );
     }
 

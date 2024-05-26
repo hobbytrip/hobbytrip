@@ -8,6 +8,6 @@ import java.util.Set;
 @Getter
 @AllArgsConstructor
 public class ServerUsersStateResponse {
-    Map<String, Set<String>> voiceChannelUsersState;
+    Map<Long, Set<Long>> voiceChannelUsersState;
     Map<Long, ConnectionState> usersConnectionState;
 }
