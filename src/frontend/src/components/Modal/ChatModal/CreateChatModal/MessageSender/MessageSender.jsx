@@ -1,23 +1,57 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import s from "./MessageSender.module.css";
 import { IoSend } from "react-icons/io5";
 import { FaCirclePlus } from "react-icons/fa6";
 import FileUpload from "../FileUpload";
 
-const MessageSender = ({ onMessageSend, onFileUpload }) => {
+const MessageSender = ({
+  onMessageSend,
+  serverId,
+  channelId,
+  writer,
+  client,
+}) => {
   const [chatMessage, setChatMessage] = useState("");
   const [uploadedFileUrl, setUploadedFileUrl] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
+  const typingTimeoutRef = useRef(null);
 
   const sendMessage = () => {
     if (chatMessage === "") {
       return;
     }
-    onMessageSend(chatMessage);
-    setChatMessage("");
+    onMessageSend(chatMessage, uploadedFileUrl);
+    setChatMessage(""); // 메시지를 전송한 후 input창 비우기
+    setUploadedFileUrl(null); // 파일 URL 초기화
   };
+
   const toggleDropdown = () => {
     setIsDropdownOpen((prevState) => !prevState); // 드롭다운 메뉴 표시 여부
+  };
+
+  const handleTyping = () => {
+    clearTimeout(typingTimeoutRef.current);
+    notifyTyping();
+    setIsTyping(true);
+    typingTimeoutRef.current = setTimeout(() => {
+      setIsTyping(false);
+    }, 2000);
+  };
+
+  const notifyTyping = () => {
+    try {
+      client.publish({
+        destination: "/ws/api/chat/server/message/typing",
+        body: JSON.stringify({
+          serverId: serverId,
+          channelId: channelId,
+          writer: writer,
+        }),
+      });
+    } catch (error) {
+      console.error("타이핑 중 에러:", error);
+    }
   };
 
   return (
@@ -27,10 +61,13 @@ const MessageSender = ({ onMessageSend, onFileUpload }) => {
           <img src={uploadedFileUrl} alt="첨부된 파일" />
         </div>
       )}
+
       <div>
         {isDropdownOpen && (
           <div className={s.dropdownContent}>
-            <FileUpload onFileUpload={onFileUpload} />
+            <FileUpload
+              onFileUpload={(fileUrl) => setUploadedFileUrl(fileUrl)}
+            />
             <h4 style={{ color: "black" }}>⚡스레드 만들기</h4>
           </div>
         )}
@@ -45,7 +82,10 @@ const MessageSender = ({ onMessageSend, onFileUpload }) => {
           type="text"
           value={chatMessage}
           className={s.inputContent}
-          onChange={(e) => setChatMessage(e.target.value)}
+          onChange={(e) => {
+            setChatMessage(e.target.value);
+            handleTyping();
+          }}
           placeholder="메세지 보내기"
         />
         <IoSend className={s.btn} onClick={sendMessage} />

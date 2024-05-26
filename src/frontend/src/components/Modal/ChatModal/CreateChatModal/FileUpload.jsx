@@ -30,9 +30,9 @@ const FileUpload = ({ onFileUpload }) => {
   const handleFileUpload = async (event) => {
     const file = event.target.files[0];
     try {
-      const uploadedFileInfo = await uploadFile(file);
-      setUploadedFileUrl(uploadedFileInfo);
-      onFileUpload(uploadedFileInfo);
+      const uploadedFileUrl = await uploadFile(file);
+      setUploadedFileUrl(uploadedFileUrl);
+      onFileUpload(uploadedFileUrl);
     } catch (error) {
       console.error("파일 업로드 실패", error);
     }

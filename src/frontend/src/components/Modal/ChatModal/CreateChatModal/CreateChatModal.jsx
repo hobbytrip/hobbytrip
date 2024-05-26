@@ -2,13 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import * as StompJs from "@stomp/stompjs";
 import SockJS from "sockjs-client";
-
 import MessageSender from "./MessageSender/MessageSender";
 
-export default function ChatModal({ userId, onNewMessage }) {
+export default function ChatModal({ userId, writer, onNewMessage }) {
   const [client, setClient] = useState(null);
   const [chatList, setChatList] = useState([]); // 채팅 기록
-
+  const [typingUsers, setTypingUsers] = useState([]); // 타이핑 중인 사용자들
   const { serverId, channelId } = useParams();
 
   useEffect(() => {
@@ -23,12 +22,8 @@ export default function ChatModal({ userId, onNewMessage }) {
   const connectChat = async () => {
     try {
       const stompClient = new StompJs.Client({
-        webSocketFactory: function () {
-          return new SockJS("http://localhost:7070/ws-stomp");
-        },
-        debug: function (str) {
-          console.log(str);
-        },
+        webSocketFactory: () => new SockJS("http://localhost:7070/ws-stomp"),
+        debug: (str) => console.log(str),
         reconnectDelay: 5000,
         heartbeatIncoming: 4000,
         heartbeatOutgoing: 4000,
@@ -42,7 +37,20 @@ export default function ChatModal({ userId, onNewMessage }) {
         stompClient.subscribe(`/topic/server/${serverId}`, (frame) => {
           try {
             const parsedMessage = JSON.parse(frame.body);
-            setChatList((prevMsgs) => [...prevMsgs, parsedMessage]);
+            if (
+              parsedMessage.actionType === "TYPING" &&
+              parsedMessage.writer !== userId
+            ) {
+              // 타이핑 상태
+              setTypingUsers((prev) => [...prev, parsedMessage.writer]);
+              setTimeout(() => {
+                setTypingUsers((prev) =>
+                  prev.filter((user) => user !== parsedMessage.writer)
+                );
+              }, 2000);
+            } else {
+              setChatList((prevMsgs) => [...prevMsgs, parsedMessage]);
+            }
           } catch (error) {
             console.log("구독 오류 발생");
           }
@@ -56,17 +64,19 @@ export default function ChatModal({ userId, onNewMessage }) {
     }
   };
 
-  const sendMessage = (messageContent) => {
+  const sendMessage = (messageContent, uploadedFileUrl) => {
     const messageBody = {
       serverId: serverId,
       channelId: channelId,
       userId: userId,
       parentId: 0,
       profileImage: "ho",
-      writer: "테스트유저",
+      writer: writer,
       content: messageContent,
-      fileUrl: uploadedFileUrl, // 파일 업로드된 URL도 메시지에 포함
     };
+    if (uploadedFileUrl) {
+      messageBody.fileUrl = uploadedFileUrl;
+    }
     console.error("Message Body:", messageBody);
     client.publish({
       destination: "/ws/api/chat/server/message/send",
@@ -74,12 +84,22 @@ export default function ChatModal({ userId, onNewMessage }) {
     });
     setChatList((prevChatList) => [...prevChatList, messageBody]);
     onNewMessage(messageBody);
-    setUploadedFileUrl(null); // 파일url 초기화
   };
 
   return (
     <div>
-      <MessageSender onMessageSend={sendMessage} />
+      {typingUsers.length > 0 && (
+        <div className={s.typingIndicator}>
+          {typingUsers.join(", ")} 타이핑 중...
+        </div>
+      )}
+      <MessageSender
+        onMessageSend={sendMessage}
+        serverId={serverId}
+        channelId={channelId}
+        writer={writer}
+        client={client}
+      />
     </div>
   );
 }

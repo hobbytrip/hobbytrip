@@ -11,6 +11,7 @@ import CreateChatModal from "../../../components/Modal/ChatModal/CreateChatModal
 import ChatMessage from "../../../components/Modal/ChatModal/ChatMessage/ChatMessage";
 import ChatChannelInfo from "../../../components/Modal/ChatModal/ChatChannelInfo/ChatChannelInfo";
 import InfiniteScrollComponent from "../../../components/Common/ChatRoom/InfiniteScrollComponent";
+import useUserStore from "../../../actions/useUserStore";
 
 const fetchChatHistory = async ({ queryKey }) => {
   const [_, channelId, page] = queryKey;
@@ -57,6 +58,8 @@ function ChatRoom({ userId }) {
   const [chatList, setChatList] = useState([]);
   const [page, setPage] = useState(0);
   const chatListContainerRef = useRef(null);
+  // const { userId, nickname } = useUserStore.getState().user; 원래는 store에서 가져오기
+  const nickname = "테스트유저0526";
 
   const { data, error, isLoading } = useQuery({
     queryKey: ["messages", channelId, page],
@@ -130,6 +133,7 @@ function ChatRoom({ userId }) {
         <div className={s.messageSender}>
           <CreateChatModal
             userId={userId}
+            writer={nickname}
             chatList={chatList}
             setChatList={setChatList}
             onNewMessage={handleNewMessage}
