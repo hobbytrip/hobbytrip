@@ -1,0 +1,13 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: var(--main-purple);
+}
+
+.container {
+  width: 390px;
+  height: 504px;
+  padding: 10px 0px 340px 0px;
+}

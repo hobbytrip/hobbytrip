@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import s from "./LoginForm.module.css";
-import useAuthStore from "../../actions/useAuthStore";
+import Login from "../../hooks/User/login";
 
 function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-  const { login } = useAuthStore();
   const navigate = useNavigate();
 
   const handleInput = (e) => {
@@ -19,7 +18,7 @@ function LoginForm() {
     e.preventDefault();
     setError(null);
     try {
-      await login(email, password); //스토어 login 함수 사용
+      await Login(email, password); //스토어 login 함수 사용
       navigate("/main"); // 로그인 성공 시 메인 페이지로 리다이렉트
     } catch (e) {
       setError("로그인 실패: " + e.message);
