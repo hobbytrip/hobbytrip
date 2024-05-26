@@ -84,6 +84,7 @@ export default function ChatModal({ userId, onNewMessage }) {
   return (
     <div className={s.wrapper}>
       <div className={s.inputContainer}>
+        <input type="file" />
         <div className={s.inputBox}>
           <input
             onSubmit={(e) => e.preventDefault()}

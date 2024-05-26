@@ -19,7 +19,7 @@ function App() {
         <Route path="/register" element={<RegView />} />
         <Route path="/user/profile" element={<UserProfileView />} /> */}
         <Route
-          path="/test/:serverId/:channelId"
+          path="/:serverId/:channelId/chat"
           element={<ChatRoom userId={10} />}
         />
       </Routes>

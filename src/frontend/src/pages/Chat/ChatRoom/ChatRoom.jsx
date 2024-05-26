@@ -9,9 +9,8 @@ import ChatHeaderModal from "../../../components/Modal/ChatModal/ChatHeaderModal
 import ChatHeader from "../../../components/Common/ChatRoom/CommunityChatHeader/ChatHeader";
 import ChatSearchBar from "../../../components/Modal/ChatModal/ChatSearchBar/ChatSearchBar";
 import CreateChatModal from "../../../components/Modal/ChatModal/CreateChatModal/CreateChatModal";
+import ChatMessage from "../../../components/Modal/ChatModal/ChatMessage/ChatMessage";
 import ChatChannelInfo from "../../../components/Modal/ChatModal/ChatChannelInfo/ChatChannelInfo";
-import testImg from "../../../assets/image/default-logo.png";
-import useFormatDate from "../../../hooks/useFormatDate";
 
 const fetchChatHistory = async ({ queryKey }) => {
   const [_, channelId, page] = queryKey;
@@ -115,32 +114,9 @@ function ChatRoom({ userId }) {
             inverse={true}
             scrollableTarget="chatListContainer"
           >
-            {chatList.map((message, index) => {
-              const formattedDate = useFormatDate(message.createdAt);
-              if (
-                message &&
-                message.userId !== undefined &&
-                message.content !== undefined
-              ) {
-                return (
-                  <div key={index} className={s.msgBox}>
-                    <img
-                      src={testImg}
-                      className={s.profileImg}
-                      alt="profile-image"
-                    />
-                    <div className={s.msgRightContainer}>
-                      <div className={s.msgTopInfos}>
-                        <h3 className={s.msgWriter}>{message.writer}</h3>
-                        <h4 className={s.msgDate}>{formattedDate}</h4>
-                      </div>
-                      <h4 className={s.msgContent}>{message.content}</h4>
-                    </div>
-                  </div>
-                );
-              }
-              return null;
-            })}
+            {chatList.map((message, index) => (
+              <ChatMessage key={index} message={message} />
+            ))}
           </InfiniteScroll>
         </div>
         <CreateChatModal
