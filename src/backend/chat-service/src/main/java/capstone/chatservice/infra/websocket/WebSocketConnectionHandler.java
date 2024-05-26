@@ -61,9 +61,8 @@ public class WebSocketConnectionHandler implements ChannelInterceptor {
                     .state(ConnectionState.OFFLINE)
                     .build();
 
-            String checkUserId = stateClient.saveConnectionStateInfo(connectionStateInfo).getData();
-            if (checkUserId != null) {
-                Long userId = Long.parseLong(checkUserId);
+            Long userId = stateClient.saveUserConnectionState(connectionStateInfo).getData();
+            if (userId != null) {
 
                 UserServerDmInfo ids = communityClient.getServerIdsAndRoomIds(userId);
                 ConnectionStateEventDto connectionEventDto = ConnectionStateEventDto.builder()

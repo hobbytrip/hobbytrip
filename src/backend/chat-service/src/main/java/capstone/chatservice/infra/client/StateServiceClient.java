@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(name = "state-service")
 public interface StateServiceClient {
 
-    @PostMapping("/connection/state")
-    DataResponseDto<String> saveConnectionStateInfo(@RequestBody ConnectionStateInfo sessionDto);
+    @PostMapping("/connection/info")
+    DataResponseDto<Long> saveUserConnectionState(@RequestBody ConnectionStateInfo sessionDto);
 }
