@@ -33,6 +33,9 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'io.netty:netty-resolver-dns-native-macos:4.1.68.Final:osx-aarch_64'
 
+    // jasypt
+    implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
+
     // Spring Boot actuator
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
@@ -54,4 +57,12 @@ dependencyManagement {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+processResources.dependsOn('copySecret')
+
+tasks.register('copySecret', Copy) {
+    from './gateway-service-yml'
+    include "*.yml"  // 복사할 파일들
+    into 'src/main/resources'  // 복사 위치
 }
