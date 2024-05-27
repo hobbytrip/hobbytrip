@@ -7,6 +7,7 @@ import com.capstone.notificationservice.domain.dm.service.DmNotificationService;
 import com.capstone.notificationservice.global.common.dto.DataResponseDto;
 import com.capstone.notificationservice.global.config.kafka.KafkaProducer;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +48,10 @@ public class TestController {
     public SseEmitter subscribe(@RequestParam Long userId,
                                 @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
         return dmNotificationService.subscribe(userId, lastEventId);
+    }
+    @GetMapping("/test/dmroom-ids")
+    public List<Long> getDistinctDmroomIds() {
+        return dmNotificationService.getDistinctDmRoomId();
     }
 
 
