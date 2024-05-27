@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient(name = "community-service")
 public interface CommunityServiceClient {
 
-    @GetMapping("/community/check/room/guild/{userId}")
+    @GetMapping("/feign/{userId}")
     UserServerDmInfo getServerIdsAndRoomIds(@PathVariable(value = "userId") Long userId);
 }
