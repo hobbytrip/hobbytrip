@@ -7,6 +7,3 @@
 [submodule "src/backend/user-service/hobbytrip"]
 	path = src/backend/user-service/hobbytrip
 	url = https://github.com/hobbytrip/hobbytrip
-[submodule "src/backend/user-service/secure-submodule"]
-	path = src/backend/user-service/secure-submodule
-	url = https://github.com/ryudain05/secure-submodule.git
