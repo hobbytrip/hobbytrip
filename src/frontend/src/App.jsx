@@ -17,10 +17,10 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* <Route path="/" element={<StartView />} />
+        <Route path="/" element={<StartView />} />
         <Route path="/login" element={<LoginView />} />
         <Route path="/register" element={<RegView />} />
-        <Route path="/user/profile" element={<UserProfileView />} /> */}
+        <Route path="/user/profile" element={<UserProfileView />} />
         <Route
           path=":serverId/:channelId/chat"
           element={<ChatRoom userId={10} />}

@@ -9,6 +9,7 @@
   border-radius: 10px;
 }
 .topFormContainer {
+  background-color: white;
   box-sizing: border-box;
   display: flex;
   flex-direction: row;
@@ -26,6 +27,8 @@
 }
 .titleLabel {
   font-weight: bolder;
+  color: #000;
+  margin-bottom: 20px;
 }
 .label {
   color: var(--dark-gray);
@@ -43,4 +46,8 @@
   color: white;
   background-color: var(--main-purple);
   margin: 10px auto;
+}
+.closeBtn {
+  width: 15px;
+  height: 15px;
 }

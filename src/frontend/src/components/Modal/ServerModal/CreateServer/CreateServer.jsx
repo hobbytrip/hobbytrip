@@ -1,9 +1,8 @@
 import s from "./CreateServer.module.css";
-import useUserStore from "../../../../actions/useUserStore";
+// import useUserStore from "../../../../actions/useUserStore";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 // import useAxios from "../../../../utils/instance";
-import { AiOutlineClose } from "react-icons/ai";
 import useServerData from "../../../../hooks/useServerData";
 import axios from "axios";
 
@@ -66,8 +65,7 @@ function CreateServer() {
     <>
       <form className={s.formWrapper} onSubmit={handleSubmit}>
         <div className={s.topFormContainer}>
-          <h3 className={s.titleLabel}>🚀행성 만들기</h3>
-          <AiOutlineClose />
+          <div className={s.titleLabel}>🚀행성 만들기</div>
         </div>
 
         <div className={s.formContainer}>
