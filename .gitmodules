@@ -1,3 +1,0 @@
-[submodule "src/backend/notification-service/secure-submodule-notification"]
-	path = src/backend/notification-service/secure-submodule-notification
-	url = https://github.com/ryudain05/secure-submodule-notification.git
