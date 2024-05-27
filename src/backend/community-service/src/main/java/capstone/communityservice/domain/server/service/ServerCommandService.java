@@ -234,8 +234,8 @@ public class ServerCommandService {
 
     private String updateProfile(MultipartFile file, String serverProfile, Server server) {
         if (validateProfileWithFile(server, serverProfile)) {
-            // return fileUploadService.update(file, serverProfile); <- S3 등록 후
-            return "http://image2.png"; // 예시 URL
+             return fileUploadService.update(file, serverProfile); // <- S3 등록 후
+//            return "http://image2.png"; // 예시 URL
         }
         return serverProfile;
     }

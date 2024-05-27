@@ -34,7 +34,6 @@ public class KafkaTopicConfig {
 
     @Value("${spring.kafka.topic.user-location-event}")
     private String userLocationEventTopic;
-
     @Bean
     public KafkaAdmin kafkaAdmin(){
         Map<String, Object> configurations = new HashMap<>();

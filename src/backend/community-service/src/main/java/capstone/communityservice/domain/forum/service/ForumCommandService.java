@@ -68,9 +68,10 @@ public class ForumCommandService {
         );
 
 //        List<File> files = file != null ? uploadProfile(fileList, newForum) : null; // <- S3 등록 후
-        List<FileResponseDto> files = uploadFile(fileList, newForum).stream()
+
+        List<FileResponseDto> files = fileList != null ? uploadFile(fileList, newForum).stream()
                 .map(FileResponseDto::of)
-                .toList();
+                .toList() : null;
 
 //        serverKafkaTemplate.send(serverKafkaTopic, CommunityServerEventDto.of("server-update", findServer));
         forumKafkaTemplate.send(

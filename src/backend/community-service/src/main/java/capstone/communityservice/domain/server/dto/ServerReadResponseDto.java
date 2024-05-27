@@ -17,7 +17,7 @@ public class ServerReadResponseDto {
     private ServerResponseDto server;
     private List<CategoryResponseDto> categories;
     private List<ChannelResponseDto> channels;
-    private ServerUsersStateResponse userState;
+    private ServerUsersStateResponse usersState;
     private Page<ServerMessageDto> messages;
 
     public static ServerReadResponseDto of(
@@ -31,7 +31,7 @@ public class ServerReadResponseDto {
                 .server(server)
                 .categories(categories)
                 .channels(channels)
-                .userState(usersState)
+                .usersState(usersState)
                 .messages(messages)
                 .build();
     }

@@ -57,12 +57,13 @@ public class ServerQueryService {
         // 유저 최근 채널 위치 불러오는 로직
         Page<ServerMessageDto> messages = getMessages(findServer.getId(), userId);
 
-        return createServerReadResponseDto(
-                serverId,
-                findServer,
-                usersState,
-                messages
-        );
+        return createServerReadResponseDto
+                (
+                    serverId,
+                    findServer,
+                    usersState,
+                    messages
+                );
     }
 
     private ServerReadResponseDto createServerReadResponseDto(
@@ -117,6 +118,7 @@ public class ServerQueryService {
     private Page<ServerMessageDto> getMessages(Long serverId, Long userId) {
         UserLocationDto userLocation = stateServiceClient.getUserLocation(serverId, userId);
 
+        System.out.println("userLocation: " + userLocation.getChannelId());
         validateChatChannel(userLocation.getChannelId());
 
         return chatServiceClient.getServerMessages(

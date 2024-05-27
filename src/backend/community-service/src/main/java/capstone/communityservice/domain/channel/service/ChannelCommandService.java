@@ -30,7 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ChannelCommandService {
     private static final String channelKafkaTopic = "communityChannelEventTopic";
-    private static final String userLocationKafkaTopic = "userLocationEventTopic";
+    private static final String userLocationKafkaTopic = "userLocationEvent";
 
     private final KafkaTemplate<String, CommunityChannelEventDto> channelKafkaTemplate;
     private final KafkaTemplate<String, UserLocationEventDto> userLocationKafkaTemplate;
