@@ -1,0 +1,34 @@
+.msgBox {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  gap: 10px;
+}
+.msgRightContainer {
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  gap: 5px;
+  margin-bottom: 5px;
+}
+.profileImg {
+  background-color: var(--hot-pink);
+  border-radius: 999%;
+  width: 25px;
+  height: 25px;
+  padding: 5px;
+  float: left;
+}
+.msgTopInfos {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+}
+.msgDate {
+  font-weight: 500;
+  color: var(--dark-gray);
+}
+.msgContent {
+  font-weight: 500;
+}

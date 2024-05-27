@@ -27,57 +27,28 @@
   height: 50px;
   margin-bottom: 5px;
 }
-.inputContainer {
-  background-color: rgb(255, 255, 255);
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
+.messageSender {
+  padding-left: 20px;
+  padding-right: 20px;
 }
-.inputContent {
-  background-color: var(--light-gray);
-  width: 300px;
-  height: 30px;
-  border-radius: 5px;
-  padding-left: 10px;
-}
-.sendBtn {
-  width: 20px;
-  height: 25px;
+.dateHeader {
+  text-align: center;
+  font-weight: bold;
   color: var(--dark-gray);
+  margin: 25px 0;
+  position: relative;
 }
-.msgBox {
-  margin-top: 20px;
-  margin-bottom: 20px;
-  display: flex;
-  gap: 10px;
+.dateHeader::before,
+.dateHeader::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 35%;
+  border-bottom: 1px solid #ccc;
 }
-.msgRightContainer {
-  display: flex;
-  flex-direction: column;
-  /* align-items: center; */
-  gap: 5px;
-  margin-bottom: 5px;
+.dateHeader::before {
+  left: 0;
 }
-.profileImg {
-  background-color: var(--hot-pink);
-  border-radius: 999%;
-  width: 25px;
-  height: 25px;
-  padding: 5px;
-  float: left;
-}
-.msgTopInfos {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 5px;
-}
-.msgDate {
-  font-weight: 500;
-  color: var(--dark-gray);
-}
-.msgContent {
-  font-weight: 500;
+.dateHeader::after {
+  right: 0;
 }
