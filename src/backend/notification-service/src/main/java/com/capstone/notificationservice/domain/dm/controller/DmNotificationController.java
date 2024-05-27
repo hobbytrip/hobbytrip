@@ -3,11 +3,11 @@ package com.capstone.notificationservice.domain.dm.controller;
 
 import com.capstone.notificationservice.domain.dm.service.DmNotificationService;
 import com.capstone.notificationservice.global.common.dto.DataResponseDto;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,6 +34,8 @@ public class DmNotificationController {
         return DataResponseDto.of(notificationService.deleteNotifications(userId, dmRoomId));
     }
 
-
-
+    @GetMapping("/dm/dmRoomIds")
+    public DataResponseDto<List<Long>> getDistinctDmroomIds() {
+        return DataResponseDto.of(notificationService.getDistinctDmRoomId());
+    }
 }

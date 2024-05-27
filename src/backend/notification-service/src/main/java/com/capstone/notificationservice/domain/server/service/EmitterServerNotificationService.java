@@ -136,6 +136,11 @@ public class EmitterServerNotificationService {
         }
     }
 
+    @Transactional
+    public List<Long> getDistinctDmRoomId() {
+        return serverNotificationRepository.findDistinctServerIds();
+    }
+
 
     @KafkaListener(topics = "${spring.kafka.topic.server-chat}", groupId = "${spring.kafka.consumer.group-id.server-notification}")
     public void kafkaSend(ConsumerRecord<String, Object> record) throws JsonProcessingException {

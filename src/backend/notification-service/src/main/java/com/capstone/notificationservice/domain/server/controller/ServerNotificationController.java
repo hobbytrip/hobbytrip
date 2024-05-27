@@ -1,7 +1,8 @@
-package com.capstone.notificationservice.domain.server;
+package com.capstone.notificationservice.domain.server.controller;
 
 import com.capstone.notificationservice.domain.server.service.EmitterServerNotificationService;
 import com.capstone.notificationservice.global.common.dto.DataResponseDto;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,5 +29,12 @@ public class ServerNotificationController {
     public DataResponseDto<Boolean> deleteServerNotifications(@PathVariable Long serverId, Long userId) {
         return DataResponseDto.of(notificationService.deleteNotifications(userId, serverId));
     }
+
+    @GetMapping("/server/serverIds")
+    public DataResponseDto<List<Long>> getDistinctServerIds() {
+
+        return DataResponseDto.of(notificationService.getDistinctDmRoomId());
+    }
+
 
 }
