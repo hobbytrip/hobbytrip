@@ -5,25 +5,28 @@ import { FaPlus } from "react-icons/fa6";
 import { AiOutlineClose } from "react-icons/ai";
 import usePlanetIcon from "../../../hooks/usePlanetIcon";
 import CreateServer from "../../Modal/ServerModal/CreateServer/CreateServer";
+import { useNavigate } from "react-router-dom";
 
-const Leftbtn = () => {
+const Leftbtn = ({ onClick }) => {
   return (
-    <button className={style.leftBtn}>
+    <button className={style.leftBtn} onClick={onClick}>
       <IoIosArrowBack
         style={{ width: "15px", height: "15px", color: "#D9D9D9" }}
       />
     </button>
   );
 };
-const Rightbtn = () => {
+
+const Rightbtn = ({ onClick }) => {
   return (
-    <button className={style.rightBtn}>
+    <button className={style.rightBtn} onClick={onClick}>
       <IoIosArrowForward
         style={{ width: "15px", height: "15px", color: "#D9D9D9" }}
       />
     </button>
   );
 };
+
 const CreatePlanetbtn = ({ onClick }) => {
   return (
     <button className={style.createPlanet} onClick={onClick}>
@@ -35,9 +38,11 @@ const CreatePlanetbtn = ({ onClick }) => {
   );
 };
 
-const MyPlanet = () => {
+const MyPlanet = ({ servers }) => {
+  const [currentPage, setCurrentPage] = useState(0);
   const [planetIcon, getRandomPlanetIcon] = usePlanetIcon();
   const [showCreateServer, setShowCreateServer] = useState(false);
+  const nav = useNavigate();
 
   useEffect(() => {
     getRandomPlanetIcon();
@@ -46,35 +51,58 @@ const MyPlanet = () => {
   const handleCreateModalClick = () => {
     setShowCreateServer(true);
   };
+
   const handleCloseModal = () => {
     setShowCreateServer(false);
   };
+
+  const handleLeft = () => {
+    setCurrentPage((prevPage) => Math.max(prevPage - 1, 0));
+  };
+
+  const handleRight = () => {
+    setCurrentPage((prevPage) =>
+      Math.min(prevPage + 1, Math.ceil((servers?.length || 0) / 4) - 1)
+    );
+  };
+
+  const handleServerClick = (serverId) => {
+    nav(`/server/${serverId}/menu`);
+  };
+
+  const serversPerPage = 4;
+  const startIndex = currentPage * serversPerPage;
+  const endIndex = Math.min(startIndex + serversPerPage, (servers || []).length);
+
   return (
     <div className={style.wrapper}>
       <h3> 내 행성 </h3>
       <div className={style.planetContainer}>
-        <Leftbtn />
+        <Leftbtn onClick={handleLeft} />
         <div className={style.planetList}>
-          <div>
-            <button className={style.planetThumb}>
-              <img
-                src={planetIcon}
-                className={style.planetIcon}
-                alt="행성이미지"
-              />
-            </button>
-            <CreatePlanetbtn onClick={handleCreateModalClick} />
-          </div>
+        {(servers || []).slice(startIndex, endIndex).map((server) => (
+            <div key={server.serverId} className={style.planetItem}>
+              <button
+                className={style.planetThumb}
+                onClick={() => handleServerClick(server.serverId)}
+              >
+                <img
+                  src={server.profile ? (server.profile) : null}
+                  className={style.planetIcon}
+                  // alt="행성이미지"
+                />
+                <div className={style.serverName}>{server.name}</div>
+              </button>
+            </div>
+          ))}
+          <CreatePlanetbtn onClick={handleCreateModalClick} />
         </div>
-        <Rightbtn />
+        <Rightbtn onClick={handleRight} />
       </div>
       {showCreateServer && (
         <div className={style.createServerModal}>
           <CreateServer />
           <button className={style.closeBtn} onClick={handleCloseModal}>
-            {/* <AiOutlineClose
-              style={{ width: "20px", height: "20px", color: "#FFFFFF" }}
-            ,/> */}
             <h4 style={{ color: "#fff", textDecoration: "underline" }}>
               뒤로 가기
             </h4>

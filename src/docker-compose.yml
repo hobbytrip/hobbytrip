@@ -39,10 +39,10 @@ services:
   community-service-test:
     image: hanyoonsoo/community-service-test:1.0
     container_name: community-service-test
+    environment:
+      - jasypt.encryptor.password=fittrip
     ports:
       - "8080:8080"
-    environment:
-      - jasypt.encryptor.password: fittrip
     depends_on:
       - zookeeper
       - kafka
