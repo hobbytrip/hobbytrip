@@ -18,6 +18,7 @@ bin/
 !**/src/test/**/bin/
 application.properties
 application.yml
+secure-submodule-notification
 
 ### IntelliJ IDEA ###
 .idea
