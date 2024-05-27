@@ -107,7 +107,7 @@ public class ProfileController {
         return DataResponseDto.of(response);
     }
 
-    @GetMapping("/feign/profile/{userId}")
+    @GetMapping("/feign/profile/info/{userId}")
     public DataResponseDto<Object> getUser(@PathVariable Long userId) {
         UserFeignResponse response = profileService.userProfileRead(userId);
         return DataResponseDto.of(response);
