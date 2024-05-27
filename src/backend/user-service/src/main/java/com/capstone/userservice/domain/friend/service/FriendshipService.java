@@ -110,7 +110,16 @@ public class FriendshipService {
                 new FriendException(Code.NOT_FOUND, "회원 조회를 실패했습니다."));
         List<Friendship> friendshipList = user.getFriendshipList();
 
-        FriendsStatusResponse friendStatus = friendsStatusClient.getFriendStatus(userId);
+        // 친구들 userId 리스트 생성후
+        List<Long> friendIds = friendshipList.stream()
+                .filter(f -> f.isFrom() && f.getStatus() == FriendshipStatus.ACCEPT)
+                .map(f -> userRepository.findByEmail(f.getFriendEmail())
+                        .orElseThrow(() -> new FriendException(Code.NOT_FOUND, "회원 조회를 실패했습니다."))
+                        .getUserId())
+                .collect(Collectors.toList());
+
+        //open feign 에서 받아오기.
+        FriendsStatusResponse friendStatus = friendsStatusClient.getFriendStatus(friendIds);
 
         List<FriendReadResponse> result = friendshipList.stream()
                 //받은 요청이면서 승인 된 요청만
