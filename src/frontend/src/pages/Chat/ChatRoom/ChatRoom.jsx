@@ -11,7 +11,6 @@ import CreateChatModal from "../../../components/Modal/ChatModal/CreateChatModal
 import ChatMessage from "../../../components/Modal/ChatModal/ChatMessage/ChatMessage";
 import ChatChannelInfo from "../../../components/Modal/ChatModal/ChatChannelInfo/ChatChannelInfo";
 import InfiniteScrollComponent from "../../../components/Common/ChatRoom/InfiniteScrollComponent";
-import useUserStore from "../../../actions/useUserStore";
 
 const fetchChatHistory = async ({ queryKey }) => {
   const [_, channelId, page] = queryKey;
