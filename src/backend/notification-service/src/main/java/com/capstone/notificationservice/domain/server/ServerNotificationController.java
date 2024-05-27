@@ -17,7 +17,7 @@ public class ServerNotificationController {
 
     private final EmitterServerNotificationService notificationService;
 
-    @GetMapping(value = "/subscribe", produces = "text/event-stream")
+    @GetMapping(value = "/server/subscribe", produces = "text/event-stream")
     public SseEmitter subscribe(@RequestParam Long userId,
                                 @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
         return notificationService.subscribe(userId, lastEventId);
@@ -28,4 +28,5 @@ public class ServerNotificationController {
     public DataResponseDto<Boolean> deleteServerNotifications(@PathVariable Long serverId, Long userId) {
         return DataResponseDto.of(notificationService.deleteNotifications(userId, serverId));
     }
+
 }

@@ -24,7 +24,7 @@ public class DmNotificationController {
      * Last-Event-ID: 클라이언트가 마지막으로 수시한 데이터의 ID값 (항상 들어있지 않음)
      * produces를 text/event-stream으로 해야만 SSE통신 가능
      */
-    @GetMapping(value = "/subscribe", produces = "text/event-stream")
+    @GetMapping(value = "/dm/subscribe", produces = "text/event-stream")
     public SseEmitter subscribe(@RequestParam Long userId,
                                 @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
         return notificationService.subscribe(userId, lastEventId);
