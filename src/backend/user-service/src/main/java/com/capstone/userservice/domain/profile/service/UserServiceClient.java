@@ -1,4 +1,4 @@
-package com.capstone.userservice.domain.user.service;
+package com.capstone.userservice.domain.profile.service;
 
 import com.capstone.userservice.domain.user.dto.response.UserFeignResponse;
 import org.springframework.cloud.openfeign.FeignClient;

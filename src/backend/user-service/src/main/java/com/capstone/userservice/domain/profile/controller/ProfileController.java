@@ -10,6 +10,7 @@ import com.capstone.userservice.domain.profile.dto.response.ProfileNoticeRespons
 import com.capstone.userservice.domain.profile.dto.response.ProfileResponse;
 import com.capstone.userservice.domain.profile.dto.response.ProfileStatusMessageResponse;
 import com.capstone.userservice.domain.profile.service.ProfileService;
+import com.capstone.userservice.domain.user.dto.response.UserFeignResponse;
 import com.capstone.userservice.global.common.dto.DataResponseDto;
 import com.capstone.userservice.global.util.TokenUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,9 +19,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,14 +29,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/profile")
 public class ProfileController {
 
     private final ProfileService profileService;
     private final TokenUtil tokenUtil;
     private final String Header = "Authorization";
 
-    @GetMapping("")
+    @GetMapping("/profile")
     public ResponseEntity<ProfileResponse> read(HttpServletRequest request) {
         String token = request.getHeader(Header);
         String temp = trimToken(token);
@@ -45,7 +45,7 @@ public class ProfileController {
         return ResponseEntity.ok(profileService.read(userId));
     }
 
-    @PatchMapping("/statusMessage")
+    @PatchMapping("/profile/statusMessage")
     public DataResponseDto<Object> messageUpdate(@RequestBody ProfileStatusMessageRequest requestDto,
                                                  HttpServletRequest request) {
         String token = request.getHeader(Header);
@@ -58,7 +58,7 @@ public class ProfileController {
         return DataResponseDto.of(response);
     }
 
-    @PatchMapping("/nickname")
+    @PatchMapping("/profile/nickname")
     public DataResponseDto<Object> nickNameUpdate(@Valid @RequestBody ProfileNicknameRequest requestDto,
                                                   HttpServletRequest request) {
         String token = request.getHeader(Header);
@@ -71,7 +71,7 @@ public class ProfileController {
         return DataResponseDto.of(response);
     }
 
-    @PatchMapping("/notice")
+    @PatchMapping("/profile/notice")
     public DataResponseDto<Object> noticeUpdate(
             @RequestBody ProfileNoticeRequest requestDto, HttpServletRequest request) {
         String token = request.getHeader(Header);
@@ -83,7 +83,7 @@ public class ProfileController {
         return DataResponseDto.of(response);
     }
 
-    @PostMapping("/image")
+    @PostMapping("/profile/image")
     public DataResponseDto<Object> imageUpdate(HttpServletRequest request,
                                                @RequestPart(value = "image", required = false) MultipartFile image) {
         String token = request.getHeader(Header);
@@ -95,7 +95,7 @@ public class ProfileController {
         return DataResponseDto.of(response);
     }
 
-    @GetMapping("/image")
+    @GetMapping("/profile/image")
     public DataResponseDto<Object> imageDelete(HttpServletRequest request,
                                                @RequestParam("delete") String image) {
         String token = request.getHeader(Header);
@@ -104,6 +104,12 @@ public class ProfileController {
         Long userId = tokenUtil.getUserId(temp);
 
         Boolean response = profileService.imageDelete(image, userId);
+        return DataResponseDto.of(response);
+    }
+
+    @GetMapping("/feign/profile/{userId}")
+    public DataResponseDto<Object> getUser(@PathVariable Long userId) {
+        UserFeignResponse response = profileService.userProfileRead(userId);
         return DataResponseDto.of(response);
     }
 
