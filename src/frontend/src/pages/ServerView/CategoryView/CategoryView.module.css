@@ -16,12 +16,8 @@
   padding: 10px 0px 340px 0px; */
   
   width: 390px;
-  /* top: 100px; */
-  left: 1390px;
+  /* top: 100px;
+  left: 1390px; */
   display: flex;
   flex-direction: column;
-}
-
-.topContainer {
-  width: 390px;
 }

@@ -28,9 +28,7 @@ const CategoryView = () => {
         <div className={style.container}>
           <div className={style.topContainer}>
             <ChatHeader />
-            {serverInfo  && (
-              <ChatHeaderModal />
-            )}
+            <ChatHeaderModal />
             <ChatSearchBar />
           </div>
           <CategoryList categories={serverCategories} channels={serverChannels}/>

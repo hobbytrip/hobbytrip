@@ -5,6 +5,7 @@ import style from './ServerSetting.module.css';
 import { TbCameraPlus, TbCheck } from "react-icons/tb";
 import { IoClose } from "react-icons/io5";
 import useServerStore from '../../../actions/useServerStore';
+import { NULL } from 'mysql/lib/protocol/constants/types';
 
 const URL = 'http://localhost:8080';
 
@@ -22,13 +23,13 @@ const ServerSetting = () => {
   const serverInfo = serverData.serverInfo;
   const nav = useNavigate();
   const imgRef = useRef();
-  const userId = '1';
+  // const userId = '1';
 
   useEffect(() => {
     setServerName(serverInfo.name || '');
     setServerDescription(serverInfo.description || '');
     setServerCategory(serverInfo.category || '');
-    setProfileImage(serverInfo.profile || null);
+    setProfileImage(serverInfo.profile);
     setProfilePreview(serverInfo.profile || null);
     setOpenRoom(serverInfo.open || false);
   }, [serverInfo]);
@@ -39,14 +40,14 @@ const ServerSetting = () => {
       return;
     }
     try {
+      const id = 1; // test용
       const formData = new FormData();
       const data = JSON.stringify({
-        serverId: serverInfo.serverId,
-        userId: userId,
+        userId: id,
         name: serverName,
-        // open: openRoom,
-        // description: serverDescription,
-        // category: serverCategory
+        serverId: serverInfo.serverId,
+        // description: description,
+        // category: category,
       });
       console.log(data);
 
@@ -67,9 +68,8 @@ const ServerSetting = () => {
       const res = await axios.patch(`${URL}/server`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
-        }
+        },
       });
-
       if (res.data.success) {
         console.log(res);
         const data = res.data;
@@ -168,7 +168,7 @@ const ServerSetting = () => {
             <h4>행성 아이콘 변경하기</h4>
             <div className={style.addImg}>
               <div>
-                {profilePreview ? <img src={profilePreview} alt="Profile Preview" /> : null}
+                {profilePreview ? <img src={profilePreview}  /> : null}
               </div>
               <label className={style.addImgBtn}>
                 <h4>이미지 업로드</h4>
