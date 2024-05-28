@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { IoChatbubbleEllipses } from "react-icons/io5";
-import s from "./ChatChannelInfo.module.css";
+import s from "./ChatChannelType.module.css";
 export default function ChatChannelInfo() {
   const { channelId } = useParams();
   return (

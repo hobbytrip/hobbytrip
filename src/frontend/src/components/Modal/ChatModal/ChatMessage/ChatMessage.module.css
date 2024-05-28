@@ -1,8 +1,12 @@
-.msgBox {
-  margin-top: 20px;
-  margin-bottom: 20px;
+.chatWrapper {
   display: flex;
-  gap: 10px;
+  align-items: flex-start;
+  padding: 5px;
+  margin-bottom: 10px;
+  position: relative;
+}
+.msgBox {
+  display: flex;
 }
 .msgRightContainer {
   display: flex;
@@ -10,6 +14,7 @@
   /* align-items: center; */
   gap: 5px;
   margin-bottom: 5px;
+  margin-left: 10px;
 }
 .profileImg {
   background-color: var(--hot-pink);
@@ -31,4 +36,20 @@
 }
 .msgContent {
   font-weight: 500;
+}
+.modals {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  display: none;
+}
+.chatWrapper:hover .modals {
+  display: flex;
+  gap: 5px;
+}
+.msgEdit {
+  background-color: var(--light-gray);
+  display: flex;
+  height: 25px;
+  border-radius: 5px;
 }
