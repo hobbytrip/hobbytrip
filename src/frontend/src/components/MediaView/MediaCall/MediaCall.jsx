@@ -4,7 +4,7 @@ import { useLocation, useParams } from 'react-router-dom';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import style from './MediaCall.module.css';
 
-import ChatHeader from './../../Modal/ChatModal/ChatHeaderModal/ChatHeaderModal'
+import ChatHeader from '../../Common/ChatRoom/CommunityChatHeader/ChatHeader';
 import UserVideoComponent from './../UserVideoComponent';
 import useUserStore from '../../../actions/useUserStore';
 

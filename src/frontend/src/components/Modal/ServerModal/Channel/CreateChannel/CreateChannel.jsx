@@ -6,7 +6,7 @@ import { IoCheckmarkCircleOutline, IoCheckmarkCircle, IoDocuments } from "react-
 import { HiHome, HiMiniSpeakerWave } from "react-icons/hi2";
 import { MdOutlineNumbers } from "react-icons/md";
 // import useServerData from "../../../../hooks/useServerData";
-import useServerStore from "../../../../actions/useServerStore";
+import useServerStore from "../../../../../actions/useServerStore";
 
 function CreateChannel() {
   const [name, setName] = useState("");
