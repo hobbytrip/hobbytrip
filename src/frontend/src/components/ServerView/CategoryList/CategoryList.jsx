@@ -1,25 +1,31 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import style from './CategoryList.module.css';
 import { FiPlus } from "react-icons/fi";
 import { HiHome } from "react-icons/hi2";
 import { TiUserAdd } from "react-icons/ti";
-import { IoVideocam, IoSettings, IoDocument } from "react-icons/io5";
+import { IoVideocam, IoSettings, IoDocument, IoClose } from "react-icons/io5";
 import CreateChannel from '../../Modal/ServerModal/CreateChannel.jsx/CreateChannel';
 
 const URL = 'http://localhost:8080';
 
 const CategoryList = () => {
-  
+  const nav = useNavigate();
+  const handleClose = () => {
+    nav('initialChat?');
+  }
+  const handleAddCategory = () => {
+    
+  }
   return (
     <div className={style.categoryList}>
       <div className={style.categoryHeader}>
         <button>
-          {/* 카테고리 추가 */}
+          <FiPlus onClick={handleAddCategory}/>
         </button>
         <button>
-          {/* 나가기 */}
+          <IoClose onClick={handleExit}/>
         </button>
       </div>
       

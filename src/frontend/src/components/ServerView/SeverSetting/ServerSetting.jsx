@@ -5,7 +5,6 @@ import style from './ServerSetting.module.css';
 import { TbCameraPlus, TbCheck } from "react-icons/tb";
 import { IoClose } from "react-icons/io5";
 import useServerStore from '../../../actions/useServerStore';
-import { NULL } from 'mysql/lib/protocol/constants/types';
 
 const URL = 'http://localhost:8080';
 
