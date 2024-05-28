@@ -1,3 +1,0 @@
-[submodule "src/backend/state-service/state-service-yml"]
-	path = src/backend/state-service/state-service-yml
-	url = https://github.com/acs0209/state-service-yml.git
