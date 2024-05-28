@@ -1,6 +1,6 @@
-package capstone.chatservice.global.config.kafka.consumer;
+package capstone.chatservice.global.config.kafka.consumer.voice;
 
-import capstone.chatservice.domain.emoji.dto.EmojiDto;
+import capstone.chatservice.infra.kafka.consumer.voice.dto.VoiceDto;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -16,16 +16,16 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 @EnableKafka
 @Configuration
-public class EmojiChatConsumerConfig {
+public class VoiceConnectionStateEventConsumerConfig {
 
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
 
-    @Value("${spring.kafka.consumer.group-id.emoji-chat}")
+    @Value("${spring.kafka.consumer.group-id.voice-connection-state-event}")
     private String groupId;
 
     @Bean
-    public Map<String, Object> emojiChatConsumerConfiguration() {
+    public Map<String, Object> voiceConnectionStateEventConsumerConfiguration() {
         Map<String, Object> config = new HashMap<>();
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         config.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
@@ -33,17 +33,17 @@ public class EmojiChatConsumerConfig {
     }
 
     @Bean
-    public ConsumerFactory<String, EmojiDto> emojiChatConsumerFactory() {
+    public ConsumerFactory<String, VoiceDto> voiceConnectionStateEventConsumerFactory() {
         return new DefaultKafkaConsumerFactory<>(
-                emojiChatConsumerConfiguration(),
+                voiceConnectionStateEventConsumerConfiguration(),
                 new StringDeserializer(),
-                new JsonDeserializer<>(EmojiDto.class));
+                new JsonDeserializer<>(VoiceDto.class, false));
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, EmojiDto> emojiChatListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, EmojiDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(emojiChatConsumerFactory());
+    public ConcurrentKafkaListenerContainerFactory<String, VoiceDto> voiceConnectionStateEventListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, VoiceDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(voiceConnectionStateEventConsumerFactory());
         return factory;
     }
 }

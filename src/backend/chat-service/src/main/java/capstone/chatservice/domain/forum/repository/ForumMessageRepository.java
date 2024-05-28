@@ -19,4 +19,7 @@ public interface ForumMessageRepository extends MongoRepository<ForumMessage, Lo
 
     @Query(value = "{ 'parentId': { $in: ?0 }, 'isDeleted': false }")
     List<ForumMessage> findCommentCountByParentIdsAndIsDeleted(List<Long> parentIds);
+
+    @Query(value = "{ 'forumId': { $in: ?0 }, 'isDeleted': false }")
+    List<ForumMessage> findForumMessageCountByForumIdsAndIsDeleted(List<Long> forumIds);
 }

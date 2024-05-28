@@ -1,4 +1,4 @@
-package capstone.chatservice.infra.kafka.consumer;
+package capstone.chatservice.infra.kafka.consumer.chat;
 
 import capstone.chatservice.domain.server.dto.ServerMessageDto;
 import capstone.chatservice.domain.server.dto.response.ServerMessageCreateResponse;
@@ -21,22 +21,21 @@ public class ServerChatConsumer {
 
     @KafkaListener(topics = "${spring.kafka.topic.server-chat}", groupId = "${spring.kafka.consumer.group-id.server-chat}", containerFactory = "serverChatListenerContainerFactory")
     public void serverChatListener(ServerMessageDto messageDto) {
-        String messageType = messageDto.getType();
         Long serverId = messageDto.getServerId();
-        switch (messageType) {
-            case "send" -> {
+        switch (messageDto.getActionType()) {
+            case SEND -> {
                 ServerMessageCreateResponse createResponse = ServerMessageCreateResponse.from(messageDto);
                 messagingTemplate.convertAndSend("/topic/server/" + serverId, DataResponseDto.of(createResponse));
             }
-            case "modify" -> {
+            case MODIFY -> {
                 ServerMessageModifyResponse modifyResponse = ServerMessageModifyResponse.from(messageDto);
                 messagingTemplate.convertAndSend("/topic/server/" + serverId, DataResponseDto.of(modifyResponse));
             }
-            case "delete" -> {
+            case DELETE -> {
                 ServerMessageDeleteResponse deleteResponse = ServerMessageDeleteResponse.from(messageDto);
                 messagingTemplate.convertAndSend("/topic/server/" + serverId, DataResponseDto.of(deleteResponse));
             }
-            case "typing" -> {
+            case TYPING -> {
                 ServerMessageTypingResponse typingResponse = ServerMessageTypingResponse.from(messageDto);
                 messagingTemplate.convertAndSend("/topic/server/" + serverId, DataResponseDto.of(typingResponse));
             }

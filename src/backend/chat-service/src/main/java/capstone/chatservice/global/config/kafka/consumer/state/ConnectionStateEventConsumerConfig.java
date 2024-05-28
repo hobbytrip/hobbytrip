@@ -1,6 +1,6 @@
 package capstone.chatservice.global.config.kafka.consumer.state;
 
-import capstone.chatservice.infra.kafka.producer.dto.ConnectionStateEventDto;
+import capstone.chatservice.infra.kafka.producer.state.dto.ConnectionStateEventDto;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.kafka.clients.consumer.ConsumerConfig;

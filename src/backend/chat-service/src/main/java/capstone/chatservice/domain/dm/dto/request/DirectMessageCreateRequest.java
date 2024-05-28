@@ -22,5 +22,6 @@ public class DirectMessageCreateRequest {
     private String type;
     private String writer;
     private String content;
+    private List<Long> receiverIds;
     private List<UploadFile> files = null;
 }

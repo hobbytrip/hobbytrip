@@ -5,6 +5,7 @@ import capstone.chatservice.domain.emoji.dto.EmojiDto;
 import capstone.chatservice.domain.emoji.repository.EmojiRepository;
 import capstone.chatservice.domain.forum.domain.ForumMessage;
 import capstone.chatservice.domain.forum.dto.ForumMessageDto;
+import capstone.chatservice.domain.forum.dto.response.ForumChannelResponseDto;
 import capstone.chatservice.domain.forum.repository.ForumMessageRepository;
 import capstone.chatservice.domain.forum.service.query.ForumMessageQueryService;
 import java.util.ArrayList;
@@ -26,6 +27,24 @@ public class ForumMessageQueryServiceImpl implements ForumMessageQueryService {
 
     private final EmojiRepository emojiRepository;
     private final ForumMessageRepository forumMessageRepository;
+
+    @Override
+    public ForumChannelResponseDto getForumsMessageCount(List<Long> forumIds) {
+        List<ForumMessage> messages = forumMessageRepository.findForumMessageCountByForumIdsAndIsDeleted(forumIds);
+        Map<Long, Long> forumMessageCount = new HashMap<>();
+
+        for (Long forumId : forumIds) {
+            long count = 0L;
+            for (ForumMessage message : messages) {
+                if (message.getForumId().equals(forumId)) {
+                    count += 1;
+                }
+            }
+            forumMessageCount.put(forumId, count);
+        }
+
+        return new ForumChannelResponseDto(forumMessageCount);
+    }
 
     @Override
     public Page<ForumMessageDto> getMessages(Long forumId, int page, int size) {

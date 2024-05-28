@@ -26,12 +26,20 @@ ext {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-websocket'
-    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    /* websocket */
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+    /* jasypt */
+    implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
+
+    /* spring cloud */
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 
     /* S3 */
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
@@ -39,7 +47,7 @@ dependencies {
     /* MongoDB */
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 
-    /* kafka */
+    /* Kafka */
     implementation 'org.springframework.kafka:spring-kafka'
     testImplementation 'org.springframework.kafka:spring-kafka-test'
 
@@ -59,4 +67,12 @@ dependencyManagement {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+processResources.dependsOn('copySecret')
+
+tasks.register('copySecret', Copy) {
+    from './chat-service-yml'
+    include "*.yml"  // 복사할 파일들
+    into 'src/main/resources'  // 복사 위치
 }

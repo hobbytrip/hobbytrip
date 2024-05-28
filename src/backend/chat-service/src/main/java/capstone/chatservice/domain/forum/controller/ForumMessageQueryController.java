@@ -2,10 +2,12 @@ package capstone.chatservice.domain.forum.controller;
 
 import capstone.chatservice.domain.forum.dto.ForumMessageDto;
 import capstone.chatservice.domain.forum.dto.request.ForumMessageTypingRequest;
+import capstone.chatservice.domain.forum.dto.response.ForumChannelResponseDto;
 import capstone.chatservice.domain.forum.service.query.ForumMessageQueryService;
 import capstone.chatservice.global.common.dto.DataResponseDto;
 import capstone.chatservice.global.common.dto.PageResponseDto;
-import capstone.chatservice.infra.kafka.producer.KafkaProducer;
+import capstone.chatservice.infra.kafka.producer.chat.ChatEventProducer;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -17,8 +19,22 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ForumMessageQueryController {
 
-    private final KafkaProducer kafkaProducer;
+    private final ChatEventProducer chatEventProducer;
     private final ForumMessageQueryService queryService;
+
+    @GetMapping("/feign/forum/messages/count")
+    public ForumChannelResponseDto getForumsMessageCount(@RequestParam(value = "forumIds") List<Long> forumIds) {
+
+        return queryService.getForumsMessageCount(forumIds);
+    }
+
+    @GetMapping("/feign/forum/messages/forum")
+    public Page<ForumMessageDto> getFeignMessages(@RequestParam(value = "forumId") Long forumId,
+                                                  @RequestParam(defaultValue = "0") int page,
+                                                  @RequestParam(defaultValue = "30") int size) {
+
+        return queryService.getMessages(forumId, page, size);
+    }
 
     @GetMapping("/forum/messages/forum")
     public DataResponseDto<Object> getMessages(@RequestParam(value = "forumId") Long forumId,
@@ -43,6 +59,6 @@ public class ForumMessageQueryController {
     @MessageMapping("/forum/message/typing")
     public void typing(ForumMessageTypingRequest typingRequest) {
         ForumMessageDto forumMessageDto = ForumMessageDto.from(typingRequest);
-        kafkaProducer.sendToForumChatTopic(forumMessageDto);
+        chatEventProducer.sendToForumChatTopic(forumMessageDto);
     }
 }

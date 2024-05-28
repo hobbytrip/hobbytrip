@@ -1,6 +1,8 @@
 package capstone.chatservice.domain.dm.dto.response;
 
 import capstone.chatservice.domain.dm.dto.DirectMessageDto;
+import capstone.chatservice.domain.model.ActionType;
+import capstone.chatservice.domain.model.ChatType;
 import capstone.chatservice.domain.model.UploadFile;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,10 +22,11 @@ public class DirectMessageCreateResponse {
     private Long userId;
     private Long parentId;
     private String profileImage;
-    private String type;
     private String writer;
     private String content;
     private boolean isDeleted;
+    private ChatType chatType;
+    private ActionType actionType;
     private List<UploadFile> files;
     private LocalDateTime createdAt;
 
@@ -34,10 +37,11 @@ public class DirectMessageCreateResponse {
                 message.getUserId(),
                 message.getParentId(),
                 message.getProfileImage(),
-                message.getType(),
                 message.getWriter(),
                 message.getContent(),
                 message.isDeleted(),
+                ChatType.DM,
+                ActionType.SEND,
                 message.getFiles(),
                 message.getCreatedAt()
         );

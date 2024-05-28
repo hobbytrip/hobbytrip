@@ -1,6 +1,6 @@
-package capstone.chatservice.global.config.kafka.consumer;
+package capstone.chatservice.global.config.kafka.consumer.chat;
 
-import capstone.chatservice.domain.dm.dto.DirectMessageDto;
+import capstone.chatservice.domain.forum.dto.ForumMessageDto;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -16,17 +16,16 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 @EnableKafka
 @Configuration
-public class DirectChatConsumerConfig {
+public class ForumChatConsumerConfig {
 
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
 
-    @Value("${spring.kafka.consumer.group-id.direct-chat}")
+    @Value("${spring.kafka.consumer.group-id.forum-chat}")
     private String groupId;
 
-
     @Bean
-    public Map<String, Object> directChatConsumerConfiguration() {
+    public Map<String, Object> forumChatConsumerConfiguration() {
         Map<String, Object> config = new HashMap<>();
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         config.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
@@ -34,17 +33,17 @@ public class DirectChatConsumerConfig {
     }
 
     @Bean
-    public ConsumerFactory<String, DirectMessageDto> directChatConsumerFactory() {
+    public ConsumerFactory<String, ForumMessageDto> forumChatConsumerFactory() {
         return new DefaultKafkaConsumerFactory<>(
-                directChatConsumerConfiguration(),
+                forumChatConsumerConfiguration(),
                 new StringDeserializer(),
-                new JsonDeserializer<>(DirectMessageDto.class));
+                new JsonDeserializer<>(ForumMessageDto.class));
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, DirectMessageDto> directChatListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, DirectMessageDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(directChatConsumerFactory());
+    public ConcurrentKafkaListenerContainerFactory<String, ForumMessageDto> forumChatListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, ForumMessageDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(forumChatConsumerFactory());
         return factory;
     }
 }

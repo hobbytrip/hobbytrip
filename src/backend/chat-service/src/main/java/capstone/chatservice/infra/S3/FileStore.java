@@ -2,9 +2,7 @@ package capstone.chatservice.infra.S3;
 
 import capstone.chatservice.domain.model.UploadFile;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -19,29 +17,18 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class FileStore {
 
-    @Value("${file.dir}")
-    private String fileDir;
-
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
+    private static final String BASE_DIR = "chat/";
+
     private final AmazonS3Client amazonS3Client;
 
-    private UploadFile convertFile(MultipartFile multipartFile) throws IOException {
+    private UploadFile convertFile(MultipartFile multipartFile) {
 
         String originalFilename = multipartFile.getOriginalFilename();
         String storeFileName = createStoreFileName(originalFilename);
         return new UploadFile(storeFileName, originalFilename);
-    }
-
-    private List<UploadFile> convertFiles(List<MultipartFile> multipartFiles) throws IOException {
-        List<UploadFile> storeFileResult = new ArrayList<>();
-        for (MultipartFile multipartFile : multipartFiles) {
-            if (!multipartFile.isEmpty()) {
-                storeFileResult.add(convertFile(multipartFile));
-            }
-        }
-        return storeFileResult;
     }
 
     // 파일을 S3에 저장
@@ -51,8 +38,7 @@ public class FileStore {
         objectMetadata.setContentType(multipartFile.getContentType());
 
         try (InputStream inputStream = multipartFile.getInputStream()) {
-            amazonS3Client.putObject(new PutObjectRequest(bucketName, storeFileName, inputStream, objectMetadata)
-                    .withCannedAcl(CannedAccessControlList.PublicRead));
+            amazonS3Client.putObject(bucketName, storeFileName, inputStream, objectMetadata);
         } catch (IOException e) {
             throw new RuntimeException("파일 저장 오류");
         }
@@ -60,7 +46,7 @@ public class FileStore {
         return amazonS3Client.getUrl(bucketName, storeFileName).toString();
     }
 
-    public List<UploadFile> storeFiles(List<MultipartFile> multipartFiles) throws IOException {
+    public List<UploadFile> storeFiles(List<MultipartFile> multipartFiles) {
 
         // 파일 업로드 개수 검증(10개 이하로 정의)
         if (multipartFiles.size() > 10) {
@@ -82,16 +68,12 @@ public class FileStore {
     private String createStoreFileName(String originalFilename) {
         String ext = extractExt(originalFilename);
         String uuid = UUID.randomUUID().toString();
-        return uuid + "." + ext;
+        return BASE_DIR + uuid + "." + ext;
     }
 
     // 확장자 추출 메소드
     private String extractExt(String originalFilename) {
         int pos = originalFilename.lastIndexOf(".");
         return originalFilename.substring(pos + 1);
-    }
-
-    public String getFullPath(String filename) {
-        return fileDir + filename;
     }
 }

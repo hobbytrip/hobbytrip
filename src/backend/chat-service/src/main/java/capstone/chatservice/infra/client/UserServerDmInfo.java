@@ -12,6 +12,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UserServerDmInfo {
 
-    private List<Long> roomIds;
+    private List<Long> dmIds;
     private List<Long> serverIds;
 }

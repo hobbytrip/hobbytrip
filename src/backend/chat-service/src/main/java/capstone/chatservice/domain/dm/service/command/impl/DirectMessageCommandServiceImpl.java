@@ -7,6 +7,8 @@ import capstone.chatservice.domain.dm.dto.request.DirectMessageDeleteRequest;
 import capstone.chatservice.domain.dm.dto.request.DirectMessageModifyRequest;
 import capstone.chatservice.domain.dm.repository.DirectMessageRepository;
 import capstone.chatservice.domain.dm.service.command.DirectMessageCommandService;
+import capstone.chatservice.domain.model.ActionType;
+import capstone.chatservice.domain.model.ChatType;
 import capstone.chatservice.global.util.SequenceGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,8 +30,9 @@ public class DirectMessageCommandServiceImpl implements DirectMessageCommandServ
                 .userId(createRequest.getUserId())
                 .content(createRequest.getContent())
                 .writer(createRequest.getWriter())
-                .type(createRequest.getType())
                 .profileImage(createRequest.getProfileImage())
+                .chatType(ChatType.DM)
+                .actionType(ActionType.SEND)
                 .files(createRequest.getFiles())
                 .build();
 
@@ -43,7 +46,7 @@ public class DirectMessageCommandServiceImpl implements DirectMessageCommandServ
         DirectMessage directMessage = messageRepository.findById(modifyRequest.getMessageId())
                 .orElseThrow(() -> new RuntimeException("no message"));
 
-        directMessage.modify(modifyRequest.getType(), modifyRequest.getContent());
+        directMessage.modify(modifyRequest.getContent());
 
         return DirectMessageDto.from(messageRepository.save(directMessage));
     }
@@ -53,7 +56,7 @@ public class DirectMessageCommandServiceImpl implements DirectMessageCommandServ
         DirectMessage directMessage = messageRepository.findById(deleteRequest.getMessageId())
                 .orElseThrow(() -> new RuntimeException(" no message"));
 
-        directMessage.delete(deleteRequest.getType());
+        directMessage.delete();
 
         return DirectMessageDto.from(messageRepository.save(directMessage));
     }

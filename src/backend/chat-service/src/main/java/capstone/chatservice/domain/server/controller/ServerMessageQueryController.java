@@ -5,7 +5,7 @@ import capstone.chatservice.domain.server.dto.request.ServerMessageTypingRequest
 import capstone.chatservice.domain.server.service.query.ServerMessageQueryService;
 import capstone.chatservice.global.common.dto.DataResponseDto;
 import capstone.chatservice.global.common.dto.PageResponseDto;
-import capstone.chatservice.infra.kafka.producer.KafkaProducer;
+import capstone.chatservice.infra.kafka.producer.chat.ChatEventProducer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -17,8 +17,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ServerMessageQueryController {
 
-    private final KafkaProducer producerService;
+    private final ChatEventProducer producerService;
     private final ServerMessageQueryService queryService;
+
+    @GetMapping("/feign/server/messages/channel")
+    public Page<ServerMessageDto> getFeignMessages(@RequestParam(value = "channelId") Long channelId,
+                                                   @RequestParam(defaultValue = "0") int page,
+                                                   @RequestParam(defaultValue = "30") int size) {
+
+        return queryService.getMessages(channelId, page, size);
+    }
 
     @GetMapping("/server/messages/channel")
     public DataResponseDto<Object> getMessages(@RequestParam(value = "channelId") Long channelId,

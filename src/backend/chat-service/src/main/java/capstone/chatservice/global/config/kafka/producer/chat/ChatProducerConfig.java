@@ -1,11 +1,9 @@
-package capstone.chatservice.global.config.kafka;
+package capstone.chatservice.global.config.kafka.producer.chat;
 
 import capstone.chatservice.domain.dm.dto.DirectMessageDto;
 import capstone.chatservice.domain.emoji.dto.EmojiDto;
 import capstone.chatservice.domain.forum.dto.ForumMessageDto;
 import capstone.chatservice.domain.server.dto.ServerMessageDto;
-import capstone.chatservice.infra.kafka.producer.dto.ConnectionStateEventDto;
-import capstone.chatservice.infra.kafka.producer.dto.ConnectionStateInfo;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -20,13 +18,13 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 
 @EnableKafka
 @Configuration
-public class KafkaProducerConfig {
+public class ChatProducerConfig {
 
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
 
     @Bean
-    public Map<String, Object> producerConfig() {
+    public Map<String, Object> chatEventProducerConfig() {
         Map<String, Object> config = new HashMap<>();
         config.put(org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         config.put(org.apache.kafka.clients.producer.ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
@@ -39,7 +37,7 @@ public class KafkaProducerConfig {
 
     @Bean
     public ProducerFactory<String, ServerMessageDto> serverChatProducerFactory() {
-        return new DefaultKafkaProducerFactory<>(producerConfig());
+        return new DefaultKafkaProducerFactory<>(chatEventProducerConfig());
     }
 
     @Bean
@@ -49,7 +47,7 @@ public class KafkaProducerConfig {
 
     @Bean
     public ProducerFactory<String, DirectMessageDto> directChatProducerFactory() {
-        return new DefaultKafkaProducerFactory<>(producerConfig());
+        return new DefaultKafkaProducerFactory<>(chatEventProducerConfig());
     }
 
     @Bean
@@ -59,7 +57,7 @@ public class KafkaProducerConfig {
 
     @Bean
     public ProducerFactory<String, EmojiDto> emojiChatProducerFactory() {
-        return new DefaultKafkaProducerFactory<>(producerConfig());
+        return new DefaultKafkaProducerFactory<>(chatEventProducerConfig());
     }
 
     @Bean
@@ -69,31 +67,11 @@ public class KafkaProducerConfig {
 
     @Bean
     public ProducerFactory<String, ForumMessageDto> forumChatProducerFactory() {
-        return new DefaultKafkaProducerFactory<>(producerConfig());
+        return new DefaultKafkaProducerFactory<>(chatEventProducerConfig());
     }
 
     @Bean
     public KafkaTemplate<String, ForumMessageDto> forumChatKafkaTemplate() {
         return new KafkaTemplate<>(forumChatProducerFactory());
-    }
-
-    @Bean
-    public ProducerFactory<String, ConnectionStateEventDto> connectionStateEventProducerFactory() {
-        return new DefaultKafkaProducerFactory<>(producerConfig());
-    }
-
-    @Bean
-    public KafkaTemplate<String, ConnectionStateEventDto> connectionStateEventKafkaTemplate() {
-        return new KafkaTemplate<>(connectionStateEventProducerFactory());
-    }
-
-    @Bean
-    public ProducerFactory<String, ConnectionStateInfo> connectionStateInfoProducerFactory() {
-        return new DefaultKafkaProducerFactory<>(producerConfig());
-    }
-
-    @Bean
-    public KafkaTemplate<String, ConnectionStateInfo> connectionStateInfoKafkaTemplate() {
-        return new KafkaTemplate<>(connectionStateInfoProducerFactory());
     }
 }

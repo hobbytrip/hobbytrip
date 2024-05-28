@@ -1,6 +1,8 @@
 package capstone.chatservice.domain.forum.dto.response;
 
 import capstone.chatservice.domain.forum.dto.ForumMessageDto;
+import capstone.chatservice.domain.model.ActionType;
+import capstone.chatservice.domain.model.ChatType;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,7 +19,8 @@ public class ForumMessageModifyResponse {
     private Long serverId;
     private Long forumId;
     private String content;
-    private String type;
+    private ChatType chatType;
+    private ActionType actionType;
     private LocalDateTime modifiedAt;
 
     public static ForumMessageModifyResponse from(ForumMessageDto message) {
@@ -26,7 +29,8 @@ public class ForumMessageModifyResponse {
                 message.getServerId(),
                 message.getForumId(),
                 message.getContent(),
-                message.getType(),
+                ChatType.FORUM,
+                ActionType.MODIFY,
                 message.getModifiedAt()
         );
     }

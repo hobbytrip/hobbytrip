@@ -3,6 +3,7 @@ package capstone.chatservice.domain.dm.dto;
 import capstone.chatservice.domain.dm.domain.DirectMessage;
 import capstone.chatservice.domain.dm.dto.request.DirectMessageTypingRequest;
 import capstone.chatservice.domain.emoji.dto.EmojiDto;
+import capstone.chatservice.domain.model.ActionType;
 import capstone.chatservice.domain.model.UploadFile;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,10 +24,10 @@ public class DirectMessageDto {
     private Long userId;
     private Long count;
     private String profileImage;
-    private String type;
     private String writer;
     private String content;
     private boolean isDeleted;
+    private ActionType actionType;
     private List<UploadFile> files;
     private List<EmojiDto> emojis;
     private LocalDateTime createdAt;
@@ -40,10 +41,10 @@ public class DirectMessageDto {
                 message.getUserId(),
                 0L,
                 message.getProfileImage(),
-                message.getType(),
                 message.getWriter(),
                 message.getContent(),
                 message.isDeleted(),
+                message.getActionType(),
                 message.getFiles(),
                 null,
                 message.getCreatedAt(),
@@ -59,10 +60,10 @@ public class DirectMessageDto {
                 null,
                 0L,
                 null,
-                typingRequest.getType(),
                 typingRequest.getWriter(),
                 null,
                 false,
+                ActionType.TYPING,
                 null,
                 null,
                 null,

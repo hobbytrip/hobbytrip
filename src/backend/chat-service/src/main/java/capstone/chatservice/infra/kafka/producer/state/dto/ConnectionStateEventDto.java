@@ -1,4 +1,4 @@
-package capstone.chatservice.infra.kafka.producer.dto;
+package capstone.chatservice.infra.kafka.producer.state.dto;
 
 import java.util.List;
 import lombok.Builder;
@@ -12,13 +12,14 @@ import lombok.Setter;
 public class ConnectionStateEventDto {
 
     private Long userId;
-    private String type;
-    private String state;
+    private ConnectionType type;
+    private ConnectionState state;
     private List<Long> serverIds;
     private List<Long> roomIds;
 
     @Builder
-    public ConnectionStateEventDto(Long userId, String type, String state,
+    public ConnectionStateEventDto(Long userId, ConnectionType type,
+                                   ConnectionState state,
                                    List<Long> serverIds,
                                    List<Long> roomIds) {
         this.userId = userId;

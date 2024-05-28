@@ -3,9 +3,11 @@ package capstone.chatservice.infra.websocket;
 import capstone.chatservice.infra.client.CommunityServiceClient;
 import capstone.chatservice.infra.client.StateServiceClient;
 import capstone.chatservice.infra.client.UserServerDmInfo;
-import capstone.chatservice.infra.kafka.producer.KafkaProducer;
-import capstone.chatservice.infra.kafka.producer.dto.ConnectionStateEventDto;
-import capstone.chatservice.infra.kafka.producer.dto.ConnectionStateInfo;
+import capstone.chatservice.infra.kafka.producer.state.StateEventProducer;
+import capstone.chatservice.infra.kafka.producer.state.dto.ConnectionState;
+import capstone.chatservice.infra.kafka.producer.state.dto.ConnectionStateEventDto;
+import capstone.chatservice.infra.kafka.producer.state.dto.ConnectionStateInfo;
+import capstone.chatservice.infra.kafka.producer.state.dto.ConnectionType;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,9 +23,9 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class WebSocketConnectionHandler implements ChannelInterceptor {
 
-    private final KafkaProducer kafkaProducer;
     private final StateServiceClient stateClient;
     private final CommunityServiceClient communityClient;
+    private final StateEventProducer stateEventProducer;
 
     @Override
     public void postSend(Message<?> message, MessageChannel channel, boolean sent) {
@@ -35,43 +37,42 @@ public class WebSocketConnectionHandler implements ChannelInterceptor {
             ConnectionStateInfo connectionStateInfo = ConnectionStateInfo.builder()
                     .userId(userId)
                     .sessionId(sessionId)
-                    .type("CONNECT")
-                    .state("online")
+                    .type(ConnectionType.CONNECT)
+                    .state(ConnectionState.ONLINE)
                     .build();
-            kafkaProducer.sendToConnectionStateInfoTopic(connectionStateInfo);
+            stateEventProducer.sendToConnectionStateInfoTopic(connectionStateInfo);
 
             UserServerDmInfo ids = communityClient.getServerIdsAndRoomIds(userId);
             ConnectionStateEventDto connectionEventDto = ConnectionStateEventDto.builder()
                     .userId(userId)
-                    .type("CONNECT")
-                    .state("online")
+                    .type(ConnectionType.CONNECT)
+                    .state(ConnectionState.ONLINE)
                     .serverIds(ids.getServerIds())
-                    .roomIds(ids.getRoomIds())
+                    .roomIds(ids.getDmIds())
                     .build();
-            kafkaProducer.sendToConnectionStateEventTopic(connectionEventDto);
+            stateEventProducer.sendToConnectionStateEventTopic(connectionEventDto);
         }
 
         if (StompCommand.DISCONNECT.equals(headerAccessor.getCommand())) {
             String sessionId = headerAccessor.getSessionId();
             ConnectionStateInfo connectionStateInfo = ConnectionStateInfo.builder()
                     .sessionId(sessionId)
-                    .type("DISCONNECT")
-                    .state("offline")
+                    .type(ConnectionType.DISCONNECT)
+                    .state(ConnectionState.OFFLINE)
                     .build();
 
-            String checkUserId = stateClient.saveConnectionStateInfo(connectionStateInfo).getData();
-            if (checkUserId != null) {
-                Long userId = Long.parseLong(checkUserId);
+            Long userId = stateClient.saveUserConnectionState(connectionStateInfo).getData();
+            if (userId != null) {
 
                 UserServerDmInfo ids = communityClient.getServerIdsAndRoomIds(userId);
                 ConnectionStateEventDto connectionEventDto = ConnectionStateEventDto.builder()
                         .userId(userId)
-                        .type("DISCONNECT")
-                        .state("offline")
+                        .type(ConnectionType.DISCONNECT)
+                        .state(ConnectionState.OFFLINE)
                         .serverIds(ids.getServerIds())
-                        .roomIds(ids.getRoomIds())
+                        .roomIds(ids.getDmIds())
                         .build();
-                kafkaProducer.sendToConnectionStateEventTopic(connectionEventDto);
+                stateEventProducer.sendToConnectionStateEventTopic(connectionEventDto);
             }
         }
     }

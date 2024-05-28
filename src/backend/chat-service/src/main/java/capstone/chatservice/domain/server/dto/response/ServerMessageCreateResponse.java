@@ -1,5 +1,7 @@
 package capstone.chatservice.domain.server.dto.response;
 
+import capstone.chatservice.domain.model.ActionType;
+import capstone.chatservice.domain.model.ChatType;
 import capstone.chatservice.domain.model.UploadFile;
 import capstone.chatservice.domain.server.dto.ServerMessageDto;
 import java.time.LocalDateTime;
@@ -22,10 +24,11 @@ public class ServerMessageCreateResponse {
     private Long parentId;
     private Long count;
     private String profileImage;
-    private String type;
     private String writer;
     private String content;
     private boolean isDeleted;
+    private ChatType chatType;
+    private ActionType actionType;
     private List<UploadFile> files;
     private LocalDateTime createdAt;
 
@@ -38,10 +41,11 @@ public class ServerMessageCreateResponse {
                 message.getParentId(),
                 0L,
                 message.getProfileImage(),
-                message.getType(),
                 message.getWriter(),
                 message.getContent(),
                 message.isDeleted(),
+                ChatType.SERVER,
+                ActionType.SEND,
                 message.getFiles(),
                 message.getCreatedAt()
         );
