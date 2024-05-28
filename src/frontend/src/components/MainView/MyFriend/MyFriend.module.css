@@ -2,7 +2,7 @@
   font-family: "Pretendard";
   padding: 11px 0px;
   border-radius: 20px 20px 0px 0px;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   height: 611px;
   width: 390px;
 }
@@ -10,7 +10,6 @@
 .wrapper ul {
   list-style-type: none;
 }
-
 
 .friendMenuContainer {
   display: flex;
@@ -48,12 +47,12 @@
 .friendMenuList button {
   border: none;
   white-space: nowrap;
-  background:none;
+  background: none;
 }
 
 .friendMenuList .addFriend {
   background-color: var(--main-purple);
-  color: #FFFFFF;
+  color: #ffffff;
   height: 17px;
   width: 75px;
   padding: 2px;
@@ -62,9 +61,8 @@
   line-height: 14.32px;
 }
 
-
 .searchContainer {
-  display: flex; 
+  display: flex;
   align-items: center;
   justify-content: center;
   padding: 10px;
@@ -78,7 +76,7 @@
   padding: 5px 6.61px 3px 11px;
   border-radius: 5px;
   background-color: var(--light-gray);
-  color: var(--dark-gray);   
+  color: var(--dark-gray);
 }
 
 .searchInput {
@@ -97,7 +95,7 @@
 .searchBtn {
   display: flex;
   align-items: center;
-  justify-content: flex-end; 
+  justify-content: flex-end;
   flex: 1;
   border-radius: 0 20px 20px 0;
   border: none;
@@ -105,10 +103,9 @@
   height: 16px;
 }
 
-
 .friendListContainer {
   display: flex;
-  }
+}
 
 .friendContainer {
   display: flex;
@@ -125,11 +122,14 @@
   padding: 1px 0px;
   gap: 10px;
   border-radius: 300px;
+  background-color: var(--dark-gray);
 }
 
 .friendImg img {
   width: 29px;
   height: 29.5px;
+  margin-left: 3px;
+  margin-top: 3px;
 }
 
 .friendData {
@@ -146,7 +146,7 @@
   height: 14px;
   font-weight: 600;
   line-height: 14.32px;
-  text-align: left;    
+  text-align: left;
   color: #000000;
 }
 
@@ -155,7 +155,7 @@
   height: 12px;
   font-weight: 400;
   line-height: 11.93px;
-  text-align: left;    
+  text-align: left;
   color: var(--dark-gray);
 }
 
@@ -171,7 +171,7 @@
 .friendFunction button {
   background: none;
   border: none;
-  color: '#000000';
+  color: "#000000";
   width: 25px;
   height: 24.66px;
   padding: 3px 2px;

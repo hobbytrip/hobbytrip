@@ -5,8 +5,8 @@ import { MdEdit } from "react-icons/md";
 import testImg from "../../../../assets/image/default-logo.png";
 import useFormatDate from "../../../../hooks/useFormatDate";
 
-//채팅 메세지를 뿌려주는 컴포넌트
-//수정,삭제 함수 포함
+// 채팅 메세지를 뿌려주는 컴포넌트
+// 수정,삭제 함수 포함
 const ChatMessage = ({ message, onModifyMessage, onDeleteMessage }) => {
   const formattedDate = useFormatDate(message.createdAt);
   const [isEditing, setIsEditing] = useState(false);
@@ -45,52 +45,105 @@ const ChatMessage = ({ message, onModifyMessage, onDeleteMessage }) => {
     }
   }, [isEditing]);
 
+  const renderMessageContent = () => {
+    if (message.fileUrl) {
+      // 이미지 파일
+      if (message.contentType && message.contentType.startsWith("image")) {
+        return (
+          <div className={s.msgBox}>
+            <img src={testImg} className={s.profileImg} alt="profile-image" />
+            <div className={s.msgRightContainer}>
+              <div className={s.msgTopInfos}>
+                <h3 className={s.msgWriter}>{message.writer}</h3>
+                <h4 className={s.msgDate}>{formattedDate}</h4>
+              </div>
+              <img
+                src={message.fileUrl}
+                className={s.msgContent}
+                alt="uploadedFile"
+              />
+            </div>
+          </div>
+        );
+      } else {
+        // 이미지 파일이 아닌 경우 다운로드 링크
+        return (
+          <div className={s.msgBox}>
+            <img src={testImg} className={s.profileImg} alt="profile-image" />
+            <div className={s.msgRightContainer}>
+              <div className={s.msgTopInfos}>
+                <h3 className={s.msgWriter}>{message.writer}</h3>
+                <h4 className={s.msgDate}>{formattedDate}</h4>
+              </div>
+              <a
+                href={message.fileUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={s.msgContent}
+              >
+                {message.fileName}
+              </a>
+            </div>
+          </div>
+        );
+      }
+    } else {
+      // 일반 텍스트 메세지
+      return (
+        <div className={s.msgBox}>
+          <img src={testImg} className={s.profileImg} alt="profile-image" />
+          <div className={s.msgRightContainer}>
+            <div className={s.msgTopInfos}>
+              <h3 className={s.msgWriter}>{message.writer}</h3>
+              <h4 className={s.msgDate}>{formattedDate}</h4>
+            </div>
+            {isEditing ? (
+              <div>
+                <input
+                  type="text"
+                  ref={inputRef}
+                  value={newContent}
+                  onChange={(e) => setNewContent(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  className={s.msgEdit}
+                />
+                <h5
+                  style={{
+                    fontWeight: "400",
+                    marginTop: "5px",
+                    marginLeft: "2px",
+                  }}
+                >
+                  {" "}
+                  Enter키로 <a style={{ fontSize: "10px" }}>
+                    저장
+                  </a> Esc키로 <a style={{ fontSize: "10px" }}>취소</a>
+                </h5>
+              </div>
+            ) : (
+              <h4 className={s.msgContent}>{message.content}</h4>
+            )}
+          </div>
+        </div>
+      );
+    }
+  };
+
   return (
     <div className={s.chatWrapper}>
       <div className={s.modals}>
-        <MdEdit
-          onClick={handleEditClick}
-          style={{ width: "25px", color: "#434343", cursor: "pointer" }}
-        />
+        {!message.fileUrl && (
+          <MdEdit
+            onClick={handleEditClick}
+            style={{ width: "25px", color: "#434343", cursor: "pointer" }}
+          />
+        )}
         <FaTrashAlt
           onClick={handleDeleteClick}
           style={{ width: "25px", color: "#434343", cursor: "pointer" }}
         />
       </div>
-      <div className={s.msgBox}>
-        <img src={testImg} className={s.profileImg} alt="profile-image" />
-        <div className={s.msgRightContainer}>
-          <div className={s.msgTopInfos}>
-            <h3 className={s.msgWriter}>{message.writer}</h3>
-            <h4 className={s.msgDate}>{formattedDate}</h4>
-          </div>
-          {isEditing ? (
-            <div>
-              <input
-                type="text"
-                ref={inputRef}
-                value={newContent}
-                onChange={(e) => setNewContent(e.target.value)}
-                onKeyDown={handleKeyDown}
-                className={s.msgEdit}
-              />
-              <h5
-                style={{
-                  fontWeight: "400",
-                  marginTop: "5px",
-                  marginLeft: "2px",
-                }}
-              >
-                {" "}
-                Enter키로 <a style={{ fontSize: "10px" }}>저장</a> Esc키로{" "}
-                <a style={{ fontSize: "10px" }}>취소</a>
-              </h5>
-            </div>
-          ) : (
-            <h4 className={s.msgContent}>{message.content}</h4>
-          )}
-        </div>
-      </div>
+      {renderMessageContent()}
     </div>
   );
 };
