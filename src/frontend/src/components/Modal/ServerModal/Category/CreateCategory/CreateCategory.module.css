@@ -1,0 +1,118 @@
+.formWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* height: 304px; */
+  width: 272px;
+  gap: 4px;
+  border-radius: 10px;
+  background-color: white;
+  padding: 10px 0px;
+}
+
+.topContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 242px;
+  height: 38px;
+  gap: 5px;
+  padding: 0px 15px;
+}
+
+.topContainer h3 {
+  flex-grow: 1;
+}
+
+.type {
+  gap: 4px;
+}
+
+.label {
+  /* width: 242px; */
+  height: 17px;
+  padding: 0px 15px;
+  gap: 9px;
+}
+
+.typeSelectRadio {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+}
+
+.typeRadioOption {
+  display: flex;
+  align-items: center;
+  /* justify-content: space-between; */
+  width: 208px;
+  height: 28px;
+  gap: 18px;
+  padding: 0px 15px 0px 12px;
+}
+
+.typeRadioOption h4 {
+  flex-grow: 1;
+  /* width: 150px; */
+}
+
+
+.purpleIcon {
+  color: var(--main-purple);
+  width: 18px;
+  height: 18px;
+}
+
+.name {
+  display: flex;
+  flex-direction: column;
+  width: 272px;
+  height: 49px;
+}
+
+.inputContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* width: 234px; */
+  height: 28px;
+  font-size: 12px;
+  gap: 23px;
+  padding: 0px 9px 0px 10px;
+}
+
+.inputContainer input {
+  width: 215px;
+  height: 22px;
+  font-size: 12px;
+  border-radius: 5px;
+  background-color: var(--light-gray);
+}
+
+.open {
+  display: flex;
+  align-items: center;
+  height: 37px;
+  padding: 0px 15px;
+}
+
+.openExplain {
+  width: 206px;
+  /* flex-grow: 1; */
+}
+
+.createContainer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.createBtn {
+  font-size: 12px;
+  width: 72px;
+  color: white;
+  background-color: var(--main-purple);
+  margin: 10px auto;
+}
