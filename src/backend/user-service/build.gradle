@@ -51,9 +51,6 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
 
-    //redis
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-
     //s3
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
@@ -64,12 +61,13 @@ dependencies {
     //feign client
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.0.2'
 
-    // WireMock
-    testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock:3.1.5"
-    testImplementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner:3.1.5"
+    //jayspt
+    implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5' //For application yaml Encryption
 
-    //spring cloud
-    implementation 'org.springframework.cloud:spring-cloud-starter-config'
+    implementation group: 'org.apache.httpcomponents.client5', name: 'httpclient5', version: '5.3.1'
+
+    //===Spring Cloud===//
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 }
 
 tasks.named('test') {

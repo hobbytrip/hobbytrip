@@ -1,9 +1,9 @@
 package com.capstone.userservice.domain.friend.service;
 
 
-import com.capstone.userservice.domain.friend.dto.FriendStatusDto;
+import com.capstone.userservice.domain.friend.dto.ConnectionState;
 import com.capstone.userservice.domain.friend.dto.response.FriendReadResponse;
-import com.capstone.userservice.domain.friend.dto.response.FriendsStatusResponse;
+import com.capstone.userservice.domain.friend.dto.response.UserConnectionStateResponse;
 import com.capstone.userservice.domain.friend.dto.response.WaitingFriendListResponse;
 import com.capstone.userservice.domain.friend.entity.Friendship;
 import com.capstone.userservice.domain.friend.entity.FriendshipStatus;
@@ -15,6 +15,7 @@ import com.capstone.userservice.global.exception.Code;
 import com.capstone.userservice.global.util.TokenUtil;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,12 @@ public class FriendshipService {
         try {
             //현재 로그인 되어 있는 사람 확인
             String fromEmail = tokenUtil.getEmail(token);
+
+            // 이미 친구 요청을 보냈거나 친구 상태인지 확인
+            Optional<Friendship> existingFriendship = friendshipRepository.findByEmail(toEmail);
+            if (existingFriendship.isPresent()) {
+                throw new FriendException(Code.INTERNAL_ERROR, "이미 친구 요청을 보냈거나 친구 상태입니다.");
+            }
 
             User fromUser = userRepository.findByEmail(fromEmail).orElseThrow(() ->
                     new FriendException(Code.NOT_FOUND, "회원 조회를 실패했습니다."));
@@ -110,28 +117,39 @@ public class FriendshipService {
                 new FriendException(Code.NOT_FOUND, "회원 조회를 실패했습니다."));
         List<Friendship> friendshipList = user.getFriendshipList();
 
-        FriendsStatusResponse friendStatus = friendsStatusClient.getFriendStatus(userId);
+        // 친구들 userId 리스트 생성후
+        List<Long> friendIds = friendshipList.stream()
+                .filter(f -> f.getStatus() == FriendshipStatus.ACCEPT)
+                .map(f -> userRepository.findByEmail(f.getFriendEmail())
+                        .orElseThrow(() -> new FriendException(Code.NOT_FOUND, "회원 조회를 실패했습니다."))
+                        .getUserId())
+                .collect(Collectors.toList());
 
-        List<FriendReadResponse> result = friendshipList.stream()
-                //받은 요청이면서 승인 된 요청만
-                .filter(f -> f.isFrom() && f.getStatus() == FriendshipStatus.ACCEPT)
-                .map(f -> {
-                    User friend = userRepository.findByEmail(f.getFriendEmail()).orElseThrow(() ->
-                            new FriendException(Code.NOT_FOUND, "회원 조회를 실패했습니다."));
+        List<FriendReadResponse> result;
 
-                    FriendStatusDto status = friendStatus.getFriendsStatus().stream()
-                            .filter(s -> s.getFriendId().equals(friend.getUserId()))
-                            .findFirst()
-                            .orElse(null);
+        if (friendIds.isEmpty()) {
+            result = null;
+        } else {
+            //open feign 에서 받아오기.
+            UserConnectionStateResponse friendStatus = friendsStatusClient.getFriendStatus(friendIds);
 
-                    return FriendReadResponse.builder()
-                            .userId(userId)
-                            .friendId(status.getFriendId())
-                            .friendImageUrl(friend.getProfileImage())
-                            .friendName(friend.getUsername())
-                            .isOffline(status.getIsOffline())
-                            .build();
-                }).collect(Collectors.toList());
+            result = friendshipList.stream()
+                    //받은 요청이면서 승인 된 요청만
+                    .filter(f -> f.isFrom() && f.getStatus() == FriendshipStatus.ACCEPT)
+                    .map(f -> {
+                        User friend = userRepository.findByEmail(f.getFriendEmail()).orElseThrow(() ->
+                                new FriendException(Code.NOT_FOUND, "회원 조회를 실패했습니다."));
+                        ConnectionState status = friendStatus.getUsersConnectionState().get(friend.getUserId());
+
+                        return FriendReadResponse.builder()
+                                .userId(userId)
+                                .friendId(friend.getUserId())
+                                .friendImageUrl(friend.getProfileImage())
+                                .friendName(friend.getUsername())
+                                .connectionState(status)
+                                .build();
+                    }).collect(Collectors.toList());
+        }
         return result;
     }
 

@@ -22,7 +22,9 @@ public class FriendshipController {
     public DataResponseDto<Object> sendFriendshipRequest(@Valid @PathVariable("email") String email,
                                                          HttpServletRequest request) {
         String token = request.getHeader(Header);
-        return DataResponseDto.of(friendshipService.createFriendship(token, email));
+        String temp = trimToken(token);
+
+        return DataResponseDto.of(friendshipService.createFriendship(temp, email));
     }
 
     @PostMapping("/approve/{friendshipId}")
@@ -33,18 +35,26 @@ public class FriendshipController {
     @GetMapping("/friendList")
     public DataResponseDto<Object> getFriendList(HttpServletRequest request) {
         String token = request.getHeader(Header);
-        return DataResponseDto.of(friendshipService.getFriendList(token));
+        String temp = trimToken(token);
+
+        return DataResponseDto.of(friendshipService.getFriendList(temp));
     }
 
     @GetMapping("/received")
     public DataResponseDto<Object> getWaitingFriendInfo(HttpServletRequest request) {
         String token = request.getHeader(Header);
-        return DataResponseDto.of(friendshipService.getWaitingFriendList(token));
+        String temp = trimToken(token);
+
+        return DataResponseDto.of(friendshipService.getWaitingFriendList(temp));
     }
 
     @PostMapping("/delete/{friendshipId}")
     public DataResponseDto<Object> deleteFriendship(@Valid @PathVariable("friendshipId") Long friendshipId) {
         return DataResponseDto.of(friendshipService.deleteFriendship(friendshipId));
+    }
+
+    public String trimToken(String token) {
+        return token.split(" ")[1].trim();
     }
 }
 

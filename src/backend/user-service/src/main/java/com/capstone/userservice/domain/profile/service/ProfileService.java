@@ -11,6 +11,7 @@ import com.capstone.userservice.domain.profile.dto.response.ProfileResponse;
 import com.capstone.userservice.domain.profile.dto.response.ProfileStatusMessageResponse;
 import com.capstone.userservice.domain.profile.exception.ProfileException;
 import com.capstone.userservice.domain.profile.repository.ProfileRepository;
+import com.capstone.userservice.domain.user.dto.response.UserFeignResponse;
 import com.capstone.userservice.domain.user.entity.User;
 import com.capstone.userservice.global.exception.Code;
 import lombok.RequiredArgsConstructor;
@@ -67,6 +68,12 @@ public class ProfileService {
     public Boolean imageDelete(String url, Long userId) {
         User userInfo = validateInProfile(userId);
         return s3ImageService.deleteImageFromS3(url, userInfo);
+    }
+
+    @Transactional
+    public UserFeignResponse userProfileRead(Long userId) {
+        User userInfo = validateInProfile(userId);
+        return UserFeignResponse.from(userInfo);
     }
 
     public User validateInProfile(Long userId) {
