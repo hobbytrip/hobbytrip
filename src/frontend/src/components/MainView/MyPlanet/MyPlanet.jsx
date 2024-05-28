@@ -71,6 +71,7 @@ const MyPlanet = ({ servers }) => {
   };
 
   const handleServerClick = (serverId) => {
+    // 임의로 카테고리 뷰로 가게 해둠
     nav(`/server/${serverId}/menu`);
   };
 
@@ -80,6 +81,7 @@ const MyPlanet = ({ servers }) => {
       <div className={style.planetContainer}>
         <Leftbtn onClick={handleLeft} />
         <div className={style.planetList}>
+          {/* 4개씩 보여주고 옆으로 넘기기 기능 추가 */}
           {(servers || []).slice(startIndex, endIndex).map((server) => (
             <div key={server.serverId} className={style.planetItem}>
               <button

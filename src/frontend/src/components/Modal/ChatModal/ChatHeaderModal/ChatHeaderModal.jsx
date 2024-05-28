@@ -12,6 +12,7 @@ export default function ChatHeader({ }) {
   useEffect(() => {
     getRandomPlanetIcon();
   }, []);
+  // 서버 정보를 불러와서 이름에 띄워줌
   const { serverData } = useServerStore((state) => ({
     serverData: state.serverData,
   }));
@@ -37,7 +38,6 @@ export default function ChatHeader({ }) {
         <TiUserAdd className={s.modal} />
         <TiGroup className={s.modal} />
         <RiSettings3Fill className={s.modal} 
-          // serverId는 서버 아이디로 바꿔주기
           onClick={() => nav(`/server/${serverInfo.serverId}/setting`)} /> 
       </div>
     </div>

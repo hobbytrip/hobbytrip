@@ -108,6 +108,7 @@ function CreateServer() {
           onChange={(e) => setCategory(e.target.value)}
         />
       </div>
+      {/* 행성 사진 삽입 기능 추가 */}
       <div className={s.formContainer}>
         <h4 className={s.label}> 행성 아이콘 </h4>
         <div className={s.addImg}>

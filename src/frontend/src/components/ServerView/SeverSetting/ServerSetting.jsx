@@ -34,6 +34,7 @@ const ServerSetting = () => {
     setOpenRoom(serverInfo.open || false);
   }, [serverInfo]);
 
+  // 수정이 안 돼서............. 수요일 회의에서 한 번 해보고 안 되면 후순위로 미룰 예정
   const handleUpdate = async () => {
     if (serverName === '') {
       alert("행성 이름을 적어주세요");

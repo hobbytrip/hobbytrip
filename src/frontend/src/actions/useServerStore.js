@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import axios from 'axios';
 
+// hooks/useServerData -> action/useServerStore 
+// zustand 파일로 옮겨서 전역적으로 관리 가능하게 함
 const useServerStore = create((set) => ({
   serverData: {
     serverInfo: null,
