@@ -1,4 +1,4 @@
-import s from "./ChatHeader.module.css";
+import s from "./ChatRoomInfo.module.css";
 import { TiUserAdd, TiGroup } from "react-icons/ti";
 
 import { RiSettings3Fill } from "react-icons/ri";

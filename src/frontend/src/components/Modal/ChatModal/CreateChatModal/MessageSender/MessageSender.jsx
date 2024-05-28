@@ -26,6 +26,13 @@ const MessageSender = ({
     setUploadedFileUrl(null); // 파일 URL 초기화
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      sendMessage();
+    }
+  };
+
   const toggleDropdown = () => {
     setIsDropdownOpen((prevState) => !prevState); // 드롭다운 메뉴 표시 여부
   };
@@ -86,6 +93,7 @@ const MessageSender = ({
             setChatMessage(e.target.value);
             handleTyping();
           }}
+          onKeyDown={handleKeyDown}
           placeholder="메세지 보내기"
         />
         <IoSend className={s.btn} onClick={sendMessage} />
