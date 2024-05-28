@@ -44,6 +44,10 @@ const MyPlanet = ({ servers }) => {
   const [showCreateServer, setShowCreateServer] = useState(false);
   const nav = useNavigate();
 
+  const serversPerPage = 4;
+  const startIndex = currentPage * serversPerPage;
+  const endIndex = Math.min(startIndex + serversPerPage, (servers || []).length);
+
   useEffect(() => {
     getRandomPlanetIcon();
   }, [getRandomPlanetIcon]);
@@ -70,27 +74,25 @@ const MyPlanet = ({ servers }) => {
     nav(`/server/${serverId}/menu`);
   };
 
-  const serversPerPage = 4;
-  const startIndex = currentPage * serversPerPage;
-  const endIndex = Math.min(startIndex + serversPerPage, (servers || []).length);
-
   return (
     <div className={style.wrapper}>
       <h3> 내 행성 </h3>
       <div className={style.planetContainer}>
         <Leftbtn onClick={handleLeft} />
         <div className={style.planetList}>
-        {(servers || []).slice(startIndex, endIndex).map((server) => (
+          {(servers || []).slice(startIndex, endIndex).map((server) => (
             <div key={server.serverId} className={style.planetItem}>
               <button
                 className={style.planetThumb}
                 onClick={() => handleServerClick(server.serverId)}
               >
-                <img
-                  src={server.profile ? (server.profile) : null}
-                  className={style.planetIcon}
-                  // alt="행성이미지"
-                />
+                {server.profile && (
+                  <img
+                    src={server.profile}
+                    className={style.planetIcon}
+                    alt="행성 이미지"
+                  />
+                )}
                 <div className={style.serverName}>{server.name}</div>
               </button>
             </div>

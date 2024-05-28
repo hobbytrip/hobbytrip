@@ -15,9 +15,9 @@ const CategoryView = () => {
     fetchServerData: state.fetchServerData,
   }));
 
-  // useEffect(() => {
-  //   fetchServerData(serverId, userId);
-  // }, [serverId, userId, serverData]);
+  useEffect(() => {
+    fetchServerData(serverId, userId);
+  }, []);
 
   const { serverInfo, serverCategories, serverChannels } = serverData;
   console.log(serverInfo)
@@ -29,7 +29,7 @@ const CategoryView = () => {
           <div className={style.topContainer}>
             <ChatHeader />
             {serverInfo  && (
-              <ChatHeaderModal name={serverInfo.name} id={serverInfo.serverId} />
+              <ChatHeaderModal />
             )}
             <ChatSearchBar />
           </div>

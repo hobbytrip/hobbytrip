@@ -105,6 +105,7 @@ export default function MediaCall() {
     { customSessionId: sessionId }, {
       headers: { 'Content-Type': 'application/json' },
       body: {
+        customSessionId: sessionId,
         userId: userData.userId,
         channelId: channelId,
         serverId: serverId

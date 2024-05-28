@@ -4,13 +4,20 @@ import { RiSettings3Fill } from "react-icons/ri";
 import { useEffect } from "react";
 import usePlanetIcon from "../../../../hooks/usePlanetIcon";
 import { useNavigate } from "react-router-dom";
+import useServerStore from "../../../../actions/useServerStore";
 
-export default function ChatHeader({ name, id }) {
+export default function ChatHeader({ }) {
   const nav = useNavigate();
   const [planetIcon, getRandomPlanetIcon] = usePlanetIcon();
   useEffect(() => {
     getRandomPlanetIcon();
   }, []);
+  const { serverData } = useServerStore((state) => ({
+    serverData: state.serverData,
+  }));
+  
+  const { serverInfo } = serverData;
+
   //임시 테스트로 랜덤 서버 이미지 불러옴
   return (
     <div className={s.wrapper}>
@@ -23,7 +30,7 @@ export default function ChatHeader({ name, id }) {
           />
         )}
         <h2 className={s.serverName}>
-          {name ? name : null}
+          {serverInfo.name ? serverInfo.name : null}
         </h2>
       </div>
       <div className={s.modals}>
@@ -31,7 +38,7 @@ export default function ChatHeader({ name, id }) {
         <TiGroup className={s.modal} />
         <RiSettings3Fill className={s.modal} 
           // serverId는 서버 아이디로 바꿔주기
-          onClick={() => nav(`/server/${id}/setting`)} /> 
+          onClick={() => nav(`/server/${serverInfo.serverId}/setting`)} /> 
       </div>
     </div>
   );

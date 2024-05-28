@@ -1,9 +1,11 @@
 import s from "./CreateServer.module.css";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import useServerStore from "./../../../../actions/useServerStore";
+import { TbCameraPlus } from "react-icons/tb";
 
+// const URL = 'http://34.64.217.76:8080';
 const URL = 'http://localhost:8080';
 
 function CreateServer() {
@@ -11,19 +13,25 @@ function CreateServer() {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [profileImage, setProfileImage] = useState(null);
+  const [profilePreview, setProfilePreview] = useState(null);
   const setServerData = useServerStore((state) => state.setServerData);
+  const imgRef = useRef();
   const nav = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (name === '') {
+      alert("행성 이름을 적어주세요");
+      return;
+    }
     try {
       const id = 1; // test용
       const formData = new FormData();
       const data = JSON.stringify({
         userId: id,
         name: name,
-        description: description,
-        category: category,
+        // description: description,
+        // category: category,
       });
       const communityData = new Blob([data], { type: "application/json" });
       formData.append("requestDto", communityData);
@@ -37,16 +45,28 @@ function CreateServer() {
         },
       });
 
-      if (response.status === 200) {
+      if (response.data.success) {
         console.log(response);
-        const serverId = response.data.data.serverId;
         setServerData({ serverInfo: response.data.data });
+        const serverId = response.data.data.serverId;
         nav(`/server/${serverId}/menu`);
       } else {
         console.log("행성 만들기 실패.");
       }
     } catch (error) {
       console.error("데이터 post 에러:", error);
+    }
+  };
+
+  const handleImage = () => {
+    const file = imgRef.current.files[0];
+    if (file) {
+      setProfileImage(file);
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = () => {
+        setProfilePreview(reader.result);
+      };
     }
   };
 
@@ -87,6 +107,24 @@ function CreateServer() {
           className={s.inputBox}
           onChange={(e) => setCategory(e.target.value)}
         />
+      </div>
+      <div className={s.formContainer}>
+        <h4 className={s.label}> 행성 아이콘 </h4>
+        <div className={s.addImg}>
+          <div>
+            {profilePreview ? <img src={profilePreview} alt="profile preview" /> : null}
+          </div>
+          <label className={s.addImgBtn}>
+            <h4>이미지 업로드</h4>
+            <input
+              type="file"
+              ref={imgRef}
+              style={{ display: 'none' }}
+              onChange={handleImage}
+            />
+            <TbCameraPlus style={{ width: '15px', height: '15px' }} />
+          </label>
+        </div>
       </div>
       <button className={s.createBtn} type="submit">
         행성 만들기

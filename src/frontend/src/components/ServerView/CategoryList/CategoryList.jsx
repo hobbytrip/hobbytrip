@@ -8,13 +8,20 @@ import { TiUserAdd } from "react-icons/ti";
 import { IoVideocam, IoSettings, IoDocument } from "react-icons/io5";
 import CreateChannel from '../../Modal/ServerModal/CreateChannel.jsx/CreateChannel';
 
-
 const URL = 'http://localhost:8080';
 
 const CategoryList = () => {
   
   return (
     <div className={style.categoryList}>
+      <div className={style.categoryHeader}>
+        <button>
+          {/* 카테고리 추가 */}
+        </button>
+        <button>
+          {/* 나가기 */}
+        </button>
+      </div>
       
       {/* {categories.map(category => (
         <Category key={category.categoryId} name={category.name}>

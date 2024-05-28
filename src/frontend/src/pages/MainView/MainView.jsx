@@ -14,7 +14,8 @@ const MainView = () => {
     const getMainData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/user/${userId}`
+          // `http://34.64.217.76:8080/user/${userId}`
+          `http://localhost:8080/user/${userId};`
         ); 
         const resData = response.data.data;
         console.log(resData);
