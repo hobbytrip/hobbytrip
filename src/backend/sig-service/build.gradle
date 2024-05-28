@@ -25,7 +25,7 @@ dependencies {
     //websocket
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5' //For application yaml Encryption
-
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     //openvidu
     implementation group: 'io.openvidu', name: 'openvidu-java-client', version: '2.29.0'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

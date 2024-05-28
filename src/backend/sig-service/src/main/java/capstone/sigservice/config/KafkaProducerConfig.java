@@ -1,6 +1,7 @@
 package capstone.sigservice.config;
 
 
+import capstone.sigservice.dto.UserLocationEventDto;
 import capstone.sigservice.dto.VoiceChannelEventDto;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,6 +42,16 @@ public class KafkaProducerConfig {
     @Bean
     public KafkaTemplate<String, VoiceChannelEventDto> voiceConnectionStateKafkaTemplate() {
         return new KafkaTemplate<>(voiceConnectionStateProducerFactory());
+    }
+
+    @Bean
+    public ProducerFactory<String, UserLocationEventDto>  UserLocationProducerFactory() {
+        return new DefaultKafkaProducerFactory<>(producerConfig());
+    }
+
+    @Bean
+    public KafkaTemplate<String, UserLocationEventDto> UserLocationKafkaTemplate() {
+        return new KafkaTemplate<>(UserLocationProducerFactory());
     }
 
 
