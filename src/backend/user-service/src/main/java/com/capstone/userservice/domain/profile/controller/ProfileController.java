@@ -108,9 +108,8 @@ public class ProfileController {
     }
 
     @GetMapping("/feign/profile/info/{userId}")
-    public DataResponseDto<Object> getUser(@PathVariable Long userId) {
-        UserFeignResponse response = profileService.userProfileRead(userId);
-        return DataResponseDto.of(response);
+    public UserFeignResponse getUser(@PathVariable Long userId) {
+        return profileService.userProfileRead(userId);
     }
 
     public String trimToken(String token) {

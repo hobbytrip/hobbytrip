@@ -1,9 +1,0 @@
-[submodule "src/backend/user-service/https:/github.com/hobbytrip/hobbytrip/tree/BE/user/src/backend/user-service"]
-	path = src/backend/user-service/https:/github.com/hobbytrip/hobbytrip/tree/BE/user/src/backend/user-service
-	url = https://github.com/hobbytrip/hobbytrip
-[submodule "src/backend/user-service/tree/BE/user/src/backend/user-service"]
-	path = src/backend/user-service/tree/BE/user/src/backend/user-service
-	url = https://github.com/hobbytrip/hobbytrip
-[submodule "src/backend/user-service/hobbytrip"]
-	path = src/backend/user-service/hobbytrip
-	url = https://github.com/hobbytrip/hobbytrip

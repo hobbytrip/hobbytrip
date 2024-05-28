@@ -1,6 +1,7 @@
 package com.capstone.userservice.domain.friend.dto.response;
 
 
+import com.capstone.userservice.domain.friend.dto.ConnectionState;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class FriendReadResponse {
     private Long userId;
     private Long friendId;
-    private String connectionState;
+    private ConnectionState connectionState;
     private String friendImageUrl;
     private String friendName;
 
