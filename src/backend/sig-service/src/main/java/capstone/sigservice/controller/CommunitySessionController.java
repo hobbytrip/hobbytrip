@@ -1,5 +1,6 @@
 package capstone.sigservice.controller;
 
+import capstone.sigservice.dto.UserLocationEventDto;
 import capstone.sigservice.dto.VoiceChannelEventDto;
 import capstone.sigservice.service.CommunitySessionService;
 import com.google.gson.JsonObject;
@@ -7,6 +8,7 @@ import java.net.URISyntaxException;
 import java.util.Map;
 
 
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -28,7 +30,7 @@ import io.openvidu.java.client.OpenViduJavaClientException;
 import io.openvidu.java.client.Session;
 
 
-@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "*")
 @RestController
 public class CommunitySessionController {
 
@@ -38,9 +40,15 @@ public class CommunitySessionController {
     private CommunitySessionService coummintySessionService;
 
     @Autowired
-    private KafkaTemplate<String, VoiceChannelEventDto> kafkaTemplate;
+    private KafkaTemplate<String, VoiceChannelEventDto> voiceConnectionStatekafkaTemplate;
+    @Autowired
+    private KafkaTemplate<String, UserLocationEventDto> userLocationEventKafkaTemplate;
+
+
     @Value("${spring.kafka.topic.voice-connection-state-event}")
     private String voiceConnectionStateTopic;
+    @Value("${spring.kafka.topic.user-location-event}")
+    private String userLocationEventTopic;
 
     //Service활용
     @PostMapping("/api/sessions")
@@ -62,7 +70,10 @@ public class CommunitySessionController {
         Connection connection = coummintySessionService.createConnection(sessionId,params);
 
         VoiceChannelEventDto voiceDto=coummintySessionService.createJoinVoiceDto(params);
-        kafkaTemplate.send(voiceConnectionStateTopic,voiceDto);
+        UserLocationEventDto locationDto=coummintySessionService.createUserLocationEventDto(params);
+        voiceConnectionStatekafkaTemplate.send(voiceConnectionStateTopic,voiceDto);
+        userLocationEventKafkaTemplate.send(userLocationEventTopic,locationDto);
+
         return new ResponseEntity<>(connection.getToken(), HttpStatus.OK);
     }
 
@@ -71,7 +82,7 @@ public class CommunitySessionController {
                                 @RequestBody Map<String,Object> params)
             throws OpenViduJavaClientException, OpenViduHttpException{
         VoiceChannelEventDto voiceDto=coummintySessionService.createLeaveVoiceDto(params);
-        kafkaTemplate.send(voiceConnectionStateTopic,voiceDto);
+        voiceConnectionStatekafkaTemplate.send(voiceConnectionStateTopic,voiceDto);
     }
 
     @PostMapping (value = "/api/fit/sessions/getToken")

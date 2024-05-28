@@ -18,7 +18,7 @@ public class KafkaTopicConfig {
 
     @Value("${spring.kafka.topic.voice-connection-state-event}")
     private String voiceConnectionStateTopic;
-
+    
     @Bean
     public KafkaAdmin kafkaAdmin() {
         Map<String, Object> configurations = new HashMap<>();

@@ -1,5 +1,6 @@
 package capstone.sigservice.service;
 
+import capstone.sigservice.dto.UserLocationEventDto;
 import capstone.sigservice.dto.VoiceConnectionState;
 import capstone.sigservice.dto.VoiceChannelEventDto;
 import com.google.gson.Gson;
@@ -83,7 +84,13 @@ public class CommunitySessionService {
         voiceDto.setVoiceConnectionState(VoiceConnectionState.VOICE_LEAVE);
         return voiceDto;
     }
-
+    public UserLocationEventDto createUserLocationEventDto(Map<String, Object> params){
+        UserLocationEventDto locationDto=new UserLocationEventDto();
+        locationDto.setServerId(Long.parseLong(String.valueOf(params.get("serverId"))));
+        locationDto.setChannelId(Long.parseLong(String.valueOf(params.get("channelId"))));
+        locationDto.setUserId(Long.parseLong(String.valueOf(params.get("userId"))));
+        return locationDto;
+    }
     public ResponseEntity<JsonObject> generateToken(Map<String, Object> params) {
         String sessionName = (String) params.get("sessionName");
 
