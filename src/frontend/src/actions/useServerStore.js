@@ -1,8 +1,9 @@
 import { create } from 'zustand';
 import axios from 'axios';
+import API from '../utils/API/API';
 
-// hooks/useServerData -> action/useServerStore 
-// zustand 파일로 옮겨서 전역적으로 관리 가능하게 함
+const SERVER_URL = API.COMM_SERVER
+
 const useServerStore = create((set) => ({
   serverData: {
     serverInfo: null,
@@ -14,9 +15,7 @@ const useServerStore = create((set) => ({
   setServerData: (newServerData) => set({ serverData: newServerData }),
   fetchServerData: async (serverId, userId) => {
     try {
-      // const URL = 'http://34.64.217.76:8080',
-      const URL = 'http://localhost:8080';
-      const response = await axios.get(`${URL}/server/${serverId}/${userId}`);
+      const response = await axios.get(`${SERVER_URL}/${serverId}/${userId}`);
       const responseData = response.data.data;
 
       set({

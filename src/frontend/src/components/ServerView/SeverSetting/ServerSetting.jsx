@@ -5,8 +5,9 @@ import style from './ServerSetting.module.css';
 import { TbCameraPlus, TbCheck } from "react-icons/tb";
 import { IoClose } from "react-icons/io5";
 import useServerStore from '../../../actions/useServerStore';
+import API from '../../../utils/API/API';
 
-const URL = 'http://localhost:8080';
+const SERVER_URL = API.COMM_SERVER;
 
 const ServerSetting = () => {
   const [serverName, setServerName] = useState('');
@@ -20,69 +21,57 @@ const ServerSetting = () => {
     setServerData: state.setServerData
   }));
   const serverInfo = serverData.serverInfo;
-  const nav = useNavigate();
   const imgRef = useRef();
-  // const userId = '1';
+  const nav = useNavigate();
+  const userId = 1;
 
   useEffect(() => {
     setServerName(serverInfo.name || '');
     setServerDescription(serverInfo.description || '');
     setServerCategory(serverInfo.category || '');
-    setProfileImage(serverInfo.profile);
+    setProfileImage(serverInfo.profile || null);
     setProfilePreview(serverInfo.profile || null);
     setOpenRoom(serverInfo.open || false);
   }, [serverInfo]);
 
-  // 수정이 안 돼서............. 수요일 회의에서 한 번 해보고 안 되면 후순위로 미룰 예정
-  const handleUpdate = async () => {
+  const handleUpdate = async (e) => {
+    e.preventDefault();
     if (serverName === '') {
       alert("행성 이름을 적어주세요");
       return;
     }
     try {
-      const id = 1; // test용
+      const id = 1;
       const formData = new FormData();
       const data = JSON.stringify({
         userId: id,
         name: serverName,
-        serverId: serverInfo.serverId,
+        serverId: serverInfo.serverId
         // description: description,
         // category: category,
       });
-      console.log(data);
-
       const communityData = new Blob([data], { type: "application/json" });
       formData.append("requestDto", communityData);
-      if(profileImage){
-        formData.append("profile", profileImage);
-      }
-      else{
-        formData.append("profile", null);
+      formData.append("profile", profileImage);
+
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}: ${value}`);
       }
 
-      // FormData 내용을 출력하여 확인
-      for (let pair of formData.entries()) {
-        console.log(pair[0], pair[1]);
-      }
-
-      const res = await axios.patch(`${URL}/server`, formData, {
+      const response = await axios.patch(SERVER_URL, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-      if (res.data.success) {
-        console.log(res);
-        const data = res.data;
-        setServerData({ serverInfo: data });
-        alert("수정이 완료되었습니다");
-        nav(`/server/${serverInfo.serverId}/menu`);
+
+      if (response.data.success) {
+        alert('성공!!!!!!!!!!!!!!')
+        console.log(response);
       } else {
-        alert("수정하는 중에 오류가 발생했습니다");
-        console.error(res);
+        console.log(response);        
       }
     } catch (error) {
-      alert("수정하는 중에 오류가 발생했습니다");
-      console.error('Error submitting update:', error);
+      console.error("데이터 post 에러:", error);
     }
   };
 
@@ -109,7 +98,7 @@ const ServerSetting = () => {
         alert("삭제 권한이 없습니다");
       } else {
         try {
-          const res = await axios.delete(`${URL}/server`, {
+          const res = await axios.delete(SERVER_URL, {
             data: {
               serverId: serverInfo.serverId,
               userId: userId,
@@ -168,7 +157,7 @@ const ServerSetting = () => {
             <h4>행성 아이콘 변경하기</h4>
             <div className={style.addImg}>
               <div>
-                {profilePreview ? <img src={profilePreview}  /> : null}
+                {profilePreview ? <img src={profilePreview} alt="profile preview" /> : null}
               </div>
               <label className={style.addImgBtn}>
                 <h4>이미지 업로드</h4>

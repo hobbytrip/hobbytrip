@@ -10,7 +10,6 @@ import CreateCategory from '../../Modal/ServerModal/Category/CreateCategory/Crea
 import useServerStore from '../../../actions/useServerStore';
 import CategorySetting from '../../Modal/ServerModal/Category/CategorySetting/CategorySetting';
 
-const URL = 'http://localhost:8080';
 
 const userId = 1; // 테스트용
 

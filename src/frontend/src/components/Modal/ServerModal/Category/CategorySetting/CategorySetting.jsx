@@ -2,8 +2,9 @@ import style from "./CategorySetting.module.css";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import useServerStore from "../../../../../actions/useServerStore";
+import API from "../../../../../utils/API/API";
 
-const URL = 'http://localhost:8080'; // URL 정의
+const CATEGORY_URL = API.COMM_CATEGORY;
 
 function CategorySetting({ userId, categoryId, onClose }) { // onClose 함수를 props로 받음
   const [name, setName] = useState("");
@@ -44,17 +45,16 @@ function CategorySetting({ userId, categoryId, onClose }) { // onClose 함수를
         name: name
       };
 
-      const res = await axios.patch(`${URL}/category`, data);
+      const res = await axios.patch(CATEGORY_URL, data);
 
       if (res.data.success) {
         console.log(res);
         const updatedCategory = res.data.data;
-        // 기존 카테고리 배열에서 해당 categoryId와 일치하는 카테고리를 찾음
         const updatedCategories = serverData.serverCategories.map(category => {
           if (category.categoryId === updatedCategory.categoryId) {
-            return updatedCategory; // 업데이트된 카테고리로 교체
+            return updatedCategory; 
           }
-          return category; // 기존 카테고리 유지
+          return category;
         });
         setServerData({ ...serverData, serverCategories: updatedCategories });
         onClose();
@@ -74,7 +74,7 @@ function CategorySetting({ userId, categoryId, onClose }) { // onClose 함수를
         alert("삭제 권한이 없습니다");
       } else {
         try {
-          const res = await axios.delete(`${URL}/category`, {
+          const res = await axios.delete(CATEGORY_URL, {
             data: {
               serverId: serverId,
               userId: userId,
@@ -83,7 +83,6 @@ function CategorySetting({ userId, categoryId, onClose }) { // onClose 함수를
           });
           if (res.status === 200) {
             alert("삭제되었습니다");
-            // 삭제가 성공하면 해당 categoryId와 일치하는 카테고리를 제거
             const updatedCategories = serverData.serverCategories.filter(category => category.categoryId !== categoryId);
             setServerData({ ...serverData, serverCategories: updatedCategories });
           } else {

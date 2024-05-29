@@ -2,10 +2,11 @@ import style from "./CreateCategory.module.css";
 import { useState } from "react";
 import axios from "axios";
 import useServerStore from "../../../../../actions/useServerStore";
+import API from "../../../../../utils/API/API";
 
-const URL = 'http://localhost:8080'; // URL 정의
+const CATEGORY_URL = API.COMM_CATEGORY
 
-function CreateCategory({ userId, onClose }) { // onClose 함수를 props로 받음
+function CreateCategory({ userId, onClose }) {
   const [name, setName] = useState("");
   const { serverData, setServerData } = useServerStore((state) => ({
     serverData: state.serverData,
@@ -25,13 +26,13 @@ function CreateCategory({ userId, onClose }) { // onClose 함수를 props로 받
         name: name
       };
 
-      const res = await axios.post(`${URL}/category`, data);
+      const res = await axios.post(CATEGORY_URL, data);
 
       if (res.data.success) {
         console.log(res);
         const updatedCategories = [...(serverData.serverCategories || []), res.data.data];
         setServerData({ ...serverData, serverCategories: updatedCategories });
-        onClose(); // 모달 닫기
+        onClose();
       } else {
         console.log("카테고리 만들기 실패.");
         console.log(res); 
@@ -45,7 +46,7 @@ function CreateCategory({ userId, onClose }) { // onClose 함수를 props로 받
     <>
       <form className={style.formWrapper} onSubmit={handleSubmit}>
         <div className={style.topContainer}>
-          <h3><b> 카테고리 만들기 </b></h3>
+          <h3><b> 마을 만들기 </b></h3>
         </div>
         <div className={style.name}>
           <div className={style.label}>
