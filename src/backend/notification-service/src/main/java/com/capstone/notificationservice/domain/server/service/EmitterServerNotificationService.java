@@ -144,7 +144,7 @@ public class EmitterServerNotificationService {
     }
 
 
-    @KafkaListener(topics = "${spring.kafka.topic.server-notification}", groupId = "${spring.kafka.consumer.group-id.server-notification}")
+    @KafkaListener(topics = "${spring.kafka.topic.server-notification}", groupId = "${spring.kafka.consumer.group-id.server-notification}", containerFactory="serverNotificationListenerContainerFactory")
     public void kafkaSend(ConsumerRecord<String, Object> record) throws JsonProcessingException {
         ServerNotificationDto serverNotification = new ObjectMapper().readValue(record.value().toString(),
                 ServerNotificationDto.class);

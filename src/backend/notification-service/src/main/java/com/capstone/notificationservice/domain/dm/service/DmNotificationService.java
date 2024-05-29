@@ -137,7 +137,7 @@ public class DmNotificationService {
         return notificationRepository.findDistinctDmroomIds();
     }
 
-    @KafkaListener(topics = "${spring.kafka.topic.dm-notification}", groupId = "${spring.kafka.consumer.group-id.dm-notification}")
+    @KafkaListener(topics = "${spring.kafka.topic.dm-notification}", groupId = "${spring.kafka.consumer.group-id.dm-notification}", containerFactory = "dmNotificationListenerContainerFactory")
     public void kafkaSend(ConsumerRecord<String, Object> record) throws JsonProcessingException {
         DmNotificationDto dmNotification = new ObjectMapper().readValue(record.value().toString(),
                 DmNotificationDto.class);
