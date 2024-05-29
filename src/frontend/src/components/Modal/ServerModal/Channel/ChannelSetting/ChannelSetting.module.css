@@ -1,0 +1,88 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.formWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 272px;
+  gap: 4px;
+  border-radius: 10px;
+  background-color: white;
+  padding: 10px 0;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.topContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 242px;
+  height: 38px;
+  gap: 5px;
+  padding: 0px 15px;
+}
+
+.topContainer h3 {
+  flex-grow: 1;
+}
+
+.name {
+  display: flex;
+  flex-direction: column;
+  width: 272px;
+  height: 49px;
+}
+
+.label {
+  margin-left: 15px;
+}
+
+.inputContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  font-size: 12px;
+  gap: 23px;
+  padding: 0px 9px 0px 10px;
+}
+
+.inputContainer input {
+  width: 215px;
+  height: 22px;
+  font-size: 12px;
+  border-radius: 5px;
+  background-color: var(--light-gray);
+}
+
+.createContainer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.createBtn {
+  font-size: 12px;
+  width: 72px;
+  color: white;
+  background-color: var(--main-purple);
+  margin: 10px auto;
+}
+
+.backButtonContainer {
+  display: flex;
+  justify-content: center;
+  /* margin-top: px;  */
+}
+
+.backButton {
+  background: none;
+  border: none;
+  color: var(--main-purple);
+  font-size: 12px;
+  cursor: pointer;
+}
