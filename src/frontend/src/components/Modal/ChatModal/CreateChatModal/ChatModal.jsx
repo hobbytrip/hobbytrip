@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import MessageSender from "../CreateChatModal/MessageSender/MessageSender";
 import useWebSocketStore from "../../../../actions/useWebSocketStore";
-import API from "../../../../utils/chatApi";
+import API from "../../../../utils/API/chatAPI";
 
 //웹소켓에 연결된 후 지정된 경로로 구독(subscribe)
 export default function ChatModal({ userId, writer, onNewMessage, client }) {
