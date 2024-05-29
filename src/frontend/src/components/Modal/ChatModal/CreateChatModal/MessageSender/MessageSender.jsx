@@ -3,7 +3,7 @@ import s from "./MessageSender.module.css";
 import { IoSend } from "react-icons/io5";
 import { FaCirclePlus } from "react-icons/fa6";
 import FileUpload from "../../../../Common/ChatRoom/FileUpload";
-import API from "../../../../../utils/API/chatAPI";
+import API from "../../../../../utils/API/API";
 
 const MessageSender = ({
   onMessageSend,

@@ -12,7 +12,7 @@ import ChatMessage from "../../../components/Modal/ChatModal/ChatMessage/ChatMes
 import ChatChannelType from "../../../components/Modal/ChatModal/ChatChannelType/ChatChannelType";
 import InfiniteScrollComponent from "../../../components/Common/ChatRoom/InfiniteScrollComponent";
 import useWebSocketStore from "../../../actions/useWebSocketStore";
-import API from "../../../utils/API/chatAPI";
+import API from "../../../utils/API/API";
 
 const fetchChatHistory = async ({ queryKey }) => {
   const [_, channelId, page] = queryKey;
