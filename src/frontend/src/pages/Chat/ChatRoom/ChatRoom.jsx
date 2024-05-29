@@ -12,20 +12,18 @@ import ChatMessage from "../../../components/Modal/ChatModal/ChatMessage/ChatMes
 import ChatChannelType from "../../../components/Modal/ChatModal/ChatChannelType/ChatChannelType";
 import InfiniteScrollComponent from "../../../components/Common/ChatRoom/InfiniteScrollComponent";
 import useWebSocketStore from "../../../actions/useWebSocketStore";
+import API from "../../../utils/chatApi";
 
 const fetchChatHistory = async ({ queryKey }) => {
   const [_, channelId, page] = queryKey;
   try {
-    const response = await axios.get(
-      `http://localhost:7070/server/messages/channel`,
-      {
-        params: {
-          channelId,
-          page,
-          size: 20,
-        },
-      }
-    );
+    const response = await axios.get(API.GET_HISTORY, {
+      params: {
+        channelId,
+        page,
+        size: 20,
+      },
+    });
     const responseData = response.data.data;
     return responseData.data.reverse();
   } catch (err) {
@@ -36,14 +34,11 @@ const fetchChatHistory = async ({ queryKey }) => {
 
 const postUserLocation = async (userId, serverId, channelId) => {
   try {
-    const response = await axios.post(
-      `http://localhost:7070/server/user/location`,
-      {
-        userId,
-        serverId,
-        channelId,
-      }
-    );
+    const response = await axios.post(API.POST_LOCATION, {
+      userId,
+      serverId,
+      channelId,
+    });
     console.log("User location:", response.data);
   } catch (err) {
     console.error("사용자 위치 POST 실패", err);
@@ -108,7 +103,7 @@ function ChatRoom({ userId }) {
   };
 
   const handleModifyMessage = (messageId, newContent) => {
-    modifyMessage("/ws/api/chat/server/message/modify", {
+    modifyMessage(API.MODIFY_CHAT, {
       serverId: serverId,
       messageId: messageId,
       content: newContent,
@@ -121,7 +116,7 @@ function ChatRoom({ userId }) {
   };
 
   const handleDeleteMessage = (messageId) => {
-    modifyMessage("/ws/api/chat/server/message/delete", {
+    deleteMessage(API.DELETE_CHAT, {
       serverId: serverId,
       messageId: messageId,
     });

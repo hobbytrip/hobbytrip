@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import MessageSender from "../CreateChatModal/MessageSender/MessageSender";
+import DmMessageSender from "./MessageSender/MessageSender";
 import useWebSocketStore from "../../../../actions/useWebSocketStore";
 import API from "../../../../utils/chatApi";
 
 //웹소켓에 연결된 후 지정된 경로로 구독(subscribe)
-export default function ChatModal({ userId, writer, onNewMessage, client }) {
-  const { serverId, channelId } = useParams();
+//dm은 roomId 넘겨받아야 함.
+export default function ChatModal({
+  userId,
+  writer,
+  onNewMessage,
+  client,
+  roomId,
+}) {
   const [chatList, setChatList] = useState([]);
   const [typingUsers, setTypingUsers] = useState([]);
   const { sendMessage } = useWebSocketStore((state) => ({
@@ -16,7 +21,8 @@ export default function ChatModal({ userId, writer, onNewMessage, client }) {
   useEffect(() => {
     if (client) {
       client.onConnect = () => {
-        client.subscribe(API.SUBSCRIBE_CHAT(serverId), (frame) => {
+        //dm구독
+        client.subscribe(API.SUBSCRIBE_DM(roomId), (frame) => {
           try {
             const parsedMessage = JSON.parse(frame.body);
             if (
@@ -50,12 +56,12 @@ export default function ChatModal({ userId, writer, onNewMessage, client }) {
               );
             }
           } catch (error) {
-            console.error("구독 오류", error);
+            console.error("DM 구독 오류", error);
           }
         });
       };
     }
-  }, [client, serverId, userId, onNewMessage]);
+  }, [client, userId, onNewMessage, roomId]);
 
   const handleSendMessage = (messageContent, uploadedFile) => {
     const messageBody = {
@@ -71,7 +77,7 @@ export default function ChatModal({ userId, writer, onNewMessage, client }) {
     if (uploadedFile) {
       messageBody.files = [uploadedFile];
     }
-    sendMessage(API.SEND_CHAT, messageBody);
+    sendMessage(API.SEND_DM, messageBody);
     setChatList((prevChatList) => [...prevChatList, messageBody]);
     if (onNewMessage) {
       onNewMessage(messageBody);
@@ -96,12 +102,11 @@ export default function ChatModal({ userId, writer, onNewMessage, client }) {
         </div>
       )}
 
-      <MessageSender
+      <DmMessageSender
         onMessageSend={handleSendMessage}
-        serverId={serverId}
-        channelId={channelId}
         writer={writer}
         client={client}
+        roomId={roomId}
       />
     </div>
   );
