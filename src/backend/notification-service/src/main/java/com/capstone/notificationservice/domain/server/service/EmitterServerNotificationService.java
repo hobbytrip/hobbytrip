@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class EmitterServerNotificationService {
     private final EmitterRepository emitterRepository;
@@ -155,5 +157,10 @@ public class EmitterServerNotificationService {
         List<Long> receiverIds = serverNotification.getReceiverIds(); // 수신자 ID 목록, DmNotificationDto에 해당 필드가 존재한다고 가정
 
         send(sendId, serverId, mentionType, alarmType, content, receiverIds);
+        log.info("getSendId {}", serverNotification.getUserId());
+        log.info("getServerId {}", serverNotification.getServerId());
+        log.info("getAlarmType {}", serverNotification.getAlarmType());
+        log.info("getContent {}", serverNotification.getContent());
+        log.info("getReceiverIds {}", serverNotification.getReceiverIds());
     }
 }

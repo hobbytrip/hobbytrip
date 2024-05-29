@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DmNotificationService {
     private final EmitterRepository emitterRepository;
     private final NotificationRepository notificationRepository;
@@ -147,5 +149,10 @@ public class DmNotificationService {
         List<Long> receiverIds = dmNotification.getReceiverIds(); // 수신자 ID 목록, DmNotificationDto에 해당 필드가 존재한다고 가정
 
         send(sendId, dmRoomId, alarmType, content, receiverIds);
+        log.info("getUserId {}", dmNotification.getUserId());
+        log.info("getDmRoomId {}", dmNotification.getDmRoomId());
+        log.info("getAlarmType {}", dmNotification.getAlarmType());
+        log.info("getContent {}", dmNotification.getContent());
+        log.info("getReceiverIds {}", dmNotification.getReceiverIds());
     }
 }
