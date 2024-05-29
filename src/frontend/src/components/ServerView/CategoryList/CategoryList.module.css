@@ -12,12 +12,18 @@
 .categoryList button {
   background: none;
   border: none;
+  color: var(--dark-gray);
+}
+
+.categoryList li {
+  list-style-type: none;
 }
 
 .category {
   width: 324px;
   gap: 10px;
   padding: 9px 33px;
+  border-bottom: 1px solid var(--light-gray);
 }
 
 .categoryHeader {
@@ -44,21 +50,8 @@
   flex-grow: 1;
 }
 
-.category button {
+.iconPurple {
   color: var(--main-purple);
-}
-
-.channel {
-  display: flex;
-  align-items: center;
-  width: 322px;
-  height: 20px;
-  gap: 5px;
-  padding: 5px;
-}
-
-.channel div {
-  flex-grow: 1;
 }
 
 .createServerModal {

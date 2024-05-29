@@ -71,8 +71,7 @@ const MyPlanet = ({ servers }) => {
   };
 
   const handleServerClick = (serverId) => {
-    // 임의로 카테고리 뷰로 가게 해둠
-    nav(`/server/${serverId}/menu`);
+    nav(`${serverId}/menu`);
   };
 
   return (

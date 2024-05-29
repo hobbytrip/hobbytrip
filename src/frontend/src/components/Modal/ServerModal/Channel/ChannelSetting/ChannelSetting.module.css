@@ -1,12 +1,19 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .formWrapper {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  height: 304px;
   width: 272px;
   gap: 4px;
   border-radius: 10px;
   background-color: white;
+  padding: 10px 0;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .topContainer {
@@ -23,47 +30,6 @@
   flex-grow: 1;
 }
 
-.type {
-  gap: 4px;
-}
-
-.label {
-  /* width: 242px; */
-  height: 17px;
-  padding: 0px 15px;
-  gap: 9px;
-}
-
-.typeSelectRadio {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 4px;
-}
-
-.typeRadioOption {
-  display: flex;
-  align-items: center;
-  /* justify-content: space-between; */
-  width: 208px;
-  height: 28px;
-  gap: 18px;
-  padding: 0px 15px 0px 12px;
-}
-
-.typeRadioOption h4 {
-  flex-grow: 1;
-  /* width: 150px; */
-}
-
-
-.purpleIcon {
-  color: var(--main-purple);
-  width: 18px;
-  height: 18px;
-}
-
 .name {
   display: flex;
   flex-direction: column;
@@ -71,11 +37,14 @@
   height: 49px;
 }
 
+.label {
+  margin-left: 15px;
+}
+
 .inputContainer {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* width: 234px; */
   height: 28px;
   font-size: 12px;
   gap: 23px;
@@ -90,18 +59,6 @@
   background-color: var(--light-gray);
 }
 
-.open {
-  display: flex;
-  align-items: center;
-  height: 37px;
-  padding: 0px 15px;
-}
-
-.openExplain {
-  width: 206px;
-  /* flex-grow: 1; */
-}
-
 .createContainer {
   display: flex;
   justify-content: flex-end;
@@ -111,7 +68,21 @@
 .createBtn {
   font-size: 12px;
   width: 72px;
-  background-color: var(--main-purple);
   color: white;
+  background-color: var(--main-purple);
   margin: 10px auto;
+}
+
+.backButtonContainer {
+  display: flex;
+  justify-content: center;
+  /* margin-top: px;  */
+}
+
+.backButton {
+  background: none;
+  border: none;
+  color: var(--main-purple);
+  font-size: 12px;
+  cursor: pointer;
 }

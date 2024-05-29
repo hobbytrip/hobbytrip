@@ -4,9 +4,9 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import useServerStore from "./../../../../actions/useServerStore";
 import { TbCameraPlus } from "react-icons/tb";
+import API from "../../../../utils/API/API";
 
-// const URL = 'http://34.64.217.76:8080';
-const URL = 'http://localhost:8080';
+const SERVER_URL = API.COMM_SERVER;
 
 function CreateServer() {
   const [name, setName] = useState("");
@@ -39,7 +39,11 @@ function CreateServer() {
         formData.append("profile", profileImage);
       }
 
-      const response = await axios.post(`${URL}/server`, formData, {
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}: ${value}`);
+      }
+
+      const response = await axios.post(SERVER_URL, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -49,7 +53,7 @@ function CreateServer() {
         console.log(response);
         setServerData({ serverInfo: response.data.data });
         const serverId = response.data.data.serverId;
-        nav(`/server/${serverId}/menu`);
+        nav(`/${serverId}/menu`);
       } else {
         console.log("행성 만들기 실패.");
       }

@@ -1,40 +1,43 @@
-import style from "./CategorySetting.module.css";
+// ChannelSetting.jsx
+
+import style from "./ChannelSetting.module.css";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import useServerStore from "../../../../../actions/useServerStore";
 import API from "../../../../../utils/API/API";
 
-const CATEGORY_URL = API.COMM_CATEGORY;
+const CHANNEL_URL = API.COMM_CHANNEL;
 
-function CategorySetting({ userId, categoryId, onClose }) { // onClose 함수를 props로 받음
+function ChannelSetting({ userId, channel, onClose }) { 
   const [name, setName] = useState("");
   const { serverData, setServerData } = useServerStore((state) => ({
     serverData: state.serverData,
     setServerData: state.setServerData
   }));
+  const channelId = channel.channelId;
+  const categoryId = channel.categoryId;
 
-  const serverId = serverData.serverInfo.serverId;
   useEffect(() => {
-    const fetchCategory = async () => {
+    const fetchChannel = async () => {
       try {
-        const category = serverData.serverCategories.find(cat => cat.categoryId === categoryId);
-        if (category) {
-          setName(category.name); 
+        const channel = serverData.serverChannels.find(cat => cat.channelId === channelId);
+        if (channel) {
+          setName(channel.name); 
         } else {
-          console.error("Category not found.");
+          console.error("channel not found.");
         }
       } catch (error) {
-        console.error("Error fetching category data:", error);
+        console.error("Error fetching channel data:", error);
       }
     };
   
-    fetchCategory();
-  }, [categoryId, serverData.serverCategories]);
+    fetchChannel();
+  }, [channelId, serverData.serverChannels]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if(name === ''){
-      alert("카테고리 이름을 입력해주세요");
+      alert("채널 이름을 입력해주세요");
       return;
     }
     try {
@@ -42,21 +45,22 @@ function CategorySetting({ userId, categoryId, onClose }) { // onClose 함수를
         userId: userId,
         serverId: serverData.serverInfo.serverId,
         categoryId: categoryId,
+        channelId: channelId,
         name: name
       };
 
-      const res = await axios.patch(CATEGORY_URL, data);
+      const res = await axios.patch(CHANNEL_URL, data);
 
       if (res.data.success) {
         console.log(res);
-        const updatedCategory = res.data.data;
-        const updatedCategories = serverData.serverCategories.map(category => {
-          if (category.categoryId === updatedCategory.categoryId) {
-            return updatedCategory; 
+        const updatedChannel = res.data.data;
+        const updatedChannels = serverData.serverChannels.map(channel => {
+          if (channel.channelId === updatedChannel.channelId) {
+            return updatedChannel; 
           }
-          return category;
+          return channel;
         });
-        setServerData({ ...serverData, serverCategories: updatedCategories });
+        setServerData({ ...serverData, serverChannels: updatedChannels });
         onClose();
       } else {
         console.log("카테고리 수정 실패.");
@@ -74,17 +78,17 @@ function CategorySetting({ userId, categoryId, onClose }) { // onClose 함수를
         alert("삭제 권한이 없습니다");
       } else {
         try {
-          const res = await axios.delete(CATEGORY_URL, {
+          const res = await axios.delete(CHANNEL_URL, {
             data: {
-              serverId: serverId,
+              serverId: serverData.serverInfo.serverId,
               userId: userId,
-              categoryId: categoryId
+              channelId: channelId
             },
           });
           if (res.status === 200) {
             alert("삭제되었습니다");
-            const updatedCategories = serverData.serverCategories.filter(category => category.categoryId !== categoryId);
-            setServerData({ ...serverData, serverCategories: updatedCategories });
+            const updatedChannels = serverData.serverChannels.filter(c => c.channelId !== channelId);
+            setServerData({ ...serverData, serverChannels: updatedChannels });
           } else {
             alert("삭제하는 중에 오류가 발생했습니다");
             console.error(res);
@@ -99,9 +103,10 @@ function CategorySetting({ userId, categoryId, onClose }) { // onClose 함수를
 
   return (
     <>
+    <div className={style.wrapper}>
       <form className={style.formWrapper} onSubmit={handleSubmit}>
         <div className={style.topContainer}>
-          <h3><b> 카테고리 설정 </b></h3>
+          <h3><b> 채널 설정 </b></h3>
         </div>
         <div className={style.name}>
           <div className={style.label}>
@@ -129,8 +134,16 @@ function CategorySetting({ userId, categoryId, onClose }) { // onClose 함수를
           <h5>삭제하기</h5>
         </button>
       </form>
+      <div className={style.backButtonContainer}>
+        <button className={style.backButton} onClick={onClose}>
+        <h4 style={{ color: "#fff", textDecoration: "underline" }}>
+          뒤로 가기
+        </h4>
+        </button>
+      </div>
+    </div>
     </>
   );
 }
 
-export default CategorySetting;
+export default ChannelSetting;
