@@ -30,6 +30,7 @@ out/
 !**/src/test/**/out/
 application.properties
 application.yml
+.gitmodules
 
 
 ### NetBeans ###
