@@ -15,7 +15,7 @@ const ServerSetting = () => {
   const [serverCategory, setServerCategory] = useState('');
   const [profileImage, setProfileImage] = useState(null);
   const [profilePreview, setProfilePreview] = useState(null);
-  const [openRoom, setOpenRoom] = useState(false);
+  const [isOpen, setisOpen] = useState(false);
   const { serverData, setServerData } = useServerStore((state) => ({
     serverData: state.serverData,
     setServerData: state.setServerData
@@ -31,7 +31,7 @@ const ServerSetting = () => {
     setServerCategory(serverInfo.category || '');
     setProfileImage(serverInfo.profile || null);
     setProfilePreview(serverInfo.profile || null);
-    setOpenRoom(serverInfo.open || false);
+    setisOpen(serverInfo.open || false);
   }, [serverInfo]);
 
   const handleUpdate = async (e) => {
@@ -44,15 +44,22 @@ const ServerSetting = () => {
       const id = 1;
       const formData = new FormData();
       const data = JSON.stringify({
+        serverId: serverInfo.serverId,
         userId: id,
         name: serverName,
-        serverId: serverInfo.serverId
-        // description: description,
+        description: serverDescription,
+        open: isOpen
         // category: category,
       });
       const communityData = new Blob([data], { type: "application/json" });
       formData.append("requestDto", communityData);
-      formData.append("profile", profileImage);
+      if(profileImage !== null){
+        formData.append("profile", profileImage);
+      }
+      else{
+        formData.append("profile", 'null');
+      }
+      console.log(data)
 
       for (let [key, value] of formData.entries()) {
         console.log(`${key}: ${value}`);

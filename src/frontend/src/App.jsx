@@ -30,8 +30,8 @@ function App() {
         <Route path="/user/profile" element={<UserProfileView />} />
         <Route path="/main" element={<MainView />} />
         <Route path="/menu" element={<MenuView />} />
-        <Route path="/server/:serverId/:setting" element={<SettingView />} />
-        <Route path="/server/:serverId/menu" element={<CategoryView />} />
+        <Route path="/:serverId/setting" element={<SettingView />} />
+        <Route path="/:serverId/menu" element={<CategoryView />} />
         <Route path="/:serverId/:channelId/vid" element={<MediaView />} />
       </Routes>
     </Router>

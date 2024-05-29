@@ -111,7 +111,7 @@
 .createBtn {
   font-size: 12px;
   width: 72px;
-  color: white;
   background-color: var(--main-purple);
+  color: white;
   margin: 10px auto;
 }

@@ -1,51 +1,50 @@
 import style from "./CreateChannel.module.css";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { IoCheckmarkCircleOutline, IoCheckmarkCircle, IoDocuments } from "react-icons/io5";
 import { HiHome, HiMiniSpeakerWave } from "react-icons/hi2";
 import { MdOutlineNumbers } from "react-icons/md";
-// import useServerData from "../../../../hooks/useServerData";
 import useServerStore from "../../../../../actions/useServerStore";
+import API from "../../../../../utils/API/API";
 
-function CreateChannel() {
+const CHANNEL_URL = API.COMM_CHANNEL;
+
+function CreateChannel( props ) {
   const [name, setName] = useState("");
   const [type, setType] = useState("CHAT");
   const [open, setOpen] = useState(false);
-  const nav = useNavigate();
+  const { serverData, setServerData } = useServerStore((state) => ({
+    serverData: state.serverData,
+    setServerData: state.setServerData
+  }));
   // const axios = useAxios();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if(name === ''){
+      alert("채널 이름을 입력해주세요");
+      return;
+    }
     try {
-      const id = 1; //test용
-      const serverId = 2;
-      const formData = new FormData();
-      formData.append(
-        "requestDto",
-        JSON.stringify({ userId: id, serverId, categoryId, type, name })
-      );
-      const response = await axios.post("http://localhost:8080/api/community/channel", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        }
-      });
-      if (response.status == 200) {
-        const { defaultChannelInfo } = useServerStore(
-          serverId,
-          id
-        ).serverChannels;
-        const defaultChannelId = defaultChannelInfo[0].channelId;
-        if (defaultChannelInfo.type === 'CHAT') {
-          nav(`/planet/${serverId}/${defaultChannelId}`);
-        } else if (defaultChannelInfo.type === 'VOICE') {
-          nav(`/planet/${serverId}/${defaultChannelId}`);
-        } else if (defaultChannelInfo.type === 'FORUM') {
-          nav(`/planet/${serverId}/${defaultChannelId}`);
-        }
-        nav(`/planet/${serverId}/${defaultChannelId}`);
+      const formData = {
+        userId: props.userId,
+        serverId: serverData.serverInfo.serverId,
+        categoryId: props.categoryId,
+        channelType: type,
+        name: name
+      };
+      console.log(formData)
+      const res = await axios.post(CHANNEL_URL, formData);
+    
+      if (res.data.success) {
+        console.log(res);
+        const updatedChannels = [...(serverData.serverChannels || []), res.data.data];
+        setServerData({ ...serverData, serverChannels: updatedChannels }); // 여기 수정
+        console.log(serverData)
+        props.onClose();
       } else {
-        console.log("행성 만들기 실패.");
+        console.log("채널 만들기 실패.");
+        console.log(res); 
       }
     } catch (error) {
       console.error("데이터 post 에러:", error);
@@ -119,8 +118,11 @@ function CreateChannel() {
         </div>
         
         <div className={style.createContainer}>
-          <button className={style.createBtn} type="submit">
-            마을 만들기
+          <button 
+            className={style.createBtn}
+            style={{backgroundColor: 'var(--main-purple)', color:'white'}}
+            type="submit">
+            채널 만들기
           </button>
         </div>
       </form>

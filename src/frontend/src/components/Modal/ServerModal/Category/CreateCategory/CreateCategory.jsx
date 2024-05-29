@@ -1,6 +1,7 @@
 import style from "./CreateCategory.module.css";
 import { useState } from "react";
 import axios from "axios";
+import { HiHome } from "react-icons/hi2";
 import useServerStore from "../../../../../actions/useServerStore";
 import API from "../../../../../utils/API/API";
 
@@ -46,6 +47,7 @@ function CreateCategory({ userId, onClose }) {
     <>
       <form className={style.formWrapper} onSubmit={handleSubmit}>
         <div className={style.topContainer}>
+          <HiHome />
           <h3><b> 마을 만들기 </b></h3>
         </div>
         <div className={style.name}>

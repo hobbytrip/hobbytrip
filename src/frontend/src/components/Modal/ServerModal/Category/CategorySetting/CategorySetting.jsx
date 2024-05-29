@@ -119,14 +119,14 @@ function CategorySetting({ userId, categoryId, onClose }) { // onClose 함수를
         
         <div className={style.createContainer} >
           <button className={style.createBtn} 
-            style={{ backgroundColor: 'var(--main-purple)' }}
+            style={{backgroundColor: 'var(--main-purple)', color:'white'}}
             type="submit">
             저장하기
           </button>
         </div>
         
         <button onClick={handleDelete}>
-          삭제하기
+          <h5>삭제하기</h5>
         </button>
       </form>
     </>

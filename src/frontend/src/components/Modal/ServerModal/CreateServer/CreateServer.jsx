@@ -39,6 +39,10 @@ function CreateServer() {
         formData.append("profile", profileImage);
       }
 
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}: ${value}`);
+      }
+
       const response = await axios.post(SERVER_URL, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -49,7 +53,7 @@ function CreateServer() {
         console.log(response);
         setServerData({ serverInfo: response.data.data });
         const serverId = response.data.data.serverId;
-        nav(`/server/${serverId}/menu`);
+        nav(`/${serverId}/menu`);
       } else {
         console.log("행성 만들기 실패.");
       }
