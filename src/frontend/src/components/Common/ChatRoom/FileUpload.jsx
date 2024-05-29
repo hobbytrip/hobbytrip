@@ -1,23 +1,18 @@
 import React, { useState, useRef } from "react";
 import axios from "axios";
 
-const FileUpload = ({ onFileUpload }) => {
+const FileUpload = ({ onFileUpload, api }) => {
   const fileInputRef = useRef(null);
-
   const uploadFile = async (file) => {
     try {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await axios.post(
-        "http://localhost:7070/server/message/file",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await axios.post(api, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       return response.data.data;
     } catch (error) {
       console.error("파일 업로드 실패", error);

@@ -2,16 +2,10 @@ import React, { useState, useRef } from "react";
 import s from "./MessageSender.module.css";
 import { IoSend } from "react-icons/io5";
 import { FaCirclePlus } from "react-icons/fa6";
-import FileUpload from "../../../../Common/ChatRoom/FileUpload";
+import FileUpload from "../../Common/ChatRoom/FileUpload";
 import API from "../../../../../utils/API/API";
 
-const MessageSender = ({
-  onMessageSend,
-  serverId,
-  channelId,
-  writer,
-  client,
-}) => {
+const DmMessageSender = ({ onMessageSend, roomId, writer, client }) => {
   const [chatMessage, setChatMessage] = useState("");
   const [uploadedFileUrl, setUploadedFileUrl] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -50,10 +44,9 @@ const MessageSender = ({
   const notifyTyping = () => {
     try {
       client.publish({
-        destination: typingDestination,
+        destination: API.SUBSCRIBE_DM(roomId),
         body: JSON.stringify({
-          serverId: serverId,
-          channelId: channelId,
+          dmRoomId: roomId,
           writer: writer,
         }),
       });
@@ -75,7 +68,6 @@ const MessageSender = ({
           <div className={s.dropdownContent}>
             <FileUpload
               onFileUpload={(fileUrl) => setUploadedFileUrl(fileUrl)}
-              api={API.FILE_UPLOAD}
             />
             <h4 style={{ color: "black" }}>⚡스레드 만들기</h4>
           </div>
@@ -104,4 +96,4 @@ const MessageSender = ({
   );
 };
 
-export default MessageSender;
+export default DmMessageSender;
