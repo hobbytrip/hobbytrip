@@ -37,7 +37,7 @@ public class FriendshipService {
             String fromEmail = tokenUtil.getEmail(token);
 
             // 이미 친구 요청을 보냈거나 친구 상태인지 확인
-            Optional<Friendship> existingFriendship = friendshipRepository.findByEmail(toEmail);
+            Optional<Friendship> existingFriendship = friendshipRepository.findByuserEmail(toEmail);
             if (existingFriendship.isPresent()) {
                 throw new FriendException(Code.INTERNAL_ERROR, "이미 친구 요청을 보냈거나 친구 상태입니다.");
             }
