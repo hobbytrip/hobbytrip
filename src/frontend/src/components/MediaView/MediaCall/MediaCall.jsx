@@ -173,7 +173,7 @@ export default function MediaCall() {
       <div className={style.container}>
         <div className={style.headerContainer}>
           <HiMiniSpeakerWave style={{ width: '15px', height: '15px' }} />
-          <h4> 생생한 자세 교정 </h4>
+          <h4> {channelId} </h4>
           <button>
             <AiFillMessage style={{ width: '18.66px', height: '18.66px' }} />
           </button>
