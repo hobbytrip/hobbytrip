@@ -13,7 +13,7 @@ public interface NotificationRepository extends JpaRepository<DmNotification, Lo
     @Transactional
     @Query("DELETE FROM DmNotification sn WHERE sn.receiver.userId = :userId AND sn.dmRoomId = :dmRoomId")
     void deleteByUserIdAndDmRoomId(@Param("userId") Long userId, @Param("dmRoomId") Long dmRoomId);
-    @Query("SELECT DISTINCT n.dmRoomId FROM DmNotification n")
-    List<Long> findDistinctDmroomIds();
+    @Query("SELECT DISTINCT n.dmRoomId FROM DmNotification n WHERE n.receiver.userId = :userId")
+    List<Long> findDistinctDmRoomIds(@Param("userId") Long userId);
 
 }

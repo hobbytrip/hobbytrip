@@ -35,7 +35,7 @@ public class DmNotificationController {
     }
 
     @GetMapping("/dm/dmRoomIds")
-    public DataResponseDto<List<Long>> getDistinctDmroomIds() {
-        return DataResponseDto.of(notificationService.getDistinctDmRoomId());
+    public DataResponseDto<List<Long>> getDistinctDmRoomIds(@RequestParam Long userId) {
+        return DataResponseDto.of(notificationService.getDistinctDmRoomId(userId));
     }
 }

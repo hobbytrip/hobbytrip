@@ -133,8 +133,8 @@ public class DmNotificationService {
     }
 
     @Transactional
-    public List<Long> getDistinctDmRoomId() {
-        return notificationRepository.findDistinctDmroomIds();
+    public List<Long> getDistinctDmRoomId(Long userId) {
+        return notificationRepository.findDistinctDmRoomIds(userId);
     }
 
     @KafkaListener(topics = "${spring.kafka.topic.dm-notification}", groupId = "${spring.kafka.consumer.group-id.dm-notification}", containerFactory = "dmNotificationListenerContainerFactory")

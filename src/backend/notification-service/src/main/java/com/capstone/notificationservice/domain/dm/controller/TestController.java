@@ -47,8 +47,8 @@ public class TestController {
         return dmNotificationService.subscribe(userId, lastEventId);
     }
     @GetMapping("/test/dmroom-ids")
-    public List<Long> getDistinctDmroomIds() {
-        return dmNotificationService.getDistinctDmRoomId();
+    public List<Long> getDistinctDmRoomIds(@RequestParam Long userId) {
+        return dmNotificationService.getDistinctDmRoomId(userId);
     }
 
 

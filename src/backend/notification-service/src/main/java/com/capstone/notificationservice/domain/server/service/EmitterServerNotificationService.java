@@ -139,8 +139,8 @@ public class EmitterServerNotificationService {
     }
 
     @Transactional
-    public List<Long> getDistinctDmRoomId() {
-        return serverNotificationRepository.findDistinctServerIds();
+    public List<Long> getDistinctServerRoomId(Long userId) {
+        return serverNotificationRepository.findDistinctServerIds(userId);
     }
 
 
