@@ -1,10 +1,9 @@
-import useAuthStore from "../../actions/useAuthStore";
 import { axiosInstance } from "../../utils/axiosInstance";
+import API from "../../utils/API/TEST_API";
 
 const Login = async (email, password) => {
-  const setTokens = useAuthStore.getState().setTokens;
   try {
-    const response = await axiosInstance.post("/user/login", {
+    const response = await axiosInstance.post(API.LOG_IN, {
       email,
       password,
     });
