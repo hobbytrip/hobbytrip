@@ -1,0 +1,17 @@
+.wrapper {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  gap: 230px;
+  border-bottom: solid 2px #ededed;
+  padding-left: 25px;
+}
+.container {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+.chatIcon {
+  height: 20px;
+  width: 20px;
+}

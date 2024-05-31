@@ -1,0 +1,14 @@
+.wrapper {
+  background-color: var(--main-purple);
+  width: 390px;
+  display: flex;
+  flex-direction: column;
+  /* overflow: hidden; */
+}
+.chatContainer {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
