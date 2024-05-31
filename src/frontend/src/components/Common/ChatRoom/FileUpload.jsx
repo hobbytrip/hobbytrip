@@ -1,29 +1,44 @@
-import React, { useState, useRef } from "react";
+import React, { useRef } from "react";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 
-const FileUpload = ({ onFileUpload, api }) => {
+const FileUpload = ({ onFileUpload, api, userId, writer }) => {
+  const { serverId, channelId } = useParams();
   const fileInputRef = useRef(null);
-  const uploadFile = async (file) => {
+  const uploadFile = async (file, requestDatas) => {
     try {
       const formData = new FormData();
+
       formData.append("file", file);
+      Object.keys(requestDatas).forEach((key) => {
+        formData.append(key, requestDatas[key]);
+      });
 
       const response = await axios.post(api, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-      return response.data.data;
+      return response.data.data.files;
     } catch (error) {
       console.error("파일 업로드 실패", error);
       throw new Error("파일 업로드 실패");
     }
   };
 
-  const handleFileUpload = async (event) => {
-    const file = event.target.files[0];
+  const handleFileChange = async (event) => {
+    const selectedFile = event.target.files[0];
     try {
-      const fileInfo = await uploadFile(file);
+      const requestDatas = {
+        serverId,
+        channelId,
+        userId,
+        parentId: 0,
+        profileImage: "ho",
+        writer,
+        content,
+      };
+      const fileInfo = await uploadFile(selectedFile, requestDatas);
       onFileUpload(fileInfo);
     } catch (error) {
       console.error("파일 업로드 실패", error);
@@ -50,7 +65,7 @@ const FileUpload = ({ onFileUpload, api }) => {
         type="file"
         ref={fileInputRef}
         style={{ display: "none" }}
-        onChange={handleFileUpload}
+        onChange={handleFileChange}
       />
     </div>
   );
