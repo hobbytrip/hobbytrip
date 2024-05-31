@@ -14,19 +14,21 @@ function LoginForm() {
     if (name === "email") setEmail(value);
     if (name === "password") setPassword(value);
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
     try {
-      await Login(email, password); //스토어 login 함수 사용
-      navigate("/main"); // 로그인 성공 시 메인 페이지로 리다이렉트
+      await Login(email, password);
+      navigate("/main");
     } catch (e) {
       setError("로그인 실패: " + e.message);
+      console.error(e);
     }
   };
 
   const moveToSignUp = () => {
-    navigate("/register"); // 회원가입 페이지로 이동
+    navigate("/register");
   };
 
   return (
@@ -56,15 +58,20 @@ function LoginForm() {
           onChange={handleInput}
           required
         />
-        <button type="submit" onClick={handleSubmit} className={s.loginBtn}>
+        <button type="submit" className={s.loginBtn}>
           로그인
         </button>
-        <div className={s.errorMsg}>{error && <h4>{error}</h4>}</div>
-        <button type="submit" onClick={moveToSignUp} className={s.helpBtn}>
+        {error && (
+          <div className={s.errorMsg}>
+            <h4>{error}</h4>
+          </div>
+        )}
+        <button type="button" onClick={moveToSignUp} className={s.helpBtn}>
           가입하기
         </button>
       </form>
     </div>
   );
 }
+
 export default LoginForm;
