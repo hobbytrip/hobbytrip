@@ -1,11 +1,13 @@
 import { OpenVidu } from 'openvidu-browser';
 import axios from 'axios';
-import { useLocation, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import style from './MediaCall.module.css';
 
+import ChatHeader from '../../Common/ChatRoom/CommunityChatHeader/ChatHeader';
 import UserVideoComponent from './../UserVideoComponent';
 import useUserStore from '../../../actions/useUserStore';
+import API from '../../../utils/API/API';
 
 import { HiMiniSpeakerWave } from "react-icons/hi2";
 import { AiFillMessage } from "react-icons/ai";
@@ -13,40 +15,26 @@ import { IoClose, IoVideocamOutline, IoVideocamOffOutline, IoCall, IoCallOutline
 import { LuMonitor, LuMonitorOff } from "react-icons/lu";
 import { MdOutlineKeyboardVoice, MdKeyboardVoice } from "react-icons/md";
 
-const URL = 'http://localhost:5000/';
+const URL = API.MEDIA;
 
 export default function MediaCall() {
   const [session, setSession] = useState(undefined);
   const [publisher, setPublisher] = useState(undefined);
   const [subscribers, setSubscribers] = useState([]);
-  const [userData, setUserData] = useState({});
   const [screenCam, setScreenCam] = useState(false);
   const [isCameraConnected, setIsCameraConnected] = useState(false);
   const [isMicConnected, setIsMicConnected] = useState(false);
-
-  const { getUserInfo } = useUserStore((state) => state);
-  const OV = useRef(new OpenVidu());
-
+  const { user } = useUserStore((state) => ({
+    user: state.user
+  }));
+  
   const { serverId, channelId } = useParams();
   const newSessionId = `${serverId}${channelId}`;
+  const userId = user.userId;
 
-  const userId = 'userId' + Math.floor(Math.random() * 10); // 테스트 용 -> res.data.userId로 전체 변환
+  const OV = useRef(new OpenVidu());
 
-  // 유저 정보 가져오기
-  useEffect(() => {
-    getUserInfo()
-      .then(res => {
-        const data = {
-          userId: userId, // res.body.userId
-          // nickname: res.body.nickname,
-          // profileImage: res.profileImage,
-          serverId: serverId,
-          channelId: channelId
-        };
-        setUserData(data);
-      })
-      .catch(err => console.error(err));
-  }, [getUserInfo, serverId, channelId]);
+  // const userId = 'userId' + Math.floor(Math.random() * 10); // 임시용
 
   // 세션 참여 후 웹소켓과의 통신
   const joinSession = useCallback((e) => {
@@ -79,7 +67,6 @@ export default function MediaCall() {
       getToken().then(async (token) => {
         try {
           await session.connect(token);
-
           let publisher = await OV.current.initPublisherAsync(undefined, {
             audioSource: undefined,
             videoSource: undefined,
@@ -103,11 +90,12 @@ export default function MediaCall() {
   }, [newSessionId]);
 
   const createSession = async (sessionId) => {
-    const res = await axios.post(`${URL}api/sessions`, 
+    const res = await axios.post(URL, 
     { customSessionId: sessionId }, {
       headers: { 'Content-Type': 'application/json' },
       body: {
-        userId: userData.userId,
+        customSessionId: sessionId,
+        userId: userId,
         channelId: channelId,
         serverId: serverId
       }
@@ -116,10 +104,10 @@ export default function MediaCall() {
   };
 
   const createToken = async (sessionId) => {
-    const res = await axios.post(`${URL}api/sessions/${sessionId}/connections`, {
+    const res = await axios.post(`${URL}/${sessionId}/connections`, {
       headers: { 'Content-Type': 'application/json' },
       body: {
-        userId: userData.userId,
+        userId: userId,
         channelId: channelId,
         serverId: serverId
       }
@@ -131,10 +119,10 @@ export default function MediaCall() {
   const leaveSession = useCallback(() => {
     if (session) {
       session.disconnect();
-      axios.delete(`${URL}/api/sessions/${newSessionId}/disconnect`, {
+      axios.delete(`${URL}/${newSessionId}/disconnect`, {
         data: {
           body: {
-            userId: userData.userId,
+            userId: userId,
             channelId: channelId,
             serverId: serverId
           }
@@ -181,7 +169,7 @@ export default function MediaCall() {
   return (
     <>
     <div className={style.wrapper}>
-    {/* 헤더 같은 뷰들은 이쪽에 넣어주세용 */}
+    <ChatHeader />
       <div className={style.container}>
         <div className={style.headerContainer}>
           <HiMiniSpeakerWave style={{ width: '15px', height: '15px' }} />
@@ -211,7 +199,7 @@ export default function MediaCall() {
                 <UserVideoComponent streamManager={publisher} />
                 </div>
               )}
-              {subscribers.map((sub, i) => (
+              {subscribers.slice(0, 5).map((sub, i) => (
                 <div key={i} >
                   <UserVideoComponent streamManager={sub} />
                 </div>
