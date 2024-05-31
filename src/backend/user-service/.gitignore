@@ -29,7 +29,6 @@ out/
 application.properties
 application.yml
 secure-submodule
-.gitmodules
 
 ### NetBeans ###
 /nbproject/private/
