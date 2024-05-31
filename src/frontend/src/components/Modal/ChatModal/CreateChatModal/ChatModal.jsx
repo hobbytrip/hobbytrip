@@ -3,8 +3,8 @@ import { useParams } from "react-router-dom";
 import MessageSender from "../CreateChatModal/MessageSender/MessageSender";
 import useWebSocketStore from "../../../../actions/useWebSocketStore";
 import API from "../../../../utils/API/API";
+import axios from "axios";
 
-//웹소켓에 연결된 후 지정된 경로로 구독(subscribe)
 export default function ChatModal({ userId, writer, onNewMessage, client }) {
   const { serverId, channelId } = useParams();
   const [chatList, setChatList] = useState([]);
@@ -57,7 +57,7 @@ export default function ChatModal({ userId, writer, onNewMessage, client }) {
     }
   }, [client, serverId, userId, onNewMessage]);
 
-  const handleSendMessage = (messageContent, uploadedFile) => {
+  const handleSendMessage = (messageContent) => {
     const messageBody = {
       serverId,
       channelId,
@@ -66,11 +66,8 @@ export default function ChatModal({ userId, writer, onNewMessage, client }) {
       profileImage: "ho",
       writer,
       content: messageContent,
-      createdAt: new Date().toISOString(), //현재시간
+      createdAt: new Date().toISOString(), // 현재시간
     };
-    if (uploadedFile) {
-      messageBody.files = [uploadedFile];
-    }
     sendMessage(API.SEND_CHAT, messageBody);
     setChatList((prevChatList) => [...prevChatList, messageBody]);
     if (onNewMessage) {
@@ -78,26 +75,74 @@ export default function ChatModal({ userId, writer, onNewMessage, client }) {
     }
   };
 
+  const handleFileMessageSend = async (messageContent, uploadedFile) => {
+    try {
+      const formData = new FormData();
+
+      const createRequest = {
+        serverId: serverId,
+        channelId: channelId,
+        userId: userId,
+        parentId: 0,
+        profileImage: "ho",
+        writer: writer,
+        content: messageContent,
+      };
+
+      const jsonMsg = JSON.stringify(createRequest);
+      const req = new Blob([jsonMsg], { type: "application/json" });
+      formData.append("createRequest", req);
+      formData.append("files", uploadedFile);
+
+      // for (var pair of formData.entries()) {
+      //   console.error(pair[0] + ", " + pair[1]);
+      // }
+
+      const response = await axios.post(API.FILE_UPLOAD, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      console.error(response.data);
+
+      const fileUrl = response.data.data.files[0].fileUrl;
+      const messageBody = {
+        serverId,
+        channelId,
+        userId,
+        parentId: 0,
+        profileImage: "ho",
+        writer,
+        content: messageContent,
+        createdAt: new Date().toISOString(),
+        files: [fileUrl],
+      };
+
+      sendMessage(API.SEND_CHAT, messageBody);
+      setChatList((prevChatList) => [...prevChatList, messageBody]);
+      if (onNewMessage) {
+        onNewMessage(messageBody);
+      }
+    } catch (error) {
+      console.error("File upload failed", error);
+      throw new Error("File upload failed");
+    }
+  };
+
   return (
     <div>
-      {/* {chatList.map((message) => (
-        <ChatMessage
-          key={message.messageId}
-          message={message}
-          onModifyMessage={handleModifyMessage}
-          onDeleteMessage={handleDeleteMessage}
-        />
-      ))} */}
       {typingUsers.length > 0 && (
         <div className="typingIndicator">
           {typingUsers.length >= 5
-            ? "Multiple users are typing..."
-            : `${typingUsers.join(", ")} is typing...`}
+            ? "여러 사용자가 입력 중입니다..."
+            : `${typingUsers.join(", ")} 입력 중입니다...`}
         </div>
       )}
 
       <MessageSender
         onMessageSend={handleSendMessage}
+        onFileMessageSend={handleFileMessageSend}
         serverId={serverId}
         channelId={channelId}
         writer={writer}

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import axios from "axios";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
@@ -10,6 +10,7 @@ import MediaView from "./pages/MediaView/MediaView";
 import MenuView from "./pages/MenuView/MenuView.jsx";
 import MainView from "./pages/MainView/MainView";
 import ChatRoom from "./pages/Chat/ChatRoom/ChatRoom";
+import ForumRoom from "./pages/Chat/ForumRoom/ForumRoom.jsx";
 import SettingView from "./pages/ServerView/SettingView/SettingView.jsx";
 import CategoryView from "./pages/ServerView/CategoryView/CategoryView.jsx"
 
@@ -27,6 +28,11 @@ function App() {
           path=":serverId/:channelId/chat"
           element={<ChatRoom userId={10} />}
         />
+        <Route
+          path=":serverId/:channelId/forum"
+          element={<ForumRoom userId={10} />}
+        />
+        <Route path="/:serverId/:channelId/vid" element={<MediaView />} />
         <Route path="/user/profile" element={<UserProfileView />} />
         <Route path="/main" element={<MainView />} />
         <Route path="/menu" element={<MenuView />} />

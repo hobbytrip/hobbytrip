@@ -46,47 +46,24 @@ const ChatMessage = ({ message, onModifyMessage, onDeleteMessage }) => {
   }, [isEditing]);
 
   const renderMessageContent = () => {
-    if (message.fileUrl) {
-      // 이미지 파일
-      if (message.contentType && message.contentType.startsWith("image")) {
-        return (
-          <div className={s.msgBox}>
-            <img src={testImg} className={s.profileImg} alt="profile-image" />
-            <div className={s.msgRightContainer}>
-              <div className={s.msgTopInfos}>
-                <h3 className={s.msgWriter}>{message.writer}</h3>
-                <h4 className={s.msgDate}>{formattedDate}</h4>
-              </div>
-              <img
-                src={message.fileUrl}
-                className={s.msgContent}
-                alt="uploadedFile"
-              />
+    // 이미지 파일
+    if (message.files) {
+      return (
+        <div className={s.msgBox}>
+          <img src={testImg} className={s.profileImg} alt="profile-image" />
+          <div className={s.msgRightContainer}>
+            <div className={s.msgTopInfos}>
+              <h3 className={s.msgWriter}>{message.writer}</h3>
+              <h4 className={s.msgDate}>{formattedDate}</h4>
             </div>
+            <img
+              src={message.files[0].fileUrl}
+              className={s.msgContent}
+              alt="uploadedFile"
+            />
           </div>
-        );
-      } else {
-        // 이미지 파일이 아닌 경우 다운로드 링크
-        return (
-          <div className={s.msgBox}>
-            <img src={testImg} className={s.profileImg} alt="profile-image" />
-            <div className={s.msgRightContainer}>
-              <div className={s.msgTopInfos}>
-                <h3 className={s.msgWriter}>{message.writer}</h3>
-                <h4 className={s.msgDate}>{formattedDate}</h4>
-              </div>
-              <a
-                href={message.fileUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={s.msgContent}
-              >
-                {message.fileName}
-              </a>
-            </div>
-          </div>
-        );
-      }
+        </div>
+      );
     } else {
       // 일반 텍스트 메세지
       return (
