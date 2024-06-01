@@ -6,6 +6,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {"com.capstone.notificationservice.domain", "com.capstone.notificationservice.global"})
+//@EnableDiscoveryClient
 public class NotificationServiceApplication {
 
 	public static void main(String[] args) {

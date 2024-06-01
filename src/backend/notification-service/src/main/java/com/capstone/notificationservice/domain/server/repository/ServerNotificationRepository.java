@@ -14,6 +14,6 @@ public interface ServerNotificationRepository extends JpaRepository<ServerNotifi
     @Query("DELETE FROM ServerNotification sn WHERE sn.receiver.userId = :userId AND sn.serverId = :serverId")
     void deleteByUserIdAndServerId(@Param("userId") Long userId,@Param("serverId") Long serverId);
 
-    @Query("SELECT DISTINCT n.serverId FROM ServerNotification n")
-    List<Long> findDistinctServerIds();
+    @Query("SELECT DISTINCT n.serverId FROM ServerNotification n WHERE n.receiver.userId = :userId")
+    List<Long> findDistinctServerIds(@Param("userId") Long userId);
 }

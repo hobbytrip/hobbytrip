@@ -31,9 +31,9 @@ public class ServerNotificationController {
     }
 
     @GetMapping("/server/serverIds")
-    public DataResponseDto<List<Long>> getDistinctServerIds() {
+    public DataResponseDto<List<Long>> getDistinctServerIds(@RequestParam Long userId) {
 
-        return DataResponseDto.of(notificationService.getDistinctDmRoomId());
+        return DataResponseDto.of(notificationService.getDistinctServerRoomId(userId));
     }
 
 

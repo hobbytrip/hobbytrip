@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class EmitterServerNotificationService {
     private final EmitterRepository emitterRepository;
@@ -137,23 +139,28 @@ public class EmitterServerNotificationService {
     }
 
     @Transactional
-    public List<Long> getDistinctDmRoomId() {
-        return serverNotificationRepository.findDistinctServerIds();
+    public List<Long> getDistinctServerRoomId(Long userId) {
+        return serverNotificationRepository.findDistinctServerIds(userId);
     }
 
 
-    @KafkaListener(topics = "${spring.kafka.topic.server-chat}", groupId = "${spring.kafka.consumer.group-id.server-notification}")
-    public void kafkaSend(ConsumerRecord<String, Object> record) throws JsonProcessingException {
-        ServerNotificationDto serverNotification = new ObjectMapper().readValue(record.value().toString(),
-                ServerNotificationDto.class);
+    @KafkaListener(topics = "${spring.kafka.topic.server-notification}", groupId = "${spring.kafka.consumer.group-id.server-notification}", containerFactory="serverNotificationListenerContainerFactory")
+    public void kafkaSend(ServerNotificationDto serverNotificationDto) throws JsonProcessingException {
+//        ServerNotificationDto serverNotification = new ObjectMapper().readValue(record.value().toString(),
+//                ServerNotificationDto.class);
 
-        Long sendId = serverNotification.getUserId(); // Long 타입으로 변경
-        Long serverId = serverNotification.getServerId();// DM 방 ID, DmNotificationDto에 해당 필드가 존재한다고 가정
-        AlarmType alarmType = serverNotification.getAlarmType();
-        MentionType mentionType = serverNotification.getMentionType();
-        String content = serverNotification.getContent();
-        List<Long> receiverIds = serverNotification.getReceiverIds(); // 수신자 ID 목록, DmNotificationDto에 해당 필드가 존재한다고 가정
+        Long sendId = serverNotificationDto.getUserId(); // Long 타입으로 변경
+        Long serverId = serverNotificationDto.getServerId();// DM 방 ID, DmNotificationDto에 해당 필드가 존재한다고 가정
+        AlarmType alarmType = serverNotificationDto.getAlarmType();
+        MentionType mentionType = serverNotificationDto.getMentionType();
+        String content = serverNotificationDto.getContent();
+        List<Long> receiverIds = serverNotificationDto.getReceiverIds(); // 수신자 ID 목록, DmNotificationDto에 해당 필드가 존재한다고 가정
 
         send(sendId, serverId, mentionType, alarmType, content, receiverIds);
+        log.info("getSendId {}", serverNotificationDto.getUserId());
+        log.info("getServerId {}", serverNotificationDto.getServerId());
+        log.info("getAlarmType {}", serverNotificationDto.getAlarmType());
+        log.info("getContent {}", serverNotificationDto.getContent());
+        log.info("getReceiverIds {}", serverNotificationDto.getReceiverIds());
     }
 }

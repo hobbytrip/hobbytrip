@@ -30,6 +30,7 @@ out/
 application.properties
 application.yml
 
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/

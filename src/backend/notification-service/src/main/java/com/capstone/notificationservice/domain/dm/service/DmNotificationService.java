@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DmNotificationService {
     private final EmitterRepository emitterRepository;
     private final NotificationRepository notificationRepository;
@@ -131,21 +133,26 @@ public class DmNotificationService {
     }
 
     @Transactional
-    public List<Long> getDistinctDmRoomId() {
-        return notificationRepository.findDistinctDmroomIds();
+    public List<Long> getDistinctDmRoomId(Long userId) {
+        return notificationRepository.findDistinctDmRoomIds(userId);
     }
 
-    @KafkaListener(topics = "${spring.kafka.topic.direct-chat}", groupId = "${spring.kafka.consumer.group-id.dm-notification}")
-    public void kafkaSend(ConsumerRecord<String, Object> record) throws JsonProcessingException {
-        DmNotificationDto dmNotification = new ObjectMapper().readValue(record.value().toString(),
-                DmNotificationDto.class);
+    @KafkaListener(topics = "${spring.kafka.topic.dm-notification}", groupId = "${spring.kafka.consumer.group-id.dm-notification}", containerFactory = "dmNotificationListenerContainerFactory")
+    public void kafkaSend(DmNotificationDto dmNotificationDto) throws JsonProcessingException {
+//        DmNotificationDto dmNotification = new ObjectMapper().readValue(record.value().toString(),
+//                DmNotificationDto.class);
 
-        Long sendId = dmNotification.getUserId(); // Long 타입으로 변경
-        Long dmRoomId = dmNotification.getDmRoomId(); // DM 방 ID, DmNotificationDto에 해당 필드가 존재한다고 가정
-        AlarmType alarmType = dmNotification.getAlarmType(); // String을 AlarmType으로 변환
-        String content = dmNotification.getContent();
-        List<Long> receiverIds = dmNotification.getReceiverIds(); // 수신자 ID 목록, DmNotificationDto에 해당 필드가 존재한다고 가정
+        Long sendId = dmNotificationDto.getUserId(); // Long 타입으로 변경
+        Long dmRoomId = dmNotificationDto.getDmRoomId(); // DM 방 ID, DmNotificationDto에 해당 필드가 존재한다고 가정
+        AlarmType alarmType = dmNotificationDto.getAlarmType(); // String을 AlarmType으로 변환
+        String content = dmNotificationDto.getContent();
+        List<Long> receiverIds = dmNotificationDto.getReceiverIds(); // 수신자 ID 목록, DmNotificationDto에 해당 필드가 존재한다고 가정
 
         send(sendId, dmRoomId, alarmType, content, receiverIds);
+        log.info("getUserId {}", dmNotificationDto.getUserId());
+        log.info("getDmRoomId {}", dmNotificationDto.getDmRoomId());
+        log.info("getAlarmType {}", dmNotificationDto.getAlarmType());
+        log.info("getContent {}", dmNotificationDto.getContent());
+        log.info("getReceiverIds {}", dmNotificationDto.getReceiverIds());
     }
 }
