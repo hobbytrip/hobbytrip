@@ -42,7 +42,8 @@ public class Forum extends BaseTimeEntity {
     @Column(nullable = false)
     private boolean deleted = Boolean.FALSE;
 
-    @OneToMany(mappedBy = "forum", orphanRemoval = true)
+//    @OneToMany(mappedBy = "forum", orphanRemoval = true)
+    @OneToMany(mappedBy = "forum")
     private List<File> files = new ArrayList<>();
 
     //===연관 관계 메서드===//

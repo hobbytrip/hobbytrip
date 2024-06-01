@@ -32,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -129,7 +130,11 @@ public class ForumCommandService {
         validateServerAndChannel(requestDto.getServerId(), requestDto.getChannelId());
         Forum findForum = validateExistForum(requestDto.getForumId());
 
-        validateDelete(findForum, requestDto.getUserId(), requestDto.getChannelId());
+        validateDelete(
+                findForum,
+                requestDto.getUserId(),
+                requestDto.getChannelId()
+        );
 
         forumKafkaTemplate.send(
                 forumKafkaTopic,
@@ -139,6 +144,7 @@ public class ForumCommandService {
                         findForum.getId()
                 )
         );
+
         printKafkaLog("delete");
 
         forumRepository.delete(findForum);
@@ -194,7 +200,11 @@ public class ForumCommandService {
                 .map(File::getFileUrl)
                 .forEach(fileUploadService::delete);
 
-        fileRepository.deleteAll(files);
+        List<Long> fileIds = files.stream()
+                .map(File::getId) // File 엔티티에 getId() 메소드가 있다고 가정
+                .toList();
+
+        fileRepository.deleteAllByIdIn(fileIds);
     }
 
     private List<File> uploadFile(List<MultipartFile> fileList, Forum forum) {
