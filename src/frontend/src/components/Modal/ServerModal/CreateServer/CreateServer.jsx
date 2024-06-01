@@ -1,8 +1,9 @@
 import s from "./CreateServer.module.css";
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { axiosInstance } from "../../../../utils/axiosInstance";
 import useServerStore from "./../../../../actions/useServerStore";
+import useUserStore from "../../../../actions/useUserStore";
 import { TbCameraPlus } from "react-icons/tb";
 import API from "../../../../utils/API/API";
 
@@ -17,15 +18,16 @@ function CreateServer() {
   const setServerData = useServerStore((state) => state.setServerData);
   const imgRef = useRef();
   const nav = useNavigate();
+  const { userId } = useUserStore();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (name === '') {
+    if (name === "") {
       alert("행성 이름을 적어주세요");
       return;
     }
     try {
-      const id = 1; // test용
+      const id = userId; // test용
       const formData = new FormData();
       const data = JSON.stringify({
         userId: id,
@@ -43,7 +45,7 @@ function CreateServer() {
         console.log(`${key}: ${value}`);
       }
 
-      const response = await axios.post(SERVER_URL, formData, {
+      const response = await axiosInstance.post(SERVER_URL, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -117,17 +119,19 @@ function CreateServer() {
         <h4 className={s.label}> 행성 아이콘 </h4>
         <div className={s.addImg}>
           <div>
-            {profilePreview ? <img src={profilePreview} alt="profile preview" /> : null}
+            {profilePreview ? (
+              <img src={profilePreview} alt="profile preview" />
+            ) : null}
           </div>
           <label className={s.addImgBtn}>
             <h4>이미지 업로드</h4>
             <input
               type="file"
               ref={imgRef}
-              style={{ display: 'none' }}
+              style={{ display: "none" }}
               onChange={handleImage}
             />
-            <TbCameraPlus style={{ width: '15px', height: '15px' }} />
+            <TbCameraPlus style={{ width: "15px", height: "15px" }} />
           </label>
         </div>
       </div>

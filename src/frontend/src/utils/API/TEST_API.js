@@ -57,8 +57,10 @@ const API = {
   GET_FORUM_COMMENTS: `${TEST_API_BASE_URL}/chat/forum/comments`,
 
   //FORUM 커뮤니티
-  CREATE_FORUM: (forumId) => `${TEST_API_BASE_URL}/community/forum/${forumId}`,
-  UD_FORUM: `${TEST_API_BASE_URL}/community/forum`,
+  READ_FORUM: (channelId, userId) =>
+    `${TEST_API_BASE_URL}/community/channel/${channelId}/${userId}`,
+  CREATE_FORUM: `${TEST_API_BASE_URL}/community/forum`,
+  // UD_FORUM: `${TEST_API_BASE_URL}/community/forum`,
 };
 
 export default API;

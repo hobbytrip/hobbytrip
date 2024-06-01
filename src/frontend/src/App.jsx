@@ -11,6 +11,7 @@ import ChatRoom from "./pages/Chat/ChatRoom/ChatRoom";
 import ForumRoom from "./pages/Chat/ForumRoom/ForumRoom.jsx";
 import SettingView from "./pages/ServerView/SettingView/SettingView.jsx";
 import CategoryView from "./pages/ServerView/CategoryView/CategoryView.jsx";
+import useUserStore from "./actions/useUserStore.js";
 
 function App() {
   return (
@@ -20,14 +21,8 @@ function App() {
         <Route path="/login" element={<LoginView />} />
         <Route path="/register" element={<RegView />} />
         <Route path="/user/profile" element={<UserProfileView />} />
-        <Route
-          path=":serverId/:channelId/chat"
-          element={<ChatRoom userId={10} />}
-        />
-        <Route
-          path=":serverId/:channelId/forum"
-          element={<ForumRoom userId={10} />}
-        />
+        <Route path=":serverId/:channelId/chat" element={<ChatRoom />} />
+        <Route path=":serverId/:channelId/forum" element={<ForumRoom />} />
         <Route path="/:serverId/:channelId/vid" element={<MediaView />} />
         <Route path="/user/profile" element={<UserProfileView />} />
         <Route path="/main" element={<MainView />} />
