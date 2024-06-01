@@ -102,12 +102,20 @@ function ChatRoom({ userId }) {
     }
   };
 
-  const handleModifyMessage = (messageId, newContent) => {
-    modifyMessage(API.MODIFY_CHAT, {
+  const { refetch } = useQuery({
+    queryKey: ["messages", channelId, page],
+    queryFn: fetchChatHistory,
+    staleTime: 1000 * 60 * 5,
+    keepPreviousData: true,
+  });
+
+  const handleModifyMessage = async (messageId, newContent) => {
+    await modifyMessage(API.MODIFY_CHAT, {
       serverId: serverId,
       messageId: messageId,
       content: newContent,
     });
+    await refetch();
     setChatList((prevMsgs) =>
       prevMsgs.map((msg) =>
         msg.messageId === messageId ? { ...msg, content: newContent } : msg
@@ -115,11 +123,12 @@ function ChatRoom({ userId }) {
     );
   };
 
-  const handleDeleteMessage = (messageId) => {
-    deleteMessage(API.DELETE_CHAT, {
+  const handleDeleteMessage = async (messageId) => {
+    await deleteMessage(API.DELETE_CHAT, {
       serverId: serverId,
       messageId: messageId,
     });
+    await refetch();
     setChatList((prevMsgs) =>
       prevMsgs.filter((msg) => msg.messageId !== messageId)
     );

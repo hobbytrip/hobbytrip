@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { json, useParams } from "react-router-dom";
 import MessageSender from "../CreateChatModal/MessageSender/MessageSender";
 import useWebSocketStore from "../../../../actions/useWebSocketStore";
 import API from "../../../../utils/API/API";
@@ -44,8 +44,10 @@ export default function ChatModal({ userId, writer, onNewMessage, client }) {
               );
             } else if (parsedMessage.actionType === "DELETE") {
               setChatList((prevMsgs) =>
-                prevMsgs.filter(
-                  (msg) => msg.messageId !== parsedMessage.messageId
+                prevMsgs.map((msg) =>
+                  msg.messageId === parsedMessage.messageId
+                    ? { ...msg, deleted: true }
+                    : msg
                 )
               );
             }
@@ -57,7 +59,7 @@ export default function ChatModal({ userId, writer, onNewMessage, client }) {
     }
   }, [client, serverId, userId, onNewMessage]);
 
-  const handleSendMessage = (messageContent) => {
+  const handleSendMessage = async (messageContent, uploadedFile) => {
     const messageBody = {
       serverId,
       channelId,
@@ -68,65 +70,26 @@ export default function ChatModal({ userId, writer, onNewMessage, client }) {
       content: messageContent,
       createdAt: new Date().toISOString(), // 현재시간
     };
-    sendMessage(API.SEND_CHAT, messageBody);
-    setChatList((prevChatList) => [...prevChatList, messageBody]);
-    if (onNewMessage) {
-      onNewMessage(messageBody);
-    }
-  };
 
-  const handleFileMessageSend = async (messageContent, uploadedFile) => {
-    try {
+    let newMessage = messageBody;
+
+    if (uploadedFile !== null) {
       const formData = new FormData();
-
-      const createRequest = {
-        serverId: serverId,
-        channelId: channelId,
-        userId: userId,
-        parentId: 0,
-        profileImage: "ho",
-        writer: writer,
-        content: messageContent,
-      };
-
-      const jsonMsg = JSON.stringify(createRequest);
+      const jsonMsg = JSON.stringify(messageBody);
       const req = new Blob([jsonMsg], { type: "application/json" });
       formData.append("createRequest", req);
       formData.append("files", uploadedFile);
-
-      // for (var pair of formData.entries()) {
-      //   console.error(pair[0] + ", " + pair[1]);
-      // }
-
       const response = await axios.post(API.FILE_UPLOAD, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
+    }
 
-      console.error(response.data);
-
-      const fileUrl = response.data.data.files[0].fileUrl;
-      const messageBody = {
-        serverId,
-        channelId,
-        userId,
-        parentId: 0,
-        profileImage: "ho",
-        writer,
-        content: messageContent,
-        createdAt: new Date().toISOString(),
-        files: [fileUrl],
-      };
-
-      sendMessage(API.SEND_CHAT, messageBody);
-      setChatList((prevChatList) => [...prevChatList, messageBody]);
-      if (onNewMessage) {
-        onNewMessage(messageBody);
-      }
-    } catch (error) {
-      console.error("File upload failed", error);
-      throw new Error("File upload failed");
+    sendMessage(API.SEND_CHAT, newMessage);
+    setChatList((prevChatList) => [...prevChatList, newMessage]);
+    if (onNewMessage) {
+      onNewMessage(newMessage);
     }
   };
 
@@ -142,7 +105,7 @@ export default function ChatModal({ userId, writer, onNewMessage, client }) {
 
       <MessageSender
         onMessageSend={handleSendMessage}
-        onFileMessageSend={handleFileMessageSend}
+        // onFileMessageSend={handleFileMessageSend}
         serverId={serverId}
         channelId={channelId}
         writer={writer}
