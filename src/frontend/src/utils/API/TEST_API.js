@@ -15,6 +15,7 @@ const API = {
 
   //커뮤니티 회원가입
   COMM_SIGNUP: `${TEST_API_BASE_URL}/community/user`,
+  READ_MAIN: (userId) => `${TEST_API_BASE_URL}/community/user/${userId}`,
 
   //서버(커뮤니티) 채팅
   SUBSCRIBE_CHAT: (serverId) => `/topic/server/${serverId}`,

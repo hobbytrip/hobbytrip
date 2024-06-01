@@ -1,33 +1,24 @@
-import MainHeader from "../../components/MainView/MainHeader/MainHeader.jsx";
-import MyPlanet from "../../components/MainView/MyPlanet/MyPlanet.jsx";
-import MyFriend from "../../components/MainView/MyFriend/MyFriend.jsx";
-import style from "./MainView.module.css";
 import { useEffect, useState } from "react";
 import useUserStore from "../../actions/useUserStore.js";
 import API from "../../utils/API/TEST_API.js";
 import { axiosInstance } from "../../utils/axiosInstance.js";
+import MainHeader from "../../components/MainView/MainHeader/MainHeader.jsx";
+import MyPlanet from "../../components/MainView/MyPlanet/MyPlanet.jsx";
+import MyFriend from "../../components/MainView/MyFriend/MyFriend.jsx";
+import style from "./MainView.module.css";
 
 const MainView = () => {
   const [servers, setServers] = useState(null);
   const [dms, setDms] = useState(null);
-  const { user, getUserInfo } = useUserStore((state) => ({
-    user: state.user,
-    getUserInfo: state.getUserInfo,
-  }));
+  const { userId } = useUserStore();
 
   useEffect(() => {
-    if (!user) {
-      getUserInfo();
-    }
-  }, [user, getUserInfo]);
-
-  useEffect(() => {
-    if (user?.userId) {
+    if (userId) {
       const getMainData = async () => {
         try {
-          const response = await axiosInstance.get(`/user/${user.userId}`);
+          const response = await axiosInstance.get(API.READ_MAIN(userId));
           const resData = response.data.data;
-          console.log(resData);
+          console.error(resData);
           setServers(resData.servers || []);
           setDms(resData.dms);
         } catch (error) {
@@ -36,7 +27,11 @@ const MainView = () => {
       };
       getMainData();
     }
-  }, [user?.userId]);
+  }, [userId]);
+
+  if (!userId) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>

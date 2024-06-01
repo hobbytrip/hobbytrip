@@ -7,7 +7,8 @@ import { axiosInstance } from "../../utils/axiosInstance";
 import API from "../../utils/API/TEST_API";
 
 function RegForm() {
-  const { setUserInfo } = useUserStore();
+  const setUserInfo = useUserStore((state) => state.setUserInfo);
+
   const [form, setForm] = useState({
     email: "",
     username: "",
@@ -38,11 +39,14 @@ function RegForm() {
     setIsLoading(true);
     try {
       const response = await axiosInstance.post(API.SIGN_UP, form);
-      setUserInfo({
-        ...response.data,
-      });
-      console.log("회원가입 성공:", response.data);
-      navigate("/login");
+      if (response.data.success) {
+        setUserInfo(response.data.data);
+        console.log("회원가입 성공:", response.data.data);
+        navigate("/login");
+      } else {
+        setError(response.data.message);
+        console.error("회원가입 실패:", response.data.message);
+      }
     } catch (error) {
       console.error(
         "회원가입 실패:",
@@ -112,7 +116,6 @@ function RegForm() {
           isNotification={form.notificationEnabled}
           handleChange={handleChange}
         />
-
         <button type="submit" className={s.signUpBtn} disabled={isLoading}>
           가입하기
         </button>

@@ -2,12 +2,16 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import s from "./LoginForm.module.css";
 import Login from "../../hooks/User/login";
+import useUserStore from "../../actions/useUserStore";
+import { axiosInstance } from "../../utils/axiosInstance";
+import API from "../../utils/API/TEST_API";
 
 function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const { userId } = useUserStore();
 
   const handleInput = (e) => {
     const { name, value } = e.target;
@@ -15,11 +19,23 @@ function LoginForm() {
     if (name === "password") setPassword(value);
   };
 
+  const postUserIdToCommunity = async () => {
+    try {
+      const response = await axiosInstance.post(API.COMM_SIGNUP, {
+        originalId: userId,
+      });
+      console.error("POST request to /community/user successful:", response);
+    } catch (error) {
+      console.error("Error posting userId to /community/user:", error);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
     try {
       await Login(email, password);
+      postUserIdToCommunity();
       navigate("/main");
     } catch (e) {
       setError("로그인 실패: " + e.message);
