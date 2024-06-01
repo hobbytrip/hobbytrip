@@ -3,6 +3,7 @@ package capstone.chatservice.domain.forum.dto.response;
 import capstone.chatservice.domain.forum.dto.ForumMessageDto;
 import capstone.chatservice.domain.model.ActionType;
 import capstone.chatservice.domain.model.ChatType;
+import capstone.chatservice.domain.model.ForumCategory;
 import capstone.chatservice.domain.model.UploadFile;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,6 +31,7 @@ public class ForumMessageCreateResponse {
     private boolean isDeleted;
     private ChatType chatType;
     private ActionType actionType;
+    private ForumCategory forumCategory;
     private List<UploadFile> files;
     private LocalDateTime createdAt;
 
@@ -48,6 +50,7 @@ public class ForumMessageCreateResponse {
                 message.isDeleted(),
                 ChatType.FORUM,
                 ActionType.SEND,
+                message.getForumCategory(),
                 message.getFiles(),
                 message.getCreatedAt()
         );

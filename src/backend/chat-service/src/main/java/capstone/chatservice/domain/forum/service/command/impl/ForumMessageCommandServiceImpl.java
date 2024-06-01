@@ -35,6 +35,7 @@ public class ForumMessageCommandServiceImpl implements ForumMessageCommandServic
                 .writer(createRequest.getWriter())
                 .chatType(ChatType.FORUM)
                 .actionType(ActionType.SEND)
+                .forumCategory(createRequest.getForumCategory())
                 .files(createRequest.getFiles())
                 .build();
 

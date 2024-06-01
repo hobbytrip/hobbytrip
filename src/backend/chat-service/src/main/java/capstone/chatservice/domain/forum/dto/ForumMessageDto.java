@@ -4,6 +4,7 @@ import capstone.chatservice.domain.emoji.dto.EmojiDto;
 import capstone.chatservice.domain.forum.domain.ForumMessage;
 import capstone.chatservice.domain.forum.dto.request.ForumMessageTypingRequest;
 import capstone.chatservice.domain.model.ActionType;
+import capstone.chatservice.domain.model.ForumCategory;
 import capstone.chatservice.domain.model.UploadFile;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,6 +33,7 @@ public class ForumMessageDto {
     private ActionType actionType;
     private List<UploadFile> files;
     private List<EmojiDto> emojis;
+    private ForumCategory forumCategory;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
@@ -51,6 +53,7 @@ public class ForumMessageDto {
                 message.getActionType(),
                 message.getFiles(),
                 null,
+                message.getForumCategory(),
                 message.getCreatedAt(),
                 message.getModifiedAt()
         );
@@ -70,6 +73,7 @@ public class ForumMessageDto {
                 null,
                 false,
                 ActionType.TYPING,
+                null,
                 null,
                 null,
                 null,
