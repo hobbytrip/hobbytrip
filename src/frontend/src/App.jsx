@@ -11,7 +11,9 @@ import MenuView from "./pages/MenuView/MenuView.jsx";
 import MainView from "./pages/MainView/MainView";
 import ChatRoom from "./pages/Chat/ChatRoom/ChatRoom";
 import SettingView from "./pages/ServerView/SettingView/SettingView.jsx";
-import CategoryView from "./pages/ServerView/CategoryView/CategoryView.jsx"
+import CategoryView from "./pages/ServerView/CategoryView/CategoryView.jsx";
+import DmRoom from  "./pages/Chat/DmRoom/DmRoom.jsx";
+
 
 axios.defaults.withCredentials = true;
 
@@ -33,6 +35,10 @@ function App() {
         <Route path="/:serverId/setting" element={<SettingView />} />
         <Route path="/:serverId/menu" element={<CategoryView />} />
         <Route path="/:serverId/:channelId/vid" element={<MediaView />} />
+        <Route 
+          path="/:dmRoomId/chat"
+          element={<DmRoom userId={10} />}
+        />
       </Routes>
     </Router>
   );

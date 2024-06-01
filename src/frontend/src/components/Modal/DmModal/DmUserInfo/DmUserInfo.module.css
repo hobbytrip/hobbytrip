@@ -1,0 +1,19 @@
+.wrapper {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* This will align items to both ends */
+  gap: 10px;
+  border-bottom: solid 2px #ededed;
+  padding-left: 25px;
+  padding-right: 25px; /* Add padding to the right for better spacing */
+}
+
+.userName h3 {
+  margin: 0; /* Remove default margin */
+}
+
+.chatIcon {
+  height: 20px;
+  width: 20px;
+}

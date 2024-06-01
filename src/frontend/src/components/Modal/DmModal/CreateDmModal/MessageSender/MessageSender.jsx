@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import s from "./MessageSender.module.css";
 import { IoSend } from "react-icons/io5";
 import { FaCirclePlus } from "react-icons/fa6";
-import FileUpload from "../../Common/ChatRoom/FileUpload";
+import FileUpload from "../../../../Common/ChatRoom/FileUpload";
 import API from "../../../../../utils/API/API";
 
 const DmMessageSender = ({ onMessageSend, roomId, writer, client }) => {
