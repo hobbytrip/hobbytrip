@@ -2,6 +2,7 @@ package capstone.communityservice.global.common.dto.kafka;
 
 import capstone.communityservice.domain.forum.dto.FileResponseDto;
 import capstone.communityservice.domain.forum.entity.Forum;
+import capstone.communityservice.domain.forum.entity.ForumCategory;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -25,6 +26,8 @@ public class CommunityForumEventDto {
 
     private String content;
 
+    private ForumCategory forumCategory;
+
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
 
@@ -39,6 +42,7 @@ public class CommunityForumEventDto {
                 .title(forum.getTitle())
                 .writer(forum.getUser().getName())
                 .content(forum.getContent())
+                .forumCategory(forum.getCategory())
                 .createAt(forum.getCreatedAt())
                 .updateAt(forum.getUpdatedAt())
                 .files(files)

@@ -144,90 +144,6 @@ public class ForumCommandService {
         forumRepository.delete(findForum);
     }
 
-    private void validateServerAndChannel(Long serverId, Long channelId) {
-        validateExistServer(serverId);
-        validateForumChannel(channelId);
-    }
-
-    private void validateDelete(Forum forum, Long userId, Long channelId) {
-        if(!Objects.equals(forum.getUser().getId(), userId) &&
-                 !channelRepository.validateChannelManager(channelId).equals(userId)
-        ){
-            throw new ForumException(Code.VALIDATION_ERROR, "Not Forum Owner");
-        }
-
-        forum.getFiles().get(0);
-
-        fileDelete(forum.getFiles());
-    }
-
-    private List<File> updateFiles(List<Long> filesId, List<MultipartFile> fileList, Forum forum) {
-        if(filesId != null){
-            List<File> files = fileRepository.findAllById(filesId);
-
-            fileDelete(files);
-
-            // List<File> files = file != null ? uploadProfile(fileList, newForum) : null; <- S3 등록 후
-
-            return uploadFile(fileList, forum);
-        }
-        return null;
-    }
-
-    private void fileDelete(List<File> files) {
-        files.stream()
-                .map(File::getFileUrl)
-                .forEach(fileUploadService::delete);
-
-        fileRepository.deleteAll(files);
-    }
-
-    private Forum validateExistForum(Long forumId){
-        return forumRepository.findById(forumId)
-                .orElseThrow(() ->
-                        new ForumException(Code.NOT_FOUND, "Forum Not Found")
-                );
-    }
-
-    private void validateOwnerUser(Forum forum, Long userId){
-        if(!Objects.equals(forum.getUser().getId(), userId)){
-            throw new ForumException(Code.VALIDATION_ERROR, "Not Forum Owner");
-        }
-    }
-
-    private List<File> uploadFile(List<MultipartFile> fileList, Forum forum) {
-        List<File> files = new ArrayList<>();
-
-        for(MultipartFile file : fileList){
-            String fileUrl = fileUploadService.save(file);
-            File newFile = File.of(forum, fileUrl);
-            fileRepository.save(newFile);
-
-            files.add(newFile);
-        }
-
-        return files;
-    }
-
-    private void validateForumChannel(Long channelId) {
-        Channel findChannel = channelRepository.findById(channelId)
-                .orElseThrow(() -> new ChannelException(
-                        Code.NOT_FOUND, "Not Found Channel")
-                );
-
-        if(!findChannel.getChannelType()
-                .equals(ChannelType.FORUM))
-        {
-            throw new ForumException(Code.VALIDATION_ERROR, "Not Forum Channel");
-        }
-    }
-    private void validateExistServer(Long serverId){
-        serverRepository.findById(serverId)
-                .orElseThrow(() ->
-                        new ServerException(Code.NOT_FOUND, "Server Not Found")
-                );
-    }
-
     private List<FileResponseDto> getFileResponseDtos(ForumUpdateRequestDto requestDto, List<Long> filesId, List<MultipartFile> fileList, Forum findForum) {
         List<File> response = updateFiles(
                 filesId,
@@ -258,6 +174,94 @@ public class ForumCommandService {
         if(category != null){
             forum.setCategory(category);
         }
+    }
+
+    private List<File> updateFiles(List<Long> filesId, List<MultipartFile> fileList, Forum forum) {
+        if(filesId != null){
+            List<File> files = fileRepository.findAllById(filesId);
+
+            fileDelete(files);
+
+            // List<File> files = file != null ? uploadProfile(fileList, newForum) : null; <- S3 등록 후
+
+            return uploadFile(fileList, forum);
+        }
+        return null;
+    }
+
+    private void fileDelete(List<File> files) {
+        files.stream()
+                .map(File::getFileUrl)
+                .forEach(fileUploadService::delete);
+
+        fileRepository.deleteAll(files);
+    }
+
+    private List<File> uploadFile(List<MultipartFile> fileList, Forum forum) {
+        List<File> files = new ArrayList<>();
+
+        for(MultipartFile file : fileList){
+            String fileUrl = fileUploadService.save(file);
+            File newFile = File.of(forum, fileUrl);
+            fileRepository.save(newFile);
+
+            files.add(newFile);
+        }
+
+        return files;
+    }
+
+    private void validateServerAndChannel(Long serverId, Long channelId) {
+        validateExistServer(serverId);
+        validateForumChannel(channelId);
+    }
+
+    private void validateDelete(Forum forum, Long userId, Long channelId) {
+        if(!Objects.equals(forum.getUser().getId(), userId) &&
+                 !channelRepository.validateChannelManager(channelId).equals(userId)
+        ){
+            throw new ForumException(Code.VALIDATION_ERROR, "Not Forum Owner");
+        }
+
+        forum.getFiles().get(0);
+
+        fileDelete(forum.getFiles());
+    }
+
+
+
+    private Forum validateExistForum(Long forumId){
+        return forumRepository.findById(forumId)
+                .orElseThrow(() ->
+                        new ForumException(Code.NOT_FOUND, "Forum Not Found")
+                );
+    }
+
+    private void validateOwnerUser(Forum forum, Long userId){
+        if(!Objects.equals(forum.getUser().getId(), userId)){
+            throw new ForumException(Code.VALIDATION_ERROR, "Not Forum Owner");
+        }
+    }
+
+
+
+    private void validateForumChannel(Long channelId) {
+        Channel findChannel = channelRepository.findById(channelId)
+                .orElseThrow(() -> new ChannelException(
+                        Code.NOT_FOUND, "Not Found Channel")
+                );
+
+        if(!findChannel.getChannelType()
+                .equals(ChannelType.FORUM))
+        {
+            throw new ForumException(Code.VALIDATION_ERROR, "Not Forum Channel");
+        }
+    }
+    private void validateExistServer(Long serverId){
+        serverRepository.findById(serverId)
+                .orElseThrow(() ->
+                        new ServerException(Code.NOT_FOUND, "Server Not Found")
+                );
     }
 
     private void printKafkaLog(String type) {

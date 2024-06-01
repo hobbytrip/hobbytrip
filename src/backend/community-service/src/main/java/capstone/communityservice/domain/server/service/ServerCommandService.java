@@ -222,7 +222,7 @@ public class ServerCommandService {
 
     private String determineProfileUrl(MultipartFile file, Server server, String serverProfile) {
         if (file != null) {
-            return serverProfile == null ? uploadProfile(file) : updateProfile(file, serverProfile, server);
+            return serverProfile.equals("null") ? uploadProfile(file) : updateProfile(file, serverProfile, server);
         }
         return serverProfile;
     }
