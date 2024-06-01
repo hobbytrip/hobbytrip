@@ -1,6 +1,7 @@
 package capstone.communityservice.domain.forum.dto;
 
 import capstone.communityservice.domain.forum.entity.Forum;
+import capstone.communityservice.domain.forum.entity.ForumCategory;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -21,6 +22,8 @@ public class ForumResponseDto {
 
     private String content;
 
+    private ForumCategory forumCategory;
+
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
 
@@ -35,6 +38,7 @@ public class ForumResponseDto {
                 .title(forum.getTitle())
                 .writer(forum.getUser().getName())
                 .content(forum.getContent())
+                .forumCategory(forum.getCategory())
                 .createAt(forum.getCreatedAt())
                 .updateAt(forum.getUpdatedAt())
                 .files(forum.getFiles()
@@ -52,6 +56,7 @@ public class ForumResponseDto {
                 .title(forum.getTitle())
                 .writer(forum.getUser().getName())
                 .content(forum.getContent())
+                .forumCategory(forum.getCategory())
                 .createAt(forum.getCreatedAt())
                 .updateAt(forum.getUpdatedAt())
                 .files(forum.getFiles()

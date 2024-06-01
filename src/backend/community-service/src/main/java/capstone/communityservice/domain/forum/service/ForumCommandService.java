@@ -7,6 +7,7 @@ import capstone.communityservice.domain.channel.repository.ChannelRepository;
 import capstone.communityservice.domain.forum.dto.*;
 import capstone.communityservice.domain.forum.entity.File;
 import capstone.communityservice.domain.forum.entity.Forum;
+import capstone.communityservice.domain.forum.entity.ForumCategory;
 import capstone.communityservice.domain.forum.exception.ForumException;
 import capstone.communityservice.domain.forum.repository.FileRepository;
 import capstone.communityservice.domain.forum.repository.ForumRepository;
@@ -63,17 +64,17 @@ public class ForumCommandService {
                         requestDto.getChannelId(),
                         requestDto.getTitle(),
                         findUser,
-                        requestDto.getContent()
+                        requestDto.getContent(),
+                        requestDto.getForumCategory()
                 )
         );
 
-//        List<File> files = file != null ? uploadProfile(fileList, newForum) : null; // <- S3 등록 후
+        fileList.stream().forEach(System.out :: println);
 
         List<FileResponseDto> files = fileList != null ? uploadFile(fileList, newForum).stream()
                 .map(FileResponseDto::of)
                 .toList() : null;
 
-//        serverKafkaTemplate.send(serverKafkaTopic, CommunityServerEventDto.of("server-update", findServer));
         forumKafkaTemplate.send(
                 forumKafkaTopic,
                 CommunityForumEventDto.of("forum-create",
@@ -94,22 +95,20 @@ public class ForumCommandService {
 
         validateOwnerUser(findForum, requestDto.getUserId());
 
-        List<File> response = updateFiles(filesId, fileList, findForum);
-
-        List<FileResponseDto> files;
-        if(response != null) {
-            files = response.
-                    stream().
-                    map(FileResponseDto::of).
-                    toList();
-        } else {
-            files = null;
-        }
-
-        findForum.setForum(
-                requestDto.getTitle(),
-                requestDto.getContent()
+        List<FileResponseDto> files = getFileResponseDtos(
+                requestDto,
+                filesId,
+                fileList,
+                findForum
         );
+
+        modifyForum(
+                findForum,
+                requestDto.getTitle(),
+                requestDto.getContent(),
+                requestDto.getCategory()
+        );
+
 
         forumKafkaTemplate.send(
                 forumKafkaTopic,
@@ -156,19 +155,31 @@ public class ForumCommandService {
         ){
             throw new ForumException(Code.VALIDATION_ERROR, "Not Forum Owner");
         }
+
+        forum.getFiles().get(0);
+
+        fileDelete(forum.getFiles());
     }
 
     private List<File> updateFiles(List<Long> filesId, List<MultipartFile> fileList, Forum forum) {
         if(filesId != null){
-            fileRepository.deleteAll(
-                    fileRepository.findAllById(filesId)
-            );
-            // List<File> files = file != null ? uploadProfile(fileList, newForum) : null; <- S3 등록 후
-            List<File> files = uploadFile(fileList, forum);
+            List<File> files = fileRepository.findAllById(filesId);
 
-            return files;
+            fileDelete(files);
+
+            // List<File> files = file != null ? uploadProfile(fileList, newForum) : null; <- S3 등록 후
+
+            return uploadFile(fileList, forum);
         }
         return null;
+    }
+
+    private void fileDelete(List<File> files) {
+        files.stream()
+                .map(File::getFileUrl)
+                .forEach(fileUploadService::delete);
+
+        fileRepository.deleteAll(files);
     }
 
     private Forum validateExistForum(Long forumId){
@@ -195,17 +206,6 @@ public class ForumCommandService {
             files.add(newFile);
         }
 
-        // return files; <- S3 등록 후
-
-//        File newFile = File.of(forum, "http://image.png");
-//        fileRepository.save(newFile);
-//
-//        File newFile2 = File.of(forum, "http://image.png");
-//        fileRepository.save(newFile2);
-//
-//        files.add(newFile);
-//        files.add(newFile2);
-
         return files;
     }
 
@@ -226,6 +226,38 @@ public class ForumCommandService {
                 .orElseThrow(() ->
                         new ServerException(Code.NOT_FOUND, "Server Not Found")
                 );
+    }
+
+    private List<FileResponseDto> getFileResponseDtos(ForumUpdateRequestDto requestDto, List<Long> filesId, List<MultipartFile> fileList, Forum findForum) {
+        List<File> response = updateFiles(
+                filesId,
+                fileList,
+                findForum
+        );
+
+        List<FileResponseDto> files;
+
+        if(response != null) {
+            files = response.
+                    stream().
+                    map(FileResponseDto::of).
+                    toList();
+        } else {
+            files = null;
+        }
+
+        return files;
+    }
+
+    private void modifyForum(Forum forum, String title, String content, ForumCategory category){
+        forum.setForum(
+                title,
+                content
+        );
+
+        if(category != null){
+            forum.setCategory(category);
+        }
     }
 
     private void printKafkaLog(String type) {
