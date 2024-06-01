@@ -4,13 +4,15 @@ import axios from "axios";
 function useAxios() {
   const [axiosInstance, setAxiosInstance] = useState(() =>
     axios.create({
-      baseURL: "http://localhost:8080",
+      baseURL: "https://fittrip.site/api",
+      withCredentials: true,
     })
   );
 
   useEffect(() => {
     const instance = axios.create({
-      baseURL: "http://localhost:8080",
+      baseURL: "https://fittrip.site/api",
+      withCredentials: true,
     });
 
     instance.interceptors.request.use(

@@ -5,10 +5,6 @@
   flex-direction: column;
   /* overflow: hidden; */
 }
-.chatContainer {
-  display: flex;
-  flex-direction: column;
+.forumContainer {
   background-color: white;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
 }

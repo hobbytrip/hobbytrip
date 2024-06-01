@@ -1,22 +1,23 @@
 import style from "./CreateCategory.module.css";
 import { useState } from "react";
-import axios from "axios";
+// import axios from "axios";
+import { axiosInstance } from "../../../../../utils/axiosInstance";
 import { HiHome } from "react-icons/hi2";
 import useServerStore from "../../../../../actions/useServerStore";
 import API from "../../../../../utils/API/API";
 
-const CATEGORY_URL = API.COMM_CATEGORY
+const CATEGORY_URL = API.COMM_CATEGORY;
 
 function CreateCategory({ userId, onClose }) {
   const [name, setName] = useState("");
   const { serverData, setServerData } = useServerStore((state) => ({
     serverData: state.serverData,
-    setServerData: state.setServerData
+    setServerData: state.setServerData,
   }));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if(name === ''){
+    if (name === "") {
       alert("카테고리 이름을 입력해주세요");
       return;
     }
@@ -24,19 +25,22 @@ function CreateCategory({ userId, onClose }) {
       const data = {
         userId: userId,
         serverId: serverData.serverInfo.serverId,
-        name: name
+        name: name,
       };
 
-      const res = await axios.post(CATEGORY_URL, data);
+      const res = await axiosInstance.post(CATEGORY_URL, data);
 
       if (res.data.success) {
         console.log(res);
-        const updatedCategories = [...(serverData.serverCategories || []), res.data.data];
+        const updatedCategories = [
+          ...(serverData.serverCategories || []),
+          res.data.data,
+        ];
         setServerData({ ...serverData, serverCategories: updatedCategories });
         onClose();
       } else {
         console.log("카테고리 만들기 실패.");
-        console.log(res); 
+        console.log(res);
       }
     } catch (error) {
       console.error("데이터 post 에러:", error);
@@ -48,7 +52,9 @@ function CreateCategory({ userId, onClose }) {
       <form className={style.formWrapper} onSubmit={handleSubmit}>
         <div className={style.topContainer}>
           <HiHome />
-          <h3><b> 마을 만들기 </b></h3>
+          <h3>
+            <b> 마을 만들기 </b>
+          </h3>
         </div>
         <div className={style.name}>
           <div className={style.label}>
@@ -63,7 +69,7 @@ function CreateCategory({ userId, onClose }) {
             />
           </div>
         </div>
-        
+
         <div className={style.createContainer}>
           <button className={style.createBtn} type="submit">
             마을 만들기
