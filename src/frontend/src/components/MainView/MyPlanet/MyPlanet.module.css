@@ -53,9 +53,17 @@
 .planetList {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: left;
   width: 246px;
   height: 46px;
+}
+
+.planetThumb {
+  overflow: hidden;
+}
+
+.planetThumb img {
+  object-fit: cover;
 }
 
 .planetList .planetThumb {
@@ -64,8 +72,12 @@
   margin-right: 10px;
   border-radius: 300px;
   border: 1px;
-  background-color: var(--hot-pink);
   position: relative;
+}
+
+.planetIcon {
+  border: none;
+  background: none;
 }
 
 .planetList .createPlanet {

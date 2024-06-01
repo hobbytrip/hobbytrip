@@ -1,0 +1,41 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: var(--light-gray);
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 390px;
+  height: 844px;
+  gap: 10px;
+}
+
+.manage {
+  display: flex;
+  align-items: center;
+  text-align: left;
+  justify-content: center;
+  width: 390px;
+  height: 24px;
+  padding: 20px 0px;
+  gap: 15px;
+  color: var(--main-purple);
+}
+
+.manage h2 {
+  width: 345px;
+  height: 24px;
+}
+
+.setting {
+  width: 390px;
+  height: 397px;
+  justify-content: center;
+  gap: 10px;
+}
