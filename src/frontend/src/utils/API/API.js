@@ -17,8 +17,11 @@ const API = {
   POST_LOCATION: `${CHAT_API_BASE_URL}/server/user/location`,
 
   //서버 이벤트
-  COMM_SERVER: `${COMMUNITY_BASE_URL}/server`,
-  COMM_CATEGORY: `${COMMUNITY_BASE_URL}/category`,
+  SERVER: `${COMMUNITY_BASE_URL}/server`,
+  GET_SERVER: (serverId, userId) =>`${COMMUNITY_BASE_URL}/server/${serverId}/${userId}`,
+  INVITE_SERVER: (serverId) => `${COMMUNITY_BASE_URL}/server/${serverId}/invitation`,
+  JOIN_SERVER: `${COMMUNITY_BASE_URL}/server/join`,
+  COMM_CATEGORY:`${COMMUNITY_BASE_URL}/category`,
   COMM_CHANNEL: `${COMMUNITY_BASE_URL}/channel`,
   
 

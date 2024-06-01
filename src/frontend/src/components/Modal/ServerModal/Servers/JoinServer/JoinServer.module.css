@@ -1,95 +1,63 @@
 .formWrapper {
   background-color: white;
-  height: 275px;
   width: 272px; 
-  /* img 넣기로 30px 늘렸습니다 */
   display: flex;
   flex-direction: column;
   justify-content: center;
   padding: 10px;
   border-radius: 10px;
 }
+
 .topFormContainer {
   background-color: white;
   box-sizing: border-box;
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 150px;
+  justify-content: space-between; /* 변경 */
   width: 272px;
   height: 38px;
   border-bottom: 1px solid #e6e6e6;
 }
+
 .formContainer {
   display: flex;
   flex-direction: column;
   height: 50px;
   justify-content: center;
 }
+
 .titleLabel {
   font-weight: bolder;
   color: #000;
   margin-bottom: 20px;
 }
+
 .label {
   color: var(--dark-gray);
   font-weight: 600;
 }
+
 .inputBox {
   height: 22px;
   font-size: 12px;
   border-radius: 5px;
   background-color: var(--light-gray);
 }
+
 .createBtn {
   font-size: 12px;
-  width: 72px;
   color: white;
   background-color: var(--main-purple);
-  margin: 10px auto;
+  margin: 15px auto;
 }
+
+.createContainer {
+  display: flex;
+  justify-content: center;
+}
+
 .closeBtn {
   width: 15px;
   height: 15px;
-}
-
-
-.inputDivImage {
-  height: 69px;
-  gap: auto;
-  padding: 13px 20px;
-}
-
-.addImg {
-  display: flex;
-  flex-direction: row; 
-  justify-content: center;
-  align-items: center;
-  width: 153px;
-  height: 40px;
-  gap: 10px;
-}
-
-.addImg div {
-  width: 40px;
-  height: 40px;
-  border-radius: 300px;
-}
-
-.addImg img {
-  width: 40px;
-  height: 40px;
-  border-radius: 300px;
-}
-
-.addImgBtn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 103px;
-  height: 21px;
-  gap: 10px;
-  background-color: var(--main-purple);
-  color:#FFFFFF;
-  border-radius: 5px;
 }

@@ -2,9 +2,8 @@ import { useEffect, useState } from "react";
 import style from "./MyPlanet.module.css";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { FaPlus } from "react-icons/fa6";
-import { AiOutlineClose } from "react-icons/ai";
 import usePlanetIcon from "../../../hooks/usePlanetIcon";
-import CreateServer from "../../Modal/ServerModal/CreateServer/CreateServer";
+import CreateServer from "../../Modal/ServerModal/Servers/CreateServer/CreateServer";
 import { useNavigate } from "react-router-dom";
 
 const Leftbtn = ({ onClick }) => {
@@ -71,7 +70,7 @@ const MyPlanet = ({ servers }) => {
   };
 
   const handleServerClick = (serverId) => {
-    nav(`${serverId}/menu`);
+    nav(`/${serverId}/menu`);
   };
 
   return (
@@ -80,7 +79,6 @@ const MyPlanet = ({ servers }) => {
       <div className={style.planetContainer}>
         <Leftbtn onClick={handleLeft} />
         <div className={style.planetList}>
-          {/* 4개씩 보여주고 옆으로 넘기기 기능 추가 */}
           {(servers || []).slice(startIndex, endIndex).map((server) => (
             <div key={server.serverId} className={style.planetItem}>
               <button

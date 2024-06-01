@@ -37,6 +37,10 @@ function CategorySetting({ userId, categoryId, onClose }) { // onClose 함수를
       alert("카테고리 이름을 입력해주세요");
       return;
     }
+    if (String(userId) !== String(serverData.serverInfo.managerId)) {
+      alert("수정 권한이 없습니다");
+      return;
+    }
     try {
       const data = {
         userId: userId,

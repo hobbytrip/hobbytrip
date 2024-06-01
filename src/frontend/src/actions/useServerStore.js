@@ -2,8 +2,6 @@ import { create } from 'zustand';
 import axios from 'axios';
 import API from '../utils/API/API';
 
-const SERVER_URL = API.COMM_SERVER
-
 const useServerStore = create((set) => ({
   serverData: {
     serverInfo: null,
@@ -15,7 +13,7 @@ const useServerStore = create((set) => ({
   setServerData: (newServerData) => set({ serverData: newServerData }),
   fetchServerData: async (serverId, userId) => {
     try {
-      const response = await axios.get(`${SERVER_URL}/${serverId}/${userId}`);
+      const response = await axios.get(API.GET_SERVER(serverId, userId));
       const responseData = response.data.data;
 
       set({

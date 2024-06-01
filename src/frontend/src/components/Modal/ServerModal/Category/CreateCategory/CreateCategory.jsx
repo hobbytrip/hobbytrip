@@ -5,9 +5,9 @@ import { HiHome } from "react-icons/hi2";
 import useServerStore from "../../../../../actions/useServerStore";
 import API from "../../../../../utils/API/API";
 
-const CATEGORY_URL = API.COMM_CATEGORY
+const CATEGORY_URL = API.COMM_CATEGORY;
 
-function CreateCategory({ userId, onClose }) {
+function CreateCategory({ userId, onClose, onBack }) {
   const [name, setName] = useState("");
   const { serverData, setServerData } = useServerStore((state) => ({
     serverData: state.serverData,
@@ -16,7 +16,7 @@ function CreateCategory({ userId, onClose }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if(name === ''){
+    if (name === '') {
       alert("카테고리 이름을 입력해주세요");
       return;
     }
@@ -36,7 +36,7 @@ function CreateCategory({ userId, onClose }) {
         onClose();
       } else {
         console.log("카테고리 만들기 실패.");
-        console.log(res); 
+        console.log(res);
       }
     } catch (error) {
       console.error("데이터 post 에러:", error);
@@ -47,7 +47,7 @@ function CreateCategory({ userId, onClose }) {
     <>
       <form className={style.formWrapper} onSubmit={handleSubmit}>
         <div className={style.topContainer}>
-          <HiHome />
+          <HiHome style={{color:'var(--main-purple)'}}/>
           <h3><b> 마을 만들기 </b></h3>
         </div>
         <div className={style.name}>
@@ -70,6 +70,9 @@ function CreateCategory({ userId, onClose }) {
           </button>
         </div>
       </form>
+      <button className={style.backBtn} onClick={onBack}>
+        <h4> 뒤로 가기</h4>
+      </button>
     </>
   );
 }

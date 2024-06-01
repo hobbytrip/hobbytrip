@@ -20,7 +20,7 @@ function ChannelSetting({ userId, channel, onClose }) {
   useEffect(() => {
     const fetchChannel = async () => {
       try {
-        const channel = serverData.serverChannels.find(cat => cat.channelId === channelId);
+        const channel = serverData.serverChannels.find(c => c.channelId === channelId);
         if (channel) {
           setName(channel.name); 
         } else {
@@ -38,6 +38,10 @@ function ChannelSetting({ userId, channel, onClose }) {
     e.preventDefault();
     if(name === ''){
       alert("채널 이름을 입력해주세요");
+      return;
+    }
+    if (String(userId) !== String(serverData.serverInfo.managerId)) {
+      alert("수정 권한이 없습니다");
       return;
     }
     try {
