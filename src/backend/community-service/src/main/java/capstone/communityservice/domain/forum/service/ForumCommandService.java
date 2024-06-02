@@ -70,8 +70,6 @@ public class ForumCommandService {
                 )
         );
 
-        fileList.stream().forEach(System.out :: println);
-
         List<FileResponseDto> files = fileList != null ? uploadFile(fileList, newForum).stream()
                 .map(FileResponseDto::of)
                 .toList() : null;
