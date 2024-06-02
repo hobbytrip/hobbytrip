@@ -4,9 +4,9 @@ import { useQuery } from "@tanstack/react-query";
 import { IoChatbubbleEllipses } from "react-icons/io5";
 import axios from "axios";
 import s from "./ChatRoom.module.css";
-import TopHeader from "../../../components/Common/ChatRoom/CommunityChatHeader/ChatHeader"; //로고있는 최상단 헤더
-import ChatRoomInfo from "../../../components/Modal/ChatModal/ChatRoomInfo/ChatRoomInfo"; //서버 로고, 이름
-import ChatSearchBar from "../../../components/Modal/ChatModal/ChatSearchBar/ChatSearchBar"; //검색창
+import TopHeader from "../../../components/Common/ChatRoom/CommunityChatHeader/ChatHeader";
+import ChatRoomInfo from "../../../components/Modal/ChatModal/ChatRoomInfo/ChatRoomInfo";
+import ChatSearchBar from "../../../components/Modal/ChatModal/ChatSearchBar/ChatSearchBar";
 import ChatModal from "../../../components/Modal/ChatModal/CreateChatModal/ChatModal";
 import ChatMessage from "../../../components/Modal/ChatModal/ChatMessage/ChatMessage";
 import ChatChannelType from "../../../components/Modal/ChatModal/ChatChannelType/ChatChannelType";
@@ -53,14 +53,11 @@ function ChatRoom({ userId }) {
   const chatListContainerRef = useRef(null);
   const nickname = "테스트유저0528"; //임시 테스트용. userstore에서 가져와야 한다.
 
-  const { client, connect, disconnect, modifyMessage, deleteMessage } =
-    useWebSocketStore((state) => ({
-      client: state.client,
-      connect: state.connect,
-      disconnect: state.disconnect,
-      modifyMessage: state.modifyMessage,
-      deleteMessage: state.deleteMessage,
-    }));
+  const { client, connect, disconnect } = useWebSocketStore((state) => ({
+    client: state.client,
+    connect: state.connect,
+    disconnect: state.disconnect,
+  }));
 
   useEffect(() => {
     connect(userId);
@@ -70,7 +67,7 @@ function ChatRoom({ userId }) {
     };
   }, [userId, connect, disconnect]);
 
-  const { data, error, isLoading } = useQuery({
+  const { data, error, isLoading, refetch } = useQuery({
     queryKey: ["messages", channelId, page],
     queryFn: fetchChatHistory,
     staleTime: 1000 * 60 * 5,
@@ -103,10 +100,13 @@ function ChatRoom({ userId }) {
   };
 
   const handleModifyMessage = (messageId, newContent) => {
-    modifyMessage(API.MODIFY_CHAT, {
-      serverId: serverId,
-      messageId: messageId,
-      content: newContent,
+    client.publish({
+      destination: "/ws/api/chat/server/message/modify",
+      body: JSON.stringify({
+        serverId: serverId,
+        messageId: messageId,
+        content: newContent,
+      }),
     });
     setChatList((prevMsgs) =>
       prevMsgs.map((msg) =>
@@ -116,9 +116,12 @@ function ChatRoom({ userId }) {
   };
 
   const handleDeleteMessage = (messageId) => {
-    deleteMessage(API.DELETE_CHAT, {
-      serverId: serverId,
-      messageId: messageId,
+    client.publish({
+      destination: "/ws/api/chat/server/message/delete",
+      body: JSON.stringify({
+        serverId: serverId,
+        messageId: messageId,
+      }),
     });
     setChatList((prevMsgs) =>
       prevMsgs.filter((msg) => msg.messageId !== messageId)
@@ -180,6 +183,7 @@ function ChatRoom({ userId }) {
             writer={nickname}
             onNewMessage={handleNewMessage}
             client={client}
+            fetchHistory={refetch}
           />
         </div>
       </div>

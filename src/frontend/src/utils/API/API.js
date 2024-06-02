@@ -4,7 +4,6 @@ const MEDIA_BASE_URL = "http://localhost:5000";
 const WS_SERVER_BASE = "ws/api/chat/server/message";
 const WS_DM_BASE = "ws/api/chat/direct/message";
 const WS_FORUM_BASE = "/ws/api/chat/forum/message";
-
 const API = {
   //서버(커뮤니티) 채팅
   SUBSCRIBE_CHAT: (serverId) => `/topic/server/${serverId}`,
@@ -18,11 +17,13 @@ const API = {
   POST_LOCATION: `${CHAT_API_BASE_URL}/server/user/location`,
 
   //서버 이벤트
-  COMM: `${COMMUNITY_BASE_URL}`,
-  COMM_SERVER: `${COMMUNITY_BASE_URL}/server`,
-  COMM_CATEGORY: `${COMMUNITY_BASE_URL}/category`,
+  SERVER: `${COMMUNITY_BASE_URL}/server`, 
+  GET_SERVER: (serverId, userId) =>`${COMMUNITY_BASE_URL}/server/${serverId}/${userId}`,
+  INVITE_SERVER: (serverId) => `${COMMUNITY_BASE_URL}/server/${serverId}/invitation`,
+  JOIN_SERVER: `${COMMUNITY_BASE_URL}/server/join`,
+  COMM_CATEGORY:`${COMMUNITY_BASE_URL}/category`,
   COMM_CHANNEL: `${COMMUNITY_BASE_URL}/channel`,
-  
+
   //미디어
   MEDIA: `${MEDIA_BASE_URL}/api/sessions`,
 

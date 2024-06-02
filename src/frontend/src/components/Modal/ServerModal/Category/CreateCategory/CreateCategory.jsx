@@ -1,19 +1,18 @@
 import style from "./CreateCategory.module.css";
 import { useState } from "react";
-// import axios from "axios";
 import { axiosInstance } from "../../../../../utils/axiosInstance";
 import { HiHome } from "react-icons/hi2";
 import useServerStore from "../../../../../actions/useServerStore";
 import API from "../../../../../utils/API/API";
+import useUserStore from "../../../../../actions/useUserStore";
 
-const CATEGORY_URL = API.COMM_CATEGORY;
-
-function CreateCategory({ userId, onClose }) {
+function CreateCategory({ onClose, onBack }) {
   const [name, setName] = useState("");
   const { serverData, setServerData } = useServerStore((state) => ({
     serverData: state.serverData,
     setServerData: state.setServerData,
   }));
+  const { userId } = useUserStore();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,8 +28,7 @@ function CreateCategory({ userId, onClose }) {
       };
       console.error("body:", data);
 
-      const res = await axiosInstance.post(CATEGORY_URL, data);
-      console.error(res.data);
+      const res = await axiosInstance.post(API.COMM_CATEGORY, data);
 
       if (res.data.success) {
         console.log(res);
@@ -78,6 +76,9 @@ function CreateCategory({ userId, onClose }) {
           </button>
         </div>
       </form>
+      <button className={style.backBtn} onClick={onBack}>
+        <h4> 뒤로 가기</h4>
+      </button>
     </>
   );
 }

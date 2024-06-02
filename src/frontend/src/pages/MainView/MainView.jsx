@@ -14,18 +14,18 @@ const MainView = () => {
 
   useEffect(() => {
     if (userId) {
-      const getMainData = async () => {
-        try {
-          const response = await axiosInstance.get(API.READ_MAIN(userId));
-          const resData = response.data.data;
-          console.error(resData);
-          setServers(resData.servers || []);
-          setDms(resData.dms);
-        } catch (error) {
-          console.error("Error fetching server Data:", error);
-        }
+    const getMainData = async () => {
+      try {
+        const response = await axiosInstance.get(API.READ_MAIN(userId));
+        const resData = response.data.data;
+        console.log(resData);
+        setServers(resData.servers);
+        setDms(resData.dms);
+      } catch (error) {
+        console.error("Error fetching server Data:", error);
+      }
       };
-      getMainData();
+    getMainData();
     }
   }, [userId]);
 
@@ -35,13 +35,13 @@ const MainView = () => {
 
   return (
     <>
-      <div className={style.wrapper}>
-        <div className={style.container}>
-          <MainHeader />
+    <div className={style.wrapper}>
+      <div className={style.container}>
+        <MainHeader />
           <MyPlanet servers={servers} />
-          <MyFriend />
-        </div>
+        <MyFriend />
       </div>
+    </div>
     </>
   );
 };

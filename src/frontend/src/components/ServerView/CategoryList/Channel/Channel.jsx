@@ -1,5 +1,3 @@
-// Channel.jsx
-
 import style from './Channel.module.css';
 import useServerStore from '../../../../actions/useServerStore';
 import ChannelSetting from '../../../Modal/ServerModal/Channel/ChannelSetting/ChannelSetting';
@@ -8,15 +6,13 @@ import { IoSettings, IoDocument, IoVideocam } from "react-icons/io5";
 import { TiUserAdd } from "react-icons/ti";
 import { useNavigate } from "react-router-dom";
 import { useState } from 'react';
+import useUserStore from '../../../../actions/useUserStore';
 
-const Channel = ({ channel }) => {
-  const userId = 1;
+const Channel = ({ channel, serverId }) => {
   const [showChannelSetting, setShowChannelSetting] = useState(false);
+
   const nav = useNavigate();
-  const { serverData } = useServerStore((state) => ({
-    serverData: state.serverData
-  }));
-  const serverId = serverData.serverInfo.serverId;
+  const { userId } = useUserStore();
   const channelId = channel.channelId;
   const type = channel.channelType;
 

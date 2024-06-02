@@ -27,17 +27,6 @@ const useWebSocketStore = create((set, get) => ({
       set({ client: null, isConnected: false });
     }
   },
-  sendMessage: (destination, body) => {
-    const { client } = get();
-    if (client && client.connected) {
-      client.publish({
-        destination,
-        body: JSON.stringify(body),
-      });
-    } else {
-      console.log("웹소켓 연결 nono.");
-    }
-  },
 }));
 
 export default useWebSocketStore;
