@@ -15,7 +15,7 @@ function CreateChannel({ categoryId, onClose, onBack }) {
   const [open, setOpen] = useState(false);
   const { serverData, setServerData } = useServerStore((state) => ({
     serverData: state.serverData,
-    setServerData: state.setServerData
+    setServerData: state.setServerData,
   }));
   const { userId } = useUserStore();
 
@@ -31,7 +31,7 @@ function CreateChannel({ categoryId, onClose, onBack }) {
         serverId: serverData.serverInfo.serverId,
         categoryId: categoryId,
         channelType: type,
-        name: name
+        name: name,
       };
       console.log(data)
       const res = await axiosInstance.post(API.COMM_CHANNEL, data);
@@ -42,6 +42,7 @@ function CreateChannel({ categoryId, onClose, onBack }) {
         setServerData({ ...serverData, serverChannels: updatedChannels });
         console.log(serverData);
         onClose();
+
       } else {
         console.log("채널 만들기 실패.");
         console.log(res);
@@ -72,16 +73,22 @@ function CreateChannel({ categoryId, onClose, onBack }) {
             <h4> 유형 </h4>
           </div>
           <div className={style.typeSelectRadio}>
-            <div className={style.typeRadioOption} onClick={() => setType("CHAT")}>
+            <div
+              className={style.typeRadioOption}
+              onClick={() => setType("CHAT")}
+            >
               <MdOutlineNumbers />
               <h4> 텍스트 </h4>
-              {type === 'CHAT' ? (
+              {type === "CHAT" ? (
                 <IoCheckmarkCircle className={style.purpleIcon} />
               ) : (
                 <IoCheckmarkCircleOutline style={{ width: '18px', height: '18px' }} />
               )}
             </div>
-            <div className={style.typeRadioOption} onClick={() => setType("VOICE")}>
+            <div
+              className={style.typeRadioOption}
+              onClick={() => setType("VOICE")}
+            >
               <HiMiniSpeakerWave />
               <h4> 음성, 화상 </h4>
               {type === 'VOICE' ? (<IoCheckmarkCircle className={style.purpleIcon} />
@@ -89,7 +96,10 @@ function CreateChannel({ categoryId, onClose, onBack }) {
                 <IoCheckmarkCircleOutline style={{ width: '18px', height: '18px' }} />
               )}
             </div>
-            <div className={style.typeRadioOption} onClick={() => setType("FORUM")}>
+            <div
+              className={style.typeRadioOption}
+              onClick={() => setType("FORUM")}
+            >
               <IoDocuments />
               <h4> 포럼 </h4>
               {type === 'FORUM' ? (<IoCheckmarkCircle className={style.purpleIcon} />

@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import API from "../../../../utils/API/TEST_API";
 import { axiosInstance } from "../../../../utils/axiosInstance";
@@ -9,7 +10,7 @@ import { AiFillTag, AiFillCloseCircle } from "react-icons/ai";
 import { useParams } from "react-router-dom";
 import useUserStore from "../../../../actions/useUserStore";
 
-function ForumModal() {
+function ForumModal({ onNewForum }) {
   const { serverId, channelId } = useParams();
   const { userId, nickname } = useUserStore();
   const [title, setTitle] = useState("");
@@ -20,7 +21,6 @@ function ForumModal() {
   const [isFileUploaded, setIsFileUploaded] = useState(false);
   const [filePreviews, setFilePreviews] = useState([]);
   const fileInputRef = useRef();
-  const forumId = 1;
   const categories = [
     { name: "🔥66챌린지", value: "CHALLENGE66" },
     { name: "🍽️식단 인증", value: "FOOD" },
@@ -29,6 +29,8 @@ function ForumModal() {
     { name: "🏋️‍♀칼로리챌린지", value: "CALORIE" },
     { name: "🚶‍♀️만보챌린지", value: "MANBO" },
   ];
+
+  const queryClient = useQueryClient();
 
   const handleTitleChange = (event) => {
     setTitle(event.target.value);
@@ -65,17 +67,13 @@ function ForumModal() {
     try {
       const formData = new FormData();
       const requestDto = {
+        userId: userId,
         serverId: serverId,
         channelId: channelId,
-        userId: userId,
-        parentId: 0,
-        profileImage: "ho",
-        writer: nickname,
         title: title,
         content: content,
-        category: category,
+        forumCategory: category,
       };
-      console.error(requestDto);
       const jsonMsg = JSON.stringify(requestDto);
       const req = new Blob([jsonMsg], { type: "application/json" });
       formData.append("requestDto", req);
@@ -83,13 +81,17 @@ function ForumModal() {
         formData.append("files", file);
       });
 
-      const response = await axiosInstance.post(API.CREATE_FORUM, formData, {
+      const response = await axiosInstance.post(API.CUD_FORUM, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-        withCredentials: true,
       });
+
       console.error("포럼 생성 완료", response.data);
+
+      onNewForum(response.data.data);
+      queryClient.invalidateQueries(["forum", channelId, userId]);
+      setModalOpen(false);
     } catch (error) {
       console.error("포럼 생성 에러", error);
       throw new Error("포럼 생성 에러");

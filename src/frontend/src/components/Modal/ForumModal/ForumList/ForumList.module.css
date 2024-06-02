@@ -1,0 +1,46 @@
+.forumBox {
+  background-color: var(--light-gray);
+  padding: 10px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 15px;
+  margin-top: 10px;
+  position: relative;
+  cursor: pointer;
+}
+
+.container {
+  display: flexbox;
+}
+
+.category {
+  color: var(--dark-gray);
+  font-size: 12px;
+}
+.detail {
+  display: flex;
+  flex-direction: row;
+}
+.writer {
+  color: var(--main-purple);
+  margin-right: 5px;
+}
+
+.welcome {
+  text-align: center;
+  margin-top: 50%;
+}
+
+.modals {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  display: none;
+  color: var(--dark-gray);
+}
+
+.forumBox:hover .modals {
+  display: flex;
+  gap: 5px;
+}

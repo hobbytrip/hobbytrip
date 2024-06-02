@@ -42,7 +42,6 @@ export default function ChatHeader({}) {
       <div className={s.modals}>
         <TiUserAdd className={s.modal} onClick={handleInviteClick} />
         <TiGroup className={s.modal} />
-
         <RiSettings3Fill
           className={s.modal}
           onClick={() => nav(`/${serverInfo.serverId}/setting`)}

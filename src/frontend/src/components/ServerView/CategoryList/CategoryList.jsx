@@ -35,7 +35,7 @@ const CategoryList = () => {
   }, [serverData]);
 
   const handleCloseCategory = () => {
-    nav('initialChat?');
+    nav("initialChat?");
   };
 
   const handleCloseCreateItemModal = () => {
@@ -47,7 +47,7 @@ const CategoryList = () => {
   };
 
   const getCategoryChannels = (categoryId) => {
-    return channels.filter(channel => channel.categoryId === categoryId);
+    return channels.filter((channel) => channel.categoryId === categoryId);
   };
 
   return (
@@ -58,7 +58,7 @@ const CategoryList = () => {
             <HiPlus style={{ width: '18px', height: '18px' }} />
           </button>
           <button onClick={handleCloseCategory}>
-            <IoClose style={{ width: '18px', height: '18px' }} />
+            <IoClose style={{ width: "18px", height: "18px" }} />
           </button>
         </div>
         <div className={style.uncategorizedChannels}>
@@ -91,6 +91,7 @@ const Category = ({ categoryId, name, serverId, channels }) => {
   const [showCreateChannel, setShowCreateChannel] = useState(false);
   const [showCategorySetting, setShowCategorySetting] = useState(false);
   const nav = useNavigate();
+  const { userId } = useUserStore();
 
   const handleAddChannel = () => {
     setShowCreateChannel(true);
@@ -114,14 +115,20 @@ const Category = ({ categoryId, name, serverId, channels }) => {
         <div className={style.categoryName}>
           <h3>{name}</h3>
           <button className={style.iconPurple}>
-            <IoSettings style={{ width: '17px', height: '17px' }} onClick={handleCategorySetting} />
+            <IoSettings
+              style={{ width: "17px", height: "17px" }}
+              onClick={handleCategorySetting}
+            />
           </button>
           <button className={style.iconPurple}>
-            <HiPlus style={{ width: '17px', height: '17px' }} onClick={handleAddChannel} />
+            <HiPlus
+              style={{ width: "17px", height: "17px" }}
+              onClick={handleAddChannel}
+            />
           </button>
         </div>
         <div className={style.categoryChannels}>
-          {channels.map(channel => (
+          {channels.map((channel) => (
             <li key={channel.channelId}>
               <Channel channel={channel} serverId={serverId} />
             </li>
