@@ -1,10 +1,50 @@
-.wrapper {
+.forumWrapper {
+  display: flex;
+  /* height: 100vh; */
+  align-items: center;
+  justify-content: center;
   background-color: var(--main-purple);
+  /* overflow: hidden; */
+}
+.wrapper {
   width: 390px;
   display: flex;
   flex-direction: column;
-  /* overflow: hidden; */
 }
 .forumContainer {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  height: 100vh;
+  margin-top: 10px;
+  padding: 20px;
   background-color: white;
+}
+.categoryButtons {
+  display: flexbox;
+  align-items: start;
+  padding-bottom: 10px;
+  margin-left: 10px;
+}
+.categoryButton {
+  background-color: #00000042;
+  color: var(--dark-gray);
+  font-size: 12px;
+  font-weight: 600;
+  margin-right: 5px;
+  margin-top: 5px;
+  padding-right: 10px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  border-radius: 16px;
+}
+.activeCategory {
+  background-color: var(--dark-gray);
+  color: white;
+}
+.forumListContainer {
+  /* background-color: #00000042; */
+  display: flex;
+  flex-direction: column;
+  /* justify-content: center; */
+  overflow-y: "auto";
 }

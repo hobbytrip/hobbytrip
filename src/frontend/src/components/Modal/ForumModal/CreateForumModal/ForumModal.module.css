@@ -4,8 +4,8 @@
   align-items: center;
   background-color: var(--light-gray);
   /* position: relative; */
-  margin: 10px;
-  border-radius: 5px;
+  margin: 5px;
+  border-radius: 10px;
 }
 .top {
   display: flex;
@@ -18,7 +18,7 @@
   border-radius: 5px;
   width: 25%;
   height: 80px;
-  background-color: #00000079;
+  background-color: #00000015;
   text-align: center;
 }
 .searchContainer {
@@ -61,7 +61,7 @@
 .forumModal {
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  padding: 20px 20px 15px 20px;
 }
 .titleInput {
   font-size: 20px;
@@ -94,13 +94,14 @@
 .categoryButtons {
   display: flexbox;
   align-items: start;
-  border-bottom: 1px solid #0000008e;
+  border-bottom: 1px solid #00000042;
   padding-bottom: 10px;
 }
 .categoryButton {
-  background-color: #0000008e;
-  color: white;
-  font-size: 14px;
+  background-color: #00000042;
+  color: var(--dark-gray);
+  font-size: 12px;
+  font-weight: 600;
   margin-right: 5px;
   margin-top: 5px;
   padding-right: 10px;
@@ -110,6 +111,7 @@
 }
 .activeCategory {
   background-color: var(--main-purple);
+  color: white;
 }
 .forumModalButtons {
   display: flex;
@@ -118,7 +120,7 @@
 .newPost {
   margin-top: 10px;
   margin-left: auto;
-  padding: 5px 10px;
+  padding: 5px 15px;
   border: none;
   background-color: var(--main-purple);
   color: white;
@@ -130,5 +132,5 @@
 .removeAll {
   color: #000000c7;
   font-size: 25px;
-  margin-right: 5px;
+  /* margin-right: px; */
 }

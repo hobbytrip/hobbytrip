@@ -20,7 +20,6 @@ function ForumModal() {
   const [isFileUploaded, setIsFileUploaded] = useState(false);
   const [filePreviews, setFilePreviews] = useState([]);
   const fileInputRef = useRef();
-  const forumId = 1;
   const categories = [
     { name: "🔥66챌린지", value: "CHALLENGE66" },
     { name: "🍽️식단 인증", value: "FOOD" },
@@ -65,15 +64,12 @@ function ForumModal() {
     try {
       const formData = new FormData();
       const requestDto = {
+        userId: userId,
         serverId: serverId,
         channelId: channelId,
-        userId: userId,
-        parentId: 0,
-        profileImage: "ho",
-        writer: nickname,
         title: title,
         content: content,
-        category: category,
+        forumCategory: category,
       };
       console.error(requestDto);
       const jsonMsg = JSON.stringify(requestDto);
@@ -83,11 +79,10 @@ function ForumModal() {
         formData.append("files", file);
       });
 
-      const response = await axiosInstance.post(API.CREATE_FORUM, formData, {
+      const response = await axiosInstance.post(API.CUD_FORUM, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-        withCredentials: true,
       });
       console.error("포럼 생성 완료", response.data);
     } catch (error) {

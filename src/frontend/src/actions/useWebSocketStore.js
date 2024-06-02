@@ -38,28 +38,6 @@ const useWebSocketStore = create((set, get) => ({
       console.log("웹소켓 연결 nono.");
     }
   },
-  modifyMessage: (destination, body) => {
-    const { client } = get();
-    if (client && client.connected) {
-      client.publish({
-        destination,
-        body: JSON.stringify(body),
-      });
-    } else {
-      console.log("수정 - 웹소켓 연결 nono ");
-    }
-  },
-  deleteMessage: (destination, body) => {
-    const { client } = get();
-    if (client && client.connected) {
-      client.publish({
-        destination,
-        body: JSON.stringify(body),
-      });
-    } else {
-      console.log("삭제 - 웹소켓 연결 nono ");
-    }
-  },
 }));
 
 export default useWebSocketStore;

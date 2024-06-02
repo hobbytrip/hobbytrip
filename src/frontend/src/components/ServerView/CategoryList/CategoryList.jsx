@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import style from './CategoryList.module.css';
-import CreateCategory from '../../Modal/ServerModal/Category/CreateCategory/CreateCategory';
-import CategorySetting from '../../Modal/ServerModal/Category/CategorySetting/CategorySetting';
-import CreateChannel from '../../Modal/ServerModal/Channel/CreateChannel/CreateChannel';
-import Channel from './Channel/Channel';
-import useServerStore from '../../../actions/useServerStore';
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import style from "./CategoryList.module.css";
+import CreateCategory from "../../Modal/ServerModal/Category/CreateCategory/CreateCategory";
+import CategorySetting from "../../Modal/ServerModal/Category/CategorySetting/CategorySetting";
+import CreateChannel from "../../Modal/ServerModal/Channel/CreateChannel/CreateChannel";
+import Channel from "./Channel/Channel";
+import useServerStore from "../../../actions/useServerStore";
 import { HiPlus } from "react-icons/hi2";
 import { IoSettings, IoClose } from "react-icons/io5";
-
-const userId = 1; // 테스트용
+import useUserStore from "../../../actions/useUserStore";
 
 const CategoryList = () => {
   const [categories, setCategories] = useState([]);
   const [channels, setChannels] = useState([]);
   const [showCreateCategory, setShowCreateCategory] = useState(false);
+  const { userId } = useUserStore();
 
   const nav = useNavigate();
   const { serverData } = useServerStore((state) => ({
@@ -27,7 +27,7 @@ const CategoryList = () => {
   }, [serverData]);
 
   const handleCloseCategory = () => {
-    nav('initialChat?');
+    nav("initialChat?");
   };
 
   const handleCloseCreateChannel = () => {
@@ -39,7 +39,7 @@ const CategoryList = () => {
   };
 
   const getCategoryChannels = (categoryId) => {
-    return channels.filter(channel => channel.categoryId === categoryId);
+    return channels.filter((channel) => channel.categoryId === categoryId);
   };
 
   return (
@@ -47,13 +47,13 @@ const CategoryList = () => {
       <div className={style.categoryList}>
         <div className={style.categoryHeader}>
           <button onClick={handleAddCategory}>
-            <HiPlus style={{ width: '18px', height: '18px' }} />
+            <HiPlus style={{ width: "18px", height: "18px" }} />
           </button>
           <button onClick={handleCloseCategory}>
-            <IoClose style={{ width: '18px', height: '18px' }} />
+            <IoClose style={{ width: "18px", height: "18px" }} />
           </button>
         </div>
-        {categories.map(category => (
+        {categories.map((category) => (
           <Category
             key={category.categoryId}
             categoryId={category.categoryId}
@@ -82,6 +82,7 @@ const Category = ({ categoryId, name, serverId, channels }) => {
   const [showCreateChannel, setShowCreateChannel] = useState(false);
   const [showCategorySetting, setShowCategorySetting] = useState(false);
   const nav = useNavigate();
+  const { userId } = useUserStore();
 
   const handleAddChannel = () => {
     setShowCreateChannel(true);
@@ -105,14 +106,20 @@ const Category = ({ categoryId, name, serverId, channels }) => {
         <div className={style.categoryName}>
           <h3>{name}</h3>
           <button className={style.iconPurple}>
-            <IoSettings style={{ width: '17px', height: '17px' }} onClick={handleCategorySetting} />
+            <IoSettings
+              style={{ width: "17px", height: "17px" }}
+              onClick={handleCategorySetting}
+            />
           </button>
           <button className={style.iconPurple}>
-            <HiPlus style={{ width: '17px', height: '17px' }} onClick={handleAddChannel} />
+            <HiPlus
+              style={{ width: "17px", height: "17px" }}
+              onClick={handleAddChannel}
+            />
           </button>
         </div>
         <div className={style.categoryChannels}>
-          {channels.map(channel => (
+          {channels.map((channel) => (
             <li key={channel.channelId}>
               <Channel channel={channel} serverId={serverId} />
             </li>
@@ -142,7 +149,10 @@ const Category = ({ categoryId, name, serverId, channels }) => {
             categoryId={categoryId}
             onClose={handleCloseCategorySetting}
           />
-          <button className={style.closeBtn} onClick={handleCloseCategorySetting}>
+          <button
+            className={style.closeBtn}
+            onClick={handleCloseCategorySetting}
+          >
             <h4 style={{ color: "#fff", textDecoration: "underline" }}>
               뒤로 가기
             </h4>

@@ -1,5 +1,4 @@
 import axios from "axios";
-import useAuthStore from "../actions/useAuthStore";
 
 export const axiosInstance = axios.create({
   baseURL: "https://fittrip.site/api",

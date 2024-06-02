@@ -27,8 +27,10 @@ function CreateCategory({ userId, onClose }) {
         serverId: serverData.serverInfo.serverId,
         name: name,
       };
+      console.error("body:", data);
 
       const res = await axiosInstance.post(CATEGORY_URL, data);
+      console.error(res.data);
 
       if (res.data.success) {
         console.log(res);

@@ -59,7 +59,7 @@ const API = {
   //FORUM 커뮤니티
   READ_FORUM: (channelId, userId) =>
     `${TEST_API_BASE_URL}/community/channel/${channelId}/${userId}`,
-  CREATE_FORUM: `${TEST_API_BASE_URL}/community/forum`,
+  CUD_FORUM: `${TEST_API_BASE_URL}/community/forum`,
   // UD_FORUM: `${TEST_API_BASE_URL}/community/forum`,
 };
 
