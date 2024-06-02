@@ -6,6 +6,15 @@ import emptycon from "../../../../assets/image/emptyCon.jpg";
 import { FaTrashAlt } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
 
+const categories = [
+  { name: "🔥66챌린지", value: "CHALLENGE66" },
+  { name: "🍽️식단 인증", value: "FOOD" },
+  { name: "💪오운완", value: "TODAY" },
+  { name: "🌞미라클모닝", value: "MIRACLE" },
+  { name: "🏋️‍♀칼로리챌린지", value: "CALORIE" },
+  { name: "🚶‍♀️만보챌린지", value: "MANBO" },
+];
+
 const ForumList = React.memo(
   ({ forumList, handleDeleteForum, handleEditForum }) => {
     const onDeleteForum = (forumId) => {
@@ -14,6 +23,11 @@ const ForumList = React.memo(
 
     const onEditForum = (forumId) => {
       handleEditForum(forumId);
+    };
+
+    const getCategoryName = (categoryValue) => {
+      const category = categories.find((cat) => cat.value === categoryValue);
+      return category ? category.name : "Unknown Category";
     };
 
     const renderList = useCallback(() => {
@@ -29,7 +43,7 @@ const ForumList = React.memo(
               <div key={forum.forumId} className={s.forumBox}>
                 <div className={s.container}>
                   <h4 className={s.category} style={{ marginBottom: "5px" }}>
-                    {forum.forumCategory}
+                    {getCategoryName(forum.forumCategory)}
                   </h4>
                   <h2 className={s.title} style={{ marginBottom: "5px" }}>
                     {forum.title}
