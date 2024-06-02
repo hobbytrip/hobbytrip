@@ -8,12 +8,23 @@
   padding-left: 25px;
   padding-right: 25px; /* Add padding to the right for better spacing */
 }
-
-.userName h3 {
-  margin: 0; /* Remove default margin */
+.leftSection {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
-
+.leftIcon {
+  height: 25px;
+  width: 25px;
+  color:purple;
+}
+.state{
+  height: 8px;
+  width: 8px;
+  color: lightgreen;
+}
 .chatIcon {
   height: 20px;
   width: 20px;
+  color:purple;
 }
