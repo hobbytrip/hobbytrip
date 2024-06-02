@@ -19,4 +19,10 @@ public interface DmUserRepository extends JpaRepository<DmUser, Long> {
             "where du.dm_id = :dmId ",
             nativeQuery = true)
     List<Long> findUserIdsByDmId(Long dmId);
+
+    @Query(value = "select du.dm_id " +
+            "from dm_user du " +
+            "where du.user_id = :userId ",
+            nativeQuery = true)
+    List<Long> findDmIdsByUserId(Long userId);
 }

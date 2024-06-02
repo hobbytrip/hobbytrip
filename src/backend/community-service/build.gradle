@@ -34,13 +34,20 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+	//===Configuration===//
+	/* tika */
+	implementation group: 'org.apache.tika', name: 'tika-core', version: '1.24'
+
+	/* jasypt */
+	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
+
 	//===DB===//
 
 	/* h2 */
 	runtimeOnly 'com.h2database:h2'
 
-	/* mysql */
-	runtimeOnly 'com.mysql:mysql-connector-j'
+	/* mariadb */
+	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 
 	/* Redis 추가 */
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
@@ -54,6 +61,8 @@ dependencies {
 
 	//===Spring Cloud===//
 
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+	
 	/* Actuator */
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
@@ -69,6 +78,19 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+//test {
+//	useJUnitPlatform()
+//	systemProperty 'jasypt.encryptor.password', findProperty("jasypt.encryptor.password")
+//}
+
+processResources.dependsOn('copySecret')
+
+tasks.register('copySecret', Copy) {
+	from './community-service-yml'
+	include "*.yml"  // 복사할 파일들
+	into 'src/main/resources'  // 복사 위치
 }
 
 dependencyManagement {

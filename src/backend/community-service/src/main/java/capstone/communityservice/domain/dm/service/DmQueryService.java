@@ -8,12 +8,9 @@ import capstone.communityservice.domain.dm.entity.Dm;
 import capstone.communityservice.domain.dm.exception.DmException;
 import capstone.communityservice.domain.dm.repository.DmRepository;
 import capstone.communityservice.domain.dm.repository.DmUserRepository;
-import capstone.communityservice.domain.server.dto.ServerReadResponseDto;
-import capstone.communityservice.domain.server.dto.ServerResponseDto;
 import capstone.communityservice.global.exception.Code;
-import capstone.communityservice.global.external.ChatServiceFakeClient;
+import capstone.communityservice.global.external.ChatServiceClient;
 import capstone.communityservice.global.external.StateServiceClient;
-import capstone.communityservice.global.external.StateServiceFakeClient;
 import capstone.communityservice.global.external.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,10 +25,8 @@ import java.util.List;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class DmQueryService {
-//    private final StateServiceClient stateServiceClient;
-    private final StateServiceFakeClient stateServiceFakeClient;
-    // private final ChatServiceClient chatServiceClient;
-    private final ChatServiceFakeClient chatServiceFakeClient;
+    private final StateServiceClient stateServiceClient;
+    private final ChatServiceClient chatServiceClient;
     private final DmRepository dmRepository;
     private final DmUserRepository dmUserRepository;
 
@@ -40,17 +35,17 @@ public class DmQueryService {
         Dm findDm = validateDm(dmId);
         List<Long> userIds = dmUserRepository.findUserIdsByDmId(dmId);
 
-        DmUserStateResponseDto usersOnOff = stateServiceFakeClient.checkDmOnOff(
-                DmUserStateRequestDto.of(findDm.getId(), userIds)
-        );
+        UserConnectionStateResponse usersConnectionState = stateServiceClient.getUsersConnectionState(userIds);
 
-        Page<DmMessageDto> messages = chatServiceFakeClient.getDmMessages(
-                findDm.getId()
+        Page<DmMessageDto> messages = chatServiceClient.getDmMessages(
+                findDm.getId(),
+                0,
+                30
         );
 
         return DmReadResponseDto.of(
                 DmResponseDto.of(findDm),
-                usersOnOff,
+                usersConnectionState,
                 messages
         );
     }

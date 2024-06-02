@@ -54,8 +54,9 @@ public class ServerCommandService {
     private final ChannelRepository channelRepository;
 
     public ServerResponseDto create(ServerCreateRequestDto requestDto, MultipartFile file) {
-        // String profileUrl = file != null ? uploadProfile(file) : null; <- S3 등록 후
-        String profileUrl = null;
+         String profileUrl = file != null ? uploadProfile(file) : null; // <- S3 등록 후
+        // String profileUrl = null;
+        System.out.println(profileUrl);
 
         User user = userQueryService.findUserByOriginalId(requestDto.getUserId());
 
@@ -80,7 +81,7 @@ public class ServerCommandService {
 
     public ServerResponseDto join(ServerJoinRequestDto requestDto) {
         Server findServer = validateServerUser(requestDto);
-        validateServerAccess(findServer, requestDto);
+        validateServerJoin(findServer, requestDto);
 
         User findUser = userQueryService.findUserByOriginalId(requestDto.getUserId());
 
@@ -90,7 +91,11 @@ public class ServerCommandService {
 
         Channel defaultChannel = findServer.getChannels().get(0);
 
-        channelCommandService.sendUserLocEvent(findUser.getId(), defaultChannel.getId());
+        channelCommandService.sendUserLocEvent(
+                findUser.getId(),
+                findServer.getId(),
+                defaultChannel.getId()
+        );
 
         return ServerResponseDto.of(findServer);
     }
@@ -152,7 +157,11 @@ public class ServerCommandService {
                         "일반")
         );
 
-        channelCommandService.sendUserLocEvent(userId, newChannel.getId());
+        channelCommandService.sendUserLocEvent(
+                userId,
+                server.getId(),
+                newChannel.getId()
+        );
     }
 
     public ServerInviteCodeResponse generatedServerInviteCode(Long serverId) {
@@ -171,7 +180,7 @@ public class ServerCommandService {
         return ServerInviteCodeResponse.of(value);
     }
 
-    private void validateServerAccess(Server server, ServerJoinRequestDto requestDto) {
+    private void validateServerJoin(Server server, ServerJoinRequestDto requestDto) {
         boolean isClosedWithoutCode = !server.isOpen() && requestDto.getInvitationCode() == null;
         if (isClosedWithoutCode) {
             throw new ServerException(Code.VALIDATION_ERROR, "Not open server. Require invitationCode");
@@ -213,20 +222,20 @@ public class ServerCommandService {
 
     private String determineProfileUrl(MultipartFile file, Server server, String serverProfile) {
         if (file != null) {
-            return serverProfile == null ? uploadProfile(file) : updateProfile(file, serverProfile, server);
+            return serverProfile.equals("null") ? uploadProfile(file) : updateProfile(file, serverProfile, server);
         }
         return serverProfile;
     }
 
     private String uploadProfile(MultipartFile file) {
-        // return fileUploadService.save(profile); <- S3 등록 후
-        return "http://image.png"; // 예시 URL
+         return fileUploadService.save(file); // <- S3 등록 후
+//        return "http://image.png"; // 예시 URL
     }
 
     private String updateProfile(MultipartFile file, String serverProfile, Server server) {
         if (validateProfileWithFile(server, serverProfile)) {
-            // return fileUploadService.update(file, serverProfile); <- S3 등록 후
-            return "http://image2.png"; // 예시 URL
+             return fileUploadService.update(file, serverProfile); // <- S3 등록 후
+//            return "http://image2.png"; // 예시 URL
         }
         return serverProfile;
     }

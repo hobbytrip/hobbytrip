@@ -82,4 +82,14 @@ public class KafkaProducerConfig {
     public KafkaTemplate<String, CommunityForumEventDto> communityForumEventKafkaTemplate() {
         return new KafkaTemplate<>(communityForumEventProducerFactory());
     }
+
+    @Bean
+    public ProducerFactory<String, UserLocationEventDto> userLocationEventProducerFactory() {
+        return new DefaultKafkaProducerFactory<>(producerConfig());
+    }
+
+    @Bean
+    public KafkaTemplate<String, UserLocationEventDto> userLocationEventKafkaTemplate() {
+        return new KafkaTemplate<>(userLocationEventProducerFactory());
+    }
 }

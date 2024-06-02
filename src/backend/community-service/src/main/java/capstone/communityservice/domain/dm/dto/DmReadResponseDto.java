@@ -1,7 +1,7 @@
 package capstone.communityservice.domain.dm.dto;
 
 import capstone.communityservice.global.external.dto.DmMessageDto;
-import capstone.communityservice.global.external.dto.DmUserStateResponseDto;
+import capstone.communityservice.global.external.dto.UserConnectionStateResponse;
 import lombok.*;
 import org.springframework.data.domain.Page;
 
@@ -11,17 +11,17 @@ import org.springframework.data.domain.Page;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class DmReadResponseDto {
     private DmResponseDto dm;
-    private DmUserStateResponseDto userOnOff;
+    private UserConnectionStateResponse userConnectionState;
     private Page<DmMessageDto> messages;
 
     public static DmReadResponseDto of(
             DmResponseDto dm,
-            DmUserStateResponseDto userOnOff,
+            UserConnectionStateResponse userConnectionState,
             Page<DmMessageDto> messages)
     {
         return DmReadResponseDto.builder()
                 .dm(dm)
-                .userOnOff(userOnOff)
+                .userConnectionState(userConnectionState)
                 .messages(messages)
                 .build();
     }

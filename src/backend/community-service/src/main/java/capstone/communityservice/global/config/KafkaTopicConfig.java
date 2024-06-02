@@ -32,6 +32,8 @@ public class KafkaTopicConfig {
     @Value("${spring.kafka.topic.community-forum-event}")
     private String communityForumEventTopic;
 
+    @Value("${spring.kafka.topic.user-location-event}")
+    private String userLocationEventTopic;
     @Bean
     public KafkaAdmin kafkaAdmin(){
         Map<String, Object> configurations = new HashMap<>();
@@ -74,6 +76,14 @@ public class KafkaTopicConfig {
     @Bean
     public NewTopic communityForumEventTopic() {
         return TopicBuilder.name(communityForumEventTopic)
+                .partitions(1)
+                .replicas(1)
+                .build();
+    }
+
+    @Bean
+    public NewTopic userLocationEventTopic() {
+        return TopicBuilder.name(userLocationEventTopic)
                 .partitions(1)
                 .replicas(1)
                 .build();

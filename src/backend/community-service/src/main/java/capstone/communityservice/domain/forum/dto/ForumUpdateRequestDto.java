@@ -1,5 +1,6 @@
 package capstone.communityservice.domain.forum.dto;
 
+import capstone.communityservice.domain.forum.entity.ForumCategory;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -23,4 +24,6 @@ public class ForumUpdateRequestDto {
 
     @NotBlank
     private String content;
+
+    private ForumCategory category;
 }

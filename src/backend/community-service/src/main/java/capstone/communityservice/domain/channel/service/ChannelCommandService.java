@@ -7,6 +7,7 @@ import capstone.communityservice.domain.channel.dto.ChannelDeleteRequestDto;
 import capstone.communityservice.domain.channel.dto.ChannelResponseDto;
 import capstone.communityservice.domain.channel.dto.ChannelUpdateRequestDto;
 import capstone.communityservice.domain.channel.entity.Channel;
+import capstone.communityservice.domain.channel.entity.ChannelType;
 import capstone.communityservice.domain.channel.exception.ChannelException;
 import capstone.communityservice.domain.channel.repository.ChannelRepository;
 import capstone.communityservice.domain.server.entity.Server;
@@ -15,6 +16,7 @@ import capstone.communityservice.domain.server.repository.ServerRepository;
 import capstone.communityservice.domain.server.service.ServerQueryService;
 import capstone.communityservice.global.common.dto.kafka.CommunityChannelEventDto;
 import capstone.communityservice.global.common.dto.kafka.CommunityDmEventDto;
+import capstone.communityservice.global.common.dto.kafka.UserLocationEventDto;
 import capstone.communityservice.global.exception.Code;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,8 +30,10 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ChannelCommandService {
     private static final String channelKafkaTopic = "communityChannelEventTopic";
+    private static final String userLocationKafkaTopic = "userLocationEvent";
 
     private final KafkaTemplate<String, CommunityChannelEventDto> channelKafkaTemplate;
+    private final KafkaTemplate<String, UserLocationEventDto> userLocationKafkaTemplate;
 
     private final ServerQueryService serverQueryService;
 
@@ -44,7 +48,14 @@ public class ChannelCommandService {
 
         Channel newChannel = channelRepository.save(createChannel(findServer, requestDto));
 
-        channelKafkaTemplate.send(channelKafkaTopic, CommunityChannelEventDto.of("channel-create", newChannel, findServer.getId()));
+        channelKafkaTemplate.send(
+                channelKafkaTopic,
+                CommunityChannelEventDto.of(
+                        "channel-create",
+                        newChannel,
+                        findServer.getId()
+                )
+        );
 
         return ChannelResponseDto.of(newChannel);
     }
@@ -69,7 +80,7 @@ public class ChannelCommandService {
 
         Channel findChannel = validateChannel(requestDto.getChannelId());
 
-        channelKafkaTemplate.send(channelKafkaTopic,
+        channelKafkaTemplate.send(userLocationKafkaTopic,
                 CommunityChannelEventDto.of(
                         "channel-delete",
                         findChannel,
@@ -91,15 +102,15 @@ public class ChannelCommandService {
         );
     }
 
-    public void sendUserLocEvent(Long userId, Long channelId) {
-        channelKafkaTemplate.send(channelKafkaTopic,
-                CommunityChannelEventDto.of(
-                        "channel-read",
+    public void sendUserLocEvent(Long userId, Long serverId, Long channelId) {
+        userLocationKafkaTemplate.send(userLocationKafkaTopic,
+                UserLocationEventDto.of(
                         userId,
+                        serverId,
                         channelId)
         );
 
-        printKafkaLog("read");
+        printKafkaLog("User Location Send");
     }
 
     private Channel validateChannel(Long channelId){

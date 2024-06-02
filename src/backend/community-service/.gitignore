@@ -47,5 +47,6 @@ application.yml
 ./discovery-service
 ./gateway-service
 
+.gitmodules
 
 

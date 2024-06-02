@@ -2,6 +2,7 @@ package capstone.communityservice.domain.forum.dto;
 
 import capstone.communityservice.domain.forum.entity.File;
 import capstone.communityservice.domain.forum.entity.Forum;
+import capstone.communityservice.domain.forum.entity.ForumCategory;
 import jakarta.persistence.Column;
 import jakarta.persistence.OneToMany;
 import lombok.*;
@@ -25,6 +26,8 @@ public class ForumCreateResponseDto {
 
     private String content;
 
+    private ForumCategory forumCategory;
+
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
 
@@ -37,6 +40,7 @@ public class ForumCreateResponseDto {
                 .title(forum.getTitle())
                 .writer(userName)
                 .content(forum.getContent())
+                .forumCategory(forum.getCategory())
                 .createAt(forum.getCreatedAt())
                 .updateAt(forum.getUpdatedAt())
                 .files(forum.

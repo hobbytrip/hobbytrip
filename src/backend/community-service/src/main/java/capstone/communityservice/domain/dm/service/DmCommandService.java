@@ -76,10 +76,14 @@ public class DmCommandService {
     public DmResponseDto updateProfile(DmUpdateProfileRequestDto requestDto, MultipartFile profile) {
         Dm findDm = validateDm(requestDto.getDmId());
 
-//        String profileUrl = fileUploadService.save(profile);
-        String profileUrl = "http://image.png";
+        String profileUrl = fileUploadService.save(profile);
+//        String profileUrl = "http://image.png";
 
         findDm.setProfile(profileUrl);
+
+        dmKafkaTemplate.send(dmKafkaTopic, CommunityDmEventDto.of("dm-update", findDm));
+
+        printKafkaLog("update");
 
         return DmResponseDto.of(findDm);
     }

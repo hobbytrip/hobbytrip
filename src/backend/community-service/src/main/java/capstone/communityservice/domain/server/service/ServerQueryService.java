@@ -3,16 +3,18 @@ package capstone.communityservice.domain.server.service;
 import capstone.communityservice.domain.category.dto.CategoryResponseDto;
 import capstone.communityservice.domain.category.repository.CategoryRepository;
 import capstone.communityservice.domain.channel.dto.ChannelResponseDto;
+import capstone.communityservice.domain.channel.entity.Channel;
+import capstone.communityservice.domain.channel.entity.ChannelType;
+import capstone.communityservice.domain.channel.exception.ChannelException;
 import capstone.communityservice.domain.channel.repository.ChannelRepository;
 import capstone.communityservice.domain.server.dto.OpenServerQueryDto;
 import capstone.communityservice.domain.server.dto.ServerReadResponseDto;
 import capstone.communityservice.domain.server.dto.ServerResponseDto;
-import capstone.communityservice.domain.server.entity.ServerUser;
-import capstone.communityservice.global.external.ChatServiceFakeClient;
+import capstone.communityservice.global.external.ChatServiceClient;
+import capstone.communityservice.global.external.StateServiceClient;
 import capstone.communityservice.global.external.dto.ServerMessageDto;
-import capstone.communityservice.global.external.dto.ServerUserLocDto;
-import capstone.communityservice.global.external.dto.ServerUserStateRequestDto;
-import capstone.communityservice.global.external.dto.ServerUserStateResponseDto;
+import capstone.communityservice.global.external.dto.UserLocationDto;
+import capstone.communityservice.global.external.dto.ServerUsersStateResponse;
 import capstone.communityservice.domain.server.dto.ServerWithCountResponseDto;
 import capstone.communityservice.domain.server.entity.Server;
 import capstone.communityservice.domain.server.exception.ServerException;
@@ -20,7 +22,6 @@ import capstone.communityservice.domain.server.repository.ServerRepository;
 import capstone.communityservice.domain.server.repository.ServerUserRepository;
 import capstone.communityservice.global.common.dto.PageResponseDto;
 import capstone.communityservice.global.exception.Code;
-import capstone.communityservice.global.external.StateServiceFakeClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -38,10 +39,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ServerQueryService {
 
-    // private final StateServiceClient stateServiceClient;
-    private final StateServiceFakeClient stateServiceFakeClient;
-    // private final ChatServiceClient chatServiceClient;
-    private final ChatServiceFakeClient chatServiceFakeClient;
+     private final StateServiceClient stateServiceClient;
+    private final ChatServiceClient chatServiceClient;
 
     private final ServerRepository serverRepository;
     private final ServerUserRepository serverUserRepository;
@@ -53,20 +52,26 @@ public class ServerQueryService {
 
         validateServerUser(serverId, userId);
 
-        ServerUserStateResponseDto usersOnOff = getUsersOnOff(serverId);
+        ServerUsersStateResponse usersState = getUsersState(serverId);
 
         // 유저 최근 채널 위치 불러오는 로직
-        Page<ServerMessageDto> messages = getMessages(userId);
+        Page<ServerMessageDto> messages = getMessages(findServer.getId(), userId);
 
-        return createServerReadResponseDto(
-                serverId,
-                findServer,
-                usersOnOff,
-                messages
-        );
+        return createServerReadResponseDto
+                (
+                    serverId,
+                    findServer,
+                    usersState,
+                    messages
+                );
     }
 
-    private ServerReadResponseDto createServerReadResponseDto(Long serverId, Server findServer, ServerUserStateResponseDto usersOnOff, Page<ServerMessageDto> messages) {
+    private ServerReadResponseDto createServerReadResponseDto(
+            Long serverId,
+            Server findServer,
+            ServerUsersStateResponse usersState,
+            Page<ServerMessageDto> messages
+    ) {
         List<ChannelResponseDto> channels = channelRepository.findByServerId(serverId)
                 .stream()
                 .map(ChannelResponseDto::of)
@@ -81,7 +86,7 @@ public class ServerQueryService {
                 ServerResponseDto.of(findServer),
                 categories,
                 channels,
-                usersOnOff,
+                usersState,
                 messages
         );
     }
@@ -104,23 +109,37 @@ public class ServerQueryService {
         return PageResponseDto.of(servers, ServerWithCountResponseDto::of);
     }
 
-    private ServerUserStateResponseDto getUsersOnOff(Long serverId) {
+    private ServerUsersStateResponse getUsersState(Long serverId) {
         List<Long> userIds = serverUserRepository.findUserIdsByServerId(serverId);
 
-        ServerUserStateResponseDto usersOnOff = stateServiceFakeClient.checkServerOnOff(
-                ServerUserStateRequestDto.of(serverId, userIds)
-        );
-        return usersOnOff;
+        return stateServiceClient.getServerUsersState(serverId, userIds);
     }
 
-    private Page<ServerMessageDto> getMessages(Long userId) {
-        // ServerUserLocDto userLocation = stateServiceClient.userLocation(userId);
-        ServerUserLocDto userLocation = stateServiceFakeClient.userLocation(userId);
+    private Page<ServerMessageDto> getMessages(Long serverId, Long userId) {
+        UserLocationDto userLocation = stateServiceClient.getUserLocation(serverId, userId);
 
-        Page<ServerMessageDto> messages = chatServiceFakeClient.getServerMessages(
-                userLocation.getChannelId()
+        System.out.println("userLocation: " + userLocation.getChannelId());
+        validateChatChannel(userLocation.getChannelId());
+
+        return chatServiceClient.getServerMessages(
+                userLocation.getChannelId(),
+                0,
+                30
         );
-        return messages;
+    }
+
+    private void validateChatChannel(Long channelId) {
+        Channel findChannel = channelRepository.findById(channelId)
+                .orElseThrow(
+                        () -> new ChannelException(
+                                Code.NOT_FOUND, "Not Found Channel")
+                );
+
+        if(!findChannel.getChannelType()
+                .equals(ChannelType.CHAT))
+        {
+            throw new ChannelException(Code.INTERNAL_ERROR, "Not Chat Channel");
+        }
     }
 
     public void validateManager(Long managerId, Long userId){

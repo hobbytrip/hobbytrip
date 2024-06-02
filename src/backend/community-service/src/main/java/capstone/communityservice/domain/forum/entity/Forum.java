@@ -37,10 +37,13 @@ public class Forum extends BaseTimeEntity {
     @Column(nullable = false)
     private String content;
 
+    private ForumCategory category;
+
     @Column(nullable = false)
     private boolean deleted = Boolean.FALSE;
 
-    @OneToMany(mappedBy = "forum", orphanRemoval = true)
+//    @OneToMany(mappedBy = "forum", orphanRemoval = true)
+    @OneToMany(mappedBy = "forum")
     private List<File> files = new ArrayList<>();
 
     //===연관 관계 메서드===//
@@ -52,13 +55,14 @@ public class Forum extends BaseTimeEntity {
 
     //===생성 메서드===//
 
-    public static Forum of(Long channelId, String title, User user, String content){
+    public static Forum of(Long channelId, String title, User user, String content, ForumCategory category){
         Forum forum = new Forum();
 
         forum.setChannelId(channelId);
         forum.setTitle(title);
         forum.setUser(user);
         forum.setContent(content);
+        forum.setCategory(category);
 
         return forum;
     }
@@ -78,6 +82,10 @@ public class Forum extends BaseTimeEntity {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public void setCategory(ForumCategory category){
+        this.category = category;
     }
 
     public void setForum(String title, String content) {
