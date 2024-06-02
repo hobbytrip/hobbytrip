@@ -7,7 +7,6 @@ import ChatMessage from "../../ChatMessage/ChatMessage";
 
 const MessageSender = ({
   onMessageSend,
-  onFileMessageSend,
   serverId,
   channelId,
   writer,
@@ -24,13 +23,9 @@ const MessageSender = ({
     if (chatMessage === "") {
       return;
     }
-    onMessageSend(chatMessage); // 채팅 메시지 전송
+    onMessageSend(chatMessage, uploadedFile); // 채팅 메시지 전송
     setChatMessage(""); // 메시지를 전송한 후 input창 비우기
-    if (uploadedFile) {
-      onFileMessageSend(chatMessage, uploadedFile); // 채팅 메시지와 업로드된 파일 정보를 전송
-      setChatMessage(""); // 메시지를 전송한 후 input창 비우기
-      setUploadedFile(null); // 파일 정보 초기화
-    }
+    setUploadedFile(null); // 파일 정보 초기화
   };
 
   const handleKeyDown = (e) => {

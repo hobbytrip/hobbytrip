@@ -9,9 +9,7 @@ export default function ChatModal({ userId, writer, onNewMessage, client }) {
   const { serverId, channelId } = useParams();
   const [chatList, setChatList] = useState([]);
   const [typingUsers, setTypingUsers] = useState([]);
-  const { sendMessage } = useWebSocketStore((state) => ({
-    sendMessage: state.sendMessage,
-  }));
+  const [file, setFile] = useState(null);
 
   useEffect(() => {
     if (client) {
@@ -19,35 +17,40 @@ export default function ChatModal({ userId, writer, onNewMessage, client }) {
         client.subscribe(API.SUBSCRIBE_CHAT(serverId), (frame) => {
           try {
             const parsedMessage = JSON.parse(frame.body);
+
             if (
               parsedMessage.actionType === "TYPING" &&
-              parsedMessage.writer !== userId
+              parsedMessage.userId !== userId
             ) {
-              setTypingUsers((prev) => [...prev, parsedMessage.writer]);
-              setTimeout(() => {
-                setTypingUsers((prev) =>
-                  prev.filter((user) => user !== parsedMessage.writer)
-                );
-              }, 2000);
-            } else if (parsedMessage.actionType === "SEND") {
-              setChatList((prevMsgs) => [...prevMsgs, parsedMessage]);
+              setTypingUsers((prevTypingUsers) => {
+                if (!prevTypingUsers.includes(parsedMessage.writer)) {
+                  return [...prevTypingUsers, parsedMessage.writer];
+                }
+                return prevTypingUsers;
+              });
+            } else if (parsedMessage.actionType === "STOP_TYPING") {
+              setTypingUsers((prevTypingUsers) =>
+                prevTypingUsers.filter(
+                  (username) => username !== parsedMessage.writer
+                )
+              );
+            } else if (
+              parsedMessage.actionType === "SEND" &&
+              parsedMessage.userId !== userId
+            ) {
+              setChatList((prevChatList) => [...prevChatList, parsedMessage]);
               if (onNewMessage) {
                 onNewMessage(parsedMessage);
               }
-            } else if (parsedMessage.actionType === "MODIFY") {
-              setChatList((prevMsgs) =>
-                prevMsgs.map((msg) =>
-                  msg.messageId === parsedMessage.messageId
-                    ? { ...msg, content: parsedMessage.content }
-                    : msg
-                )
-              );
-            } else if (parsedMessage.actionType === "DELETE") {
-              setChatList((prevMsgs) =>
-                prevMsgs.filter(
-                  (msg) => msg.messageId !== parsedMessage.messageId
-                )
-              );
+            } else if (
+              parsedMessage.actionType === "SEND" &&
+              parsedMessage.files
+            ) {
+              setChatList((prevChatList) => [...prevChatList, parsedMessage]);
+              if (onNewMessage) {
+                onNewMessage(parsedMessage);
+              }
+              setFile(parsedMessage.files[0]);
             }
           } catch (error) {
             console.error("구독 오류", error);
@@ -57,7 +60,7 @@ export default function ChatModal({ userId, writer, onNewMessage, client }) {
     }
   }, [client, serverId, userId, onNewMessage]);
 
-  const handleSendMessage = (messageContent) => {
+  const handleSendMessage = async (messageContent, uploadedFile) => {
     const messageBody = {
       serverId,
       channelId,
@@ -66,67 +69,27 @@ export default function ChatModal({ userId, writer, onNewMessage, client }) {
       profileImage: "ho",
       writer,
       content: messageContent,
-      createdAt: new Date().toISOString(), // 현재시간
+      createdAt: new Date().toISOString(),
     };
-    sendMessage(API.SEND_CHAT, messageBody);
-    setChatList((prevChatList) => [...prevChatList, messageBody]);
-    if (onNewMessage) {
-      onNewMessage(messageBody);
-    }
-  };
-
-  const handleFileMessageSend = async (messageContent, uploadedFile) => {
     try {
       const formData = new FormData();
-
-      const createRequest = {
-        serverId: serverId,
-        channelId: channelId,
-        userId: userId,
-        parentId: 0,
-        profileImage: "ho",
-        writer: writer,
-        content: messageContent,
-      };
-
-      const jsonMsg = JSON.stringify(createRequest);
+      const jsonMsg = JSON.stringify(messageBody);
       const req = new Blob([jsonMsg], { type: "application/json" });
       formData.append("createRequest", req);
-      formData.append("files", uploadedFile);
-
-      // for (var pair of formData.entries()) {
-      //   console.error(pair[0] + ", " + pair[1]);
-      // }
-
-      const response = await axios.post(API.FILE_UPLOAD, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      console.error(response.data);
-
-      const fileUrl = response.data.data.files[0].fileUrl;
-      const messageBody = {
-        serverId,
-        channelId,
-        userId,
-        parentId: 0,
-        profileImage: "ho",
-        writer,
-        content: messageContent,
-        createdAt: new Date().toISOString(),
-        files: [fileUrl],
-      };
-
-      sendMessage(API.SEND_CHAT, messageBody);
+      if (uploadedFile) {
+        formData.append("files", uploadedFile);
+        await axios.post(API.FILE_UPLOAD, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+      }
       setChatList((prevChatList) => [...prevChatList, messageBody]);
       if (onNewMessage) {
         onNewMessage(messageBody);
       }
     } catch (error) {
-      console.error("File upload failed", error);
-      throw new Error("File upload failed");
+      console.error("메시지 전송 오류:", error);
     }
   };
 
@@ -139,10 +102,17 @@ export default function ChatModal({ userId, writer, onNewMessage, client }) {
             : `${typingUsers.join(", ")} 입력 중입니다...`}
         </div>
       )}
+      {file && (
+        <div>
+          <p>Received file: {file.fileUrl}</p>
+          <button onClick={() => window.open(file.fileUrl, "_blank")}>
+            Download File
+          </button>
+        </div>
+      )}
 
       <MessageSender
         onMessageSend={handleSendMessage}
-        onFileMessageSend={handleFileMessageSend}
         serverId={serverId}
         channelId={channelId}
         writer={writer}

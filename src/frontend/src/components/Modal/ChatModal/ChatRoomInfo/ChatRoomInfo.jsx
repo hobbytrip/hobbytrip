@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import useServerStore from "../../../../actions/useServerStore";
 import InviteServer from "../../ServerModal/Servers/InviteServer/InviteServer";
 
-export default function ChatHeader() {
+export default function ChatHeader({}) {
   const nav = useNavigate();
   const [planetIcon, getRandomPlanetIcon] = usePlanetIcon();
   const [isInviteOpen, setInviteOpen] = useState(false);
@@ -28,19 +28,25 @@ export default function ChatHeader() {
   const handleInviteClose = () => {
     setInviteOpen(false);
   };
-
   return (
     <div className={s.wrapper}>
       <div className={s.infoBox}>
         {planetIcon && (
           <img src={planetIcon} className={s.serverIcon} alt="Server Planet Icon" />
         )}
-        <h2 className={s.serverName}>{name}</h2>
+
+        <h2 className={s.serverName}>
+          {/* {serverInfo.name ? serverInfo.name : null} */}
+        </h2>
       </div>
       <div className={s.modals}>
         <TiUserAdd className={s.modal} onClick={handleInviteClick} />
         <TiGroup className={s.modal} />
-        <RiSettings3Fill className={s.modal} onClick={() => nav(`/${serverData.serverInfo.serverId}/setting`)} />
+
+        <RiSettings3Fill
+          className={s.modal}
+          onClick={() => nav(`/${serverInfo.serverId}/setting`)}
+        />
       </div>
       {isInviteOpen && <InviteServer userId={serverData.userId} onClose={handleInviteClose} />}
     </div>
