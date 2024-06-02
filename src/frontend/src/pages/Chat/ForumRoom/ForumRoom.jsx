@@ -7,10 +7,10 @@ import InfiniteScrollComponent from "../../../components/Common/ChatRoom/Infinit
 import API from "../../../utils/API/TEST_API";
 import useUserStore from "../../../actions/useUserStore";
 import TopHeader from "../../../components/Common/ChatRoom/CommunityChatHeader/ChatHeader";
-// import ChatRoomInfo from "../../../components/Modal/ChatModal/ChatRoomInfo/ChatRoomInfo";
 import ForumModal from "../../../components/Modal/ForumModal/CreateForumModal/ForumModal";
 import ForumList from "../../../components/Modal/ForumModal/ForumList/ForumList";
 import axios from "axios";
+import emptycon from "../../../assets/image/emptyCon.jpg"; // 이미지 경로 수정
 
 const fetchForumList = async (channelId, userId) => {
   const response = await axiosInstance.get(API.READ_FORUM(channelId, userId));
@@ -119,7 +119,6 @@ function ForumRoom() {
     <div className={s.forumWrapper}>
       <div className={s.wrapper}>
         <TopHeader />
-        {/* <ChatRoomInfo /> */}
         <div className={s.forumContainer}>
           <ForumModal onNewForum={handleNewForum} />
           <div className={s.categoryButtons}>
@@ -140,20 +139,25 @@ function ForumRoom() {
             id="forumListContainer"
             className={s.forumListContainer}
           >
-            <InfiniteScrollComponent
-              dataLength={filteredForumList.length}
-              next={updatePage}
-              hasMore={true}
-              scrollableTarget="forumListContainer"
-            >
-              {filteredForumList.map((forum, index) => (
+            {filteredForumList.length === 0 ? (
+              <div className={s.welcome}>
+                <img src={emptycon} style={{ width: "160px" }} alt="empty" />
+                <h3>챌린지를 시작해보세요!</h3>
+              </div>
+            ) : (
+              <InfiniteScrollComponent
+                dataLength={filteredForumList.length}
+                next={updatePage}
+                hasMore={true}
+                scrollableTarget="forumListContainer"
+              >
                 <ForumList
-                  key={forum.forumId}
-                  forumList={[forum]}
+                  forumList={filteredForumList}
                   handleDeleteForum={handleDeleteForum}
+                  handleEditForum={() => {}}
                 />
-              ))}
-            </InfiniteScrollComponent>
+              </InfiniteScrollComponent>
+            )}
           </div>
         </div>
       </div>
