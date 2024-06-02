@@ -1,13 +1,12 @@
+import style from './ServerSetting.module.css';
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import style from './ServerSetting.module.css';
+import API from '../../../utils/API/API';
+import useServerStore from '../../../actions/useServerStore';
+import useUserStore from '../../../actions/useUserStore';
 import { TbCameraPlus, TbCheck } from "react-icons/tb";
 import { IoClose } from "react-icons/io5";
-import useServerStore from '../../../actions/useServerStore';
-import API from '../../../utils/API/API';
-
-const SERVER_URL = API.COMM_SERVER;
+import { axiosInstance } from '../../../utils/axiosInstance';
 
 const ServerSetting = () => {
   const [serverName, setServerName] = useState('');
@@ -20,10 +19,10 @@ const ServerSetting = () => {
     serverData: state.serverData,
     setServerData: state.setServerData
   }));
-  const serverInfo = serverData.serverInfo;
+  const { userId } = useUserStore();
   const imgRef = useRef();
   const nav = useNavigate();
-  const userId = 1;
+  const serverInfo = serverData.serverInfo;
 
   useEffect(() => {
     setServerName(serverInfo.name || '');
@@ -41,14 +40,13 @@ const ServerSetting = () => {
       return;
     }
     try {
-      const id = 1;
       const formData = new FormData();
       const data = JSON.stringify({
         serverId: serverInfo.serverId,
-        userId: id,
+        userId: userId,
         name: serverName,
-        description: serverDescription,
-        open: isOpen
+        // description: serverDescription,
+        // open: isOpen
         // category: category,
       });
       const communityData = new Blob([data], { type: "application/json" });
@@ -65,7 +63,7 @@ const ServerSetting = () => {
         console.log(`${key}: ${value}`);
       }
 
-      const response = await axios.patch(SERVER_URL, formData, {
+      const response = await axiosInstance.patch(API.SERVER, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -105,7 +103,7 @@ const ServerSetting = () => {
         alert("삭제 권한이 없습니다");
       } else {
         try {
-          const res = await axios.delete(SERVER_URL, {
+          const res = await axiosInstance.delete(API.SERVER, {
             data: {
               serverId: serverInfo.serverId,
               userId: userId,

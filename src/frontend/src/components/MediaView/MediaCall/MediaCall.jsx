@@ -1,10 +1,10 @@
 import { OpenVidu } from 'openvidu-browser';
-import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import style from './MediaCall.module.css';
 
 import ChatHeader from '../../Common/ChatRoom/CommunityChatHeader/ChatHeader';
+import ChatHeaderModal from '../../../components/Modal/ChatModal/ChatRoomInfo/ChatRoomInfo';
 import UserVideoComponent from './../UserVideoComponent';
 import useUserStore from '../../../actions/useUserStore';
 import API from '../../../utils/API/API';
@@ -24,17 +24,13 @@ export default function MediaCall() {
   const [screenCam, setScreenCam] = useState(false);
   const [isCameraConnected, setIsCameraConnected] = useState(false);
   const [isMicConnected, setIsMicConnected] = useState(false);
-  const { user } = useUserStore((state) => ({
-    user: state.user
-  }));
   
   const { serverId, channelId } = useParams();
   const newSessionId = `${serverId}${channelId}`;
-  const userId = user.userId;
+  const { userId } = useUserStore();
+  const nav = useNavigate();
 
   const OV = useRef(new OpenVidu());
-
-  // const userId = 'userId' + Math.floor(Math.random() * 10); // 임시용
 
   // 세션 참여 후 웹소켓과의 통신
   const joinSession = useCallback((e) => {
@@ -133,7 +129,7 @@ export default function MediaCall() {
     setSession(undefined);
     setSubscribers([]);
     setPublisher(undefined);
-  }, [session, userData]);
+  }, [session, userId]);
 
   useEffect(() => {
     const handleBeforeUnload = () => {
@@ -166,10 +162,15 @@ export default function MediaCall() {
     setScreenCam(!screenCam);
   };
 
+  const handleClose = () => {
+    nav(-1);
+  }
+
   return (
     <>
     <div className={style.wrapper}>
     <ChatHeader />
+    <ChatHeaderModal />
       <div className={style.container}>
         <div className={style.headerContainer}>
           <HiMiniSpeakerWave style={{ width: '15px', height: '15px' }} />
@@ -178,7 +179,7 @@ export default function MediaCall() {
             <AiFillMessage style={{ width: '18.66px', height: '18.66px' }} />
           </button>
           <button>
-            <IoClose style={{ width: '18px', height: '18px' }} />
+            <IoClose style={{ width: '18px', height: '18px' }} onClick={handleClose}/>
           </button>
         </div>
 
