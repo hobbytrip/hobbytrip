@@ -8,6 +8,7 @@ import io.jsonwebtoken.security.SecurityException;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -78,7 +79,14 @@ public class JwtTokenProvider {
 
     // Request Header의 Access Token 정보 추출
     public String resolveAccessToken(ServerHttpRequest request){
+        HttpHeaders headers = request.getHeaders();
+        headers.forEach((key, value) -> {
+            System.out.println(key + ": " + String.join(", ", value));
+        });
+
         String bearerToken = request.getHeaders().getFirst(AUTHORIZATION_HEADER);
+
+//        System.out.println(bearerToken + " " + AUTHORIZATION_HEADER);
         if(StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)){
             return bearerToken.substring(7);
         }

@@ -16,6 +16,7 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -49,6 +50,7 @@ public class AuthorizationFilter extends AbstractGatewayFilterFactory<Authorizat
 
             String uri = exchange.getRequest().getURI().getPath();
 
+
             if(isWhiteList(uri)){
                 return chain.filter(exchange);
             }
@@ -59,54 +61,53 @@ public class AuthorizationFilter extends AbstractGatewayFilterFactory<Authorizat
             String refreshToken =
                     jwtTokenProvider.resolveRefreshToken(exchange.getRequest());
 
-//            System.out.println(accessToken);
 
-            if (!StringUtils.hasText(refreshToken)) {
-                log.error("API Gateway - RefreshToken validation error");
-                return unauthorizedResponse(exchange);
-            } else {
-                if (StringUtils.hasText(accessToken) && jwtTokenProvider.validateToken(accessToken)) {
-                    return doNotLogout(accessToken, exchange.getRequest())
-                            .flatMap(isValid -> {
-                                if (Boolean.TRUE.equals(isValid)) {
-                                    // Token is valid, continue to the next filter
+            if (StringUtils.hasText(accessToken) && jwtTokenProvider.validateToken(accessToken)) {
+                return doNotLogout(accessToken, exchange.getRequest())
+                        .flatMap(isValid -> {
+                            if (Boolean.TRUE.equals(isValid)) {
+                                // Token is valid, continue to the next filter
                                     return chain.filter(exchange);
-                                } else {
-                                    // Token is not valid, respond with unauthorized
-                                    System.out.println(isValid);
-                                    return unauthorizedResponse(exchange);
-                                }
-                            })
-                            .onErrorResume(e -> {
-                                log.error("API Gateway - AccessToken validation error: {}", e.getMessage());
-                                // Handle runtime exceptions by returning unauthorized response
+                            } else {
+                                // Token is not valid, respond with unauthorized
+                                System.out.println(isValid);
                                 return unauthorizedResponse(exchange);
-                            });
-                } else {
-                    // If accessToken is not valid or not present
-                    return unauthorizedResponse(exchange);
-                }
+                            }
+                        })
+                        .onErrorResume(e -> {
+                            log.error("API Gateway - AccessToken validation error: {}", e.getMessage());
+                            // Handle runtime exceptions by returning unauthorized response
+                            return unauthorizedResponse(exchange);
+                        });
+            } else {
+                // If accessToken is not valid or not present
+                return unauthorizedResponse(exchange);
             }
         };
     }
 
     private boolean isWhiteList(String uri) {
         for (WhiteListURI whiteListURI : WhiteListURI.values()) {
-            if (whiteListURI.uri.equals(uri)) {
+            // 해당 URI가 화이트 리스트에 정의된 URI로 시작하는지 확인
+            if (uri.startsWith(whiteListURI.uri)) {
                 return true;
             }
         }
-//        return true;
+        // 화이트 리스트에 없으면 false 반환
         return false;
     }
 
+
     private Mono<Boolean> doNotLogout(String accessToken, ServerHttpRequest request) {
         HttpHeaders headers = request.getHeaders();
-
+//        System.out.println(accessToken);
+        // accessToken을 JSON 객체로 변환
+        String requestBody = accessToken;
         return webClientBuilder.build().post()
                 .uri("lb://USER-SERVICE/isLogin")
-                .headers(httpHeaders -> httpHeaders.addAll(headers)) // 기존 헤더들을 모두 추가
-                .body(BodyInserters.fromValue(accessToken))
+                .headers(httpHeaders -> httpHeaders.addAll(headers))
+                .contentType(MediaType.APPLICATION_JSON) // JSON 컨텐츠 타입 명시
+                .body(BodyInserters.fromValue(requestBody)) // JSON 객체로 변환된 본문 사용
                 .retrieve()
                 .bodyToMono(DataResponseDto.class)
                 .map(response -> Boolean.TRUE.equals(response.getData()));
