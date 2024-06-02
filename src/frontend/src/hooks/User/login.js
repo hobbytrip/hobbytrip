@@ -1,19 +1,27 @@
+import { axiosInstance } from "../../utils/axiosInstance";
+import API from "../../utils/API/TEST_API";
 import useAuthStore from "../../actions/useAuthStore";
+
 const Login = async (email, password) => {
-  const setTokens = useAuthStore((state) => state.setTokens);
+  const { setTokens } = useAuthStore.getState();
   try {
-    const response = await axios.post("/user/login", {
+    const response = await axiosInstance.post(API.LOG_IN, {
       email,
       password,
     });
-    if (response.status == 200) {
-      const accesstoken = localStorage.setItem("accesstoken", accesstoken);
-      const refreshtoken = localStorage.setItem("refreshtoken", refreshtoken);
-      setTokens(accesstoken, refreshtoken);
+
+    if (response.data) {
+      console.error(response.data.data);
+      const { accessToken, refreshToken } = response.data.data;
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
+
+      setTokens(accessToken, refreshToken);
     }
   } catch (error) {
     console.error("로그인 실패", error);
     throw error;
   }
 };
+
 export default Login;

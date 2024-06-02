@@ -3,11 +3,12 @@ import s from "./RegForm.module.css";
 import { useNavigate } from "react-router-dom";
 import useUserStore from "../../actions/useUserStore";
 import NotificationBox from "../NotificationBox/NotificationBox";
-import useAxios from "../../utils/instance";
+import { axiosInstance } from "../../utils/axiosInstance";
+import API from "../../utils/API/TEST_API";
 
 function RegForm() {
-  const axios = useAxios();
-  const { setUserInfo } = useUserStore();
+  const setUserInfo = useUserStore((state) => state.setUserInfo);
+
   const [form, setForm] = useState({
     email: "",
     username: "",
@@ -23,7 +24,6 @@ function RegForm() {
   const handleChange = (e) => {
     const { name, type, checked, value } = e.target;
     const newValue = type === "checkbox" ? checked : value;
-    console.log(checked);
     setForm((prevForm) => ({
       ...prevForm,
       [name]: newValue,
@@ -38,12 +38,15 @@ function RegForm() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await axios.post("/user/signup", form);
-      setUserInfo({
-        ...response.data,
-      });
-      console.log("회원가입 성공:", response.data);
-      navigate("/login");
+      const response = await axiosInstance.post(API.SIGN_UP, form);
+      if (response.data.success) {
+        setUserInfo(response.data.data);
+        console.log("회원가입 성공:", response.data.data);
+        navigate("/login");
+      } else {
+        setError(response.data.message);
+        console.error("회원가입 실패:", response.data.message);
+      }
     } catch (error) {
       console.error(
         "회원가입 실패:",
@@ -113,11 +116,10 @@ function RegForm() {
           isNotification={form.notificationEnabled}
           handleChange={handleChange}
         />
-
         <button type="submit" className={s.signUpBtn} disabled={isLoading}>
           가입하기
         </button>
-        <button type="submit" onClick={moveToLogin} className={s.helpBtn}>
+        <button type="button" onClick={moveToLogin} className={s.helpBtn}>
           로그인하기
         </button>
         {error && <p>오류: {error}</p>}

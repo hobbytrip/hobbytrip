@@ -1,7 +1,5 @@
-import React, { useEffect } from "react";
-import axios from "axios";
+import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-
 import StartView from "./components/StartView/StartView";
 import LoginView from "./pages/LoginView/Loginview";
 import RegView from "./pages/RegView/RegView";
@@ -10,23 +8,22 @@ import MediaView from "./pages/MediaView/MediaView";
 import MenuView from "./pages/MenuView/MenuView.jsx";
 import MainView from "./pages/MainView/MainView";
 import ChatRoom from "./pages/Chat/ChatRoom/ChatRoom";
+import ForumRoom from "./pages/Chat/ForumRoom/ForumRoom.jsx";
 import SettingView from "./pages/ServerView/SettingView/SettingView.jsx";
-import CategoryView from "./pages/ServerView/CategoryView/CategoryView.jsx"
-
-axios.defaults.withCredentials = true;
+import CategoryView from "./pages/ServerView/CategoryView/CategoryView.jsx";
+import useUserStore from "./actions/useUserStore.js";
 
 function App() {
   return (
     <Router>
       <Routes>
-        {/* <Route path="/" element={<StartView />} />
+        <Route path="/" element={<StartView />} />
         <Route path="/login" element={<LoginView />} />
         <Route path="/register" element={<RegView />} />
-        <Route path="/user/profile" element={<UserProfileView />} /> */}
-        <Route
-          path=":serverId/:channelId/chat"
-          element={<ChatRoom userId={10} />}
-        />
+        <Route path="/user/profile" element={<UserProfileView />} />
+        <Route path=":serverId/:channelId/chat" element={<ChatRoom />} />
+        <Route path=":serverId/:channelId/forum" element={<ForumRoom />} />
+        <Route path="/:serverId/:channelId/vid" element={<MediaView />} />
         <Route path="/user/profile" element={<UserProfileView />} />
         <Route path="/main" element={<MainView />} />
         <Route path="/menu" element={<MenuView />} />

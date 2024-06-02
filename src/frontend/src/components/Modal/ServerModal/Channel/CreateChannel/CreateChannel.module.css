@@ -57,7 +57,6 @@
   /* width: 150px; */
 }
 
-
 .purpleIcon {
   color: var(--main-purple);
   width: 18px;
@@ -119,6 +118,5 @@
 .backBtn {
   background: none;
   text-decoration: underline;
-  color: #FFF;
   padding: 3px;
 }

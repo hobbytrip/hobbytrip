@@ -7,48 +7,40 @@ import { useNavigate } from "react-router-dom";
 import useServerStore from "../../../../actions/useServerStore";
 import InviteServer from "../../ServerModal/Servers/InviteServer/InviteServer";
 
-export default function ChatHeader({ }) {
+export default function ChatHeader() {
   const nav = useNavigate();
   const [planetIcon, getRandomPlanetIcon] = usePlanetIcon();
-  const [isInviteOpen, setInviteOpen] = useState(false); // State to manage modal visibility
+  const [isInviteOpen, setInviteOpen] = useState(false);
 
   useEffect(() => {
     getRandomPlanetIcon();
   }, []);
 
-  // 서버 정보를 불러와서 이름에 띄워줌
   const { serverData } = useServerStore((state) => ({
     serverData: state.serverData,
   }));
-  const name = serverData.serverInfo.name;
+  const name = serverData?.serverInfo?.name || "";
 
   const handleInviteClick = () => {
-    setInviteOpen(true); // Show the InviteServer modal
+    setInviteOpen(true);
   };
 
   const handleInviteClose = () => {
-    setInviteOpen(false); // Hide the InviteServer modal
+    setInviteOpen(false);
   };
 
   return (
     <div className={s.wrapper}>
       <div className={s.infoBox}>
         {planetIcon && (
-          <img
-            src={planetIcon}
-            className={s.serverIcon}
-            alt="Server Planet Icon"
-          />
+          <img src={planetIcon} className={s.serverIcon} alt="Server Planet Icon" />
         )}
-        <h2 className={s.serverName}>
-          {name ? name : null}
-        </h2>
+        <h2 className={s.serverName}>{name}</h2>
       </div>
       <div className={s.modals}>
         <TiUserAdd className={s.modal} onClick={handleInviteClick} />
         <TiGroup className={s.modal} />
-        <RiSettings3Fill className={s.modal} 
-          onClick={() => nav(`/${serverData.serverInfo.serverId}/setting`)} />
+        <RiSettings3Fill className={s.modal} onClick={() => nav(`/${serverData.serverInfo.serverId}/setting`)} />
       </div>
       {isInviteOpen && <InviteServer userId={serverData.userId} onClose={handleInviteClose} />}
     </div>

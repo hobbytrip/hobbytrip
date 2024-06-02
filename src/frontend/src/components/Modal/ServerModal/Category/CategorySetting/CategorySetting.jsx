@@ -1,25 +1,28 @@
-import style from "./CategorySetting.module.css";
-import { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from "react";
+import style from "./CategorySetting.module.css"
 import useServerStore from "../../../../../actions/useServerStore";
 import API from "../../../../../utils/API/API";
+import { axiosInstance } from "../../../../../utils/axiosInstance";
+import useUserStore from "../../../../../actions/useUserStore";
+import {  HiHome } from "react-icons/hi2";
 
-const CATEGORY_URL = API.COMM_CATEGORY;
-
-function CategorySetting({ userId, categoryId, onClose }) { // onClose 함수를 props로 받음
+function CategorySetting({ categoryId, onClose }) {
   const [name, setName] = useState("");
   const { serverData, setServerData } = useServerStore((state) => ({
     serverData: state.serverData,
-    setServerData: state.setServerData
+    setServerData: state.setServerData,
   }));
+  const { userId } = useUserStore();
 
   const serverId = serverData.serverInfo.serverId;
   useEffect(() => {
     const fetchCategory = async () => {
       try {
-        const category = serverData.serverCategories.find(cat => cat.categoryId === categoryId);
+        const category = serverData.serverCategories.find(
+          (cat) => cat.categoryId === categoryId
+        );
         if (category) {
-          setName(category.name); 
+          setName(category.name);
         } else {
           console.error("Category not found.");
         }
@@ -27,13 +30,13 @@ function CategorySetting({ userId, categoryId, onClose }) { // onClose 함수를
         console.error("Error fetching category data:", error);
       }
     };
-  
+
     fetchCategory();
   }, [categoryId, serverData.serverCategories]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if(name === ''){
+    if (name === "") {
       alert("카테고리 이름을 입력해주세요");
       return;
     }
@@ -46,17 +49,17 @@ function CategorySetting({ userId, categoryId, onClose }) { // onClose 함수를
         userId: userId,
         serverId: serverData.serverInfo.serverId,
         categoryId: categoryId,
-        name: name
+        name: name,
       };
 
-      const res = await axios.patch(CATEGORY_URL, data);
+      const res = await axiosInstance.patch(API.COMM_CATEGORY, data);
 
       if (res.data.success) {
         console.log(res);
         const updatedCategory = res.data.data;
-        const updatedCategories = serverData.serverCategories.map(category => {
+        const updatedCategories = serverData.serverCategories.map((category) => {
           if (category.categoryId === updatedCategory.categoryId) {
-            return updatedCategory; 
+            return updatedCategory;
           }
           return category;
         });
@@ -64,7 +67,7 @@ function CategorySetting({ userId, categoryId, onClose }) { // onClose 함수를
         onClose();
       } else {
         console.log("카테고리 수정 실패.");
-        console.log(res); 
+        console.log(res);
       }
     } catch (error) {
       console.error("데이터 patch 에러:", error);
@@ -78,17 +81,23 @@ function CategorySetting({ userId, categoryId, onClose }) { // onClose 함수를
         alert("삭제 권한이 없습니다");
       } else {
         try {
-          const res = await axios.delete(CATEGORY_URL, {
+          const res = await axiosInstance.delete(API.COMM_CATEGORY, {
             data: {
               serverId: serverId,
               userId: userId,
-              categoryId: categoryId
+              categoryId: categoryId,
             },
           });
           if (res.status === 200) {
             alert("삭제되었습니다");
-            const updatedCategories = serverData.serverCategories.filter(category => category.categoryId !== categoryId);
-            setServerData({ ...serverData, serverCategories: updatedCategories });
+            const updatedCategories = serverData.serverCategories.filter(
+              (category) => category.categoryId !== categoryId
+            );
+            setServerData({
+              ...serverData,
+              serverCategories: updatedCategories,
+            });
+            onClose(); // 카테고리가 삭제된 후에 onClose를 호출하여 상태 업데이트를 유발
           } else {
             alert("삭제하는 중에 오류가 발생했습니다");
             console.error(res);
@@ -99,13 +108,18 @@ function CategorySetting({ userId, categoryId, onClose }) { // onClose 함수를
         }
       }
     }
-  }
+  };
 
   return (
     <>
       <form className={style.formWrapper} onSubmit={handleSubmit}>
         <div className={style.topContainer}>
-          <h3><b> 카테고리 설정 </b></h3>
+        <h3>
+            <b>
+              <HiHome style={{marginRight:'5px'}} />
+              마을 설정          
+            </b>
+          </h3>
         </div>
         <div className={style.name}>
           <div className={style.label}>
@@ -120,15 +134,17 @@ function CategorySetting({ userId, categoryId, onClose }) { // onClose 함수를
             />
           </div>
         </div>
-        
-        <div className={style.createContainer} >
-          <button className={style.createBtn} 
-            style={{backgroundColor: 'var(--main-purple)', color:'white'}}
-            type="submit">
+
+        <div className={style.createContainer}>
+          <button
+            className={style.createBtn}
+            style={{ backgroundColor: "var(--main-purple)", color: "white" }}
+            type="submit"
+          >
             저장하기
           </button>
         </div>
-        
+
         <button onClick={handleDelete}>
           <h5>삭제하기</h5>
         </button>
@@ -138,3 +154,4 @@ function CategorySetting({ userId, categoryId, onClose }) { // onClose 함수를
 }
 
 export default CategorySetting;
+

@@ -1,15 +1,15 @@
 import style from "./CreateChannel.module.css";
 import { useState } from "react";
-import axios from "axios";
 import { IoCheckmarkCircleOutline, IoCheckmarkCircle, IoDocuments } from "react-icons/io5";
-import {  HiUserGroup, HiMiniSpeakerWave } from "react-icons/hi2";
+import { HiUserGroup, HiMiniSpeakerWave } from "react-icons/hi2";
 import { MdOutlineNumbers } from "react-icons/md";
 import useServerStore from "../../../../../actions/useServerStore";
 import API from "../../../../../utils/API/API";
+import { axiosInstance } from "../../../../../utils/axiosInstance";
+import useUserStore from "../../../../../actions/useUserStore";
 
-const CHANNEL_URL = API.COMM_CHANNEL;
 
-function CreateChannel({ userId, categoryId, onClose, onBack }) {
+function CreateChannel({ categoryId, onClose, onBack }) {
   const [name, setName] = useState("");
   const [type, setType] = useState("CHAT");
   const [open, setOpen] = useState(false);
@@ -17,6 +17,7 @@ function CreateChannel({ userId, categoryId, onClose, onBack }) {
     serverData: state.serverData,
     setServerData: state.setServerData
   }));
+  const { userId } = useUserStore();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,15 +26,15 @@ function CreateChannel({ userId, categoryId, onClose, onBack }) {
       return;
     }
     try {
-      const formData = {
+      const data = {
         userId: userId,
         serverId: serverData.serverInfo.serverId,
         categoryId: categoryId,
         channelType: type,
         name: name
       };
-      console.log(formData)
-      const res = await axios.post(CHANNEL_URL, formData);
+      console.log(data)
+      const res = await axiosInstance.post(API.COMM_CHANNEL, data);
 
       if (res.data.success) {
         console.log(res);
@@ -50,12 +51,21 @@ function CreateChannel({ userId, categoryId, onClose, onBack }) {
     }
   };
 
+  const handleClose = () => {
+    if(categoryId){
+      onClose();
+    }
+    else{
+      onBack();
+    }
+  }
+
   return (
     <>
       <form className={style.formWrapper} onSubmit={handleSubmit}>
         <div className={style.topContainer}>
-          < HiUserGroup style={{ width: '20px', height: '20px' }} className={style.purpleIcon} />
-          <h3><b> 방 만들기 </b></h3>
+          <HiUserGroup style={{ width: '20px', height: '20px' }} />
+          <h3><b> 채널 만들기 </b></h3>
         </div>
         <div className={style.type}>
           <div className={style.label}>
@@ -126,7 +136,7 @@ function CreateChannel({ userId, categoryId, onClose, onBack }) {
         </div>
       </form>
       
-      <button className={style.backBtn} onClick={onBack}>
+      <button className={style.backBtn} onClick={handleClose} style={{color:'white'}}>
         <h4> 뒤로 가기</h4>
       </button>
     </>

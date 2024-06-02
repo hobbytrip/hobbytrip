@@ -2,31 +2,49 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import s from "./LoginForm.module.css";
 import Login from "../../hooks/User/login";
+import useUserStore from "../../actions/useUserStore";
+import { axiosInstance } from "../../utils/axiosInstance";
+import API from "../../utils/API/TEST_API";
 
 function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const { userId } = useUserStore();
 
   const handleInput = (e) => {
     const { name, value } = e.target;
     if (name === "email") setEmail(value);
     if (name === "password") setPassword(value);
   };
+
+  const postUserIdToCommunity = async () => {
+    try {
+      const response = await axiosInstance.post(API.COMM_SIGNUP, {
+        originalId: userId,
+      });
+      console.error("POST request to /community/user successful:", response);
+    } catch (error) {
+      console.error("Error posting userId to /community/user:", error);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
     try {
-      await Login(email, password); //스토어 login 함수 사용
-      navigate("/main"); // 로그인 성공 시 메인 페이지로 리다이렉트
+      await Login(email, password);
+      postUserIdToCommunity();
+      navigate("/main");
     } catch (e) {
       setError("로그인 실패: " + e.message);
+      console.error(e);
     }
   };
 
   const moveToSignUp = () => {
-    navigate("/register"); // 회원가입 페이지로 이동
+    navigate("/register");
   };
 
   return (
@@ -56,15 +74,20 @@ function LoginForm() {
           onChange={handleInput}
           required
         />
-        <button type="submit" onClick={handleSubmit} className={s.loginBtn}>
+        <button type="submit" className={s.loginBtn}>
           로그인
         </button>
-        <div className={s.errorMsg}>{error && <h4>{error}</h4>}</div>
-        <button type="submit" onClick={moveToSignUp} className={s.helpBtn}>
+        {error && (
+          <div className={s.errorMsg}>
+            <h4>{error}</h4>
+          </div>
+        )}
+        <button type="button" onClick={moveToSignUp} className={s.helpBtn}>
           가입하기
         </button>
       </form>
     </div>
   );
 }
+
 export default LoginForm;

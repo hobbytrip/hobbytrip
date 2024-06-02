@@ -1,28 +1,37 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import style from './CategoryList.module.css';
 import CreateItem from './CreateItem/CreateItem'
 import Channel from './Channel/Channel';
 import CreateChannel from '../../Modal/ServerModal/Channel/CreateChannel/CreateChannel';
+import CategorySetting from '../../Modal/ServerModal/Category/CategorySetting/CategorySetting';
+import useUserStore from '../../../actions/useUserStore';
 import useServerStore from '../../../actions/useServerStore';
 import { HiPlus } from "react-icons/hi2";
 import { IoClose, IoSettings } from "react-icons/io5";
 
-const userId = 1; // 테스트용
-
 const CategoryList = () => {
   const [categories, setCategories] = useState([]);
   const [channels, setChannels] = useState([]);
+  const [uncategorizedChannels, setUncategorizedChannels] = useState([]);
   const [showCreateItemModal, setShowCreateItemModal] = useState(false);
+  const { serverId } = useParams();
 
-  const nav = useNavigate();
-  const { serverData } = useServerStore((state) => ({
+  const { serverData, fetchServerData } = useServerStore((state) => ({
     serverData: state.serverData,
+    fetchServerData: state.fetchServerData,
   }));
+  const nav = useNavigate();
+  const { userId } = useUserStore();
+
+  useEffect(() => {
+    fetchServerData(serverId, userId);
+  }, []);
 
   useEffect(() => {
     setCategories(serverData.serverCategories || []);
     setChannels(serverData.serverChannels || []);
+    setUncategorizedChannels((serverData.serverChannels || []).filter(channel => !channel.categoryId));
   }, [serverData]);
 
   const handleCloseCategory = () => {
@@ -52,12 +61,19 @@ const CategoryList = () => {
             <IoClose style={{ width: '18px', height: '18px' }} />
           </button>
         </div>
+        <div className={style.uncategorizedChannels}>
+          {uncategorizedChannels.map(channel => (
+            <li key={channel.channelId}>
+              <Channel channel={channel} serverId={serverId} />
+            </li>
+          ))}
+        </div>
         {categories.map(category => (
           <Category
             key={category.categoryId}
             categoryId={category.categoryId}
             name={category.name}
-            serverId={serverData.serverInfo.serverId}
+            serverId={serverId}
             channels={getCategoryChannels(category.categoryId)}
           />
         ))}
@@ -115,7 +131,6 @@ const Category = ({ categoryId, name, serverId, channels }) => {
       {showCreateChannel && (
         <div className={style.createServerModal}>
           <CreateChannel
-            userId={userId}
             categoryId={categoryId}
             onClose={handleCloseCreateChannel}
           />
@@ -124,7 +139,6 @@ const Category = ({ categoryId, name, serverId, channels }) => {
       {showCategorySetting && (
         <div className={style.createServerModal}>
           <CategorySetting
-            userId={userId}
             categoryId={categoryId}
             onClose={handleCloseCategorySetting}
           />

@@ -1,12 +1,13 @@
 import { OpenVidu } from 'openvidu-browser';
-import axios from 'axios';
-import { useLocation, useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import style from './MediaCall.module.css';
 
 import ChatHeader from '../../Common/ChatRoom/CommunityChatHeader/ChatHeader';
+import ChatHeaderModal from '../../../components/Modal/ChatModal/ChatRoomInfo/ChatRoomInfo';
 import UserVideoComponent from './../UserVideoComponent';
 import useUserStore from '../../../actions/useUserStore';
+import API from '../../../utils/API/API';
 
 import { HiMiniSpeakerWave } from "react-icons/hi2";
 import { AiFillMessage } from "react-icons/ai";
@@ -14,37 +15,22 @@ import { IoClose, IoVideocamOutline, IoVideocamOffOutline, IoCall, IoCallOutline
 import { LuMonitor, LuMonitorOff } from "react-icons/lu";
 import { MdOutlineKeyboardVoice, MdKeyboardVoice } from "react-icons/md";
 
-const URL = 'http://localhost:5000/';
+const URL = API.MEDIA;
 
 export default function MediaCall() {
   const [session, setSession] = useState(undefined);
   const [publisher, setPublisher] = useState(undefined);
   const [subscribers, setSubscribers] = useState([]);
-  const [userData, setUserData] = useState({});
   const [screenCam, setScreenCam] = useState(false);
   const [isCameraConnected, setIsCameraConnected] = useState(false);
   const [isMicConnected, setIsMicConnected] = useState(false);
-
-  const OV = useRef(new OpenVidu());
-
+  
   const { serverId, channelId } = useParams();
   const newSessionId = `${serverId}${channelId}`;
-  
-  const user = useUserStore.getState().user;
+  const { userId } = useUserStore();
+  const nav = useNavigate();
 
-  const userId = 'userId' + Math.floor(Math.random() * 10); // 테스트 용 -> res.data.userId로 전체 변환
-
-  // 유저 정보 가져오기
-  useEffect(() => {
-    const data = {
-      userId: user.userId, // res.body.userId
-      // nickname: res.body.nickname,
-      // profileImage: res.profileImage,
-      serverId: serverId,
-      channelId: channelId
-    };
-    setUserData(data);
-  }, []);
+  const OV = useRef(new OpenVidu());
 
   // 세션 참여 후 웹소켓과의 통신
   const joinSession = useCallback((e) => {
@@ -77,7 +63,6 @@ export default function MediaCall() {
       getToken().then(async (token) => {
         try {
           await session.connect(token);
-
           let publisher = await OV.current.initPublisherAsync(undefined, {
             audioSource: undefined,
             videoSource: undefined,
@@ -101,12 +86,12 @@ export default function MediaCall() {
   }, [newSessionId]);
 
   const createSession = async (sessionId) => {
-    const res = await axios.post(`${URL}api/sessions`, 
+    const res = await axios.post(URL, 
     { customSessionId: sessionId }, {
       headers: { 'Content-Type': 'application/json' },
       body: {
         customSessionId: sessionId,
-        userId: userData.userId,
+        userId: userId,
         channelId: channelId,
         serverId: serverId
       }
@@ -115,10 +100,10 @@ export default function MediaCall() {
   };
 
   const createToken = async (sessionId) => {
-    const res = await axios.post(`${URL}api/sessions/${sessionId}/connections`, {
+    const res = await axios.post(`${URL}/${sessionId}/connections`, {
       headers: { 'Content-Type': 'application/json' },
       body: {
-        userId: userData.userId,
+        userId: userId,
         channelId: channelId,
         serverId: serverId
       }
@@ -130,10 +115,10 @@ export default function MediaCall() {
   const leaveSession = useCallback(() => {
     if (session) {
       session.disconnect();
-      axios.delete(`${URL}/api/sessions/${newSessionId}/disconnect`, {
+      axios.delete(`${URL}/${newSessionId}/disconnect`, {
         data: {
           body: {
-            userId: userData.userId,
+            userId: userId,
             channelId: channelId,
             serverId: serverId
           }
@@ -144,7 +129,7 @@ export default function MediaCall() {
     setSession(undefined);
     setSubscribers([]);
     setPublisher(undefined);
-  }, [session, userData]);
+  }, [session, userId]);
 
   useEffect(() => {
     const handleBeforeUnload = () => {
@@ -177,19 +162,24 @@ export default function MediaCall() {
     setScreenCam(!screenCam);
   };
 
+  const handleClose = () => {
+    nav(-1);
+  }
+
   return (
     <>
     <div className={style.wrapper}>
     <ChatHeader />
+    <ChatHeaderModal />
       <div className={style.container}>
         <div className={style.headerContainer}>
           <HiMiniSpeakerWave style={{ width: '15px', height: '15px' }} />
-          <h4> 생생한 자세 교정 </h4>
+          <h4> {channelId} </h4>
           <button>
             <AiFillMessage style={{ width: '18.66px', height: '18.66px' }} />
           </button>
           <button>
-            <IoClose style={{ width: '18px', height: '18px' }} />
+            <IoClose style={{ width: '18px', height: '18px' }} onClick={handleClose}/>
           </button>
         </div>
 
@@ -210,7 +200,7 @@ export default function MediaCall() {
                 <UserVideoComponent streamManager={publisher} />
                 </div>
               )}
-              {subscribers.map((sub, i) => (
+              {subscribers.slice(0, 5).map((sub, i) => (
                 <div key={i} >
                   <UserVideoComponent streamManager={sub} />
                 </div>

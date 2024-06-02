@@ -1,17 +1,19 @@
 import style from "./JoinServer.module.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import useUserStore from '../../../../../actions/useUserStore';
 import useServerStore from "../../../../../actions/useServerStore";
 import API from "../../../../../utils/API/API";
+import { axiosInstance } from "../../../../../utils/axiosInstance";
 
-function JoinServer({ userId, onClose }) { 
+function JoinServer({ onClose }) { 
   const [link, setLink] = useState("");
   const nav = useNavigate();
   const { serverData, setServerData } = useServerStore((state) => ({
     serverData: state.serverData,
     setServerData: state.setServerData
   }));
+  const { userId } = useUserStore();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,7 +24,7 @@ function JoinServer({ userId, onClose }) {
 
     const [serverId, inviteLink] = link.split('/');
     if (!serverId || !inviteLink) {
-      alert("잘못된 초대 링크 형식입니다. 'serverId/초대링크' 형식을 확인해주세요.");
+      alert("잘못된 초대 링크 형식입니다.");
       return;
     }
 
@@ -32,8 +34,9 @@ function JoinServer({ userId, onClose }) {
         serverId: serverId,
         link: inviteLink
       };
+      console.log(data)
 
-      const res = await axios.post(API.JOIN_SERVER, data);
+      const res = await axiosInstance.post(API.JOIN_SERVER, data);
 
       if (res.data.success) {
         console.log(res);

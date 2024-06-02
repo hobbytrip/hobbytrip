@@ -1,12 +1,12 @@
 import style from "./InviteServer.module.css";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { axiosInstance } from "../../../../../utils/axiosInstance";
 import useServerStore from "../../../../../actions/useServerStore";
 import API from "../../../../../utils/API/API";
 import { IoClose } from "react-icons/io5";
 import { FiSearch } from "react-icons/fi";
 
-function InviteServer({ userId, onClose }) {
+function InviteServer({ onClose }) {
   const [link, setLink] = useState("");
   const { serverData } = useServerStore((state) => ({
     serverData: state.serverData,
@@ -28,9 +28,8 @@ function InviteServer({ userId, onClose }) {
   useEffect(() => {
     const fetchInvitation = async () => {
       try {
-        const serverId = serverInfo.serverId;
-        const res = await axios.get(API.INVITE_SERVER(serverId));
-        setLink(`${serverId}/${res.data.data.invitationCode}`);
+        const res = await axiosInstance.get(API.INVITE_SERVER(serverInfo.serverId));
+        setLink(`${serverInfo.serverId}/${res.data.data.invitationCode}`);
       } catch (error) {
         console.error("Invitation fetch error:", error);
       }
@@ -59,7 +58,6 @@ function InviteServer({ userId, onClose }) {
           </div>
 
           <div className={style.friendList}>
-            <h4>친구친구</h4>
           </div>
 
           <div className={style.linkContainer}>

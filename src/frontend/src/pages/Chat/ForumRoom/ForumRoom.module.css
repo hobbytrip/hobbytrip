@@ -1,0 +1,10 @@
+.wrapper {
+  background-color: var(--main-purple);
+  width: 390px;
+  display: flex;
+  flex-direction: column;
+  /* overflow: hidden; */
+}
+.forumContainer {
+  background-color: white;
+}

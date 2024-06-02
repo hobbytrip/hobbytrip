@@ -1,11 +1,12 @@
 import s from "./CreateServer.module.css";
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { axiosInstance } from "../../../../../utils/axiosInstance";
 import useServerStore from "../../../../../actions/useServerStore";
 import { TbCameraPlus } from "react-icons/tb";
 import API from "../../../../../utils/API/API";
 import JoinServer from "../JoinServer/JoinServer"
+import useUserStore from "../../../../../actions/useUserStore";
 
 function CreateServer() {
   const [name, setName] = useState("");
@@ -13,11 +14,11 @@ function CreateServer() {
   const [category, setCategory] = useState("");
   const [profileImage, setProfileImage] = useState(null);
   const [profilePreview, setProfilePreview] = useState(null);
+  const [showJoinServer, setShowJoinServer] = useState(false);
   const setServerData = useServerStore((state) => state.setServerData);
   const imgRef = useRef();
   const nav = useNavigate();
-  const [showJoinServer, setShowJoinServer] = useState(false); // 추가
-  const userId = 1; // test용
+  const { userId } = useUserStore();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -39,7 +40,7 @@ function CreateServer() {
         formData.append("profile", profileImage);
       }
 
-      const response = await axios.post(API.SERVER, formData, {
+      const response = await axiosInstance.post(API.SERVER, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -52,6 +53,7 @@ function CreateServer() {
         nav(`/${serverId}/menu`);
       } else {
         console.log("행성 만들기 실패.");
+        console.log(response)
       }
     } catch (error) {
       console.error("데이터 post 에러:", error);
