@@ -26,10 +26,7 @@ const ForumList = React.memo(
             </div>
           ) : (
             forumList.map((forum, index) => (
-              <div
-                key={forum.forumId ? forum.forumId : index}
-                className={s.forumBox}
-              >
+              <div key={forum.forumId} className={s.forumBox}>
                 <div className={s.container}>
                   <h4 className={s.category} style={{ marginBottom: "5px" }}>
                     {forum.forumCategory}

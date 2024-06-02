@@ -36,18 +36,22 @@ function ForumRoom() {
   const { userId } = useUserStore();
   const accessToken = localStorage.getItem("accessToken");
 
-  const queryEnabled = !!userId;
   const { data, error, isLoading } = useQuery({
     queryKey: ["forum", channelId, userId],
     queryFn: () => fetchForumList(channelId, userId),
     staleTime: 1000 * 60 * 5,
     keepPreviousData: true,
-    enabled: queryEnabled,
   });
 
   useEffect(() => {
     if (data && Array.isArray(data)) {
-      setForumList((prevForumList) => [...prevForumList, ...data]);
+      setForumList((prevForumList) => {
+        const existingIds = prevForumList.map((forum) => forum.forumId);
+        const newForumData = data.filter(
+          (forum) => !existingIds.includes(forum.forumId)
+        );
+        return [...prevForumList, ...newForumData];
+      });
     }
   }, [data]);
 
@@ -58,7 +62,7 @@ function ForumRoom() {
   }, [forumList, page]);
 
   const handleNewForum = (newForum) => {
-    setForumList((prevForumList) => [...prevForumList, newForum]);
+    setForumList((prevForumList) => [newForum, ...prevForumList]);
     if (forumListRef.current) {
       forumListRef.current.scrollTop = forumListRef.current.scrollHeight;
     }
