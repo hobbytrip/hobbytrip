@@ -226,14 +226,14 @@ public class ForumCommandService {
 
     private void validateDelete(Forum forum, Long userId, Long channelId) {
         if(!Objects.equals(forum.getUser().getId(), userId) &&
-                 !channelRepository.validateChannelManager(channelId).equals(userId)
+                !channelRepository.validateChannelManager(channelId).equals(userId)
         ){
             throw new ForumException(Code.VALIDATION_ERROR, "Not Forum Owner");
         }
 
-        forum.getFiles().get(0);
-
-        fileDelete(forum.getFiles());
+        if(!forum.getFiles().isEmpty()){
+            fileDelete(forum.getFiles());
+        }
     }
 
 
