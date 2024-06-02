@@ -6,7 +6,7 @@ import usePlanetIcon from "../../../../hooks/usePlanetIcon";
 import { useNavigate } from "react-router-dom";
 import useServerStore from "../../../../actions/useServerStore";
 
-export default function ChatHeader({ }) {
+export default function ChatHeader({}) {
   const nav = useNavigate();
   const [planetIcon, getRandomPlanetIcon] = usePlanetIcon();
   useEffect(() => {
@@ -16,7 +16,7 @@ export default function ChatHeader({ }) {
   const { serverData } = useServerStore((state) => ({
     serverData: state.serverData,
   }));
-  
+
   const { serverInfo } = serverData;
 
   //임시 테스트로 랜덤 서버 이미지 불러옴
@@ -31,14 +31,16 @@ export default function ChatHeader({ }) {
           />
         )}
         <h2 className={s.serverName}>
-          {serverInfo.name ? serverInfo.name : null}
+          {/* {serverInfo.name ? serverInfo.name : null} */}
         </h2>
       </div>
       <div className={s.modals}>
         <TiUserAdd className={s.modal} />
         <TiGroup className={s.modal} />
-        <RiSettings3Fill className={s.modal} 
-          onClick={() => nav(`/${serverInfo.serverId}/setting`)} /> 
+        <RiSettings3Fill
+          className={s.modal}
+          onClick={() => nav(`/${serverInfo.serverId}/setting`)}
+        />
       </div>
     </div>
   );

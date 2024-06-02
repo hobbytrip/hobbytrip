@@ -58,9 +58,36 @@ const ChatMessage = ({ message, onModifyMessage, onDeleteMessage }) => {
             </div>
             <img
               src={message.files[0].fileUrl}
-              className={s.msgContent}
+              className={s.imgContent}
               alt="uploadedFile"
+              style={{ width: "150px" }}
             />
+            {isEditing ? (
+              <div>
+                <input
+                  type="text"
+                  ref={inputRef}
+                  value={newContent}
+                  onChange={(e) => setNewContent(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  className={s.msgEdit}
+                />
+                <h5
+                  style={{
+                    fontWeight: "400",
+                    marginTop: "5px",
+                    marginLeft: "2px",
+                  }}
+                >
+                  {" "}
+                  Enter키로 <a style={{ fontSize: "10px" }}>
+                    저장
+                  </a> Esc키로 <a style={{ fontSize: "10px" }}>취소</a>
+                </h5>
+              </div>
+            ) : (
+              <h4 className={s.msgContent}>{message.content}</h4>
+            )}
           </div>
         </div>
       );
