@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import s from "./MessageSender.module.css";
 import { IoSend } from "react-icons/io5";
 import { FaCirclePlus } from "react-icons/fa6";
-import API from "../../../../../utils/API/API";
+import API from "../../../../../utils/API/TEST_API";
 import ChatMessage from "../../ChatMessage/ChatMessage";
 
 const MessageSender = ({

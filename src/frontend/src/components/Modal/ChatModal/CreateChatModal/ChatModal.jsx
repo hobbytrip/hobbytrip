@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import MessageSender from "../CreateChatModal/MessageSender/MessageSender";
-import useWebSocketStore from "../../../../actions/useWebSocketStore";
 import API from "../../../../utils/API/API";
 import axios from "axios";
+import useUserStore from "../../../../actions/useUserStore";
 
-export default function ChatModal({ userId, writer, onNewMessage, client }) {
+export default function ChatModal({ onNewMessage, client }) {
+  const { userId, nickname } = useUserStore();
   const { serverId, channelId } = useParams();
   const [chatList, setChatList] = useState([]);
   const [typingUsers, setTypingUsers] = useState([]);
@@ -52,6 +53,7 @@ export default function ChatModal({ userId, writer, onNewMessage, client }) {
               }
               setFile(parsedMessage.files[0]);
             }
+            console.error("구독 완료");
           } catch (error) {
             console.error("구독 오류", error);
           }
@@ -62,12 +64,12 @@ export default function ChatModal({ userId, writer, onNewMessage, client }) {
 
   const handleSendMessage = async (messageContent, uploadedFile) => {
     const messageBody = {
-      serverId,
-      channelId,
-      userId,
+      serverId: serverId,
+      channelId: channelId,
+      userId: userId,
       parentId: 0,
       profileImage: "ho",
-      writer,
+      writer: nickname,
       content: messageContent,
       createdAt: new Date().toISOString(),
     };
@@ -81,6 +83,7 @@ export default function ChatModal({ userId, writer, onNewMessage, client }) {
         await axios.post(API.FILE_UPLOAD, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
+            userId: userId,
           },
         });
       }
@@ -115,7 +118,7 @@ export default function ChatModal({ userId, writer, onNewMessage, client }) {
         onMessageSend={handleSendMessage}
         serverId={serverId}
         channelId={channelId}
-        writer={writer}
+        writer={nickname}
         client={client}
       />
     </div>

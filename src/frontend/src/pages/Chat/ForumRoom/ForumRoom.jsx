@@ -7,10 +7,11 @@ import InfiniteScrollComponent from "../../../components/Common/ChatRoom/Infinit
 import API from "../../../utils/API/TEST_API";
 import useUserStore from "../../../actions/useUserStore";
 import TopHeader from "../../../components/Common/ChatRoom/CommunityChatHeader/ChatHeader";
+import ChatRoomInfo from "../../../components/Modal/ChatModal/ChatRoomInfo/ChatRoomInfo";
 import ForumModal from "../../../components/Modal/ForumModal/CreateForumModal/ForumModal";
 import ForumList from "../../../components/Modal/ForumModal/ForumList/ForumList";
 import axios from "axios";
-import emptycon from "../../../assets/image/emptyCon.jpg"; // 이미지 경로 수정
+import emptycon from "../../../assets/image/emptyCon.jpg";
 
 const fetchForumList = async (channelId, userId) => {
   const response = await axiosInstance.get(API.READ_FORUM(channelId, userId));
@@ -119,6 +120,7 @@ function ForumRoom() {
     <div className={s.forumWrapper}>
       <div className={s.wrapper}>
         <TopHeader />
+        <ChatRoomInfo />
         <div className={s.forumContainer}>
           <ForumModal onNewForum={handleNewForum} />
           <div className={s.categoryButtons}>
