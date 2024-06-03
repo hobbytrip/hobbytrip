@@ -73,6 +73,7 @@
   border-radius: 300px;
   border: 1px;
   position: relative;
+  overflow: hidden;
 }
 
 .planetIcon {

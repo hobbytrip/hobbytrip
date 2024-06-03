@@ -14,11 +14,11 @@ axiosInstance.interceptors.request.use(
     if (accessToken) {
       config.headers["Authorization"] = `Bearer ${accessToken}`;
     }
-    console.log("axios config : ", config);
+    // console.log("axios config : ", config);
     return config;
   },
   (error) => {
-    console.log("axios config : ", error);
+    // console.log("axios config : ", error);
     return Promise.reject(error);
   }
 );

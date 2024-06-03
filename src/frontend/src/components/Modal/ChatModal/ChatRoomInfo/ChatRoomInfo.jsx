@@ -36,7 +36,7 @@ export default function ChatHeader({}) {
         )}
 
         <h2 className={s.serverName}>
-          {/* {serverInfo.name ? serverInfo.name : null} */}
+          {name ? name : null}
         </h2>
       </div>
       <div className={s.modals}>
@@ -44,7 +44,7 @@ export default function ChatHeader({}) {
         <TiGroup className={s.modal} />
         <RiSettings3Fill
           className={s.modal}
-          onClick={() => nav(`/${serverInfo.serverId}/setting`)}
+          onClick={() => nav(`/${serverData.serverInfo.serverId}/setting`)}
         />
       </div>
       {isInviteOpen && <InviteServer userId={serverData.userId} onClose={handleInviteClose} />}
