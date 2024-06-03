@@ -24,7 +24,7 @@ jobs:
       - name: Initialize specific submodules
         run: |
           git submodule init src/backend/community-service/community-service-yml
-          git submodule update src/backend/community-service/community-service-yml
+          git submodule update --remote src/backend/community-service/community-service-yml
 
       - name: Update nested submodules within specific submodule
         run: |
