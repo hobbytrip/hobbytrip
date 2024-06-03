@@ -29,7 +29,6 @@ const useServerStore = create((set) => ({
         });
       } else {
         console.error("Error: Data not found in res", res);
-        // 초기 상태로 설정
         set({
           serverData: {
             serverInfo: null,
@@ -42,7 +41,6 @@ const useServerStore = create((set) => ({
       }
     } catch (error) {
       console.error("Error fetching server data:", error);
-      // 초기 상태로 설정
       set({
         serverData: {
           serverInfo: null,

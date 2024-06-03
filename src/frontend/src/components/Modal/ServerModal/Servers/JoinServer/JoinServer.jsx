@@ -32,7 +32,7 @@ function JoinServer({ onClose }) {
       const data = {
         userId: userId,
         serverId: serverId,
-        link: inviteLink
+        invitationCode: inviteLink
       };
       console.log(data)
 

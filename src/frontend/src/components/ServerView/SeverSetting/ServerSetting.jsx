@@ -14,7 +14,6 @@ const ServerSetting = () => {
   const [serverCategory, setServerCategory] = useState('');
   const [profileImage, setProfileImage] = useState(null);
   const [profilePreview, setProfilePreview] = useState(null);
-  const [isOpen, setisOpen] = useState(false);
   const { serverData, setServerData } = useServerStore((state) => ({
     serverData: state.serverData,
     setServerData: state.setServerData
@@ -25,12 +24,12 @@ const ServerSetting = () => {
   const serverInfo = serverData.serverInfo;
 
   useEffect(() => {
-    setServerName(serverInfo.name || '');
-    setServerDescription(serverInfo.description || '');
-    setServerCategory(serverInfo.category || '');
-    setProfileImage(serverInfo.profile || null);
-    setProfilePreview(serverInfo.profile || null);
-    setisOpen(serverInfo.open || false);
+    if (serverInfo) {
+      setServerName(serverInfo.name);
+      setServerDescription(serverInfo.description);
+      setServerCategory(serverInfo.category);
+      setProfilePreview(serverInfo.profile);
+    }
   }, [serverInfo]);
 
   const handleUpdate = async (e) => {
@@ -39,41 +38,43 @@ const ServerSetting = () => {
       alert("행성 이름을 적어주세요");
       return;
     }
+    else if(String(userId) !== String(serverInfo.managerId)){
+      alert("삭제 권한이 없습니다");
+      return;
+    }
     try {
       const formData = new FormData();
+      const profile = profileImage !== null ? profileImage : 'null';
+
       const data = JSON.stringify({
         serverId: serverInfo.serverId,
         userId: userId,
         name: serverName,
-        // description: serverDescription,
-        // open: isOpen
-        // category: category,
+        profile: serverInfo.profile,
+        description: serverDescription,
       });
       const communityData = new Blob([data], { type: "application/json" });
       formData.append("requestDto", communityData);
-      if(profileImage !== null){
-        formData.append("profile", profileImage);
+      console.log(profile);
+      if(profile !== null){
+        formData.append("profile", profile);
       }
       else{
         formData.append("profile", 'null');
       }
-      console.log(data)
 
-      for (let [key, value] of formData.entries()) {
-        console.log(`${key}: ${value}`);
-      }
-
-      const response = await axiosInstance.patch(API.SERVER, formData, {
+      const res = await axiosInstance.patch(API.SERVER, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
 
-      if (response.data.success) {
-        alert('성공!!!!!!!!!!!!!!')
-        console.log(response);
+      if (res.data.success) {
+        console.log(res.data)
+        setServerData(res.data.data);
+        nav(-1);
       } else {
-        console.log(response);        
+        console.log(res);        
       }
     } catch (error) {
       console.error("데이터 post 에러:", error);
@@ -92,6 +93,9 @@ const ServerSetting = () => {
       reader.readAsDataURL(file);
       reader.onloadend = () => {
         setProfilePreview(reader.result);
+      };
+      reader.onerror = (error) => {
+        console.error("File reading error:", error);
       };
     }
   };
@@ -122,6 +126,11 @@ const ServerSetting = () => {
         }
       }
     }
+  };
+
+  const handleDeleteImage = () => {
+    setProfileImage(null);
+    setProfilePreview(null);
   };
 
   return (
@@ -162,7 +171,8 @@ const ServerSetting = () => {
             <h4>행성 아이콘 변경하기</h4>
             <div className={style.addImg}>
               <div>
-                {profilePreview ? <img src={profilePreview} alt="profile preview" /> : null}
+                {profilePreview !== null ? 
+                  <img src={profilePreview} alt="profile preview" /> : null}
               </div>
               <label className={style.addImgBtn}>
                 <h4>이미지 업로드</h4>
@@ -174,6 +184,9 @@ const ServerSetting = () => {
                 />
                 <TbCameraPlus style={{ width: '15px', height: '15px' }} />
               </label>
+              <button onClick={handleDeleteImage}>
+                이미지 삭제
+              </button>
             </div>
           </div>
           <button

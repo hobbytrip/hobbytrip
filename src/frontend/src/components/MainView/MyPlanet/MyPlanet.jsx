@@ -69,8 +69,10 @@ const MyPlanet = ({ servers }) => {
           {(servers || []).slice(startIndex, endIndex).map((server) => (
             <div key={server.serverId} className={style.planetItem}>
               <button className={style.planetThumb} onClick={() => handleServerClick(server.serverId)}>
-                {server.profile && (
-                  <img src={server.profile} className={style.planetIcon} alt="행성 이미지" />
+                {(server.profile !== 'null' && server.profile !== null) ? (
+                  <img src={server.profile} className={style.planetIcon} alt={server.name} />
+                ) : (
+                  null
                 )}
                 <div className={style.serverName}>{server.name}</div>
               </button>
