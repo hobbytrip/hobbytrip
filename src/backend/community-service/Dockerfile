@@ -8,3 +8,4 @@ RUN yum install -y procps lsof
 
 ENTRYPOINT ["java", "-Duser.timezone=Asia/Seoul", "-jar",  "-Dspring.profiles.active=dev", "/app.jar"]
 
+
