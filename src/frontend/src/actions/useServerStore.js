@@ -1,6 +1,6 @@
-import { create } from 'zustand';
-import API from '../utils/API/API';
-import { axiosInstance } from '../utils/axiosInstance';
+import { create } from "zustand";
+import API from "../utils/API/API";
+import { axiosInstance } from "../utils/axiosInstance";
 
 const useServerStore = create((set) => ({
   serverData: {
@@ -15,7 +15,7 @@ const useServerStore = create((set) => ({
     try {
       const res = await axiosInstance.get(API.GET_SERVER(serverId, userId));
       const resData = res?.data?.data;
-      console.log(resData)
+      console.error(resData);
 
       if (resData) {
         set({

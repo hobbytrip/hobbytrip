@@ -11,7 +11,6 @@ import ChatRoom from "./pages/Chat/ChatRoom/ChatRoom";
 import ForumRoom from "./pages/Chat/ForumRoom/ForumRoom.jsx";
 import SettingView from "./pages/ServerView/SettingView/SettingView.jsx";
 import CategoryView from "./pages/ServerView/CategoryView/CategoryView.jsx";
-import useUserStore from "./actions/useUserStore.js";
 
 function App() {
   return (

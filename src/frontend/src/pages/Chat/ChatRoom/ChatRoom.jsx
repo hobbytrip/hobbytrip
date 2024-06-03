@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { IoChatbubbleEllipses } from "react-icons/io5";
 import axios from "axios";
+import { axiosInstance } from "../../../utils/axiosInstance";
 import s from "./ChatRoom.module.css";
 import TopHeader from "../../../components/Common/ChatRoom/CommunityChatHeader/ChatHeader";
 import ChatRoomInfo from "../../../components/Modal/ChatModal/ChatRoomInfo/ChatRoomInfo";
@@ -12,21 +13,28 @@ import ChatMessage from "../../../components/Modal/ChatModal/ChatMessage/ChatMes
 import ChatChannelType from "../../../components/Modal/ChatModal/ChatChannelType/ChatChannelType";
 import InfiniteScrollComponent from "../../../components/Common/ChatRoom/InfiniteScrollComponent";
 import useWebSocketStore from "../../../actions/useWebSocketStore";
-import API from "../../../utils/API/API";
+import API from "../../../utils/API/TEST_API";
+import useUserStore from "../../../actions/useUserStore";
 
 const fetchChatHistory = async ({ queryKey }) => {
   const [_, channelId, page] = queryKey;
+  const token = localStorage.getItem("accessToken");
   try {
-    const response = await axios.get(API.GET_HISTORY, {
+    const response = await axiosInstance.get(API.GET_HISTORY, {
       params: {
         channelId,
         page,
         size: 20,
       },
+      // headers: {
+      //   Authorization: `Bearer ${token}`,
+      // },
+      // withCredentials: true,
     });
     const responseData = response.data.data;
     return responseData.data.reverse();
   } catch (err) {
+    console.error(token);
     console.error("채팅기록 불러오기 오류", err);
     throw new Error("채팅기록 불러오기 오류");
   }
@@ -34,10 +42,10 @@ const fetchChatHistory = async ({ queryKey }) => {
 
 const postUserLocation = async (userId, serverId, channelId) => {
   try {
-    const response = await axios.post(API.POST_LOCATION, {
-      userId,
-      serverId,
-      channelId,
+    const response = await axiosInstance.post(API.POST_LOCATION, {
+      userId: userId,
+      serverId: serverId,
+      channelId: channelId,
     });
     console.log("User location:", response.data);
   } catch (err) {
@@ -46,12 +54,12 @@ const postUserLocation = async (userId, serverId, channelId) => {
   }
 };
 
-function ChatRoom({ userId }) {
+function ChatRoom() {
+  const { userId } = useUserStore();
   const { serverId, channelId } = useParams();
   const [chatList, setChatList] = useState([]);
   const [page, setPage] = useState(0);
   const chatListContainerRef = useRef(null);
-  const nickname = "테스트유저0528"; //임시 테스트용. userstore에서 가져와야 한다.
 
   const { client, connect, disconnect } = useWebSocketStore((state) => ({
     client: state.client,
@@ -61,7 +69,8 @@ function ChatRoom({ userId }) {
 
   useEffect(() => {
     connect(userId);
-
+    console.error("serverId", serverId);
+    console.error("소켓연결완료");
     return () => {
       disconnect();
     };
@@ -179,8 +188,6 @@ function ChatRoom({ userId }) {
         </div>
         <div className={s.messageSender}>
           <ChatModal
-            userId={userId}
-            writer={nickname}
             onNewMessage={handleNewMessage}
             client={client}
             fetchHistory={refetch}

@@ -9,8 +9,8 @@
 }
 .container {
   width: 390px;
-  padding-left: 35px;
-  padding-right: 35px;
+  margin-left: 30px;
+  margin-right: 30px;
   display: flex;
   align-items: center;
   justify-content: center;

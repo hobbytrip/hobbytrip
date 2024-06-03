@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import { axiosInstance } from "../../../utils/axiosInstance";
 
 const FileUpload = ({ onFileUpload, api, userId, writer }) => {
   const { serverId, channelId } = useParams();
@@ -14,7 +14,7 @@ const FileUpload = ({ onFileUpload, api, userId, writer }) => {
         formData.append(key, requestDatas[key]);
       });
 
-      const response = await axios.post(api, formData, {
+      const response = await axiosInstance.post(api, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

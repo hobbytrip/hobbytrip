@@ -4,7 +4,7 @@
   align-items: center;
   background-color: var(--light-gray);
   /* position: relative; */
-  margin: 5px;
+  margin: 15px;
   border-radius: 10px;
 }
 .top {
@@ -61,7 +61,8 @@
 .forumModal {
   display: flex;
   flex-direction: column;
-  padding: 20px 20px 15px 20px;
+  padding: 20px;
+  /* margin: 30px; */
 }
 .titleInput {
   font-size: 20px;
