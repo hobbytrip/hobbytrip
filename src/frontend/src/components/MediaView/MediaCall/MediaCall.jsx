@@ -1,10 +1,11 @@
 import { OpenVidu } from 'openvidu-browser';
-import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate, json } from 'react-router-dom';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import style from './MediaCall.module.css';
+import axios from 'axios';
 
 import ChatHeader from '../../Common/ChatRoom/CommunityChatHeader/ChatHeader';
+import ChatHeaderModal from '../../../components/Modal/ChatModal/ChatRoomInfo/ChatRoomInfo';
 import UserVideoComponent from './../UserVideoComponent';
 import useUserStore from '../../../actions/useUserStore';
 import API from '../../../utils/API/API';
@@ -14,6 +15,7 @@ import { AiFillMessage } from "react-icons/ai";
 import { IoClose, IoVideocamOutline, IoVideocamOffOutline, IoCall, IoCallOutline } from "react-icons/io5";
 import { LuMonitor, LuMonitorOff } from "react-icons/lu";
 import { MdOutlineKeyboardVoice, MdKeyboardVoice } from "react-icons/md";
+import { axiosInstance } from '../../../utils/axiosInstance';
 
 const URL = API.MEDIA;
 
@@ -24,18 +26,22 @@ export default function MediaCall() {
   const [screenCam, setScreenCam] = useState(false);
   const [isCameraConnected, setIsCameraConnected] = useState(false);
   const [isMicConnected, setIsMicConnected] = useState(false);
-  const { user } = useUserStore((state) => ({
-    user: state.user
-  }));
   
-  const { serverId, channelId } = useParams();
+  let { serverId, channelId } = useParams();
   const newSessionId = `${serverId}${channelId}`;
-  const userId = user.userId;
+  console.log(newSessionId);
+  const { userId } = useUserStore();
+  const nav = useNavigate();
+  serverId = parseInt(serverId);
+  channelId = parseInt(channelId);
+  // console.log(typeof newSessionId);
+  // console.log(typeof serverId);
+  // console.log(typeof channelId);
+  // console.log(typeof userId);
 
   const OV = useRef(new OpenVidu());
 
-  // const userId = 'userId' + Math.floor(Math.random() * 10); // 임시용
-
+  const accessToken = localStorage.getItem('accessToken');
   // 세션 참여 후 웹소켓과의 통신
   const joinSession = useCallback((e) => {
     e.preventDefault();
@@ -90,28 +96,53 @@ export default function MediaCall() {
   }, [newSessionId]);
 
   const createSession = async (sessionId) => {
-    const res = await axios.post(URL, 
-    { customSessionId: sessionId }, {
-      headers: { 'Content-Type': 'application/json' },
+    // console.log(sessionId);
+    const data = JSON.stringify({
+      userId: userId,
+      channelId: channelId,
+      serverId: serverId
+    })
+    const res = await axios.post(URL, { customSessionId: sessionId }, {
+      headers: { 
+        // Content-Type: 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
       body: {
-        customSessionId: sessionId,
-        userId: userId,
-        channelId: channelId,
-        serverId: serverId
-      }
-    });
+        data
+      },
+      withCredentials: true
+  })
+    console.log(res);
     return res.data;
   };
 
   const createToken = async (sessionId) => {
+    console.error(accessToken)
+    // console.log(sessionId)
+    // console.log(newSessionId)
+    // console.log(token)
+    // const data = 
+    // console.log(data)'
+    const req = {
+      userId: userId,
+      channelId: channelId,
+      serverId: serverId
+    }
+    console.error(JSON.stringify(req));
     const res = await axios.post(`${URL}/${sessionId}/connections`, {
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        // Content-Type: 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
       body: {
         userId: userId,
         channelId: channelId,
         serverId: serverId
-      }
+      },
+      withCredentials: true
     });
+    
+    console.log(res.data)
     return res.data;
   };
 
@@ -119,7 +150,7 @@ export default function MediaCall() {
   const leaveSession = useCallback(() => {
     if (session) {
       session.disconnect();
-      axios.delete(`${URL}/${newSessionId}/disconnect`, {
+      axiosInstance.delete(`${URL}/${newSessionId}/disconnect`, {
         data: {
           body: {
             userId: userId,
@@ -133,7 +164,7 @@ export default function MediaCall() {
     setSession(undefined);
     setSubscribers([]);
     setPublisher(undefined);
-  }, [session, userData]);
+  }, [session, userId]);
 
   useEffect(() => {
     const handleBeforeUnload = () => {
@@ -166,10 +197,15 @@ export default function MediaCall() {
     setScreenCam(!screenCam);
   };
 
+  const handleClose = () => {
+    nav(-1);
+  }
+
   return (
     <>
     <div className={style.wrapper}>
     <ChatHeader />
+    <ChatHeaderModal />
       <div className={style.container}>
         <div className={style.headerContainer}>
           <HiMiniSpeakerWave style={{ width: '15px', height: '15px' }} />
@@ -178,7 +214,7 @@ export default function MediaCall() {
             <AiFillMessage style={{ width: '18.66px', height: '18.66px' }} />
           </button>
           <button>
-            <IoClose style={{ width: '18px', height: '18px' }} />
+            <IoClose style={{ width: '18px', height: '18px' }} onClick={handleClose}/>
           </button>
         </div>
 

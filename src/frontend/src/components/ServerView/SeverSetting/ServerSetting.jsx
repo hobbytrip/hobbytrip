@@ -1,13 +1,12 @@
+import style from './ServerSetting.module.css';
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import style from './ServerSetting.module.css';
+import API from '../../../utils/API/API';
+import useServerStore from '../../../actions/useServerStore';
+import useUserStore from '../../../actions/useUserStore';
 import { TbCameraPlus, TbCheck } from "react-icons/tb";
 import { IoClose } from "react-icons/io5";
-import useServerStore from '../../../actions/useServerStore';
-import API from '../../../utils/API/API';
-
-const SERVER_URL = API.COMM_SERVER;
+import { axiosInstance } from '../../../utils/axiosInstance';
 
 const ServerSetting = () => {
   const [serverName, setServerName] = useState('');
@@ -15,23 +14,24 @@ const ServerSetting = () => {
   const [serverCategory, setServerCategory] = useState('');
   const [profileImage, setProfileImage] = useState(null);
   const [profilePreview, setProfilePreview] = useState(null);
-  const [isOpen, setisOpen] = useState(false);
   const { serverData, setServerData } = useServerStore((state) => ({
     serverData: state.serverData,
     setServerData: state.setServerData
   }));
-  const serverInfo = serverData.serverInfo;
+  const { userId } = useUserStore();
   const imgRef = useRef();
   const nav = useNavigate();
-  const userId = 1;
+  const serverInfo = serverData.serverInfo;
 
   useEffect(() => {
-    setServerName(serverInfo.name || '');
-    setServerDescription(serverInfo.description || '');
-    setServerCategory(serverInfo.category || '');
-    setProfileImage(serverInfo.profile || null);
-    setProfilePreview(serverInfo.profile || null);
-    setisOpen(serverInfo.open || false);
+    if (serverInfo) {
+      console.log(profileImage);
+      setServerName(serverInfo.name);
+      setServerDescription(serverInfo.description);
+      setServerCategory(serverInfo.category);
+      setProfilePreview(serverInfo.profile);
+      setProfileImage(serverInfo.profile);
+    }
   }, [serverInfo]);
 
   const handleUpdate = async (e) => {
@@ -40,42 +40,45 @@ const ServerSetting = () => {
       alert("행성 이름을 적어주세요");
       return;
     }
+    else if(String(userId) !== String(serverInfo.managerId)){
+      alert("삭제 권한이 없습니다");
+      return;
+    }
     try {
-      const id = 1;
       const formData = new FormData();
+      const profile = profileImage !== null ? profileImage : 'null';
+
       const data = JSON.stringify({
         serverId: serverInfo.serverId,
-        userId: id,
+        userId: userId,
         name: serverName,
+        profile: serverInfo.profile,
         description: serverDescription,
-        open: isOpen
-        // category: category,
       });
       const communityData = new Blob([data], { type: "application/json" });
       formData.append("requestDto", communityData);
-      if(profileImage !== null){
-        formData.append("profile", profileImage);
+      console.log(profile);
+      if(profile !== null){
+        formData.append("profile", profile);
+        console.log('profile is', profile);
       }
       else{
         formData.append("profile", 'null');
-      }
-      console.log(data)
-
-      for (let [key, value] of formData.entries()) {
-        console.log(`${key}: ${value}`);
+        console.log('nulllll')
       }
 
-      const response = await axios.patch(SERVER_URL, formData, {
+      const res = await axiosInstance.patch(API.SERVER, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
 
-      if (response.data.success) {
-        alert('성공!!!!!!!!!!!!!!')
-        console.log(response);
+      if (res.data.success) {
+        console.log(res.data)
+        setServerData(res.data.data);
+        nav(-1);
       } else {
-        console.log(response);        
+        console.log(res);        
       }
     } catch (error) {
       console.error("데이터 post 에러:", error);
@@ -95,6 +98,9 @@ const ServerSetting = () => {
       reader.onloadend = () => {
         setProfilePreview(reader.result);
       };
+      reader.onerror = (error) => {
+        console.error("File reading error:", error);
+      };
     }
   };
 
@@ -105,7 +111,7 @@ const ServerSetting = () => {
         alert("삭제 권한이 없습니다");
       } else {
         try {
-          const res = await axios.delete(SERVER_URL, {
+          const res = await axiosInstance.delete(API.SERVER, {
             data: {
               serverId: serverInfo.serverId,
               userId: userId,
@@ -124,6 +130,11 @@ const ServerSetting = () => {
         }
       }
     }
+  };
+
+  const handleDeleteImage = () => {
+    setProfileImage(null);
+    setProfilePreview(null);
   };
 
   return (
@@ -164,7 +175,8 @@ const ServerSetting = () => {
             <h4>행성 아이콘 변경하기</h4>
             <div className={style.addImg}>
               <div>
-                {profilePreview ? <img src={profilePreview} alt="profile preview" /> : null}
+                {profilePreview !== null ? 
+                  <img src={profilePreview} alt="profile preview" /> : null}
               </div>
               <label className={style.addImgBtn}>
                 <h4>이미지 업로드</h4>
@@ -176,6 +188,9 @@ const ServerSetting = () => {
                 />
                 <TbCameraPlus style={{ width: '15px', height: '15px' }} />
               </label>
+              <button onClick={handleDeleteImage}>
+                이미지 삭제
+              </button>
             </div>
           </div>
           <button

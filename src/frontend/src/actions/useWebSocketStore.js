@@ -7,7 +7,8 @@ const useWebSocketStore = create((set, get) => ({
   isConnected: false,
   connect: (userId) => {
     const stompClient = new StompJs.Client({
-      webSocketFactory: () => new SockJS("http://localhost:7070/ws-stomp"),
+      webSocketFactory: () =>
+        new SockJS("https://fittrip.site/stomp/ws-stomp"),
       debug: (str) => console.log(str),
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,
