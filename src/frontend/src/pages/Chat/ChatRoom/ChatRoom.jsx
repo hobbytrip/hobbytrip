@@ -69,6 +69,7 @@ function ChatRoom() {
 
   useEffect(() => {
     connect(userId);
+    console.error("userId", userId);
     console.error("serverId", serverId);
     console.error("소켓연결완료");
     return () => {
