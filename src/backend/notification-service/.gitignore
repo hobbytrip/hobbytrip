@@ -16,9 +16,6 @@ build/
 bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
-application.properties
-application.yml
-.gitmodules
 
 ### IntelliJ IDEA ###
 .idea
@@ -30,6 +27,7 @@ out/
 !**/src/test/**/out/
 application.properties
 application.yml
+.gitmodules
 
 
 ### NetBeans ###
