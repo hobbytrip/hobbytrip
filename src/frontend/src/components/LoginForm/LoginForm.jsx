@@ -24,6 +24,7 @@ function LoginForm() {
       const response = await axiosInstance.post(API.COMM_SIGNUP, {
         originalId: userId,
       });
+
       console.error("POST request to /community/user successful:", response);
     } catch (error) {
       console.error("Error posting userId to /community/user:", error);
@@ -35,7 +36,8 @@ function LoginForm() {
     setError(null);
     try {
       await Login(email, password);
-      postUserIdToCommunity();
+      await postUserIdToCommunity();
+
       navigate("/main");
     } catch (e) {
       setError("로그인 실패: " + e.message);

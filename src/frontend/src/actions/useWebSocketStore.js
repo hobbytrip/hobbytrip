@@ -7,8 +7,7 @@ const useWebSocketStore = create((set, get) => ({
   isConnected: false,
   connect: (userId) => {
     const stompClient = new StompJs.Client({
-      webSocketFactory: () =>
-        new SockJS("https://fittrip.site/api/stomp/ws-stomp"),
+      webSocketFactory: () => new SockJS("https://fittrip.site/stomp/ws-stomp"),
       debug: (str) => console.log(str),
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,
@@ -19,7 +18,7 @@ const useWebSocketStore = create((set, get) => ({
     });
 
     stompClient.activate();
-    set({ client: stompClient });
+    set({ client: stompClient, isConnected: true });
   },
   disconnect: () => {
     const { client } = get();

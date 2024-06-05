@@ -20,21 +20,23 @@ const fetchChatHistory = async ({ queryKey }) => {
   const [_, channelId, page] = queryKey;
   const token = localStorage.getItem("accessToken");
   try {
-    const response = await axiosInstance.get(API.GET_HISTORY, {
+    const response = await axios.get(API.GET_HISTORY, {
       params: {
-        channelId,
+        channelId: channelId,
         page,
         size: 20,
       },
-      // headers: {
-      //   Authorization: `Bearer ${token}`,
-      // },
-      // withCredentials: true,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      withCredentials: true,
     });
     const responseData = response.data.data;
+    if (responseData.length === 0) {
+      console.error("빈 데이터");
+    }
     return responseData.data.reverse();
   } catch (err) {
-    console.error(token);
     console.error("채팅기록 불러오기 오류", err);
     throw new Error("채팅기록 불러오기 오류");
   }
@@ -42,12 +44,11 @@ const fetchChatHistory = async ({ queryKey }) => {
 
 const postUserLocation = async (userId, serverId, channelId) => {
   try {
-    const response = await axiosInstance.post(API.POST_LOCATION, {
+    await axiosInstance.post(API.POST_LOCATION, {
       userId: userId,
       serverId: serverId,
       channelId: channelId,
     });
-    console.log("User location:", response.data);
   } catch (err) {
     console.error("사용자 위치 POST 실패", err);
     throw new Error("사용자 위치 POST 실패");
@@ -60,22 +61,7 @@ function ChatRoom() {
   const [chatList, setChatList] = useState([]);
   const [page, setPage] = useState(0);
   const chatListContainerRef = useRef(null);
-
-  const { client, connect, disconnect } = useWebSocketStore((state) => ({
-    client: state.client,
-    connect: state.connect,
-    disconnect: state.disconnect,
-  }));
-
-  useEffect(() => {
-    connect(userId);
-    console.error("userId", userId);
-    console.error("serverId", serverId);
-    console.error("소켓연결완료");
-    return () => {
-      disconnect();
-    };
-  }, [userId, connect, disconnect]);
+  const { client } = useWebSocketStore();
 
   const { data, error, isLoading, refetch } = useQuery({
     queryKey: ["messages", channelId, page],
@@ -148,51 +134,53 @@ function ChatRoom() {
   if (error) return <div>Error: {error.message}</div>;
 
   return (
-    <div className={s.wrapper}>
-      <div className={s.topContainer}>
-        <TopHeader />
-        <ChatRoomInfo />
-        <ChatSearchBar />
-      </div>
-      <div className={s.chatContainer}>
-        <ChatChannelType />
-        <div
-          ref={chatListContainerRef}
-          id="chatListContainer"
-          className={s.chatListContainer}
-          style={{ overflowY: "auto", height: "530px" }}
-        >
-          <div className={s.topInfos}>
-            <IoChatbubbleEllipses className={s.chatIcon} />
-            <h1>일반 채널에 오신 것을 환영합니다</h1>
-          </div>
-          <InfiniteScrollComponent
-            dataLength={chatList.length}
-            next={updatePage}
-            hasMore={true}
-            scrollableTarget="chatListContainer"
-          >
-            {Object.keys(groupedMessages).map((date) => (
-              <div key={date}>
-                <h4 className={s.dateHeader}>{date}</h4>
-                {groupedMessages[date].map((message, index) => (
-                  <ChatMessage
-                    key={index}
-                    message={message}
-                    onModifyMessage={handleModifyMessage}
-                    onDeleteMessage={handleDeleteMessage}
-                  />
-                ))}
-              </div>
-            ))}
-          </InfiniteScrollComponent>
+    <div className={s.chatRoomWrapper}>
+      <div className={s.wrapper}>
+        <div className={s.topContainer}>
+          <TopHeader />
+          <ChatRoomInfo />
+          <ChatSearchBar />
         </div>
-        <div className={s.messageSender}>
-          <ChatModal
-            onNewMessage={handleNewMessage}
-            client={client}
-            fetchHistory={refetch}
-          />
+        <div className={s.chatContainer}>
+          <ChatChannelType />
+          <div
+            ref={chatListContainerRef}
+            id="chatListContainer"
+            className={s.chatListContainer}
+            style={{ overflowY: "auto", height: "530px" }}
+          >
+            <div className={s.topInfos}>
+              <IoChatbubbleEllipses className={s.chatIcon} />
+              <h1>일반 채널에 오신 것을 환영합니다</h1>
+            </div>
+            <InfiniteScrollComponent
+              dataLength={chatList.length}
+              next={updatePage}
+              hasMore={true}
+              scrollableTarget="chatListContainer"
+            >
+              {Object.keys(groupedMessages).map((date) => (
+                <div key={date}>
+                  <h4 className={s.dateHeader}>{date}</h4>
+                  {groupedMessages[date].map((message, index) => (
+                    <ChatMessage
+                      key={index}
+                      message={message}
+                      onModifyMessage={handleModifyMessage}
+                      onDeleteMessage={handleDeleteMessage}
+                    />
+                  ))}
+                </div>
+              ))}
+            </InfiniteScrollComponent>
+          </div>
+          <div className={s.messageSender}>
+            <ChatModal
+              onNewMessage={handleNewMessage}
+              client={client}
+              fetchHistory={refetch}
+            />
+          </div>
         </div>
       </div>
     </div>
