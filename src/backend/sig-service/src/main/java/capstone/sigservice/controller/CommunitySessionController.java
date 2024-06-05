@@ -98,11 +98,13 @@ public class CommunitySessionController {
     }
 
     @DeleteMapping("/api/sessions/{sessionId}/disconnect")
-    public void leaveConnection(@PathVariable("sessionId")String sessionId,
+    public ResponseEntity<String> leaveConnection(@PathVariable("sessionId")String sessionId,
                                 @RequestBody Map<String,Object> params)
             throws OpenViduJavaClientException, OpenViduHttpException{
         VoiceChannelEventDto voiceDto=coummintySessionService.createLeaveVoiceDto(params);
         voiceConnectionStatekafkaTemplate.send(voiceConnectionStateTopic,voiceDto);
+        return new ResponseEntity<>("퇴장",HttpStatus.OK);
+
     }
 
     @PostMapping (value = "/api/fit/sessions/getToken")
