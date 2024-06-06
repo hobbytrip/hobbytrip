@@ -23,6 +23,9 @@ const MessageSender = ({
     if (chatMessage === "" && uploadedFiles.length === 0) {
       return;
     }
+    if (uploadedFiles.length === 0) {
+      console.log("파일 없음.", uploadedFiles);
+    }
     onMessageSend(chatMessage, uploadedFiles); // 채팅 메시지와 업로드된 파일들을 전송
     setChatMessage(""); // 메시지를 전송한 후 input창 비우기
     setUploadedFiles([]); // 업로드된 파일 정보 초기화

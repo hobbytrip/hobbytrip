@@ -74,7 +74,10 @@ const ChatMessage = ({ message, onModifyMessage, onDeleteMessage }) => {
                     <FaDownload
                       className={s.downloadIcon}
                       onClick={() =>
-                        handleFileDownload(file.fileUrl, file.originalFilename)
+                        handleFileDownload(
+                          file.storeFileName,
+                          file.originalFilename
+                        )
                       }
                     />
                     {/* <a
@@ -169,27 +172,35 @@ const ChatMessage = ({ message, onModifyMessage, onDeleteMessage }) => {
     return imageExtensions.includes(extension);
   };
 
-  // const handleFileDownload = (fileUrl, fileName) => {
-  //   setIsDownloading(true);
+  const handleFileDownload = (storeFileName, originalFilename) => {
+    setIsDownloading(true);
+    const api = `https://fittrip.site/api/chat/file?storeFileName=${storeFileName}&originalFileName=${originalFilename}`;
+    const token = localStorage.getItem("accessToken");
+    axios
 
-  //   axios
-  //     .get(fileUrl, { responseType: "blob" })
-  //     .then((response) => {
-  //       const url = window.URL.createObjectURL(new Blob([response.data]));
-  //       const a = document.createElement("a");
-  //       a.href = url;
-  //       a.download = fileName || "download";
-  //       document.body.appendChild(a);
-  //       a.click();
-  //       window.URL.revokeObjectURL(url);
-  //       document.body.removeChild(a);
-  //       setIsDownloading(false);
-  //     })
-  //     .catch((error) => {
-  //       console.error("파일 다운로드 오류:", error);
-  //       setIsDownloading(false);
-  //     });
-  // };
+      .get(api, {
+        responseType: "blob",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        console.log("response", response.data);
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = originalFilename || "download";
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+        setIsDownloading(false);
+      })
+      .catch((error) => {
+        console.error("파일 다운로드 오류:", error);
+        setIsDownloading(false);
+      });
+  };
 
   return (
     <div className={s.chatWrapper}>

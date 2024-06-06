@@ -70,8 +70,9 @@ function ChatRoom() {
     deleteMessage,
     modifyMessage,
     sendMessage,
-  } = useChatStore.getState();
+  } = useChatStore();
   const { chatList } = useChatStore();
+  const TYPE = "server";
 
   const { data, error, isLoading } = useQuery({
     queryKey: ["messages", channelId, page],
@@ -103,19 +104,19 @@ function ChatRoom() {
         } else if (parsedMessage.actionType === "SEND") {
           sendMessage(parsedMessage);
           client.publish({
-            destination: API.SEND_CHAT,
+            destination: API.SEND_CHAT(TYPE),
             body: JSON.stringify(parsedMessage),
           });
         } else if (parsedMessage.actionType === "MODIFY") {
           modifyMessage(parsedMessage.messageId, parsedMessage.content);
           client.publish({
-            destination: API.MODIFY_CHAT,
+            destination: API.MODIFY_CHAT(TYPE),
             body: JSON.stringify(parsedMessage),
           });
         } else if (parsedMessage.actionType === "DELETE") {
           deleteMessage(parsedMessage.messageId);
           client.publish({
-            destination: API.DELETE_CHAT,
+            destination: API.DELETE_CHAT(TYPE),
             body: JSON.stringify(parsedMessage),
           });
         }
@@ -125,16 +126,16 @@ function ChatRoom() {
     });
   };
 
-  const unsubscribeWebSocket = () => {
-    client.unsubscribe(serverId);
-  };
+  // const unsubscribeWebSocket = () => {
+  //   client.unsubscribe(serverId);
+  // };
 
   useEffect(() => {
     postUserLocation(userId, serverId, channelId);
     console.log("웹소켓 연결여부", isConnected);
-    if (client && isConnected) {
-      unsubscribeWebSocket();
-    }
+    // if (client && isConnected) {
+    //   unsubscribeWebSocket();
+    // }
     if (client) {
       connectWebSocket(serverId);
     }
@@ -167,18 +168,20 @@ function ChatRoom() {
       profileImage: "ho",
       writer: nickname,
       content: messageContent,
-      createdAt: new Date().toISOString(),
-      actionType: "SEND",
+      type: "abc",
+      // createdAt: new Date().toISOString(),
     };
-    try {
-      if (uploadedFiles && uploadedFiles.length > 0) {
-        const formData = new FormData();
-        const jsonMsg = JSON.stringify(messageBody);
-        const req = new Blob([jsonMsg], { type: "application/json" });
-        formData.append("createRequest", req);
-        uploadedFiles.forEach((file) => {
-          formData.append("files", file);
-        });
+
+    if (uploadedFiles.length >= 1) {
+      const formData = new FormData();
+      const jsonMsg = JSON.stringify(messageBody);
+      const req = new Blob([jsonMsg], { type: "application/json" });
+      formData.append("createRequest", req);
+      uploadedFiles.forEach((file) => {
+        formData.append("files", file);
+      });
+
+      try {
         await axios.post(API.FILE_UPLOAD, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -186,15 +189,18 @@ function ChatRoom() {
           },
           withCredentials: true,
         });
+
+        fetchChatHistory({ queryKey: ["messages", channelId, page] });
+      } catch (error) {
+        console.error("파일 업로드 오류:", error);
       }
+    } else {
       sendMessage(messageBody);
       client.publish({
-        destination: API.SEND_CHAT,
+        destination: API.SEND_CHAT(TYPE),
         body: JSON.stringify(messageBody),
       });
-      // handleAction("SEND", messageBody);
-    } catch (error) {
-      console.error("메시지 전송 오류:", error);
+      // fetchChatHistory({ queryKey: ["messages", channelId, page] });
     }
   };
 
@@ -212,7 +218,7 @@ function ChatRoom() {
       modifiedMessage.content = newContent;
       modifyMessage(messageId, newContent);
       client.publish({
-        destination: API.MODIFY_CHAT,
+        destination: API.MODIFY_CHAT(TYPE),
         body: JSON.stringify(messageBody),
       });
     }
@@ -227,7 +233,7 @@ function ChatRoom() {
 
     deleteMessage(messageId);
     client.publish({
-      destination: API.DELETE_CHAT,
+      destination: API.DELETE_CHAT(TYPE),
       body: JSON.stringify(messageBody),
     });
   };
@@ -261,27 +267,27 @@ function ChatRoom() {
               <IoChatbubbleEllipses className={s.chatIcon} />
               <h1>일반 채널에 오신 것을 환영합니다</h1>
             </div>
-            {Object.keys(groupedMessages).map((date) => (
-              <div key={date}>
-                <h4 className={s.dateHeader}>{date}</h4>
-                {groupedMessages[date].map((message, index) => (
-                  <ChatMessage
-                    key={index}
-                    message={message}
-                    onModifyMessage={handleModifyMessage}
-                    onDeleteMessage={handleDeleteMessage}
-                  />
-                ))}
-              </div>
-            ))}
-            {/* <InfiniteScrollComponent
+
+            <InfiniteScrollComponent
               dataLength={chatList.length}
               next={updatePage}
               hasMore={true}
-              scrollableTarget="chatListContainer"
+              // scrollableTarget="chatListContainer"
             >
-              
-            </InfiniteScrollComponent> */}
+              {Object.keys(groupedMessages).map((date) => (
+                <div key={date}>
+                  <h4 className={s.dateHeader}>{date}</h4>
+                  {groupedMessages[date].map((message, index) => (
+                    <ChatMessage
+                      key={index}
+                      message={message}
+                      onModifyMessage={handleModifyMessage}
+                      onDeleteMessage={handleDeleteMessage}
+                    />
+                  ))}
+                </div>
+              ))}
+            </InfiniteScrollComponent>
           </div>
           <div className={s.messageSender}>
             {typingUsers.length > 0 && (
