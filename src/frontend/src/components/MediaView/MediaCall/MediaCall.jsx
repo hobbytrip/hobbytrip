@@ -2,6 +2,7 @@ import { OpenVidu } from 'openvidu-browser';
 import { useParams, useNavigate } from 'react-router-dom';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import style from './MediaCall.module.css';
+import axios from 'axios';
 
 import ChatHeader from '../../Common/ChatRoom/CommunityChatHeader/ChatHeader';
 import ChatHeaderModal from '../../../components/Modal/ChatModal/ChatRoomInfo/ChatRoomInfo';
@@ -14,8 +15,6 @@ import { AiFillMessage } from "react-icons/ai";
 import { IoClose, IoVideocamOutline, IoVideocamOffOutline, IoCall, IoCallOutline } from "react-icons/io5";
 import { LuMonitor, LuMonitorOff } from "react-icons/lu";
 import { MdOutlineKeyboardVoice, MdKeyboardVoice } from "react-icons/md";
-
-const URL = API.MEDIA;
 
 export default function MediaCall() {
   const [session, setSession] = useState(undefined);
@@ -30,6 +29,7 @@ export default function MediaCall() {
   const { userId } = useUserStore();
   const nav = useNavigate();
 
+  const accessToken = localStorage.getItem('accessToken');
   const OV = useRef(new OpenVidu());
 
   // 세션 참여 후 웹소켓과의 통신
@@ -61,6 +61,7 @@ export default function MediaCall() {
   useEffect(() => {
     if (session) {
       getToken().then(async (token) => {
+        console.log(token)
         try {
           await session.connect(token);
           let publisher = await OV.current.initPublisherAsync(undefined, {
@@ -86,28 +87,41 @@ export default function MediaCall() {
   }, [newSessionId]);
 
   const createSession = async (sessionId) => {
-    const res = await axios.post(URL, 
+    const data = {
+      customSessionId: sessionId,
+      userId: userId,
+      serverId: serverId,
+      channelId: channelId
+    }
+    console.log(JSON.stringify(data))
+    const res = await axios.post(API.MEDIA, 
     { customSessionId: sessionId }, {
-      headers: { 'Content-Type': 'application/json' },
-      body: {
-        customSessionId: sessionId,
-        userId: userId,
-        channelId: channelId,
-        serverId: serverId
-      }
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+       },
+      body: data,
+      withCredentials: true
     });
     return res.data;
   };
 
   const createToken = async (sessionId) => {
-    const res = await axios.post(`${URL}/${sessionId}/connections`, {
-      headers: { 'Content-Type': 'application/json' },
-      body: {
+    console.log(`${API.MEDIA}/${sessionId}/connections`)
+    const res = await axios.post(
+      `${API.MEDIA}/${sessionId}/connections`,
+      {
         userId: userId,
         channelId: channelId,
-        serverId: serverId
+        serverId: serverId,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
       }
-    });
+    );
+    console.log(res.data)
     return res.data;
   };
 
@@ -115,14 +129,25 @@ export default function MediaCall() {
   const leaveSession = useCallback(() => {
     if (session) {
       session.disconnect();
-      axios.delete(`${URL}/${newSessionId}/disconnect`, {
-        data: {
-          body: {
+      const data = JSON.stringify({
+        userId: userId,
+        serverId: serverId,
+        channelId: channelId
+      })
+      console.log(data, accessToken)
+      axios.delete(`${API.MEDIA}/${newSessionId}/disconnect`,
+        
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          data: {
             userId: userId,
             channelId: channelId,
-            serverId: serverId
-          }
-        }});
+            serverId: serverId,
+          },
+        }
+      );
     }
     OV.current = new OpenVidu();
 

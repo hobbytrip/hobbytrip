@@ -21,12 +21,13 @@ const CategoryList = () => {
     serverData: state.serverData,
     fetchServerData: state.fetchServerData,
   }));
-  const nav = useNavigate();
   const { userId } = useUserStore();
 
   useEffect(() => {
+    console.log('category fetch')
+    console.log(serverId, userId)
     fetchServerData(serverId, userId);
-  }, []);
+  }, [serverId]);
 
   useEffect(() => {
     setCategories(serverData.serverCategories || []);

@@ -13,7 +13,7 @@ const MainView = () => {
   const { userId } = useUserStore();
 
   useEffect(() => {
-    if (userId) {
+    if (userId) {  
     const getMainData = async () => {
       try {
         const response = await axiosInstance.get(API.READ_MAIN(userId));
@@ -25,7 +25,8 @@ const MainView = () => {
         console.error("Error fetching server Data:", error);
       }
       };
-    getMainData();
+      // setServer();  
+      getMainData();
     }
   }, [userId]);
 
