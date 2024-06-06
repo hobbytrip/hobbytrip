@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import s from "./MessageSender.module.css";
 import { IoSend } from "react-icons/io5";
 import { FaCirclePlus } from "react-icons/fa6";
-import API from "../../../../../utils/API/TEST_API";
+import API from "../../../../../utils/API/API";
 
 const MessageSender = ({
   onMessageSend,
@@ -10,6 +10,7 @@ const MessageSender = ({
   channelId,
   writer,
   client,
+  TYPE,
 }) => {
   const [chatMessage, setChatMessage] = useState("");
   const [uploadedFiles, setUploadedFiles] = useState([]); // 여러 파일을 저장할 배열 상태 추가
@@ -20,7 +21,6 @@ const MessageSender = ({
 
   const sendMessage = () => {
     if (chatMessage === "" && uploadedFiles.length === 0) {
-      // 채팅 메시지와 업로드된 파일이 없을 때 전송 중지
       return;
     }
     onMessageSend(chatMessage, uploadedFiles); // 채팅 메시지와 업로드된 파일들을 전송
@@ -51,7 +51,7 @@ const MessageSender = ({
   const notifyTyping = () => {
     try {
       client.publish({
-        destination: API.IS_TYPING,
+        destination: API.ISTYPING(TYPE),
         body: JSON.stringify({
           serverId: serverId,
           channelId: channelId,

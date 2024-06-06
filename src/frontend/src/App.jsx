@@ -7,12 +7,11 @@ import UserProfileView from "./pages/UserProfileView/UserProfileView";
 import MediaView from "./pages/MediaView/MediaView";
 import MenuView from "./pages/MenuView/MenuView.jsx";
 import MainView from "./pages/MainView/MainView";
-// import ChatRoom from "./pages/Chat/ChatRoom/ChatRoom";
 import CommunityChatRoom from "./pages/Chat/ChatRoom/CommunityChatRoom.jsx";
-import ForumRoom from "./pages/Chat/ForumRoom/ForumRoom/ForumRoom.jsx";
+import ForumChatRoom from "./pages/Chat/ChatRoom/ForumChatRoom.jsx";
+import ForumRoom from "./pages/Chat/ForumRoom/ForumRoom.jsx";
 import SettingView from "./pages/ServerView/SettingView/SettingView.jsx";
 import CategoryView from "./pages/ServerView/CategoryView/CategoryView.jsx";
-import ForumChatRoom from "./pages/Chat/ForumRoom/ForumChat/ForumChat";
 
 function App() {
   return (

@@ -4,7 +4,7 @@ import axios from "axios";
 import { axiosInstance } from "../utils/axiosInstance";
 import useWebSocketStore from "../actions/useWebSocketStore";
 import useChatStore from "../actions/useChatStore";
-import API from "../utils/API/TEST_API";
+import API from "../utils/API/API";
 
 const fetchChatHistory = async ({ queryKey }) => {
   const [_, channelId, page] = queryKey;
@@ -45,7 +45,7 @@ const postUserLocation = async (userId, serverId, channelId) => {
   }
 };
 
-const useChat = (serverId, channelId, userId) => {
+const useChat = (serverId, channelId, userId, TYPE) => {
   const [page, setPage] = useState(0);
   const { client, isConnected } = useWebSocketStore();
   const {
@@ -159,7 +159,7 @@ const useChat = (serverId, channelId, userId) => {
       }
       sendMessage(messageBody);
       client.publish({
-        destination: API.SEND_CHAT,
+        destination: API.SEND_CHAT(TYPE),
         body: JSON.stringify(messageBody),
       });
     } catch (error) {
@@ -186,7 +186,7 @@ const useChat = (serverId, channelId, userId) => {
         modifiedMessage.content = newContent;
         modifyMessage(messageId, newContent);
         client.publish({
-          destination: API.MODIFY_CHAT,
+          destination: API.MODIFY_CHAT(TYPE),
           body: JSON.stringify(messageBody),
         });
       }
@@ -195,11 +195,10 @@ const useChat = (serverId, channelId, userId) => {
       const messageBody = { serverId, messageId, actionType: "DELETE" };
       deleteMessage(messageId);
       client.publish({
-        destination: API.DELETE_CHAT,
+        destination: API.DELETE_CHAT(TYPE),
         body: JSON.stringify(messageBody),
       });
     },
-    updatePage: () => setPage((prevPage) => prevPage + 1),
   };
 };
 

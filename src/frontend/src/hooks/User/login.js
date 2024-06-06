@@ -1,5 +1,5 @@
 import { axiosInstance } from "../../utils/axiosInstance";
-import API from "../../utils/API/TEST_API";
+import API from "../../utils/API/API";
 import useAuthStore from "../../actions/useAuthStore";
 import useWebSocketStore from "../../actions/useWebSocketStore";
 

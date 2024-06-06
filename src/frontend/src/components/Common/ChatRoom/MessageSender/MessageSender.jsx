@@ -2,25 +2,25 @@ import React, { useState, useRef } from "react";
 import s from "./MessageSender.module.css";
 import { IoSend } from "react-icons/io5";
 import { FaCirclePlus } from "react-icons/fa6";
-import API from "../../../../utils/API/TEST_API";
+import API from "../../../../utils/API/API";
 
 const MessageSender = ({
   onMessageSend,
-  serverId,
-  channelId,
-  writer,
-  client,
+  // serverId,
+  // channelId,
+  // writer,
+  // client,
+  // TYPE,
 }) => {
   const [chatMessage, setChatMessage] = useState("");
   const [uploadedFiles, setUploadedFiles] = useState([]); // 여러 파일을 저장할 배열 상태 추가
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isTyping, setIsTyping] = useState(false);
-  const typingTimeoutRef = useRef(null);
+  // const [isTyping, setIsTyping] = useState(false);
+  // const typingTimeoutRef = useRef(null);
   const fileInputRef = useRef(null);
 
   const sendMessage = () => {
     if (chatMessage === "" && uploadedFiles.length === 0) {
-      // 채팅 메시지와 업로드된 파일이 없을 때 전송 중지
       return;
     }
     onMessageSend(chatMessage, uploadedFiles); // 채팅 메시지와 업로드된 파일들을 전송
@@ -39,29 +39,29 @@ const MessageSender = ({
     setIsDropdownOpen((prevState) => !prevState);
   };
 
-  const handleTyping = () => {
-    clearTimeout(typingTimeoutRef.current);
-    notifyTyping();
-    setIsTyping(true);
-    typingTimeoutRef.current = setTimeout(() => {
-      setIsTyping(false);
-    }, 2000);
-  };
+  // const handleTyping = () => {
+  //   clearTimeout(typingTimeoutRef.current);
+  //   notifyTyping();
+  //   setIsTyping(true);
+  //   typingTimeoutRef.current = setTimeout(() => {
+  //     setIsTyping(false);
+  //   }, 2000);
+  // };
 
-  const notifyTyping = () => {
-    try {
-      client.publish({
-        destination: API.IS_TYPING,
-        body: JSON.stringify({
-          serverId: serverId,
-          channelId: channelId,
-          writer: writer,
-        }),
-      });
-    } catch (error) {
-      console.error("타이핑 중 에러:", error);
-    }
-  };
+  // const notifyTyping = () => {
+  //   try {
+  //     client.publish({
+  //       destination: API.ISTYPING(TYPE),
+  //       body: JSON.stringify({
+  //         serverId: serverId,
+  //         channelId: channelId,
+  //         writer: writer,
+  //       }),
+  //     });
+  //   } catch (error) {
+  //     console.error("타이핑 중 에러:", error);
+  //   }
+  // };
 
   const handleFileUpload = async (event) => {
     const selectedFiles = event.target.files;
@@ -164,7 +164,7 @@ const MessageSender = ({
           className={s.inputContent}
           onChange={(e) => {
             setChatMessage(e.target.value);
-            handleTyping();
+            // handleTyping();
           }}
           onKeyDown={handleKeyDown}
           placeholder="메세지 보내기"
