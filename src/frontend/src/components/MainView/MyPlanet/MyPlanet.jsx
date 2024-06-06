@@ -6,22 +6,31 @@ import useServerStore from "../../../actions/useServerStore";
 import CreateServer from "../../Modal/ServerModal/Servers/CreateServer/CreateServer";
 import { useNavigate } from "react-router-dom";
 import useUserStore from "../../../actions/useUserStore";
+import useWebSocketStore from "../../../actions/useWebSocketStore";
+import API from "../../../utils/API/TEST_API";
 
 const Leftbtn = ({ onClick }) => (
   <button className={style.leftBtn} onClick={onClick}>
-    <IoIosArrowBack style={{ width: "15px", height: "15px", color: "#D9D9D9" }} />
+    <IoIosArrowBack
+      style={{ width: "15px", height: "15px", color: "#D9D9D9" }}
+    />
   </button>
 );
 
 const Rightbtn = ({ onClick }) => (
   <button className={style.rightBtn} onClick={onClick}>
-    <IoIosArrowForward style={{ width: "15px", height: "15px", color: "#D9D9D9" }} />
+    <IoIosArrowForward
+      style={{ width: "15px", height: "15px", color: "#D9D9D9" }}
+    />
   </button>
 );
 
 const CreatePlanetbtn = ({ onClick }) => (
   <button className={style.createPlanet} onClick={onClick}>
-    <FaPlus className={style.plusIcon} style={{ width: "16px", height: "16px", color: "#EDEDED" }} />
+    <FaPlus
+      className={style.plusIcon}
+      style={{ width: "16px", height: "16px", color: "#EDEDED" }}
+    />
   </button>
 );
 
@@ -34,10 +43,16 @@ const MyPlanet = ({ servers }) => {
     fetchServerData: state.fetchServerData,
   }));
   const { userId } = useUserStore();
+  const { client } = useWebSocketStore((state) => ({
+    client: state.client,
+  }));
 
   const serversPerPage = 4;
   const startIndex = currentPage * serversPerPage;
-  const endIndex = Math.min(startIndex + serversPerPage, (servers || []).length);
+  const endIndex = Math.min(
+    startIndex + serversPerPage,
+    (servers || []).length
+  );
 
   const handleCreateModalClick = () => {
     setShowCreateServer(true);
@@ -52,12 +67,23 @@ const MyPlanet = ({ servers }) => {
   };
 
   const handleRight = () => {
-    setCurrentPage((prevPage) => Math.min(prevPage + 1, Math.ceil((servers?.length || 0) / 4) - 1));
+    setCurrentPage((prevPage) =>
+      Math.min(prevPage + 1, Math.ceil((servers?.length || 0) / 4) - 1)
+    );
   };
 
   const handleServerClick = async (serverId) => {
     console.log('planet fetch')
     await fetchServerData(serverId, userId);
+    if (client) {
+      client.onConnect = () => {
+        client.subscribe(API.SUBSCRIBE_CHAT(serverId), (message) => {
+          console.error("Received message:", message);
+        });
+      };
+      client.activate();
+    }
+
     nav(`/${serverId}/menu`);
   };
 

@@ -1,16 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import MessageSender from "../CreateChatModal/MessageSender/MessageSender";
+import useUserStore from "../../../../actions/useUserStore";
+import useChatStore from "../../../../actions/useChatStore";
 import API from "../../../../utils/API/API";
 import axios from "axios";
-import useUserStore from "../../../../actions/useUserStore";
 
 export default function ChatModal({ onNewMessage, client }) {
   const { userId, nickname } = useUserStore();
   const { serverId, channelId } = useParams();
-  const [chatList, setChatList] = useState([]);
-  const [typingUsers, setTypingUsers] = useState([]);
-  const [file, setFile] = useState(null);
+  const { chatList, typingUsers, addMessage, setTypingUsers } = useChatStore();
 
   useEffect(() => {
     if (client) {
@@ -39,7 +38,7 @@ export default function ChatModal({ onNewMessage, client }) {
               parsedMessage.actionType === "SEND" &&
               parsedMessage.userId !== userId
             ) {
-              setChatList((prevChatList) => [...prevChatList, parsedMessage]);
+              addMessage(parsedMessage);
               if (onNewMessage) {
                 onNewMessage(parsedMessage);
               }
@@ -47,11 +46,10 @@ export default function ChatModal({ onNewMessage, client }) {
               parsedMessage.actionType === "SEND" &&
               parsedMessage.files
             ) {
-              setChatList((prevChatList) => [...prevChatList, parsedMessage]);
+              addMessage(parsedMessage);
               if (onNewMessage) {
                 onNewMessage(parsedMessage);
               }
-              setFile(parsedMessage.files[0]);
             }
             console.error("구독 완료");
           } catch (error) {
@@ -60,7 +58,7 @@ export default function ChatModal({ onNewMessage, client }) {
         });
       };
     }
-  }, [client, serverId, userId, onNewMessage]);
+  }, [client, serverId, userId, onNewMessage, setTypingUsers, addMessage]);
 
   const handleSendMessage = async (messageContent, uploadedFile) => {
     const messageBody = {
@@ -87,7 +85,7 @@ export default function ChatModal({ onNewMessage, client }) {
           },
         });
       }
-      setChatList((prevChatList) => [...prevChatList, messageBody]);
+      addMessage(messageBody);
       if (onNewMessage) {
         onNewMessage(messageBody);
       }
@@ -105,15 +103,6 @@ export default function ChatModal({ onNewMessage, client }) {
             : `${typingUsers.join(", ")} 입력 중입니다...`}
         </div>
       )}
-      {file && (
-        <div>
-          <p>Received file: {file.fileUrl}</p>
-          <button onClick={() => window.open(file.fileUrl, "_blank")}>
-            Download File
-          </button>
-        </div>
-      )}
-
       <MessageSender
         onMessageSend={handleSendMessage}
         serverId={serverId}
