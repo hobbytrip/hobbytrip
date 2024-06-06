@@ -1,11 +1,11 @@
 package capstone.chatservice.domain.forum.dto;
 
 import capstone.chatservice.domain.emoji.dto.EmojiDto;
+import capstone.chatservice.domain.file.domain.UploadFile;
 import capstone.chatservice.domain.forum.domain.ForumMessage;
 import capstone.chatservice.domain.forum.dto.request.ForumMessageTypingRequest;
 import capstone.chatservice.domain.model.ActionType;
 import capstone.chatservice.domain.model.ForumCategory;
-import capstone.chatservice.domain.model.UploadFile;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;

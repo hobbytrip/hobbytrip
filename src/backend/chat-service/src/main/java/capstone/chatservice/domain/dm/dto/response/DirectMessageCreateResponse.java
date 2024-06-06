@@ -1,9 +1,9 @@
 package capstone.chatservice.domain.dm.dto.response;
 
 import capstone.chatservice.domain.dm.dto.DirectMessageDto;
+import capstone.chatservice.domain.file.domain.UploadFile;
 import capstone.chatservice.domain.model.ActionType;
 import capstone.chatservice.domain.model.ChatType;
-import capstone.chatservice.domain.model.UploadFile;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;

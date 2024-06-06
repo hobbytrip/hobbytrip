@@ -1,9 +1,9 @@
 package capstone.chatservice.domain.server.domain;
 
+import capstone.chatservice.domain.file.domain.UploadFile;
 import capstone.chatservice.domain.model.ActionType;
 import capstone.chatservice.domain.model.BaseModel;
 import capstone.chatservice.domain.model.ChatType;
-import capstone.chatservice.domain.model.UploadFile;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AccessLevel;

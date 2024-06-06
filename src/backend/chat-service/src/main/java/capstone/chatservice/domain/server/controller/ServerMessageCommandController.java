@@ -1,6 +1,6 @@
 package capstone.chatservice.domain.server.controller;
 
-import capstone.chatservice.domain.model.UploadFile;
+import capstone.chatservice.domain.file.domain.UploadFile;
 import capstone.chatservice.domain.server.dto.ServerMessageDto;
 import capstone.chatservice.domain.server.dto.request.ServerMessageCreateRequest;
 import capstone.chatservice.domain.server.dto.request.ServerMessageDeleteRequest;

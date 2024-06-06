@@ -5,7 +5,7 @@ import capstone.chatservice.domain.dm.dto.request.DirectMessageCreateRequest;
 import capstone.chatservice.domain.dm.dto.request.DirectMessageDeleteRequest;
 import capstone.chatservice.domain.dm.dto.request.DirectMessageModifyRequest;
 import capstone.chatservice.domain.dm.service.command.DirectMessageCommandService;
-import capstone.chatservice.domain.model.UploadFile;
+import capstone.chatservice.domain.file.domain.UploadFile;
 import capstone.chatservice.infra.S3.FileStore;
 import capstone.chatservice.infra.kafka.producer.alarm.AlarmEventProducer;
 import capstone.chatservice.infra.kafka.producer.alarm.dto.DmAlarmEventDto;

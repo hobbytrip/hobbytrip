@@ -1,10 +1,10 @@
 package capstone.chatservice.domain.forum.dto.response;
 
+import capstone.chatservice.domain.file.domain.UploadFile;
 import capstone.chatservice.domain.forum.dto.ForumMessageDto;
 import capstone.chatservice.domain.model.ActionType;
 import capstone.chatservice.domain.model.ChatType;
 import capstone.chatservice.domain.model.ForumCategory;
-import capstone.chatservice.domain.model.UploadFile;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;

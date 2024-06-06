@@ -1,6 +1,6 @@
 package capstone.chatservice.infra.S3;
 
-import capstone.chatservice.domain.model.UploadFile;
+import capstone.chatservice.domain.file.domain.UploadFile;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import java.io.IOException;

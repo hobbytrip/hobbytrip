@@ -1,8 +1,8 @@
 package capstone.chatservice.domain.server.dto.response;
 
+import capstone.chatservice.domain.file.domain.UploadFile;
 import capstone.chatservice.domain.model.ActionType;
 import capstone.chatservice.domain.model.ChatType;
-import capstone.chatservice.domain.model.UploadFile;
 import capstone.chatservice.domain.server.dto.ServerMessageDto;
 import java.time.LocalDateTime;
 import java.util.List;
