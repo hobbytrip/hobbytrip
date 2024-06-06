@@ -56,6 +56,7 @@ const MyPlanet = ({ servers }) => {
   };
 
   const handleServerClick = async (serverId) => {
+    console.log('planet fetch')
     await fetchServerData(serverId, userId);
     nav(`/${serverId}/menu`);
   };
@@ -70,7 +71,7 @@ const MyPlanet = ({ servers }) => {
             <div key={server.serverId} className={style.planetItem}>
               <button className={style.planetThumb} onClick={() => handleServerClick(server.serverId)}>
                 {(server.profile !== 'null' && server.profile !== null) ? (
-                  <img src={server.profile} className={style.planetIcon} alt={server.name} />
+                  <img src={server.profile} className={style.planetIcon} />
                 ) : (
                   null
                 )}

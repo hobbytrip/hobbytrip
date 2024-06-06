@@ -1,6 +1,8 @@
+const BASE_URL = "https://fittrip.site/api";
 const CHAT_API_BASE_URL = "http://localhost:7070";
 const COMMUNITY_BASE_URL = "https://fittrip.site/api/community";
-const MEDIA_BASE_URL = "http://localhost:5000";
+const MEDIA_BASE_URL = "https://fittrip.site/api/sig";
+const NOTIFICATION_URL = "https://fittrip.site/api/notification"
 const WS_SERVER_BASE = "ws/api/chat/server/message";
 const WS_DM_BASE = "ws/api/chat/direct/message";
 const WS_FORUM_BASE = "/ws/api/chat/forum/message";
@@ -17,7 +19,7 @@ const API = {
   POST_LOCATION: `${CHAT_API_BASE_URL}/server/user/location`,
 
   //서버 이벤트
-  SERVER: `${COMMUNITY_BASE_URL}/server`, 
+  COMM_SERVER: `${COMMUNITY_BASE_URL}/server`, 
   GET_SERVER: (serverId, userId) =>`${COMMUNITY_BASE_URL}/server/${serverId}/${userId}`,
   INVITE_SERVER: (serverId) => `${COMMUNITY_BASE_URL}/server/${serverId}/invitation`,
   JOIN_SERVER: `${COMMUNITY_BASE_URL}/server/join`,
@@ -26,6 +28,10 @@ const API = {
 
   //미디어
   MEDIA: `${MEDIA_BASE_URL}/api/sessions`,
+
+  // 알림
+  SERVER_SSE_SUB: `${BASE_URL}/user/api/server/subscribe`,
+  DM_SSE_SUB: `${BASE_URL}/user/api/dm/subscribe`,
 
   //DM 채팅
   SUBSCRIBE_DM: (roomId) => `/topic/direct/${roomId}`,
