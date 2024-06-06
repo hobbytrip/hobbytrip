@@ -46,8 +46,8 @@ const ChatMessage = ({ message, onModifyMessage, onDeleteMessage }) => {
   }, [isEditing]);
 
   const renderMessageContent = () => {
-    // 이미지 파일
-    if (message.files) {
+    if (message.files && message.files.length > 0) {
+      // 파일이 첨부된 경우
       return (
         <div className={s.msgBox}>
           <img src={testImg} className={s.profileImg} alt="profile-image" />
@@ -56,12 +56,27 @@ const ChatMessage = ({ message, onModifyMessage, onDeleteMessage }) => {
               <h3 className={s.msgWriter}>{message.writer}</h3>
               <h4 className={s.msgDate}>{formattedDate}</h4>
             </div>
-            <img
-              src={message.files[0].fileUrl}
-              className={s.imgContent}
-              alt="uploadedFile"
-              style={{ width: "150px" }}
-            />
+            {message.files.map((file, index) => (
+              <div key={index} className={s.fileContainer}>
+                {isImageFile(file.originalFilename) ? (
+                  <img
+                    src={file.fileUrl}
+                    className={s.imgContent}
+                    alt={`file-${index}`}
+                    style={{ width: "150px" }}
+                  />
+                ) : (
+                  <a
+                    href={file.fileUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={s.fileLink}
+                  >
+                    <h4>{file.originalFilename}</h4>
+                  </a>
+                )}
+              </div>
+            ))}
             {isEditing ? (
               <div>
                 <input
@@ -92,7 +107,7 @@ const ChatMessage = ({ message, onModifyMessage, onDeleteMessage }) => {
         </div>
       );
     } else {
-      // 일반 텍스트 메세지
+      // 파일이 첨부되지 않은 경우
       return (
         <div className={s.msgBox}>
           <img src={testImg} className={s.profileImg} alt="profile-image" />
@@ -131,6 +146,14 @@ const ChatMessage = ({ message, onModifyMessage, onDeleteMessage }) => {
         </div>
       );
     }
+  };
+
+  const isImageFile = (fileName) => {
+    const imageExtensions = [".jpg", ".jpeg", ".png", ".gif"];
+    const extension = fileName
+      .substring(fileName.lastIndexOf("."))
+      .toLowerCase();
+    return imageExtensions.includes(extension);
   };
 
   return (

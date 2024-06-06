@@ -20,6 +20,7 @@ const useWebSocketStore = create((set, get) => ({
 
     stompClient.activate();
     set({ client: stompClient, isConnected: true });
+    console.log("소켓 클라이언트 생성 성공");
   },
   disconnect: () => {
     const { client } = get();

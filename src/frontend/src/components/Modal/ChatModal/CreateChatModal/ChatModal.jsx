@@ -9,7 +9,7 @@ import axios from "axios";
 export default function ChatModal({ onNewMessage, client }) {
   const { userId, nickname } = useUserStore();
   const { serverId, channelId } = useParams();
-  const { chatList, typingUsers, addMessage, setTypingUsers } = useChatStore();
+  const { typingUsers, addMessage, setTypingUsers } = useChatStore();
 
   useEffect(() => {
     if (client) {
@@ -42,16 +42,7 @@ export default function ChatModal({ onNewMessage, client }) {
               if (onNewMessage) {
                 onNewMessage(parsedMessage);
               }
-            } else if (
-              parsedMessage.actionType === "SEND" &&
-              parsedMessage.files
-            ) {
-              addMessage(parsedMessage);
-              if (onNewMessage) {
-                onNewMessage(parsedMessage);
-              }
             }
-            console.error("구독 완료");
           } catch (error) {
             console.error("구독 오류", error);
           }
@@ -85,10 +76,10 @@ export default function ChatModal({ onNewMessage, client }) {
           },
         });
       }
-      addMessage(messageBody);
-      if (onNewMessage) {
-        onNewMessage(messageBody);
-      }
+      // addMessage(messageBody);
+      // if (onNewMessage) {
+      //   onNewMessage(messageBody);
+      // }
     } catch (error) {
       console.error("메시지 전송 오류:", error);
     }

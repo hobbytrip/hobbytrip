@@ -35,15 +35,16 @@ function RegForm() {
     navigate("/login");
   };
 
-  const postUserIdToCommunity = async () => {
+  const postUserIdToCommunity = async (userId) => {
+    console.log("userId", userId);
     try {
       const response = await axiosInstance.post(API.COMM_SIGNUP, {
         originalId: userId,
       });
 
-      console.error("POST request to /community/user successful:", response);
+      console.log("유저 커뮤니티 회원가입 성공", response.data);
     } catch (error) {
-      console.error("Error posting userId to /community/user:", error);
+      console.error("커뮤니티 회원가입 실패", error);
     }
   };
 
@@ -54,8 +55,9 @@ function RegForm() {
       const response = await axiosInstance.post(API.SIGN_UP, form);
       if (response.data.success) {
         setUserInfo(response.data.data);
-        await postUserIdToCommunity();
         console.log("회원가입 성공:", response.data.data);
+        postUserIdToCommunity(response.data.data.userId);
+
         navigate("/login");
       } else {
         setError(response.data.message);

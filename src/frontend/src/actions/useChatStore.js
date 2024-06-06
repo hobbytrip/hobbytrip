@@ -9,12 +9,16 @@ const useChatStore = create((set) => ({
   modifyMessage: (messageId, newContent) =>
     set((state) => ({
       chatList: state.chatList.map((message) =>
-        message.id === messageId ? { ...message, content: newContent } : message
+        message.messageId === messageId
+          ? { ...message, content: newContent }
+          : message
       ),
     })),
   deleteMessage: (messageId) =>
     set((state) => ({
-      chatList: state.chatList.filter((message) => message.id !== messageId),
+      chatList: state.chatList.filter(
+        (message) => message.messageId !== messageId
+      ),
     })),
 }));
 
