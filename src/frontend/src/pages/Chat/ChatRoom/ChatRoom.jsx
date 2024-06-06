@@ -6,7 +6,6 @@ import s from "./ChatRoom.module.css";
 import TopHeader from "../../../components/Common/ChatRoom/CommunityChatHeader/ChatHeader";
 import ChatRoomInfo from "../../../components/Modal/ChatModal/ChatRoomInfo/ChatRoomInfo";
 import ChatSearchBar from "../../../components/Modal/ChatModal/ChatSearchBar/ChatSearchBar";
-import ChatModal from "../../../components/Modal/ChatModal/CreateChatModal/ChatModal";
 import MessageSender from "../../../components/Modal/ChatModal/CreateChatModal/MessageSender/MessageSender";
 import ChatMessage from "../../../components/Modal/ChatModal/ChatMessage/ChatMessage";
 import ChatChannelType from "../../../components/Modal/ChatModal/ChatChannelType/ChatChannelType";

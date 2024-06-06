@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import s from "./ChatMessage.module.css";
 import { FaTrashAlt } from "react-icons/fa";
+import { FaDownload } from "react-icons/fa6";
 import { MdEdit } from "react-icons/md";
 import testImg from "../../../../assets/image/default-logo.png";
 import useFormatDate from "../../../../hooks/useFormatDate";
+import axios from "axios";
 
 // 채팅 메세지를 뿌려주는 컴포넌트
 // 수정,삭제 함수 포함
@@ -11,6 +13,7 @@ const ChatMessage = ({ message, onModifyMessage, onDeleteMessage }) => {
   const formattedDate = useFormatDate(message.createdAt);
   const [isEditing, setIsEditing] = useState(false);
   const [newContent, setNewContent] = useState(message.content);
+  const [isDownLoading, setIsDownloading] = useState(false);
   const inputRef = useRef(null);
 
   const handleEditClick = () => {
@@ -66,14 +69,24 @@ const ChatMessage = ({ message, onModifyMessage, onDeleteMessage }) => {
                     style={{ width: "150px" }}
                   />
                 ) : (
-                  <a
+                  <div className={s.fileDownload}>
+                    <h4>{file.originalFilename}</h4>
+                    <FaDownload
+                      className={s.downloadIcon}
+                      onClick={() =>
+                        handleFileDownload(file.fileUrl, file.originalFilename)
+                      }
+                    />
+                    {/* <a
                     href={file.fileUrl}
+                    download={file.originalFilename}
                     target="_blank"
                     rel="noopener noreferrer"
                     className={s.fileLink}
                   >
-                    <h4>{file.originalFilename}</h4>
-                  </a>
+                    
+                  </a> */}
+                  </div>
                 )}
               </div>
             ))}
@@ -155,6 +168,28 @@ const ChatMessage = ({ message, onModifyMessage, onDeleteMessage }) => {
       .toLowerCase();
     return imageExtensions.includes(extension);
   };
+
+  // const handleFileDownload = (fileUrl, fileName) => {
+  //   setIsDownloading(true);
+
+  //   axios
+  //     .get(fileUrl, { responseType: "blob" })
+  //     .then((response) => {
+  //       const url = window.URL.createObjectURL(new Blob([response.data]));
+  //       const a = document.createElement("a");
+  //       a.href = url;
+  //       a.download = fileName || "download";
+  //       document.body.appendChild(a);
+  //       a.click();
+  //       window.URL.revokeObjectURL(url);
+  //       document.body.removeChild(a);
+  //       setIsDownloading(false);
+  //     })
+  //     .catch((error) => {
+  //       console.error("파일 다운로드 오류:", error);
+  //       setIsDownloading(false);
+  //     });
+  // };
 
   return (
     <div className={s.chatWrapper}>
