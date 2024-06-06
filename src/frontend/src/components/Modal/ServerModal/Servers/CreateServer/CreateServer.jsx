@@ -43,7 +43,7 @@ function CreateServer() {
       const response = await axiosInstance.post(API.COMM_SERVER, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: localStorage.getItem("accessToken"),
+          Authorization: localStorage.getItem('accessToken')
         },
       });
 
@@ -52,7 +52,7 @@ function CreateServer() {
         // setServerData({ serverInfo: response.data.data });
         const serverId = response.data.data.serverId;
         fetchServerData(serverId, userId);
-        console.log("create fetch");
+        console.log('create fetch')
         nav(`/${serverId}/menu`);
       } else {
         console.log("행성 만들기 실패.");

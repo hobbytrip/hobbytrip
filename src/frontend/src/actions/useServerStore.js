@@ -13,6 +13,7 @@ const useServerStore = create((set) => ({
   setServerData: (newServerData) => set({ serverData: newServerData }),
   fetchServerData: async (serverId, userId) => {
     try {
+      console.log(serverId, userId)
       const res = await axiosInstance.get(API.GET_SERVER(serverId, userId));
       const resData = res?.data?.data;
       console.error(resData);

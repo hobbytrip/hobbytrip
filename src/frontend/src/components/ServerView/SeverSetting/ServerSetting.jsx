@@ -37,22 +37,29 @@ const ServerSetting = () => {
     if (serverName === '') {
       alert("행성 이름을 적어주세요");
       return;
-    }
-    else if(String(userId) !== String(serverInfo.managerId)){
+    } else if (String(userId) !== String(serverInfo.managerId)) {
       alert("삭제 권한이 없습니다");
       return;
     }
+
     try {
       const formData = new FormData();
-      const profile = profileImage !== null ? profileImage : 'null';
-
+      let prevProfile;
+      if(serverInfo.profile){
+        prevProfile = serverInfo.profile;
+      }
+      else{
+        prevProfile = 'null';
+      }
+      
       const data = JSON.stringify({
         serverId: serverInfo.serverId,
         userId: userId,
         name: serverName,
-        profile: serverInfo.profile,
+        profile: prevProfile,
         description: serverDescription,
       });
+
       const communityData = new Blob([data], { type: "application/json" });
       formData.append("requestDto", communityData);
       console.log(profile);
@@ -63,18 +70,17 @@ const ServerSetting = () => {
         formData.append("profile", 'null');
       }
 
-      const res = await axiosInstance.patch(API.SERVER, formData, {
+      const res = await axiosInstance.patch(API.COMM_SERVER, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
 
       if (res.data.success) {
-        console.log(res.data)
         setServerData(res.data.data);
         nav(-1);
       } else {
-        console.log(res);        
+        console.log(res);
       }
     } catch (error) {
       console.error("데이터 post 에러:", error);
@@ -107,7 +113,7 @@ const ServerSetting = () => {
         alert("삭제 권한이 없습니다");
       } else {
         try {
-          const res = await axiosInstance.delete(API.SERVER, {
+          const res = await axiosInstance.delete(API.COMM_SERVER, {
             data: {
               serverId: serverInfo.serverId,
               userId: userId,

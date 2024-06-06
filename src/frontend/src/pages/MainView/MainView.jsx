@@ -18,23 +18,20 @@ const MainView = () => {
   }));
 
   useEffect(() => {
-    if (userId) {
-      const getMainData = async () => {
-        try {
-          const response = await axiosInstance.get(API.READ_MAIN(userId));
-          const resData = response.data.data;
-          console.log(resData);
-          setServers(resData.servers);
-          setDms(resData.dms);
-        } catch (error) {
-          console.error("Error fetching server Data:", error);
-        }
-      };
-      getMainData();
-      // console.error(userId);
-      if (!isConnected) {
-        connect(userId);
+    if (userId) {  
+    const getMainData = async () => {
+      try {
+        const response = await axiosInstance.get(API.READ_MAIN(userId));
+        const resData = response.data.data;
+        console.log(resData);
+        setServers(resData.servers);
+        setDms(resData.dms);
+      } catch (error) {
+        console.error("Error fetching server Data:", error);
       }
+      };
+      // setServer();  
+      getMainData();
     }
   }, [userId]);
 

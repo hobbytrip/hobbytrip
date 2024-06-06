@@ -73,7 +73,7 @@ const MyPlanet = ({ servers }) => {
   };
 
   const handleServerClick = async (serverId) => {
-    console.error(client);
+    console.log('planet fetch')
     await fetchServerData(serverId, userId);
     if (client) {
       client.onConnect = () => {
@@ -95,17 +95,12 @@ const MyPlanet = ({ servers }) => {
         <div className={style.planetList}>
           {(servers || []).slice(startIndex, endIndex).map((server) => (
             <div key={server.serverId} className={style.planetItem}>
-              <button
-                className={style.planetThumb}
-                onClick={() => handleServerClick(server.serverId)}
-              >
-                {server.profile !== "null" && server.profile !== null ? (
-                  <img
-                    src={server.profile}
-                    className={style.planetIcon}
-                    alt={server.name}
-                  />
-                ) : null}
+              <button className={style.planetThumb} onClick={() => handleServerClick(server.serverId)}>
+                {(server.profile !== 'null' && server.profile !== null) ? (
+                  <img src={server.profile} className={style.planetIcon} />
+                ) : (
+                  null
+                )}
                 <div className={style.serverName}>{server.name}</div>
               </button>
             </div>
