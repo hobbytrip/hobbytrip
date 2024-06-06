@@ -84,9 +84,7 @@ const MessageSender = ({
     if (validFiles.length + uploadedFiles.length > maxFileCount) {
       alert(`최대 ${maxFileCount}개의 파일을 첨부할 수 있습니다.`);
     } else if (invalidFiles.length > 0) {
-      alert(
-        `다음 파일의 용량이 ${maxFileSizeMB}MB를 초과합니다: ${invalidFiles.join(", ")}`
-      );
+      alert(`파일 용량이 너무 큽니다.`);
     } else {
       setUploadedFiles((prevFiles) => [...prevFiles, ...validFiles]);
     }
