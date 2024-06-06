@@ -1,9 +1,10 @@
 package capstone.chatservice.domain.forum.domain;
 
+import capstone.chatservice.domain.file.domain.UploadFile;
 import capstone.chatservice.domain.model.ActionType;
 import capstone.chatservice.domain.model.BaseModel;
 import capstone.chatservice.domain.model.ChatType;
-import capstone.chatservice.domain.model.UploadFile;
+import capstone.chatservice.domain.model.ForumCategory;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AccessLevel;
@@ -57,6 +58,9 @@ public class ForumMessage extends BaseModel {
     private ActionType actionType;
 
     @Field
+    private ForumCategory forumCategory;
+
+    @Field
     private boolean isDeleted = Boolean.FALSE;
 
     @Field
@@ -64,7 +68,8 @@ public class ForumMessage extends BaseModel {
 
     @Builder
     public ForumMessage(Long serverId, Long channelId, Long forumId, Long userId,
-                        Long parentId, String profileImage, ChatType chatType, ActionType actionType,
+                        Long parentId, String profileImage, ChatType chatType,
+                        ActionType actionType, ForumCategory forumCategory,
                         String writer, String content, List<UploadFile> files) {
 
         this.serverId = serverId;
@@ -77,6 +82,7 @@ public class ForumMessage extends BaseModel {
         this.content = content;
         this.chatType = chatType;
         this.actionType = actionType;
+        this.forumCategory = forumCategory;
         this.files = files;
         this.setCreatedAt(LocalDateTime.now());
     }

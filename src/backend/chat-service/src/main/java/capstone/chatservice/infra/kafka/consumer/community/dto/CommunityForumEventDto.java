@@ -1,5 +1,6 @@
 package capstone.chatservice.infra.kafka.consumer.community.dto;
 
+import capstone.chatservice.domain.model.ForumCategory;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -25,6 +26,8 @@ public class CommunityForumEventDto {
     private String writer;
 
     private String content;
+
+    private ForumCategory forumCategory;
 
     private LocalDateTime createAt;
     private LocalDateTime updateAt;

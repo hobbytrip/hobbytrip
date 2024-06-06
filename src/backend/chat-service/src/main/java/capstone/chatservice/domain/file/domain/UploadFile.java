@@ -1,4 +1,4 @@
-package capstone.chatservice.domain.model;
+package capstone.chatservice.domain.file.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,6 +1,7 @@
 package capstone.chatservice.domain.forum.dto.request;
 
-import capstone.chatservice.domain.model.UploadFile;
+import capstone.chatservice.domain.file.domain.UploadFile;
+import capstone.chatservice.domain.model.ForumCategory;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,5 +23,6 @@ public class ForumMessageCreateRequest {
     private String type;
     private String writer;
     private String content;
+    private ForumCategory forumCategory;
     private List<UploadFile> files = null;
 }

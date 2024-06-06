@@ -1,11 +1,11 @@
 package capstone.chatservice.domain.forum.controller;
 
+import capstone.chatservice.domain.file.domain.UploadFile;
 import capstone.chatservice.domain.forum.dto.ForumMessageDto;
 import capstone.chatservice.domain.forum.dto.request.ForumMessageCreateRequest;
 import capstone.chatservice.domain.forum.dto.request.ForumMessageDeleteRequest;
 import capstone.chatservice.domain.forum.dto.request.ForumMessageModifyRequest;
 import capstone.chatservice.domain.forum.service.command.ForumMessageCommandService;
-import capstone.chatservice.domain.model.UploadFile;
 import capstone.chatservice.infra.S3.FileStore;
 import capstone.chatservice.infra.kafka.producer.chat.ChatEventProducer;
 import java.io.IOException;

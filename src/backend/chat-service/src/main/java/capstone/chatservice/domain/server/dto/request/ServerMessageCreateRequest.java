@@ -1,6 +1,6 @@
 package capstone.chatservice.domain.server.dto.request;
 
-import capstone.chatservice.domain.model.UploadFile;
+import capstone.chatservice.domain.file.domain.UploadFile;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
