@@ -2,16 +2,16 @@ import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import s from "./ForumRoom.module.css";
-import { axiosInstance } from "../../../utils/axiosInstance";
-import InfiniteScrollComponent from "../../../components/Common/ChatRoom/InfiniteScrollComponent";
-import API from "../../../utils/API/TEST_API";
-import useUserStore from "../../../actions/useUserStore";
-import TopHeader from "../../../components/Common/ChatRoom/CommunityChatHeader/ChatHeader";
-import ChatRoomInfo from "../../../components/Modal/ChatModal/ChatRoomInfo/ChatRoomInfo";
-import ForumModal from "../../../components/Modal/ForumModal/CreateForumModal/ForumModal";
-import ForumList from "../../../components/Modal/ForumModal/ForumList/ForumList";
+import { axiosInstance } from "../../../../utils/axiosInstance";
+import InfiniteScrollComponent from "../../../../components/Common/ChatRoom/InfiniteScrollComponent";
+import API from "../../../../utils/API/TEST_API";
+import useUserStore from "../../../../actions/useUserStore";
+import TopHeader from "../../../../components/Common/ChatRoom/CommunityChatHeader/ChatHeader";
+import ChatRoomInfo from "../../../../components/Modal/ChatModal/ChatRoomInfo/ChatRoomInfo";
+import ForumModal from "../../../../components/Modal/ForumModal/CreateForumModal/ForumModal";
+import ForumList from "../../../../components/Modal/ForumModal/ForumList/ForumList";
 import axios from "axios";
-import emptycon from "../../../assets/image/emptyCon.jpg";
+import emptycon from "../../../../assets/image/emptyCon.jpg";
 
 const fetchForumList = async (channelId, userId) => {
   const response = await axiosInstance.get(API.READ_FORUM(channelId, userId));
@@ -156,7 +156,7 @@ function ForumRoom() {
                 <ForumList
                   forumList={filteredForumList}
                   handleDeleteForum={handleDeleteForum}
-                  handleEditForum={() => {}}
+                  // handleEditForum={() => {}}
                 />
               </InfiniteScrollComponent>
             )}

@@ -1,0 +1,62 @@
+.chatWrapper {
+  display: flex;
+  align-items: flex-start;
+  padding: 5px;
+  margin-bottom: 10px;
+  position: relative;
+}
+.msgBox {
+  display: flex;
+}
+.msgRightContainer {
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  gap: 5px;
+  margin-bottom: 5px;
+  margin-left: 10px;
+}
+.profileImg {
+  background-color: var(--hot-pink);
+  border-radius: 999%;
+  width: 25px;
+  height: 25px;
+  padding: 5px;
+  float: left;
+}
+.msgTopInfos {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+}
+.msgDate {
+  font-weight: 500;
+  color: var(--dark-gray);
+}
+.msgContent {
+  font-weight: 500;
+}
+.modals {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  display: none;
+}
+.chatWrapper:hover .modals {
+  display: flex;
+  gap: 5px;
+}
+.msgEdit {
+  background-color: var(--light-gray);
+  display: flex;
+  height: 25px;
+  border-radius: 5px;
+}
+.imageContent {
+  width: 150px;
+  height: 150px;
+}
+.fileContainer {
+  display: block;
+}
