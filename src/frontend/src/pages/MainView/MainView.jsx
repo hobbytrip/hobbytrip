@@ -31,6 +31,7 @@ const MainView = () => {
         }
       };
       getMainData();
+      // console.error(userId);
       if (!isConnected) {
         connect(userId);
       }

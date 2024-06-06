@@ -7,6 +7,7 @@ import CreateServer from "../../Modal/ServerModal/Servers/CreateServer/CreateSer
 import { useNavigate } from "react-router-dom";
 import useUserStore from "../../../actions/useUserStore";
 import useWebSocketStore from "../../../actions/useWebSocketStore";
+import API from "../../../utils/API/TEST_API";
 
 const Leftbtn = ({ onClick }) => (
   <button className={style.leftBtn} onClick={onClick}>
@@ -42,7 +43,9 @@ const MyPlanet = ({ servers }) => {
     fetchServerData: state.fetchServerData,
   }));
   const { userId } = useUserStore();
-  const { client } = useWebSocketStore();
+  const { client } = useWebSocketStore((state) => ({
+    client: state.client,
+  }));
 
   const serversPerPage = 4;
   const startIndex = currentPage * serversPerPage;
@@ -70,15 +73,17 @@ const MyPlanet = ({ servers }) => {
   };
 
   const handleServerClick = async (serverId) => {
+    console.error(client);
     await fetchServerData(serverId, userId);
     if (client) {
       client.onConnect = () => {
-        client.subscribe(`/ws/api/chat/server/${serverId}`, (message) => {
+        client.subscribe(API.SUBSCRIBE_CHAT(serverId), (message) => {
           console.error("Received message:", message);
         });
       };
       client.activate();
     }
+
     nav(`/${serverId}/menu`);
   };
 

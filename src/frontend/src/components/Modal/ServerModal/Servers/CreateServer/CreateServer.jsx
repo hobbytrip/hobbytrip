@@ -3,11 +3,10 @@ import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "../../../../../utils/axiosInstance";
 import useServerStore from "../../../../../actions/useServerStore";
-import { TbCameraPlus } from "react-icons/tb";
 import API from "../../../../../utils/API/API";
 import JoinServer from "../JoinServer/JoinServer";
 import useUserStore from "../../../../../actions/useUserStore";
-import useWebSocketStore from "../../../../../actions/useWebSocketStore";
+import { TbCameraPlus } from "react-icons/tb";
 
 function CreateServer() {
   const [name, setName] = useState("");
@@ -16,13 +15,10 @@ function CreateServer() {
   const [profileImage, setProfileImage] = useState(null);
   const [profilePreview, setProfilePreview] = useState(null);
   const [showJoinServer, setShowJoinServer] = useState(false);
-  const setServerData = useServerStore((state) => state.setServerData);
+  const fetchServerData = useServerStore((state) => state.fetchServerData);
   const imgRef = useRef();
   const nav = useNavigate();
   const { userId } = useUserStore();
-  const { client } = useWebSocketStore((state) => ({
-    client: state.client,
-  }));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,6 +31,8 @@ function CreateServer() {
       const data = JSON.stringify({
         userId: userId,
         name: name,
+        // description: description,
+        // category: category,
       });
       const communityData = new Blob([data], { type: "application/json" });
       formData.append("requestDto", communityData);
@@ -42,25 +40,20 @@ function CreateServer() {
         formData.append("profile", profileImage);
       }
 
-      const response = await axiosInstance.post(API.SERVER, formData, {
+      const response = await axiosInstance.post(API.COMM_SERVER, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
+          Authorization: localStorage.getItem("accessToken"),
         },
       });
 
       if (response.data.success) {
         console.log(response);
-        setServerData({ serverInfo: response.data.data });
+        // setServerData({ serverInfo: response.data.data });
         const serverId = response.data.data.serverId;
+        fetchServerData(serverId, userId);
+        console.log("create fetch");
         nav(`/${serverId}/menu`);
-        if (client) {
-          client.onConnect = () => {
-            client.subscribe(`/ws/api/chat/server/${serverId}`, (message) => {
-              console.error("Received message:", message);
-            });
-          };
-          client.activate();
-        }
       } else {
         console.log("행성 만들기 실패.");
         console.log(response);

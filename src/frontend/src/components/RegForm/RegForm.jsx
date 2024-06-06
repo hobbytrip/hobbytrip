@@ -8,6 +8,7 @@ import API from "../../utils/API/TEST_API";
 
 function RegForm() {
   const setUserInfo = useUserStore((state) => state.setUserInfo);
+  const { userId } = useUserStore();
 
   const [form, setForm] = useState({
     email: "",
@@ -34,6 +35,18 @@ function RegForm() {
     navigate("/login");
   };
 
+  const postUserIdToCommunity = async () => {
+    try {
+      const response = await axiosInstance.post(API.COMM_SIGNUP, {
+        originalId: userId,
+      });
+
+      console.error("POST request to /community/user successful:", response);
+    } catch (error) {
+      console.error("Error posting userId to /community/user:", error);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -41,6 +54,7 @@ function RegForm() {
       const response = await axiosInstance.post(API.SIGN_UP, form);
       if (response.data.success) {
         setUserInfo(response.data.data);
+        await postUserIdToCommunity();
         console.log("회원가입 성공:", response.data.data);
         navigate("/login");
       } else {

@@ -2,8 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { IoChatbubbleEllipses } from "react-icons/io5";
-import axios from "axios";
-import { axiosInstance } from "../../../utils/axiosInstance";
 import s from "./ChatRoom.module.css";
 import TopHeader from "../../../components/Common/ChatRoom/CommunityChatHeader/ChatHeader";
 import ChatRoomInfo from "../../../components/Modal/ChatModal/ChatRoomInfo/ChatRoomInfo";
@@ -13,6 +11,7 @@ import ChatMessage from "../../../components/Modal/ChatModal/ChatMessage/ChatMes
 import ChatChannelType from "../../../components/Modal/ChatModal/ChatChannelType/ChatChannelType";
 import InfiniteScrollComponent from "../../../components/Common/ChatRoom/InfiniteScrollComponent";
 import useWebSocketStore from "../../../actions/useWebSocketStore";
+import useChatStore from "../../../actions/useChatStore";
 import API from "../../../utils/API/TEST_API";
 import useUserStore from "../../../actions/useUserStore";
 
@@ -58,10 +57,10 @@ const postUserLocation = async (userId, serverId, channelId) => {
 function ChatRoom() {
   const { userId } = useUserStore();
   const { serverId, channelId } = useParams();
-  const [chatList, setChatList] = useState([]);
   const [page, setPage] = useState(0);
   const chatListContainerRef = useRef(null);
   const { client } = useWebSocketStore();
+  const { chatList } = useChatStore();
 
   const { data, error, isLoading, refetch } = useQuery({
     queryKey: ["messages", channelId, page],
@@ -72,7 +71,9 @@ function ChatRoom() {
 
   useEffect(() => {
     if (data && Array.isArray(data)) {
-      setChatList((prevChatList) => [...data, ...prevChatList]);
+      chatList.forEach((message) => {
+        setChatList((prevChatList) => [...prevChatList, message]);
+      });
     }
   }, [data]);
 
@@ -104,11 +105,7 @@ function ChatRoom() {
         content: newContent,
       }),
     });
-    setChatList((prevMsgs) =>
-      prevMsgs.map((msg) =>
-        msg.messageId === messageId ? { ...msg, content: newContent } : msg
-      )
-    );
+    useChatStore.modifyMessage(messageId, newContent);
   };
 
   const handleDeleteMessage = (messageId) => {
@@ -119,9 +116,7 @@ function ChatRoom() {
         messageId: messageId,
       }),
     });
-    setChatList((prevMsgs) =>
-      prevMsgs.filter((msg) => msg.messageId !== messageId)
-    );
+    useChatStore.deleteMessage(messageId);
   };
 
   const updatePage = () => {
