@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React from "react";
 import { IoPlanetSharp } from "react-icons/io5";
 import s from "./ForumList.module.css";
 import useFormatDate from "../../../../hooks/useFormatDate";
 import emptycon from "../../../../assets/image/emptyCon.jpg";
 import { FaTrashAlt } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
+import { useNavigate, useParams } from "react-router-dom";
 
 const categories = [
   { name: "🔥66챌린지", value: "CHALLENGE66" },
@@ -16,6 +17,9 @@ const categories = [
 ];
 
 const ForumList = ({ forumList, handleDeleteForum, handleEditForum }) => {
+  const navigate = useNavigate();
+  const { serverId, channelId } = useParams();
+
   const onDeleteForum = (forumId) => {
     handleDeleteForum(forumId);
   };
@@ -29,6 +33,10 @@ const ForumList = ({ forumList, handleDeleteForum, handleEditForum }) => {
     return category ? category.name : "Unknown Category";
   };
 
+  const moveToForumChat = (forumId) => {
+    navigate(`/${serverId}/${channelId}/forum/${forumId}/chat`);
+  };
+
   const renderList = () => {
     return (
       <>
@@ -39,7 +47,11 @@ const ForumList = ({ forumList, handleDeleteForum, handleEditForum }) => {
           </div>
         ) : (
           forumList.map((forum, index) => (
-            <div key={forum.forumId} className={s.forumBox}>
+            <div
+              key={forum.forumId}
+              className={s.forumBox}
+              onClick={() => moveToForumChat(forum.forumId)}
+            >
               <div className={s.container}>
                 <h4 className={s.category} style={{ marginBottom: "5px" }}>
                   {getCategoryName(forum.forumCategory)}

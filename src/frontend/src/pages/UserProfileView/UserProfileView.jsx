@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import s from "./UserProfileView.module.css";
-import useAxios from "../../utils/instance";
+// import useAxios from "../../utils/instance";
 import ProfileCard from "../../components/ProfileCard/ProfileCard";
 import useUserStore from "../../actions/useUserStore";
 import NotificationBox from "../../components/NotificationBox/NotificationBox";
@@ -33,7 +33,7 @@ function UserProfileView() {
 
     fetchUserData();
   }, [user, setUserInfo]);
-  
+
   const handleNameChange = (e) => {
     setEditedName(e.target.value);
   };

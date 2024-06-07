@@ -6,8 +6,6 @@ import useServerStore from "../../../actions/useServerStore";
 import CreateServer from "../../Modal/ServerModal/Servers/CreateServer/CreateServer";
 import { useNavigate } from "react-router-dom";
 import useUserStore from "../../../actions/useUserStore";
-import useWebSocketStore from "../../../actions/useWebSocketStore";
-import API from "../../../utils/API/TEST_API";
 
 const Leftbtn = ({ onClick }) => (
   <button className={style.leftBtn} onClick={onClick}>
@@ -43,9 +41,6 @@ const MyPlanet = ({ servers }) => {
     fetchServerData: state.fetchServerData,
   }));
   const { userId } = useUserStore();
-  const { client } = useWebSocketStore((state) => ({
-    client: state.client,
-  }));
 
   const serversPerPage = 4;
   const startIndex = currentPage * serversPerPage;
@@ -73,17 +68,8 @@ const MyPlanet = ({ servers }) => {
   };
 
   const handleServerClick = async (serverId) => {
-    console.log('planet fetch')
+    console.log("planet fetch");
     await fetchServerData(serverId, userId);
-    if (client) {
-      client.onConnect = () => {
-        client.subscribe(API.SUBSCRIBE_CHAT(serverId), (message) => {
-          console.error("Received message:", message);
-        });
-      };
-      client.activate();
-    }
-
     nav(`/${serverId}/menu`);
   };
 
@@ -95,12 +81,13 @@ const MyPlanet = ({ servers }) => {
         <div className={style.planetList}>
           {(servers || []).slice(startIndex, endIndex).map((server) => (
             <div key={server.serverId} className={style.planetItem}>
-              <button className={style.planetThumb} onClick={() => handleServerClick(server.serverId)}>
-                {(server.profile !== 'null' && server.profile !== null) ? (
+              <button
+                className={style.planetThumb}
+                onClick={() => handleServerClick(server.serverId)}
+              >
+                {server.profile !== "null" && server.profile !== null ? (
                   <img src={server.profile} className={style.planetIcon} />
-                ) : (
-                  null
-                )}
+                ) : null}
                 <div className={style.serverName}>{server.name}</div>
               </button>
             </div>

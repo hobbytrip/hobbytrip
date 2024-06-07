@@ -14,12 +14,13 @@ const useWebSocketStore = create((set, get) => ({
       heartbeatOutgoing: 4000,
       connectHeaders: {
         userId: userId,
-        Authorization: "Bearer " + localStorage.getItem("accessToken"),
+        // Authorization: "Bearer " + localStorage.getItem("accessToken"),
       },
     });
 
     stompClient.activate();
     set({ client: stompClient, isConnected: true });
+    console.log("소켓 클라이언트 생성 성공");
   },
   disconnect: () => {
     const { client } = get();

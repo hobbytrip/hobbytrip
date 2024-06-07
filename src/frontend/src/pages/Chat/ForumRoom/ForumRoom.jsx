@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import s from "./ForumRoom.module.css";
+import s from "../ChatRoom/ChatRoom.module.css";
 import { axiosInstance } from "../../../utils/axiosInstance";
 import InfiniteScrollComponent from "../../../components/Common/ChatRoom/InfiniteScrollComponent";
-import API from "../../../utils/API/TEST_API";
+import API from "../../../utils/API/API";
 import useUserStore from "../../../actions/useUserStore";
 import TopHeader from "../../../components/Common/ChatRoom/CommunityChatHeader/ChatHeader";
 import ChatRoomInfo from "../../../components/Modal/ChatModal/ChatRoomInfo/ChatRoomInfo";
@@ -156,7 +156,7 @@ function ForumRoom() {
                 <ForumList
                   forumList={filteredForumList}
                   handleDeleteForum={handleDeleteForum}
-                  handleEditForum={() => {}}
+                  // handleEditForum={() => {}}
                 />
               </InfiniteScrollComponent>
             )}

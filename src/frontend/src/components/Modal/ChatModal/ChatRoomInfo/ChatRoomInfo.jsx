@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import usePlanetIcon from "../../../../hooks/usePlanetIcon";
 import { useNavigate } from "react-router-dom";
 import useServerStore from "../../../../actions/useServerStore";
-import InviteServer from "../../ServerModal/Servers/InviteServer/InviteServer";
+import InviteServer from "../../../Modal/ServerModal/Servers/InviteServer/InviteServer";
 
 export default function ChatHeader({}) {
   const nav = useNavigate();
@@ -32,12 +32,14 @@ export default function ChatHeader({}) {
     <div className={s.wrapper}>
       <div className={s.infoBox}>
         {planetIcon && (
-          <img src={planetIcon} className={s.serverIcon} alt="Server Planet Icon" />
+          <img
+            src={planetIcon}
+            className={s.serverIcon}
+            alt="Server Planet Icon"
+          />
         )}
 
-        <h2 className={s.serverName}>
-          {name ? name : null}
-        </h2>
+        <h2 className={s.serverName}>{name ? name : null}</h2>
       </div>
       <div className={s.modals}>
         <TiUserAdd className={s.modal} onClick={handleInviteClick} />
@@ -47,7 +49,9 @@ export default function ChatHeader({}) {
           onClick={() => nav(`/${serverData.serverInfo.serverId}/setting`)}
         />
       </div>
-      {isInviteOpen && <InviteServer userId={serverData.userId} onClose={handleInviteClose} />}
+      {isInviteOpen && (
+        <InviteServer userId={serverData.userId} onClose={handleInviteClose} />
+      )}
     </div>
   );
 }
