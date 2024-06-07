@@ -36,11 +36,11 @@
   position: absolute;
   right: 10px;
   top: 10px;
-  display: none;
+  /* display: none; */
   color: var(--dark-gray);
 }
 
-.forumBox:hover .modals {
+/* .forumBox:hover .modals {
   display: flex;
   gap: 5px;
-}
+} */

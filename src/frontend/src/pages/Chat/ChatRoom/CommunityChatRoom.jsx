@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+// import { useQuery } from "@tanstack/react-query";
 import { IoChatbubbleEllipses } from "react-icons/io5";
 import s from "./ChatRoom.module.css";
 import TopHeader from "../../../components/Common/ChatRoom/CommunityChatHeader/ChatHeader";

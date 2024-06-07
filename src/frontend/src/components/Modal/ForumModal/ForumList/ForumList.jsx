@@ -56,6 +56,20 @@ const ForumList = ({ forumList, handleDeleteForum, handleEditForum }) => {
                 <h4 className={s.category} style={{ marginBottom: "5px" }}>
                   {getCategoryName(forum.forumCategory)}
                 </h4>
+                <div className={s.modals}>
+                  <MdEdit onClick={() => onEditForum(forum.forumId)} />
+                  <FaTrashAlt
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDeleteForum(forum.forumId);
+                    }}
+                    style={{
+                      cursor: "pointer",
+                      marginLeft: "5px",
+                      // color: "#dfdfdf",
+                    }}
+                  />
+                </div>
                 <h2 className={s.title} style={{ marginBottom: "5px" }}>
                   {forum.title}
                 </h2>
@@ -112,16 +126,6 @@ const ForumList = ({ forumList, handleDeleteForum, handleEditForum }) => {
                     }}
                   />
                 ))}
-              </div>
-              <div className={s.modals}>
-                <MdEdit onClick={() => onEditForum(forum.forumId)} />
-                <FaTrashAlt
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onDeleteForum(forum.forumId);
-                  }}
-                  style={{ cursor: "pointer" }}
-                />
               </div>
             </div>
           ))

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import s from "../ChatRoom/ChatRoom.module.css";
+import s from "./ForumRoom.module.css";
 import { axiosInstance } from "../../../utils/axiosInstance";
 import InfiniteScrollComponent from "../../../components/Common/ChatRoom/InfiniteScrollComponent";
 import API from "../../../utils/API/API";
@@ -11,7 +11,7 @@ import ChatRoomInfo from "../../../components/Modal/ChatModal/ChatRoomInfo/ChatR
 import ForumModal from "../../../components/Modal/ForumModal/CreateForumModal/ForumModal";
 import ForumList from "../../../components/Modal/ForumModal/ForumList/ForumList";
 import axios from "axios";
-import emptycon from "../../../assets/image/emptyCon.jpg";
+import emptycon from "../../../assets/image/emptyCon.jpg"; // 이미지 경로 수정
 
 const fetchForumList = async (channelId, userId) => {
   const response = await axiosInstance.get(API.READ_FORUM(channelId, userId));
@@ -156,7 +156,7 @@ function ForumRoom() {
                 <ForumList
                   forumList={filteredForumList}
                   handleDeleteForum={handleDeleteForum}
-                  // handleEditForum={() => {}}
+                  handleEditForum={() => {}}
                 />
               </InfiniteScrollComponent>
             )}
