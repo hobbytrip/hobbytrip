@@ -2,7 +2,7 @@ const BASE_URL = "https://fittrip.site/api";
 const CHAT_API_BASE_URL = "http://localhost:7070";
 const COMMUNITY_BASE_URL = "https://fittrip.site/api/community";
 const MEDIA_BASE_URL = "https://fittrip.site/api/sig";
-const NOTIFICATION_URL = "https://fittrip.site/api/notification"
+const NOTIFICATION_URL = "https://fittrip.site/api/notice"
 const WS_SERVER_BASE = "ws/api/chat/server/message";
 const WS_DM_BASE = "ws/api/chat/direct/message";
 const WS_FORUM_BASE = "/ws/api/chat/forum/message";
@@ -30,8 +30,8 @@ const API = {
   MEDIA: `${MEDIA_BASE_URL}/api/sessions`,
 
   // 알림
-  SERVER_SSE_SUB: `${BASE_URL}/user/api/server/subscribe`,
-  DM_SSE_SUB: `${BASE_URL}/user/api/dm/subscribe`,
+  SERVER_SSE_SUB: `${NOTIFICATION_URL}/server/subscribe`,
+  DM_SSE_SUB: `${NOTIFICATION_URL}/dm/subscribe`,
 
   //DM 채팅
   SUBSCRIBE_DM: (roomId) => `/topic/direct/${roomId}`,

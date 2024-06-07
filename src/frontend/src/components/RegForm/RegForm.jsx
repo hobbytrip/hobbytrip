@@ -35,7 +35,8 @@ function RegForm() {
     navigate("/login");
   };
 
-  const postUserIdToCommunity = async () => {
+  const postUserIdToCommunity = async (userId) => {
+    console.log("userId", userId);
     try {
       const response = await axiosInstance.post(API.COMM_SIGNUP, {
         originalId: userId,
@@ -54,7 +55,7 @@ function RegForm() {
       const response = await axiosInstance.post(API.SIGN_UP, form);
       if (response.data.success) {
         setUserInfo(response.data.data);
-        await postUserIdToCommunity();
+        await postUserIdToCommunity(response.data.data.userId);
         console.log("회원가입 성공:", response.data.data);
         navigate("/login");
       } else {
