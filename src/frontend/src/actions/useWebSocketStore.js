@@ -14,7 +14,7 @@ const useWebSocketStore = create((set, get) => ({
       heartbeatOutgoing: 4000,
       connectHeaders: {
         userId: userId,
-        Authorization: "Bearer " + localStorage.getItem("accessToken"),
+        // Authorization: "Bearer " + localStorage.getItem("accessToken"),
       },
     });
 

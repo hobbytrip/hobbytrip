@@ -18,14 +18,13 @@ import useAuthStore from "../../../actions/useAuthStore";
 import axios from "axios";
 import { axiosInstance } from "../../../utils/axiosInstance";
 
-const fetchChatHistory = async ({ queryKey }) => {
-  const [_, channelId, page] = queryKey;
+const fetchChatHistory = async (page, serverId, channelId, set) => {
   const token = localStorage.getItem("accessToken");
   try {
     const response = await axios.get(API.GET_HISTORY, {
       params: {
         channelId: channelId,
-        page,
+        page: page,
         size: 20,
       },
       headers: {
@@ -34,10 +33,10 @@ const fetchChatHistory = async ({ queryKey }) => {
       withCredentials: true,
     });
     const responseData = response.data.data;
-    if (responseData.length === 0) {
-      console.error("빈 데이터");
+    console.log("responseData", responseData);
+    if (responseData) {
+      set(serverId, responseData.data.reverse());
     }
-    return responseData.data.reverse();
   } catch (err) {
     console.error("채팅기록 불러오기 오류", err);
     throw new Error("채팅기록 불러오기 오류");
@@ -70,16 +69,21 @@ function ChatRoom() {
     deleteMessage,
     modifyMessage,
     sendMessage,
+    setChatList,
   } = useChatStore();
-  const { chatList } = useChatStore();
+  const chatList = useChatStore((state) => state.chatLists[serverId]) || [];
   const TYPE = "server";
 
-  const { data, error, isLoading } = useQuery({
-    queryKey: ["messages", channelId, page],
-    queryFn: fetchChatHistory,
-    staleTime: 1000 * 60 * 5,
-    keepPreviousData: true,
-  });
+  useEffect(() => {
+    postUserLocation(userId, serverId, channelId);
+    // if (client && isConnected) {
+    //   client.unsubscribe(serverId);
+    // }
+    if (client && isConnected) {
+      connectWebSocket(serverId);
+      fetchChatHistory(page, serverId, channelId, setChatList);
+    }
+  }, [serverId]);
 
   const connectWebSocket = (serverId) => {
     client.subscribe(API.SUBSCRIBE_CHAT(serverId), (frame) => {
@@ -103,61 +107,20 @@ function ChatRoom() {
           );
         } else if (parsedMessage.actionType === "SEND") {
           sendMessage(parsedMessage);
-          client.publish({
-            destination: API.SEND_CHAT(TYPE),
-            body: JSON.stringify(parsedMessage),
-          });
         } else if (parsedMessage.actionType === "MODIFY") {
-          modifyMessage(parsedMessage.messageId, parsedMessage.content);
-          client.publish({
-            destination: API.MODIFY_CHAT(TYPE),
-            body: JSON.stringify(parsedMessage),
-          });
+          modifyMessage(
+            serverId,
+            parsedMessage.messageId,
+            parsedMessage.content
+          );
         } else if (parsedMessage.actionType === "DELETE") {
-          deleteMessage(parsedMessage.messageId);
-          client.publish({
-            destination: API.DELETE_CHAT(TYPE),
-            body: JSON.stringify(parsedMessage),
-          });
+          deleteMessage(serverId, parsedMessage.messageId);
         }
       } catch (error) {
         console.error("구독 오류", error);
       }
     });
   };
-
-  // const unsubscribeWebSocket = () => {
-  //   client.unsubscribe(serverId);
-  // };
-
-  useEffect(() => {
-    postUserLocation(userId, serverId, channelId);
-    console.log("웹소켓 연결여부", isConnected);
-    // if (client && isConnected) {
-    //   unsubscribeWebSocket();
-    // }
-    if (client) {
-      connectWebSocket(serverId);
-    }
-  }, [serverId]);
-
-  useEffect(() => {
-    if (data && Array.isArray(data)) {
-      if (Array.isArray(data).length === 0) {
-        console.error("빈 채팅목록");
-      } else {
-        useChatStore.setState({ chatList: data });
-        console.log(data);
-      }
-    }
-  }, [data]);
-
-  useEffect(() => {
-    if (chatListContainerRef.current) {
-      chatListContainerRef.current.scrollTop =
-        chatListContainerRef.current.scrollHeight;
-    }
-  }, [chatList]);
 
   const handleSendMessage = async (messageContent, uploadedFiles) => {
     const messageBody = {
@@ -166,41 +129,46 @@ function ChatRoom() {
       userId: userId,
       parentId: 0,
       profileImage: "ho",
+      // type: TYPE,
       writer: nickname,
       content: messageContent,
-      type: "abc",
-      // createdAt: new Date().toISOString(),
+      createdAt: new Date().toISOString(),
     };
 
-    if (uploadedFiles.length >= 1) {
-      const formData = new FormData();
-      const jsonMsg = JSON.stringify(messageBody);
-      const req = new Blob([jsonMsg], { type: "application/json" });
-      formData.append("createRequest", req);
-      uploadedFiles.forEach((file) => {
-        formData.append("files", file);
-      });
-
-      try {
-        await axios.post(API.FILE_UPLOAD, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${accessToken}`,
-          },
-          withCredentials: true,
-        });
-
-        fetchChatHistory({ queryKey: ["messages", channelId, page] });
-      } catch (error) {
-        console.error("파일 업로드 오류:", error);
-      }
-    } else {
+    const sendMessageWithoutFile = (messageBody) => {
       sendMessage(messageBody);
       client.publish({
         destination: API.SEND_CHAT(TYPE),
         body: JSON.stringify(messageBody),
       });
-      // fetchChatHistory({ queryKey: ["messages", channelId, page] });
+    };
+
+    if (uploadedFiles.length >= 1) {
+      await uploadFiles(messageBody, uploadedFiles);
+    } else {
+      sendMessageWithoutFile(messageBody);
+    }
+  };
+
+  const uploadFiles = async (messageBody, uploadedFiles) => {
+    const formData = new FormData();
+    const jsonMsg = JSON.stringify(messageBody);
+    const req = new Blob([jsonMsg], { type: "application/json" });
+    formData.append("createRequest", req);
+    uploadedFiles.forEach((file) => {
+      formData.append("files", file);
+    });
+    try {
+      await axios.post(API.FILE_UPLOAD, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        withCredentials: true,
+      });
+    } catch (error) {
+      console.error("파일 업로드 오류:", error);
+      throw new Error("파일 업로드 오류");
     }
   };
 
@@ -216,7 +184,7 @@ function ChatRoom() {
     );
     if (modifiedMessage) {
       modifiedMessage.content = newContent;
-      modifyMessage(messageId, newContent);
+      modifyMessage(serverId, messageId, newContent);
       client.publish({
         destination: API.MODIFY_CHAT(TYPE),
         body: JSON.stringify(messageBody),
@@ -231,7 +199,7 @@ function ChatRoom() {
       actionType: "DELETE",
     };
 
-    deleteMessage(messageId);
+    deleteMessage(serverId, messageId);
     client.publish({
       destination: API.DELETE_CHAT(TYPE),
       body: JSON.stringify(messageBody),
@@ -242,10 +210,14 @@ function ChatRoom() {
     setPage((prevPage) => prevPage + 1);
   };
 
-  const groupedMessages = groupMessagesByDate(chatList);
+  useEffect(() => {
+    if (chatListContainerRef.current) {
+      chatListContainerRef.current.scrollTop =
+        chatListContainerRef.current.scrollHeight;
+    }
+  }, [chatList]);
 
-  if (isLoading && chatList.length === 0) return <div>로딩 중...</div>;
-  if (error) return <div>Error: {error.message}</div>;
+  const groupedMessages = groupMessagesByDate(chatList);
 
   return (
     <div className={s.chatRoomWrapper}>
@@ -272,7 +244,7 @@ function ChatRoom() {
               dataLength={chatList.length}
               next={updatePage}
               hasMore={true}
-              // scrollableTarget="chatListContainer"
+              scrollableTarget="chatListContainer"
             >
               {Object.keys(groupedMessages).map((date) => (
                 <div key={date}>
@@ -303,6 +275,7 @@ function ChatRoom() {
               channelId={channelId}
               writer={nickname}
               client={client}
+              TYPE={TYPE}
             />
           </div>
         </div>

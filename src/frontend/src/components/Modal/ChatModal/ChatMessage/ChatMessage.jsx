@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import s from "./ChatMessage.module.css";
 import { FaTrashAlt } from "react-icons/fa";
-import { FaDownload } from "react-icons/fa6";
+import { FaDownload, FaFile } from "react-icons/fa6";
 import { MdEdit } from "react-icons/md";
 import testImg from "../../../../assets/image/default-logo.png";
 import useFormatDate from "../../../../hooks/useFormatDate";
@@ -70,25 +70,24 @@ const ChatMessage = ({ message, onModifyMessage, onDeleteMessage }) => {
                   />
                 ) : (
                   <div className={s.fileDownload}>
-                    <h4>{file.originalFilename}</h4>
-                    <FaDownload
-                      className={s.downloadIcon}
-                      onClick={() =>
-                        handleFileDownload(
-                          file.storeFileName,
-                          file.originalFilename
-                        )
-                      }
-                    />
-                    {/* <a
-                    href={file.fileUrl}
-                    download={file.originalFilename}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={s.fileLink}
-                  >
-                    
-                  </a> */}
+                    <div className={s.inner}>
+                      <h4 style={{ fontWeight: "500" }}>
+                        {file.originalFilename}
+                      </h4>
+                    </div>
+                    <div className={s.innerBtm}>
+                      <FaFile style={{ color: "#434343" }} />
+                      <FaDownload
+                        className={s.downloadIcon}
+                        style={{ color: "#434343" }}
+                        onClick={() =>
+                          handleFileDownload(
+                            file.storeFileName,
+                            file.originalFilename
+                          )
+                        }
+                      />
+                    </div>
                   </div>
                 )}
               </div>
