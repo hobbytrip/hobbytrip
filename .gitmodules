@@ -1,0 +1,3 @@
+[submodule "src/backend/user-service/secure-submodule"]
+	path = src/backend/user-service/secure-submodule
+	url = https://github.com/ryudain05/secure-submodule.git
