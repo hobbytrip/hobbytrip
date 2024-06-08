@@ -9,6 +9,5 @@ public enum WhiteListURI {
     COMMUNITY_SIGNUP("/user"),
     STOMP("/ws-stomp")
     ;
-
     final String uri;
 }

@@ -89,6 +89,7 @@ public class AuthorizationFilter extends AbstractGatewayFilterFactory<Authorizat
     private boolean isWhiteList(String uri) {
         for (WhiteListURI whiteListURI : WhiteListURI.values()) {
             // 해당 URI가 화이트 리스트에 정의된 URI로 시작하는지 확인
+            System.out.println(uri);
             if (uri.startsWith(whiteListURI.uri)) {
                 return true;
             }
@@ -105,7 +106,7 @@ public class AuthorizationFilter extends AbstractGatewayFilterFactory<Authorizat
         String requestBody = accessToken;
         return webClientBuilder.build().post()
                 .uri("lb://USER-SERVICE/isLogin")
-                .headers(httpHeaders -> httpHeaders.addAll(headers))
+//                .headers(httpHeaders -> httpHeaders.addAll(headers))
                 .contentType(MediaType.APPLICATION_JSON) // JSON 컨텐츠 타입 명시
                 .body(BodyInserters.fromValue(requestBody)) // JSON 객체로 변환된 본문 사용
                 .retrieve()
