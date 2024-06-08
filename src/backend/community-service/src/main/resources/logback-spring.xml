@@ -9,21 +9,9 @@
     <!-- log file path -->
     <property name="LOG_PATH" value="./logs"/>
     <!-- log file name -->
-    <property name="LOG_FILE_NAME" value="logs"/>
+    <property name="LOG_FILE_NAME" value="community"/>
     <!-- err log file name -->
-    <property name="ERR_LOG_FILE_NAME" value="err_log"/>
-<!--    &lt;!&ndash; pattern &ndash;&gt;-->
-<!--    <property name="CONSOLE_LOG_PATTERN"-->
-<!--              value="%green(%d{yyyy-MM-dd HH:mm:ss.SSS}) %magenta([%thread]) %highlight(%5level) %cyan(%logger) - %msg%n"/>-->
-<!--    <property name="FILE_LOG_PATTERN"-->
-<!--              value="%-5level %d{yy-MM-dd HH:mm:ss}[%thread] [%logger{0}:%line] - %msg%n"/>-->
-
-<!--    &lt;!&ndash; Console Appender &ndash;&gt;-->
-<!--    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">-->
-<!--        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">-->
-<!--            <pattern>${CONSOLE_LOG_PATTERN}</pattern>-->
-<!--        </encoder>-->
-<!--    </appender>-->
+    <property name="ERR_LOG_FILE_NAME" value="community_err"/>
 
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
 
