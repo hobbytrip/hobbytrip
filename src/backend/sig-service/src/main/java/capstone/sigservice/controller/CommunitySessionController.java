@@ -1,5 +1,6 @@
 package capstone.sigservice.controller;
 
+import capstone.sigservice.dto.ConnectionDto;
 import capstone.sigservice.dto.UserLocationEventDto;
 import capstone.sigservice.dto.VoiceChannelEventDto;
 import capstone.sigservice.service.CommunitySessionService;
@@ -58,14 +59,33 @@ public class CommunitySessionController {
         Session session = coummintySessionService.initializeSession(params);
         return new ResponseEntity<>(session.getSessionId(), HttpStatus.OK);
     }
+//    @PostMapping("/api/sessions/{sessionId}/connections")
+//    public ResponseEntity<String> createConnection(@PathVariable("sessionId") String sessionId,
+//                                                   @RequestBody(required = false) Map<String, Object> params)
+//            throws OpenViduJavaClientException, OpenViduHttpException {
+//        Session session = coummintySessionService.findSession(sessionId);
+//        if (session == null) {
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
+//
+//        Connection connection = coummintySessionService.createConnection(sessionId,params);
+//
+//        VoiceChannelEventDto voiceDto=coummintySessionService.createJoinVoiceDto(params);
+//        UserLocationEventDto locationDto=coummintySessionService.createUserLocationEventDto(params);
+//        voiceConnectionStatekafkaTemplate.send(voiceConnectionStateTopic,voiceDto);
+//        userLocationEventKafkaTemplate.send(userLocationEventTopic,locationDto);
+//
+//        return new ResponseEntity<>(connection.getToken(), HttpStatus.OK);
+//    }
     @PostMapping("/api/sessions/{sessionId}/connections")
     public ResponseEntity<String> createConnection(@PathVariable("sessionId") String sessionId,
-                                                   @RequestBody(required = false) Map<String, Object> params)
+                                                   @RequestBody(required = false)ConnectionDto connectionDto)
             throws OpenViduJavaClientException, OpenViduHttpException {
         Session session = coummintySessionService.findSession(sessionId);
         if (session == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        Map<String,Object> params=connectionDto.toMap();
 
         Connection connection = coummintySessionService.createConnection(sessionId,params);
 
@@ -78,11 +98,13 @@ public class CommunitySessionController {
     }
 
     @DeleteMapping("/api/sessions/{sessionId}/disconnect")
-    public void leaveConnection(@PathVariable("sessionId")String sessionId,
+    public ResponseEntity<String> leaveConnection(@PathVariable("sessionId")String sessionId,
                                 @RequestBody Map<String,Object> params)
             throws OpenViduJavaClientException, OpenViduHttpException{
         VoiceChannelEventDto voiceDto=coummintySessionService.createLeaveVoiceDto(params);
         voiceConnectionStatekafkaTemplate.send(voiceConnectionStateTopic,voiceDto);
+        return new ResponseEntity<>("퇴장",HttpStatus.OK);
+
     }
 
     @PostMapping (value = "/api/fit/sessions/getToken")
