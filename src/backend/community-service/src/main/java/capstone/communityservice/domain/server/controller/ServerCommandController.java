@@ -54,4 +54,11 @@ public class ServerCommandController {
 
         return DataResponseDto.of("Server delete success!!");
     }
+
+    @DeleteMapping("/profile")
+    public DataResponseDto<Object> delete(@Valid @RequestBody ServerProfileDeleteRequestDto requestDto){
+        ServerResponseDto response = serverCommandService.deleteProfile(requestDto);
+
+        return DataResponseDto.of(response);
+    }
 }

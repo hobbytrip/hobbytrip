@@ -126,10 +126,30 @@ public class ServerCommandService {
 
         validateManager(findServer.getManagerId(), requestDto.getUserId());
 
+        fileUploadService.delete(findServer.getProfile());
+
         serverKafkaTemplate.send(serverKafkaTopic, CommunityServerEventDto.of("server-delete", findServer));
 
         printKafkaLog("delete");
         serverRepository.delete(findServer);
+    }
+
+    public ServerResponseDto deleteProfile(ServerProfileDeleteRequestDto requestDto) {
+        Server findServer = serverQueryService.validateExistServer(
+                requestDto.getServerId()
+        );
+
+        validateManager(findServer.getManagerId(), requestDto.getUserId());
+
+        fileUploadService.delete(findServer.getProfile());
+
+        findServer.setProfile(null);
+
+        serverKafkaTemplate.send(serverKafkaTopic, CommunityServerEventDto.of("server-update", findServer));
+
+        printKafkaLog("update");
+
+        return ServerResponseDto.of(findServer);
     }
 
     /**
