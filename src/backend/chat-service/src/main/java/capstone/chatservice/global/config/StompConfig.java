@@ -19,7 +19,7 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.enableSimpleBroker("/topic", "/queue");
-        config.setApplicationDestinationPrefixes("/ws/api/chat");
+        config.setApplicationDestinationPrefixes("/ws/chat");
     }
 
     @Override

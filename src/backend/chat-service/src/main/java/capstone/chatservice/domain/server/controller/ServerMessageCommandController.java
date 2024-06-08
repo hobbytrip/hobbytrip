@@ -13,6 +13,7 @@ import capstone.chatservice.infra.kafka.producer.state.dto.UserLocationEventDto;
 import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class ServerMessageCommandController {
@@ -31,6 +33,7 @@ public class ServerMessageCommandController {
 
     @MessageMapping("/server/message/send")
     public void save(ServerMessageCreateRequest createRequest) {
+        log.info(createRequest.getContent());
         ServerMessageDto messageDto = commandService.save(createRequest);
         producerService.sendToServerChatTopic(messageDto);
     }
