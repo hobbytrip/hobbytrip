@@ -7,3 +7,6 @@
 [submodule "src/backend/community-service/community-service-yml"]
         path = src/backend/community-service/community-service-yml
         url = https://github.com/HanYoonSoo/community-service-yml.git
+[submodule "src/backend/state-service/state-service-yml"]
+   	path = src/backend/state-service/state-service-yml
+  	url = https://github.com/acs0209/state-service-yml.git
