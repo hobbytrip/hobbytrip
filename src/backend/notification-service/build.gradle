@@ -53,14 +53,13 @@ dependencies {
     testImplementation 'org.springframework.kafka:spring-kafka-test'
 
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.mockito:mockito-core'
-
     //===Spring Cloud===//
 
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 
     implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5' //For application yaml Encryption
+
+
 
 }
 
@@ -81,4 +80,12 @@ dependencyManagement {
 
 compileJava {
     options.compilerArgs += ['-parameters']
+}
+
+processResources.dependsOn('copySecret')
+
+tasks.register('copySecret', Copy) {
+    from './notification-service'
+    include "application*.yml"  // 복사할 파일들
+    into 'src/main/resources'  // 복사 위치
 }
