@@ -23,12 +23,12 @@ jobs:
 
       - name: Initialize specific submodules
         run: |
-          git submodule init src/backend/notification-service/notification-service-yml
-          git submodule update --remote src/backend/notification-service/notification-service-yml
+          git submodule init src/backend/notification-service/notification-service
+          git submodule update --remote src/backend/notification-service/notification-service
 
       - name: Update nested submodules within specific submodule
         run: |
-          cd src/backend/notification-service/notification-service-yml
+          cd src/backend/notification-service/notification-service
           git submodule update --init --recursive
 
       - name: Cache Gradle dependencies
