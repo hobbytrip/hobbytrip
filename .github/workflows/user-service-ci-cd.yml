@@ -23,12 +23,12 @@ jobs:
 
       - name: Initialize specific submodules
         run: |
-          git submodule init src/backend/user-service/user-service-yml
-          git submodule update --remote src/backend/user-service/user-service-yml
+          git submodule init src/backend/user-service/secure-submodule
+          git submodule update --remote src/backend/user-service/secure-submodule
 
       - name: Update nested submodules within specific submodule
         run: |
-          cd src/backend/user-service/user-service-yml
+          cd src/backend/user-service/secure-submodule
           git submodule update --init --recursive
 
       - name: Cache Gradle dependencies
