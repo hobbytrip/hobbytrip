@@ -23,12 +23,12 @@ jobs:
 
       - name: Initialize specific submodules
         run: |
-          git submodule init src/backend/sig-service/sig-service-yml
-          git submodule update --remote src/backend/sig-service/sig-service-yml
+          git submodule init src/backend/sig-service/submodule-test
+          git submodule update --remote src/backend/sig-service/submodule-test
 
       - name: Update nested submodules within specific submodule
         run: |
-          cd src/backend/sig-service/sig-service-yml
+          cd src/backend/sig-service/submodule-test
           git submodule update --init --recursive
 
       - name: Cache Gradle dependencies
