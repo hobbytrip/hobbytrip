@@ -10,3 +10,9 @@
 [submodule "src/backend/state-service/state-service-yml"]
    	path = src/backend/state-service/state-service-yml
   	url = https://github.com/acs0209/state-service-yml.git
+[submodule "src/backend/user-service/secure-submodule"]
+   	path = src/backend/user-service/secure-submodule
+  	url = https://github.com/ryudain05/secure-submodule.git
+[submodule "src/backend/notification-service/notification-service"]
+   	path = src/backend/notification-service/notification-service
+  	url = https://github.com/ryudain05/notification-service.git
