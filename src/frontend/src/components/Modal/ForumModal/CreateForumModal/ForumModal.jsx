@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import API from "../../../../utils/API/TEST_API";
+import API from "../../../../utils/API/API";
 import { axiosInstance } from "../../../../utils/axiosInstance";
 import s from "./ForumModal.module.css";
 import { FiSearch } from "react-icons/fi";

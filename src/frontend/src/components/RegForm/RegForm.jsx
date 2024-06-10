@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import useUserStore from "../../actions/useUserStore";
 import NotificationBox from "../NotificationBox/NotificationBox";
 import { axiosInstance } from "../../utils/axiosInstance";
-import API from "../../utils/API/TEST_API";
+import API from "../../utils/API/API";
 
 function RegForm() {
   const setUserInfo = useUserStore((state) => state.setUserInfo);
@@ -42,9 +42,9 @@ function RegForm() {
         originalId: userId,
       });
 
-      console.error("POST request to /community/user successful:", response);
+      console.log("유저 커뮤니티 회원가입 성공", response.data);
     } catch (error) {
-      console.error("Error posting userId to /community/user:", error);
+      console.error("커뮤니티 회원가입 실패", error);
     }
   };
 
@@ -55,8 +55,9 @@ function RegForm() {
       const response = await axiosInstance.post(API.SIGN_UP, form);
       if (response.data.success) {
         setUserInfo(response.data.data);
-        await postUserIdToCommunity(response.data.data.userId);
         console.log("회원가입 성공:", response.data.data);
+        postUserIdToCommunity(response.data.data.userId);
+
         navigate("/login");
       } else {
         setError(response.data.message);

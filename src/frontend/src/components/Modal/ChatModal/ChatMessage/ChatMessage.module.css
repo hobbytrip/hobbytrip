@@ -57,3 +57,28 @@
   width: 150px;
   height: 150px;
 }
+.fileContainer {
+  display: block;
+}
+.fileDownload {
+  display: flex;
+  flex-direction: column;
+  background-color: transparent;
+  border: 1.5px #dbdbdb solid;
+  border-radius: 10px;
+  padding: 10px;
+  gap: 10px;
+}
+.inner {
+  border-bottom: 1px solid #dbdbdb;
+  padding-bottom: 10px;
+}
+.innerBtm {
+  position: relative;
+  height: 15px;
+}
+.downloadIcon {
+  font-size: 15px;
+  position: absolute;
+  right: 10px;
+}

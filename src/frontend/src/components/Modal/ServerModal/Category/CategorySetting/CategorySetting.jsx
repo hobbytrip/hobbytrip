@@ -66,7 +66,7 @@ function CategorySetting({ categoryId, onClose }) {
         setServerData({ ...serverData, serverCategories: updatedCategories });
         onClose();
       } else {
-        console.log("카테고리 수정 실패.");
+        console.log("마을 수정 실패.");
         console.log(res);
       }
     } catch (error) {
@@ -97,7 +97,7 @@ function CategorySetting({ categoryId, onClose }) {
               ...serverData,
               serverCategories: updatedCategories,
             });
-            onClose(); // 카테고리가 삭제된 후에 onClose를 호출하여 상태 업데이트를 유발
+            onClose();
           } else {
             alert("삭제하는 중에 오류가 발생했습니다");
             console.error(res);
@@ -149,6 +149,12 @@ function CategorySetting({ categoryId, onClose }) {
           <h5>삭제하기</h5>
         </button>
       </form>
+      <button 
+        className={style.backBtn}
+        onClick={onClose}
+        style={{color:'white'}}>
+        <h4> 뒤로 가기</h4>
+      </button>
     </>
   );
 }

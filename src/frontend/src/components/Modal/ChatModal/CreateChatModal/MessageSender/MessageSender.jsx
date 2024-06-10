@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import s from "./MessageSender.module.css";
 import { IoSend } from "react-icons/io5";
 import { FaCirclePlus } from "react-icons/fa6";
-import API from "../../../../../utils/API/TEST_API";
+import API from "../../../../../utils/API/API";
 
 const MessageSender = ({
   onMessageSend,
@@ -10,21 +10,25 @@ const MessageSender = ({
   channelId,
   writer,
   client,
+  TYPE,
 }) => {
   const [chatMessage, setChatMessage] = useState("");
-  const [uploadedFile, setUploadedFile] = useState(null);
+  const [uploadedFiles, setUploadedFiles] = useState([]); // 여러 파일을 저장할 배열 상태 추가
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const typingTimeoutRef = useRef(null);
   const fileInputRef = useRef(null);
 
   const sendMessage = () => {
-    if (chatMessage === "") {
+    if (chatMessage === "" && uploadedFiles.length === 0) {
       return;
     }
-    onMessageSend(chatMessage, uploadedFile); // 채팅 메시지 전송
+    if (uploadedFiles.length === 0) {
+      console.log("파일 없음.", uploadedFiles);
+    }
+    onMessageSend(chatMessage, uploadedFiles); // 채팅 메시지와 업로드된 파일들을 전송
     setChatMessage(""); // 메시지를 전송한 후 input창 비우기
-    setUploadedFile(null); // 파일 정보 초기화
+    setUploadedFiles([]); // 업로드된 파일 정보 초기화
   };
 
   const handleKeyDown = (e) => {
@@ -35,7 +39,7 @@ const MessageSender = ({
   };
 
   const toggleDropdown = () => {
-    setIsDropdownOpen((prevState) => !prevState); // 드롭다운 메뉴 표시 여부
+    setIsDropdownOpen((prevState) => !prevState);
   };
 
   const handleTyping = () => {
@@ -50,7 +54,7 @@ const MessageSender = ({
   const notifyTyping = () => {
     try {
       client.publish({
-        destination: API.IS_TYPING,
+        destination: API.ISTYPING(TYPE),
         body: JSON.stringify({
           serverId: serverId,
           channelId: channelId,
@@ -63,9 +67,30 @@ const MessageSender = ({
   };
 
   const handleFileUpload = async (event) => {
-    const selectedFile = event.target.files[0];
-    setUploadedFile(selectedFile);
-    console.error(selectedFile);
+    const selectedFiles = event.target.files;
+    let newFiles = Array.from(selectedFiles);
+
+    const maxFileCount = 5;
+    const maxFileSizeMB = 5;
+    const maxFileSizeBytes = maxFileSizeMB * 1024 * 1024;
+
+    const validFiles = [];
+    const invalidFiles = [];
+    newFiles.forEach((file) => {
+      if (file.size <= maxFileSizeBytes) {
+        validFiles.push(file);
+      } else {
+        invalidFiles.push(file.name);
+      }
+    });
+
+    if (validFiles.length + uploadedFiles.length > maxFileCount) {
+      alert(`최대 ${maxFileCount}개의 파일을 첨부할 수 있습니다.`);
+    } else if (invalidFiles.length > 0) {
+      alert(`파일 용량이 너무 큽니다.`);
+    } else {
+      setUploadedFiles((prevFiles) => [...prevFiles, ...validFiles]);
+    }
   };
 
   const clickFileUploadButton = (event) => {
@@ -76,21 +101,23 @@ const MessageSender = ({
   return (
     <div className={s.wrapper}>
       <div>
-        {uploadedFile && (
+        {uploadedFiles.length > 0 && (
           <div className={s.previewBox}>
-            <div className={s.filePreview}>
-              <img
-                src={URL.createObjectURL(uploadedFile)}
-                alt={uploadedFile.name}
-                className={s.previewImg}
-              />
-              <h5 style={{ color: "#434343", fontWeight: "600" }}>
-                {uploadedFile.name}
-              </h5>
-            </div>
+            {uploadedFiles.map((file, index) => (
+              <div key={index} className={s.filePreview}>
+                <img
+                  src={URL.createObjectURL(file)}
+                  alt={file.name}
+                  className={s.previewImg}
+                />
+                <h5 style={{ color: "#434343", fontWeight: "600" }}>
+                  {file.name}
+                </h5>
+              </div>
+            ))}
           </div>
         )}
-        {isDropdownOpen && !uploadedFile && (
+        {isDropdownOpen && (
           <div className={s.dropdownContent}>
             <button
               onClick={clickFileUploadButton}
@@ -110,6 +137,8 @@ const MessageSender = ({
               onChange={handleFileUpload}
               style={{ display: "none" }}
               accept=".jpg,.jpeg,.png,.gif"
+              multiple
+              maxLength={5}
             />
             <button
               onClick={clickFileUploadButton}

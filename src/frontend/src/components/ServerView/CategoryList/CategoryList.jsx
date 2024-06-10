@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import style from './CategoryList.module.css';
-import CreateItem from './CreateItem/CreateItem'
+import CreateItem from './CreateItem/CreateItem';
 import Channel from './Channel/Channel';
 import CreateChannel from '../../Modal/ServerModal/Channel/CreateChannel/CreateChannel';
 import CategorySetting from '../../Modal/ServerModal/Category/CategorySetting/CategorySetting';
@@ -9,6 +9,8 @@ import useUserStore from '../../../actions/useUserStore';
 import useServerStore from '../../../actions/useServerStore';
 import { HiPlus } from "react-icons/hi2";
 import { IoClose, IoSettings } from "react-icons/io5";
+import { axiosInstance } from '../../../utils/axiosInstance';
+import API from '../../../utils/API/API';
 
 const CategoryList = () => {
   const [categories, setCategories] = useState([]);
@@ -16,6 +18,7 @@ const CategoryList = () => {
   const [uncategorizedChannels, setUncategorizedChannels] = useState([]);
   const [showCreateItemModal, setShowCreateItemModal] = useState(false);
   const { serverId } = useParams();
+  const nav = useNavigate();
 
   const { serverData, fetchServerData } = useServerStore((state) => ({
     serverData: state.serverData,
@@ -24,6 +27,7 @@ const CategoryList = () => {
   const { userId } = useUserStore();
 
   useEffect(() => {
+    deleteNotice();
     console.log('category fetch')
     console.log(serverId, userId)
     fetchServerData(serverId, userId);
@@ -34,6 +38,20 @@ const CategoryList = () => {
     setChannels(serverData.serverChannels || []);
     setUncategorizedChannels((serverData.serverChannels || []).filter(channel => !channel.categoryId));
   }, [serverData]);
+
+  const deleteNotice = async () => {
+    try {
+      const res = await axiosInstance.delete(API.SERVER_SSE_DEL(serverId, userId), {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+        }
+      });
+      console.log('notice reeeeeeeeeeeeead');
+      console.log(res.data);
+    } catch (error) {
+      console.error('Error deleting notice:', error);
+    }
+  };
 
   const handleCloseCategory = () => {
     nav("initialChat?");
