@@ -18,7 +18,7 @@ const Login = async (email, password, userId) => {
       localStorage.setItem("refreshToken", refreshToken);
 
       setTokens(accessToken, refreshToken);
-      //로그인하면 소켓에 연결
+      // 로그인하면 소켓에 연결
       useWebSocketStore.getState().connect(userId);
     }
   } catch (error) {

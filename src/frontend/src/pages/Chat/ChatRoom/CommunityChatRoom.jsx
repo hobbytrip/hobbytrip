@@ -12,6 +12,7 @@ import ChatChannelType from "../../../components/Modal/ChatModal/ChatChannelType
 import InfiniteScrollComponent from "../../../components/Common/ChatRoom/InfiniteScrollComponent";
 import useWebSocketStore from "../../../actions/useWebSocketStore";
 import useChatStore from "../../../actions/useChatStore";
+import useForumStore from "../../../actions/useForumStore";
 import API from "../../../utils/API/API";
 import useUserStore from "../../../actions/useUserStore";
 import useAuthStore from "../../../actions/useAuthStore";
@@ -71,6 +72,12 @@ function ChatRoom() {
     sendMessage,
     setChatList,
   } = useChatStore();
+  const {
+    setForumTypingUsers,
+    deleteForumChat,
+    modifyForumChat,
+    sendForumChat,
+  } = useForumStore();
   const chatList = useChatStore((state) => state.chatLists[serverId]) || [];
   const TYPE = "server";
 
@@ -89,32 +96,63 @@ function ChatRoom() {
     client.subscribe(API.SUBSCRIBE_CHAT(serverId), (frame) => {
       try {
         const parsedMessage = JSON.parse(frame.body);
-        if (
-          parsedMessage.actionType === "TYPING" &&
-          parsedMessage.userId !== userId
-        ) {
-          setTypingUsers((prevTypingUsers) => {
-            if (!prevTypingUsers.includes(parsedMessage.writer)) {
-              return [...prevTypingUsers, parsedMessage.writer];
-            }
-            return prevTypingUsers;
-          });
-        } else if (parsedMessage.actionType === "STOP_TYPING") {
-          setTypingUsers((prevTypingUsers) =>
-            prevTypingUsers.filter(
-              (username) => username !== parsedMessage.writer
-            )
-          );
-        } else if (parsedMessage.actionType === "SEND") {
-          sendMessage(parsedMessage);
-        } else if (parsedMessage.actionType === "MODIFY") {
-          modifyMessage(
-            serverId,
-            parsedMessage.messageId,
-            parsedMessage.content
-          );
-        } else if (parsedMessage.actionType === "DELETE") {
-          deleteMessage(serverId, parsedMessage.messageId);
+        if (parsedMessage.chatType === "server") {
+          if (
+            parsedMessage.actionType === "TYPING" &&
+            parsedMessage.userId !== userId
+          ) {
+            setTypingUsers((prevTypingUsers) => {
+              if (!prevTypingUsers.includes(parsedMessage.writer)) {
+                return [...prevTypingUsers, parsedMessage.writer];
+              }
+              return prevTypingUsers;
+            });
+          } else if (parsedMessage.actionType === "STOP_TYPING") {
+            setTypingUsers((prevTypingUsers) =>
+              prevTypingUsers.filter(
+                (username) => username !== parsedMessage.writer
+              )
+            );
+          } else if (parsedMessage.actionType === "SEND") {
+            sendMessage(parsedMessage);
+          } else if (parsedMessage.actionType === "MODIFY") {
+            modifyMessage(
+              serverId,
+              parsedMessage.messageId,
+              parsedMessage.content
+            );
+          } else if (parsedMessage.actionType === "DELETE") {
+            deleteMessage(serverId, parsedMessage.messageId);
+          }
+        }
+        if (parsedMessage.chatType === "forum") {
+          if (
+            parsedMessage.actionType === "TYPING" &&
+            parsedMessage.userId !== userId
+          ) {
+            setForumTypingUsers((prevTypingUsers) => {
+              if (!prevTypingUsers.includes(parsedMessage.writer)) {
+                return [...prevTypingUsers, parsedMessage.writer];
+              }
+              return prevTypingUsers;
+            });
+          } else if (parsedMessage.actionType === "STOP_TYPING") {
+            setForumTypingUsers((prevTypingUsers) =>
+              prevTypingUsers.filter(
+                (username) => username !== parsedMessage.writer
+              )
+            );
+          } else if (parsedMessage.actionType === "SEND") {
+            sendForumChat(parsedMessage);
+          } else if (parsedMessage.actionType === "MODIFY") {
+            modifyForumChat(
+              serverId,
+              parsedMessage.messageId,
+              parsedMessage.content
+            );
+          } else if (parsedMessage.actionType === "DELETE") {
+            deleteForumChat(serverId, parsedMessage.messageId);
+          }
         }
       } catch (error) {
         console.error("구독 오류", error);
