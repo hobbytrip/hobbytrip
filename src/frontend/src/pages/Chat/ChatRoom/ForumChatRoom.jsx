@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 // import { useQuery } from "@tanstack/react-query";
-import { IoChatbubbleEllipses } from "react-icons/io5";
 import s from "./ChatRoom.module.css";
+//components
 import TopHeader from "../../../components/Common/ChatRoom/CommunityChatHeader/ChatHeader";
 import MessageSender from "../../../components/Modal/ForumModal/MessageSender/MessageSender";
-import ChatMessage from "../../../components/Modal/ChatModal/ChatMessage/ChatMessage";
+import ChatMessage from "../../../components/Common/ChatRoom/ChatMessage/ChatMessage";
 import InfiniteScrollComponent from "../../../components/Common/ChatRoom/InfiniteScrollComponent";
+import ForumThumb from "../../../components/Modal/ForumModal/ForumThumb/ForumThumb";
+//stores
 import useWebSocketStore from "../../../actions/useWebSocketStore";
 import useForumStore from "../../../actions/useForumStore";
 import useUserStore from "../../../actions/useUserStore";
@@ -43,13 +45,20 @@ const fetchForumHistory = async (page, serverId, forumId, setForumList) => {
 };
 
 function ForumChat() {
+  //타입 지정
+  const TYPE = "forum";
+  //useLocation을 사용하여 상태에서 포럼 정보 가져옴.
+  const location = useLocation();
+  const forum = location.state?.forum;
+  const forumCreatedDate = new Date(forum.createAt);
+  const formattedDate = `${forumCreatedDate.getFullYear()}년 ${forumCreatedDate.getMonth() + 1}월 ${forumCreatedDate.getDate()}일`;
+
   const { userId, nickname } = useUserStore();
   const { serverId, channelId, forumId } = useParams();
   const [page, setPage] = useState(0);
   const chatListContainerRef = useRef(null);
   const { accessToken } = useAuthStore();
   const { client, isConnected } = useWebSocketStore();
-  const TYPE = "forum";
 
   //ForumStore
   const {
@@ -70,13 +79,18 @@ function ForumChat() {
   ); //해당 서버>포럼에 있는 message 가져오기
 
   useEffect(() => {
+    console.log(location);
+  }, [location]);
+
+  useEffect(() => {
     if (client && isConnected) {
       fetchForumHistory(page, serverId, forumId, setForumList);
+      console.log("forum from chat room", forum);
     }
     console.log("server", serverId);
     console.log("channel", channelId);
     console.log("forum", forumId);
-  }, [forumId]);
+  }, [forumId]); //포럼 id가 바뀔 때마다
 
   const handleSendMessage = async (messageContent, uploadedFiles) => {
     const messageBody = {
@@ -188,11 +202,29 @@ function ForumChat() {
             ref={chatListContainerRef}
             id="chatListContainer"
             className={s.chatListContainer}
-            style={{ overflowY: "auto", height: "530px" }}
+            style={{ overflowY: "auto", height: "720px", marginTop: "5px" }}
           >
-            <div className={s.topInfos}>
-              <IoChatbubbleEllipses className={s.chatIcon} />
-              <h1>일반 채널에 오신 것을 환영합니다</h1>
+            <div
+              className={s.forumTop}
+              style={{
+                marginTop: "5px",
+                marginBottom: "15px",
+                paddingBottom: "5px",
+                borderBottom: "3px solid #e7e7e7",
+              }}
+            >
+              {forum && (
+                <div>
+                  <ForumThumb forum={forum} />
+                  <h4 className={s.dateHeader}>{formattedDate}</h4>
+                  <ChatMessage
+                    key={forum.createAt}
+                    message={forum}
+                    onModifyMessage={handleModifyMessage}
+                    onDeleteMessage={handleDeleteMessage}
+                  />
+                </div>
+              )}
             </div>
 
             <InfiniteScrollComponent
@@ -203,7 +235,9 @@ function ForumChat() {
             >
               {Object.keys(groupedMessages).map((date) => (
                 <div key={date}>
-                  <h4 className={s.dateHeader}>{date}</h4>
+                  {date !== formattedDate && (
+                    <h4 className={s.dateHeader}>{date}</h4>
+                  )}
                   {groupedMessages[date].map((message, index) => (
                     <ChatMessage
                       key={index}

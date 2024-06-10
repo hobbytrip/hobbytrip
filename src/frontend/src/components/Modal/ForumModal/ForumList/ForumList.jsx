@@ -6,15 +6,7 @@ import emptycon from "../../../../assets/image/emptyCon.jpg";
 import { FaTrashAlt } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
-
-const categories = [
-  { name: "🔥66챌린지", value: "CHALLENGE66" },
-  { name: "🍽️식단 인증", value: "FOOD" },
-  { name: "💪오운완", value: "TODAY" },
-  { name: "🌞미라클모닝", value: "MIRACLE" },
-  { name: "🏋️‍♀칼로리챌린지", value: "CALORIE" },
-  { name: "🚶‍♀️만보챌린지", value: "MANBO" },
-];
+import useCategoryName from "../../../../hooks/useCategoryName";
 
 const ForumList = ({ forumList, handleDeleteForum, handleEditForum }) => {
   const navigate = useNavigate();
@@ -28,13 +20,12 @@ const ForumList = ({ forumList, handleDeleteForum, handleEditForum }) => {
     handleEditForum(forumId);
   };
 
-  const getCategoryName = (categoryValue) => {
-    const category = categories.find((cat) => cat.value === categoryValue);
-    return category ? category.name : "Unknown Category";
-  };
-
-  const moveToForumChat = (forumId) => {
-    navigate(`/${serverId}/${channelId}/forum/${forumId}/chat`);
+  //포럼 채팅으로 넘어가기
+  const moveToForumChat = (forum) => {
+    navigate(`/${serverId}/${channelId}/forum/${forum.forumId}/chat`, {
+      state: { forum },
+    });
+    console.log("forum:", forum);
   };
 
   const renderList = () => {
@@ -50,11 +41,11 @@ const ForumList = ({ forumList, handleDeleteForum, handleEditForum }) => {
             <div
               key={forum.forumId}
               className={s.forumBox}
-              onClick={() => moveToForumChat(forum.forumId)}
+              onClick={() => moveToForumChat(forum)}
             >
               <div className={s.container}>
                 <h4 className={s.category} style={{ marginBottom: "5px" }}>
-                  {getCategoryName(forum.forumCategory)}
+                  {useCategoryName(forum.forumCategory)}
                 </h4>
 
                 <h2 className={s.title} style={{ marginBottom: "5px" }}>
