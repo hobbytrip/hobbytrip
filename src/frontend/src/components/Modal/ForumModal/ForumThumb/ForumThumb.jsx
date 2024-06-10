@@ -13,7 +13,7 @@ function ForumDetail({ forum }) {
   return (
     <div className={s.wrapper}>
       <div className={s.header}>
-        <h3>{forum.title}</h3>
+        <h3 style={{ color: "#434343" }}>{forum.title}</h3>
         <AiOutlineClose className={s.closebtn} onClick={handleMoveToBack} />
       </div>
       <img src={icon} className={s.icon} alt="forumIcon" />

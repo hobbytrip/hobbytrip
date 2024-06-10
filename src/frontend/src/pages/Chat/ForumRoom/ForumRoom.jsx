@@ -81,6 +81,10 @@ function ForumRoom() {
     }
   };
 
+  const handleEditForum = () => {
+    console.log("edit");
+  };
+
   const handleDeleteForum = async (forumId) => {
     try {
       await axios.delete(API.CUD_FORUM, {
@@ -104,6 +108,7 @@ function ForumRoom() {
     }
   };
 
+  //
   const filteredForumList = selectedCategory
     ? forumList.filter((forum) => forum.forumCategory === selectedCategory)
     : forumList;
@@ -156,7 +161,7 @@ function ForumRoom() {
                 <ForumList
                   forumList={filteredForumList}
                   handleDeleteForum={handleDeleteForum}
-                  handleEditForum={() => {}}
+                  handleEditForum={handleEditForum}
                 />
               </InfiniteScrollComponent>
             )}
