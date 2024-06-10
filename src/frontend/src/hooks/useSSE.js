@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { EventSourcePolyfill } from "event-source-polyfill";
+import { EventSourcePolyfill } from 'event-source-polyfill';
 import API from '../utils/API/API';
 import useUserStore from '../actions/useUserStore';
 import useSSEStore from '../actions/useSSEStore';
@@ -8,14 +8,18 @@ let lastHeartbeat = Date.now();
 let retryCount = 0;
 
 function useSSE() {
-  const [isHidden, setIsHidden] = useState(false);
+  const [isHidden, setIsHidden] = useState(document.hidden);
   const { userId, notificationEnabled } = useUserStore();
-  const accessToken = localStorage.getItem("accessToken");
+  const accessToken = localStorage.getItem('accessToken');
 
-  const { setServerSource, setDmSource } = useSSEStore();
+  const { setServerSource, setDmSource, serverSource, dmSource } = useSSEStore();
 
   useEffect(() => {
     if (userId && accessToken) {
+      // 기존 연결 닫기
+      // if (serverSource) serverSource.close();
+      // if (dmSource) dmSource.close();
+
       const newServerSource = new EventSourcePolyfill(API.SERVER_SSE_SUB(userId), {
         headers: {
           'Content-Type': 'text/event-stream',
@@ -44,11 +48,11 @@ function useSSE() {
         console.log('dm state: ', newDmSource.readyState);
       };
 
-      newServerSource.addEventListener("heartbeat", () => {
+      newServerSource.addEventListener('heartbeat', () => {
         lastHeartbeat = Date.now();
       });
 
-      newDmSource.addEventListener("heartbeat", () => {
+      newDmSource.addEventListener('heartbeat', () => {
         lastHeartbeat = Date.now();
       });
 
@@ -78,7 +82,7 @@ function useSSE() {
         }
       };
 
-      document.addEventListener("visibilitychange", () => setIsHidden(document.hidden));
+      document.addEventListener('visibilitychange', () => setIsHidden(document.hidden));
 
       return () => {
         console.log('Closing SSE sources');
@@ -86,7 +90,7 @@ function useSSE() {
         newDmSource.close();
       };
     }
-  }, [userId]);
+  }, []);
 
   return null;
 }
@@ -117,4 +121,3 @@ function setRetry(err) {
 }
 
 export default useSSE;
-  
