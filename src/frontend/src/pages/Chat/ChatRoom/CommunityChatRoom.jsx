@@ -74,10 +74,15 @@ function ChatRoom() {
   } = useChatStore();
   const {
     setForumTypingUsers,
-    deleteForumChat,
-    modifyForumChat,
-    sendForumChat,
-  } = useForumStore();
+    addForumMessage,
+    modifyForumMessage,
+    deleteForumMessage,
+  } = useForumStore((state) => ({
+    setForumTypingUsers: state.setForumTypingUsers,
+    addForumMessage: state.addForumMessage,
+    modifyForumMessage: state.modifyForumMessage,
+    deleteForumMessage: state.deleteForumMessage,
+  }));
   const chatList = useChatStore((state) => state.chatLists[serverId]) || [];
   const TYPE = "server";
 
@@ -125,6 +130,7 @@ function ChatRoom() {
             deleteMessage(serverId, parsedMessage.messageId);
           }
         }
+        //포럼
         if (parsedMessage.chatType === "forum") {
           if (
             parsedMessage.actionType === "TYPING" &&
@@ -143,15 +149,15 @@ function ChatRoom() {
               )
             );
           } else if (parsedMessage.actionType === "SEND") {
-            sendForumChat(parsedMessage);
+            addForumMessage(parsedMessage);
           } else if (parsedMessage.actionType === "MODIFY") {
-            modifyForumChat(
+            modifyForumMessage(
               serverId,
               parsedMessage.messageId,
               parsedMessage.content
             );
           } else if (parsedMessage.actionType === "DELETE") {
-            deleteForumChat(serverId, parsedMessage.messageId);
+            deleteForumMessage(serverId, parsedMessage.messageId);
           }
         }
       } catch (error) {

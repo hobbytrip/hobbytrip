@@ -9,9 +9,9 @@ import ChatMessage from "../../../components/Modal/ChatModal/ChatMessage/ChatMes
 import InfiniteScrollComponent from "../../../components/Common/ChatRoom/InfiniteScrollComponent";
 import useWebSocketStore from "../../../actions/useWebSocketStore";
 import useForumStore from "../../../actions/useForumStore";
-import API from "../../../utils/API/API";
 import useUserStore from "../../../actions/useUserStore";
 import useAuthStore from "../../../actions/useAuthStore";
+import API from "../../../utils/API/API";
 import axios from "axios";
 
 const fetchForumHistory = async (page, serverId, forumId, setForumList) => {
@@ -30,8 +30,11 @@ const fetchForumHistory = async (page, serverId, forumId, setForumList) => {
     });
     const responseData = response.data.data;
     console.log("responseData", responseData);
-    if (responseData) {
-      setForumList(serverId, forumId, responseData.data.reverse());
+    const datas = responseData.data.reverse();
+    console.log("fetch forum chats", datas);
+    // console.log("data", datas);
+    if (Array.isArray(datas) && datas) {
+      setForumList(serverId, forumId, datas);
     }
   } catch (err) {
     console.error("포럼 기록 불러오기 오류", err);
@@ -46,17 +49,25 @@ function ForumChat() {
   const chatListContainerRef = useRef(null);
   const { accessToken } = useAuthStore();
   const { client, isConnected } = useWebSocketStore();
-
-  const {
-    setForumList,
-    forumTypingUsers,
-    deleteForumChat,
-    modifyForumChat,
-    sendForumChat,
-    getForumList,
-  } = useForumStore();
   const TYPE = "forum";
-  const forumList = getForumList(serverId, forumId);
+
+  //ForumStore
+  const {
+    addForumMessage,
+    modifyForumMessage,
+    deleteForumMessage,
+    typingForumUsers,
+    setForumList,
+  } = useForumStore((state) => ({
+    addForumMessage: state.addForumMessage,
+    modifyForumMessage: state.modifyForumMessage,
+    deleteForumMessage: state.deleteForumMessage,
+    typingForumUsers: state.typingForumUsers,
+    setForumList: state.setForumList,
+  }));
+  const messages = useForumStore(
+    (state) => state.forumLists[serverId]?.[forumId] || []
+  ); //해당 서버>포럼에 있는 message 가져오기
 
   useEffect(() => {
     if (client && isConnected) {
@@ -81,7 +92,7 @@ function ForumChat() {
     };
 
     const sendMessageWithoutFile = (messageBody) => {
-      sendForumChat(messageBody);
+      addForumMessage(messageBody.serverId, messageBody.forumId, messageBody);
       client.publish({
         destination: API.SEND_CHAT(TYPE),
         body: JSON.stringify(messageBody),
@@ -94,6 +105,8 @@ function ForumChat() {
       sendMessageWithoutFile(messageBody);
     }
   };
+
+  //파일 업로드
   const uploadFiles = async (messageBody, uploadedFiles) => {
     const formData = new FormData();
     const jsonMsg = JSON.stringify(messageBody);
@@ -116,6 +129,7 @@ function ForumChat() {
     }
   };
 
+  //메세지 수정
   const handleModifyMessage = (messageId, newContent) => {
     const messageBody = {
       serverId: serverId,
@@ -128,7 +142,7 @@ function ForumChat() {
     );
     if (modifiedMessage) {
       modifiedMessage.content = newContent;
-      modifyForumChat(serverId, forumId, messageId, newContent);
+      modifyForumMessage(serverId, forumId, messageId, newContent);
       client.publish({
         destination: API.MODIFY_CHAT(TYPE),
         body: JSON.stringify(messageBody),
@@ -143,7 +157,7 @@ function ForumChat() {
       actionType: "DELETE",
     };
 
-    deleteForumChat(serverId, forumId, messageId);
+    deleteForumMessage(serverId, forumId, messageId);
     client.publish({
       destination: API.DELETE_CHAT(TYPE),
       body: JSON.stringify(messageBody),
@@ -159,9 +173,9 @@ function ForumChat() {
       chatListContainerRef.current.scrollTop =
         chatListContainerRef.current.scrollHeight;
     }
-  }, [forumList]);
+  }, [messages]);
 
-  const groupedMessages = groupMessagesByDate(forumList);
+  const groupedMessages = groupMessagesByDate(messages);
 
   return (
     <div className={s.chatRoomWrapper}>
@@ -182,7 +196,7 @@ function ForumChat() {
             </div>
 
             <InfiniteScrollComponent
-              dataLength={forumList.length}
+              dataLength={messages.length}
               next={updatePage}
               hasMore={true}
               scrollableTarget="chatListContainer"
@@ -203,9 +217,9 @@ function ForumChat() {
             </InfiniteScrollComponent>
           </div>
           <div className={s.messageSender}>
-            {forumTypingUsers.length > 0 && (
+            {typingForumUsers.length > 0 && (
               <div className="typingIndicator">
-                {forumTypingUsers.length >= 5
+                {typingForumUsers.length >= 5
                   ? "여러 사용자가 입력 중입니다..."
                   : `${forumTypingUsers.join(", ")} 입력 중입니다...`}
               </div>
@@ -228,15 +242,21 @@ function ForumChat() {
 const groupMessagesByDate = (messages) => {
   const groupedMessages = {};
 
-  messages.forEach((message) => {
-    const date = new Date(message.createdAt);
-    const dateString = `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
+  console.log("messages:", messages);
 
-    if (!groupedMessages[dateString]) {
-      groupedMessages[dateString] = [];
-    }
-    groupedMessages[dateString].push(message);
-  });
+  if (Array.isArray(messages) && messages) {
+    messages.forEach((message) => {
+      const date = new Date(message.createdAt);
+      const dateString = `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
+
+      if (!groupedMessages[dateString]) {
+        groupedMessages[dateString] = [];
+      }
+      groupedMessages[dateString].push(message);
+    });
+  } else {
+    console.error("not array");
+  }
 
   return groupedMessages;
 };

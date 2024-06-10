@@ -1,11 +1,23 @@
-import React from "react";
+// import React from "react";
 import create from "zustand";
 
 const useForumStore = create((set) => ({
   forumLists: {},
-  typingUsers: [],
+  typingForumUsers: [],
+  setForumList: (serverId, forumId, messages) =>
+    set((state) => {
+      const newForumLists = { ...state.forumLists };
+
+      if (!newForumLists[serverId]) {
+        newForumLists[serverId] = {};
+      }
+
+      newForumLists[serverId][forumId] = messages;
+
+      return { forumLists: newForumLists };
+    }),
   //메세지 추가
-  addMessage: (serverId, forumId, message) =>
+  addForumMessage: (serverId, forumId, message) =>
     set((state) => {
       const newForumLists = { ...state.forumLists };
 
@@ -22,7 +34,7 @@ const useForumStore = create((set) => ({
       return { forumLists: newForumLists };
     }),
 
-  setTypingUsers: (users) => set({ typingUsers: users }),
+  setForumTypingUsers: (users) => set({ typingUsers: users }),
   // 메시지 수정
   modifyMessage: (serverId, forumId, messageId, newContent) =>
     set((state) => {
@@ -39,7 +51,7 @@ const useForumStore = create((set) => ({
     }),
 
   // 메시지 삭제
-  deleteMessage: (serverId, forumId, messageId) =>
+  deleteForumMessage: (serverId, forumId, messageId) =>
     set((state) => {
       const newForumLists = { ...state.forumLists };
 
@@ -52,8 +64,9 @@ const useForumStore = create((set) => ({
       return { forumLists: newForumLists };
     }),
   //forumId에 맞는 메세지 가져오기
-  getMessages: (serverId, forumId) =>
-    set((state) => {
-      return state.forumLists[serverId]?.[forumId] || [];
-    }),
+  // getForumMessages: (serverId, forumId) => (state) => {
+  //   return state.forumLists[serverId]?.[forumId] || [];
+  // },
 }));
+
+export default useForumStore;
