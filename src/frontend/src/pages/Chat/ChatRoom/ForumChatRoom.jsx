@@ -79,10 +79,6 @@ function ForumChat() {
   ); //해당 서버>포럼에 있는 message 가져오기
 
   useEffect(() => {
-    console.log(location);
-  }, [location]);
-
-  useEffect(() => {
     if (client && isConnected) {
       fetchForumHistory(page, serverId, forumId, setForumList);
       console.log("forum from chat room", forum);
@@ -104,7 +100,6 @@ function ForumChat() {
       content: messageContent,
       createdAt: new Date().toISOString(),
     };
-
     const sendMessageWithoutFile = (messageBody) => {
       addForumMessage(messageBody.serverId, messageBody.forumId, messageBody);
       client.publish({
@@ -151,7 +146,7 @@ function ForumChat() {
       content: newContent,
       actionType: "MODIFY",
     };
-    const modifiedMessage = forumList.find(
+    const modifiedMessage = messages.find(
       (message) => message.messageId === messageId
     );
     if (modifiedMessage) {
@@ -168,7 +163,6 @@ function ForumChat() {
     const messageBody = {
       serverId: serverId,
       messageId: messageId,
-      actionType: "DELETE",
     };
 
     deleteForumMessage(serverId, forumId, messageId);

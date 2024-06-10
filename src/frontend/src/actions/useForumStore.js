@@ -36,7 +36,7 @@ const useForumStore = create((set) => ({
 
   setForumTypingUsers: (users) => set({ typingUsers: users }),
   // 메시지 수정
-  modifyMessage: (serverId, forumId, messageId, newContent) =>
+  modifyForumMessage: (serverId, forumId, messageId, newContent) =>
     set((state) => {
       const newForumLists = { ...state.forumLists };
 

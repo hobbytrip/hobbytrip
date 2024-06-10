@@ -96,12 +96,13 @@ function ChatRoom() {
       fetchChatHistory(page, serverId, channelId, setChatList);
     }
   }, [serverId]);
-
+  //소켓 연결
   const connectWebSocket = (serverId) => {
     client.subscribe(API.SUBSCRIBE_CHAT(serverId), (frame) => {
       try {
         const parsedMessage = JSON.parse(frame.body);
-        if (parsedMessage.chatType === "server") {
+        // const filesInfo = JSON.parse(frame.body).files;
+        if (parsedMessage.chatType === "SERVER") {
           if (
             parsedMessage.actionType === "TYPING" &&
             parsedMessage.userId !== userId
@@ -120,6 +121,7 @@ function ChatRoom() {
             );
           } else if (parsedMessage.actionType === "SEND") {
             sendMessage(parsedMessage);
+            fetchChatHistory(page, serverId, channelId, setChatList);
           } else if (parsedMessage.actionType === "MODIFY") {
             modifyMessage(
               serverId,
@@ -131,7 +133,7 @@ function ChatRoom() {
           }
         }
         //포럼
-        if (parsedMessage.chatType === "forum") {
+        if (parsedMessage.chatType === "FORUM") {
           if (
             parsedMessage.actionType === "TYPING" &&
             parsedMessage.userId !== userId
@@ -149,15 +151,27 @@ function ChatRoom() {
               )
             );
           } else if (parsedMessage.actionType === "SEND") {
-            addForumMessage(parsedMessage);
+            // 전송
+            addForumMessage(
+              parsedMessage.serverId,
+              parsedMessage.forumId,
+              parsedMessage
+            );
           } else if (parsedMessage.actionType === "MODIFY") {
+            //수정
             modifyForumMessage(
-              serverId,
+              parsedMessage.serverId,
+              parsedMessage.forumId,
               parsedMessage.messageId,
               parsedMessage.content
             );
           } else if (parsedMessage.actionType === "DELETE") {
-            deleteForumMessage(serverId, parsedMessage.messageId);
+            //삭제
+            deleteForumMessage(
+              parsedMessage.serverId,
+              parsedMessage.forumId,
+              parsedMessage.messageId
+            );
           }
         }
       } catch (error) {
