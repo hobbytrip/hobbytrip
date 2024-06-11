@@ -3,6 +3,7 @@ import { EventSourcePolyfill } from 'event-source-polyfill';
 import API from '../utils/API/API';
 import useUserStore from '../actions/useUserStore';
 import useSSEStore from '../actions/useSSEStore';
+import { useNavigate } from 'react-router-dom';
 
 let lastHeartbeat = Date.now();
 let retryCount = 0;
@@ -16,10 +17,6 @@ function useSSE() {
 
   useEffect(() => {
     if (userId && accessToken) {
-      // 기존 연결 닫기
-      // if (serverSource) serverSource.close();
-      // if (dmSource) dmSource.close();
-
       const newServerSource = new EventSourcePolyfill(API.SERVER_SSE_SUB(userId), {
         headers: {
           'Content-Type': 'text/event-stream',
@@ -90,20 +87,21 @@ function useSSE() {
         newDmSource.close();
       };
     }
-  }, []);
+  }, [userId, accessToken]);
 
   return null;
 }
 
 function showNotification(data, type) {
+  // const nav= useNavigate();
   const alarmData = {
     icon: '../../public/image/logo.png',
-    body: data.content,
+    body: data.content,  
   };
   if (type === 'dm') {
-    new Notification(data.userId, alarmData);
+    const notice = new Notification(data.userId, alarmData);
   } else if (type === 'server') {
-    new Notification(data.serverId, alarmData);
+    const notice = new Notification(data.serverId, alarmData);
   } else {
     console.log('Notification type error');
   }
