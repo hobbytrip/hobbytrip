@@ -6,17 +6,9 @@ import emptycon from "../../../../assets/image/emptyCon.jpg";
 import { FaTrashAlt } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
+import useCategoryName from "../../../../hooks/useCategoryName";
 
-const categories = [
-  { name: "🔥66챌린지", value: "CHALLENGE66" },
-  { name: "🍽️식단 인증", value: "FOOD" },
-  { name: "💪오운완", value: "TODAY" },
-  { name: "🌞미라클모닝", value: "MIRACLE" },
-  { name: "🏋️‍♀칼로리챌린지", value: "CALORIE" },
-  { name: "🚶‍♀️만보챌린지", value: "MANBO" },
-];
-
-const ForumList = ({ forumList, handleDeleteForum, handleEditForum }) => {
+function ForumList({ forumList, handleDeleteForum, handleEditForum }) {
   const navigate = useNavigate();
   const { serverId, channelId } = useParams();
 
@@ -28,109 +20,107 @@ const ForumList = ({ forumList, handleDeleteForum, handleEditForum }) => {
     handleEditForum(forumId);
   };
 
-  const getCategoryName = (categoryValue) => {
-    const category = categories.find((cat) => cat.value === categoryValue);
-    return category ? category.name : "Unknown Category";
+  //포럼 채팅으로 넘어가기
+  const moveToForumChat = (forum) => {
+    navigate(`/${serverId}/${channelId}/forum/${forum.forumId}/chat`, {
+      state: { forum },
+    });
+    console.log("forum:", forum);
   };
 
-  const moveToForumChat = (forumId) => {
-    navigate(`/${serverId}/${channelId}/forum/${forumId}/chat`);
-  };
+  return (
+    <div>
+      {forumList.length === 0 ? (
+        <div className={s.welcome}>
+          <img src={emptycon} style={{ width: "160px" }} alt="empty" />
+          <h2>챌린지를 시작해보세요</h2>
+        </div>
+      ) : (
+        forumList.map((forum, index) => (
+          <div
+            key={forum.forumId}
+            className={s.forumBox}
+            onClick={() => moveToForumChat(forum)}
+          >
+            <div className={s.container}>
+              <h4 className={s.category} style={{ marginBottom: "5px" }}>
+                {useCategoryName(forum.forumCategory)}
+              </h4>
 
-  const renderList = () => {
-    return (
-      <>
-        {forumList.length === 0 ? (
-          <div className={s.welcome}>
-            <img src={emptycon} style={{ width: "160px" }} alt="empty" />
-            <h2>챌린지를 시작해보세요</h2>
-          </div>
-        ) : (
-          forumList.map((forum, index) => (
-            <div
-              key={forum.forumId}
-              className={s.forumBox}
-              onClick={() => moveToForumChat(forum.forumId)}
-            >
-              <div className={s.container}>
-                <h4 className={s.category} style={{ marginBottom: "5px" }}>
-                  {getCategoryName(forum.forumCategory)}
-                </h4>
-                <h2 className={s.title} style={{ marginBottom: "5px" }}>
-                  {forum.title}
-                </h2>
-                <div className={s.detail}>
-                  <h3 className={s.writer} style={{ fontWeight: "500" }}>
-                    {forum.writer}
-                  </h3>
-                  <h3
-                    style={{
-                      color: "#434343",
-                      fontWeight: "normal",
-                    }}
-                  >
-                    {forum.content}
-                  </h3>
-                </div>
-                <div className={s.container} style={{ marginTop: "5px" }}>
-                  <IoPlanetSharp
-                    style={{ float: "left", color: "#0000008e" }}
-                  />
-                  <h3
-                    style={{
-                      color: "#434343",
-                      fontWeight: "300",
-                      fontSize: "14px",
-                      float: "left",
-                      marginRight: "10px",
-                    }}
-                  >
-                    {forum.forumMessageCount}
-                  </h3>
-                  <h3
-                    className={s.date}
-                    style={{
-                      color: "#434343",
-                      fontWeight: "400",
-                      fontSize: "14px",
-                    }}
-                  >
-                    : {useFormatDate(forum.createAt)}
-                  </h3>
-                </div>
-              </div>
-              <div className={s.imagePreview}>
-                {forum.files.map((file) => (
-                  <img
-                    key={file.fileId}
-                    src={file.fileUrl}
-                    alt={`file-${file.fileId}`}
-                    style={{
-                      width: "90px",
-                      position: "absolute",
-                      right: "10px",
-                    }}
-                  />
-                ))}
-              </div>
-              <div className={s.modals}>
-                <MdEdit onClick={() => onEditForum(forum.forumId)} />
-                <FaTrashAlt
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onDeleteForum(forum.forumId);
+              <h2 className={s.title} style={{ marginBottom: "5px" }}>
+                {forum.title}
+              </h2>
+              <div className={s.detail}>
+                <h3 className={s.writer} style={{ fontWeight: "500" }}>
+                  {forum.writer}
+                </h3>
+                <h3
+                  style={{
+                    color: "#434343",
+                    fontWeight: "normal",
                   }}
-                  style={{ cursor: "pointer" }}
-                />
+                >
+                  {forum.content}
+                </h3>
+              </div>
+              <div className={s.comments} style={{ marginTop: "5px" }}>
+                <IoPlanetSharp style={{ float: "left", color: "#0000008e" }} />
+                <h3
+                  style={{
+                    color: "#434343",
+                    fontWeight: "300",
+                    fontSize: "14px",
+                    float: "left",
+                    marginRight: "10px",
+                  }}
+                >
+                  {forum.forumMessageCount}
+                </h3>
+                <h3
+                  className={s.date}
+                  style={{
+                    color: "#434343",
+                    fontWeight: "400",
+                    fontSize: "14px",
+                  }}
+                >
+                  : {useFormatDate(forum.createAt)}
+                </h3>
               </div>
             </div>
-          ))
-        )}
-      </>
-    );
-  };
-
-  return <div>{renderList()}</div>;
-};
+            <div className={s.imagePreview}>
+              {forum.files.map((file) => (
+                <img
+                  key={file.fileId}
+                  src={file.fileUrl}
+                  alt={`file-${file.fileId}`}
+                  style={{
+                    width: "90px",
+                    position: "absolute",
+                    right: "10px",
+                  }}
+                />
+              ))}
+            </div>
+            <div className={s.modals}>
+              <MdEdit onClick={() => onEditForum(forum.forumId)} />
+              <FaTrashAlt
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDeleteForum(forum.forumId);
+                }}
+                style={{
+                  cursor: "pointer",
+                  marginLeft: "5px",
+                  // color: "#dfdfdf",
+                }}
+              />
+            </div>
+          </div>
+        ))
+      )}
+    </div>
+  );
+}
 
 export default ForumList;

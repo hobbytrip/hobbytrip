@@ -1,8 +1,9 @@
 const BASE_URL = "https://fittrip.site/api";
 const COMMUNITY_BASE_URL = "https://fittrip.site/api/community";
 const MEDIA_BASE_URL = "https://fittrip.site/api/sig";
+const WS_BASE = "/ws/chat";
 const NOTICE_URL = "https://fittrip.site/api/notice";
-const WS_BASE = "ws/api/chat";
+
 const API = {
   //유저
   LOG_IN: `${BASE_URL}/user/login`,
@@ -13,6 +14,13 @@ const API = {
   //커뮤니티 회원가입
   COMM_SIGNUP: `${BASE_URL}/community/user`,
   READ_MAIN: (userId) => `${BASE_URL}/community/user/${userId}`,
+
+  //const WS_BASE = "ws/chat";
+  //소켓
+  SEND_CHAT: (TYPE) => `${WS_BASE}/${TYPE}/message/send`,
+  DELETE_CHAT: (TYPE) => `${WS_BASE}/${TYPE}/message/delete`,
+  MODIFY_CHAT: (TYPE) => `${WS_BASE}/${TYPE}/message/modify`,
+  ISTYPING: (TYPE) => `${WS_BASE}/${TYPE}/message/typing`,
 
   //서버(커뮤니티) 채팅
   SUBSCRIBE_CHAT: (serverId) => `/topic/server/${serverId}`,
@@ -63,12 +71,6 @@ const API = {
   READ_FORUM: (channelId, userId) =>
     `${BASE_URL}/community/channel/${channelId}/${userId}`,
   CUD_FORUM: `${BASE_URL}/community/forum`,
-
-  //소켓
-  SEND_CHAT: (TYPE) => `${WS_BASE}/${TYPE}/message/send`,
-  DELETE_CHAT: (TYPE) => `${WS_BASE}/${TYPE}/message/delete`,
-  MODIFY_CHAT: (TYPE) => `${WS_BASE}/${TYPE}/message/modify`,
-  ISTYPING: (TYPE) => `${WS_BASE}/${TYPE}/message/typing`,
 };
 
 export default API;

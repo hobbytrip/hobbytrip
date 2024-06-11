@@ -4,22 +4,39 @@
   align-items: center;
   background-color: var(--light-gray);
   /* position: relative; */
-  margin: 15px;
+  margin: 5px;
   border-radius: 10px;
+  padding: 10px;
 }
 .top {
   display: flex;
   flex-direction: row;
+  margin-top: 5px;
 }
 .inputs {
   width: 70%;
 }
+.uploadContainer {
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  position: relative;
+}
+.imageModals {
+  position: absolute;
+}
 .imageArea {
   border-radius: 5px;
-  width: 25%;
-  height: 80px;
-  background-color: #00000015;
-  text-align: center;
+  /* width: 25%; */
+  /* height: 80px; */
+  /* background-color: #00000015; */
+}
+.uploadButton {
+  color: #00000096;
+  width: 30px;
+  height: 30px;
+  margin-top: 25px;
 }
 .searchContainer {
   display: flex;
@@ -59,10 +76,9 @@
   font-size: 16px;
 }
 .forumModal {
+  width: 95%;
   display: flex;
   flex-direction: column;
-  padding: 20px;
-  /* margin: 30px; */
 }
 .titleInput {
   font-size: 20px;
@@ -81,17 +97,6 @@
 .contentArea:focus {
   outline: none;
 }
-.imageArea {
-  text-align: center;
-  margin: 0 auto;
-}
-.imageUploadButton {
-  color: var(--light-gray);
-  width: 30px;
-  height: 30px;
-  margin-top: 25px;
-}
-
 .categoryButtons {
   display: flexbox;
   align-items: start;
@@ -128,10 +133,13 @@
   border-radius: 5px;
   cursor: pointer;
   width: 100px;
-  /* position: absolute; */
 }
 .removeAll {
-  color: #000000c7;
+  color: #00000096;
   font-size: 25px;
-  /* margin-right: px; */
+  margin-right: 5px;
+}
+.fileNames {
+  display: flex;
+  flex-direction: column;
 }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+// import { useQuery } from "@tanstack/react-query";
 import { IoChatbubbleEllipses } from "react-icons/io5";
 import s from "./ChatRoom.module.css";
 import TopHeader from "../../../components/Common/ChatRoom/CommunityChatHeader/ChatHeader";
@@ -12,6 +12,7 @@ import ChatChannelType from "../../../components/Modal/ChatModal/ChatChannelType
 import InfiniteScrollComponent from "../../../components/Common/ChatRoom/InfiniteScrollComponent";
 import useWebSocketStore from "../../../actions/useWebSocketStore";
 import useChatStore from "../../../actions/useChatStore";
+import useForumStore from "../../../actions/useForumStore";
 import API from "../../../utils/API/API";
 import useUserStore from "../../../actions/useUserStore";
 import useAuthStore from "../../../actions/useAuthStore";
@@ -71,6 +72,17 @@ function ChatRoom() {
     sendMessage,
     setChatList,
   } = useChatStore();
+  // const {
+  //   setForumTypingUsers,
+  //   addForumMessage,
+  //   modifyForumMessage,
+  //   deleteForumMessage,
+  // } = useForumStore((state) => ({
+  //   setForumTypingUsers: state.setForumTypingUsers,
+  //   addForumMessage: state.addForumMessage,
+  //   modifyForumMessage: state.modifyForumMessage,
+  //   deleteForumMessage: state.deleteForumMessage,
+  // }));
   const chatList = useChatStore((state) => state.chatLists[serverId]) || [];
   const TYPE = "server";
 
@@ -84,37 +96,56 @@ function ChatRoom() {
       fetchChatHistory(page, serverId, channelId, setChatList);
     }
   }, [serverId]);
-
+  //소켓 연결
   const connectWebSocket = (serverId) => {
     client.subscribe(API.SUBSCRIBE_CHAT(serverId), (frame) => {
       try {
+        console.log("subscribe success", serverId);
         const parsedMessage = JSON.parse(frame.body);
-        if (
-          parsedMessage.actionType === "TYPING" &&
-          parsedMessage.userId !== userId
-        ) {
-          setTypingUsers((prevTypingUsers) => {
-            if (!prevTypingUsers.includes(parsedMessage.writer)) {
-              return [...prevTypingUsers, parsedMessage.writer];
+        const files = JSON.parse(frame.body.files);
+        // const filesInfo = JSON.parse(frame.body).files;
+        if (parsedMessage.chatType === "SERVER") {
+          if (
+            parsedMessage.actionType === "TYPING" &&
+            parsedMessage.userId !== userId
+          ) {
+            setTypingUsers((prevTypingUsers) => {
+              if (!prevTypingUsers.includes(parsedMessage.writer)) {
+                return [...prevTypingUsers, parsedMessage.writer];
+              }
+              return prevTypingUsers;
+            });
+          } else if (parsedMessage.actionType === "STOP_TYPING") {
+            setTypingUsers((prevTypingUsers) =>
+              prevTypingUsers.filter(
+                (username) => username !== parsedMessage.writer
+              )
+            );
+          } else if (parsedMessage.actionType === "SEND") {
+            // 전송
+            sendMessage(parsedMessage);
+            fetchChatHistory(page, serverId, channelId, setChatList);
+            if (files && files.length > 0) {
+              const fileUrls = files.map((file) => file.fileUrl);
+              const messageWithFiles = {
+                parsedMessage,
+                files: [...fileUrls],
+              };
+              sendMessage(messageBody.serverId, messageWithFiles);
+              client.publish({
+                destination: API.SEND_CHAT(TYPE),
+                body: JSON.stringify(messageWithFiles),
+              });
             }
-            return prevTypingUsers;
-          });
-        } else if (parsedMessage.actionType === "STOP_TYPING") {
-          setTypingUsers((prevTypingUsers) =>
-            prevTypingUsers.filter(
-              (username) => username !== parsedMessage.writer
-            )
-          );
-        } else if (parsedMessage.actionType === "SEND") {
-          sendMessage(parsedMessage);
-        } else if (parsedMessage.actionType === "MODIFY") {
-          modifyMessage(
-            serverId,
-            parsedMessage.messageId,
-            parsedMessage.content
-          );
-        } else if (parsedMessage.actionType === "DELETE") {
-          deleteMessage(serverId, parsedMessage.messageId);
+          } else if (parsedMessage.actionType === "MODIFY") {
+            modifyMessage(
+              serverId,
+              parsedMessage.messageId,
+              parsedMessage.content
+            );
+          } else if (parsedMessage.actionType === "DELETE") {
+            deleteMessage(serverId, parsedMessage.messageId);
+          }
         }
       } catch (error) {
         console.error("구독 오류", error);

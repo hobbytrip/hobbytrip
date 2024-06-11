@@ -1,11 +1,10 @@
 import React, { useState, useRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
 import API from "../../../../utils/API/API";
 import { axiosInstance } from "../../../../utils/axiosInstance";
 import s from "./ForumModal.module.css";
 import { FiSearch } from "react-icons/fi";
-import { LuImagePlus } from "react-icons/lu";
+import { FaFileUpload } from "react-icons/fa";
 import { AiFillTag, AiFillCloseCircle } from "react-icons/ai";
 import { useParams } from "react-router-dom";
 import useUserStore from "../../../../actions/useUserStore";
@@ -19,7 +18,7 @@ function ForumModal({ onNewForum }) {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [isFileUploaded, setIsFileUploaded] = useState(false);
-  const [filePreviews, setFilePreviews] = useState([]);
+  const [imagePreview, setImagePreview] = useState(null);
   const fileInputRef = useRef();
   const categories = [
     { name: "🔥66챌린지", value: "CHALLENGE66" },
@@ -45,12 +44,19 @@ function ForumModal({ onNewForum }) {
   };
 
   const handleFileChange = (event) => {
-    const files = [...event.target.files];
-    setUploadedFiles(files);
+    const files = Array.from(event.target.files);
+    if (files.length > 5) {
+      alert("파일 첨부는 5개까지 가능합니다");
+      return;
+    }
+    setUploadedFiles((prevFiles) => [...prevFiles, ...files]);
     setIsFileUploaded(true);
 
-    const previews = files.map((file) => URL.createObjectURL(file));
-    setFilePreviews(previews);
+    const firstImageFile = files.find((file) => file.type.startsWith("image/"));
+    if (firstImageFile) {
+      const preview = URL.createObjectURL(firstImageFile);
+      setImagePreview(preview);
+    }
   };
 
   const handleRemoveAll = () => {
@@ -60,7 +66,7 @@ function ForumModal({ onNewForum }) {
     setCategory("CHALLENGE66");
     setUploadedFiles([]);
     setIsFileUploaded(false);
-    setFilePreviews([]);
+    setImagePreview(null);
   };
 
   const createNewForum = async () => {
@@ -101,6 +107,7 @@ function ForumModal({ onNewForum }) {
   const toggleModal = () => {
     setModalOpen(!modalOpen);
   };
+
   const handleImageUploadClick = () => {
     fileInputRef.current.click();
   };
@@ -130,9 +137,9 @@ function ForumModal({ onNewForum }) {
                 className={s.contentArea}
               />
             </div>
-            <div className={s.imageArea}>
-              {!isFileUploaded && (
-                <div>
+            <div className={s.uploadContainer}>
+              <div className={s.imageArea}>
+                <div className={s.imageModals}>
                   <input
                     type="file"
                     multiple
@@ -140,26 +147,44 @@ function ForumModal({ onNewForum }) {
                     ref={fileInputRef}
                     style={{ display: "none" }}
                   />
-                  <LuImagePlus
-                    className={s.imageUploadButton}
-                    onClick={handleImageUploadClick}
-                  />
-                </div>
-              )}
-              {isFileUploaded && (
-                <div className={s.imagePreviews}>
-                  {filePreviews.map((preview, index) => (
-                    <img
-                      key={index}
-                      style={{ width: "80%" }}
-                      src={preview}
-                      alt={`${index}`}
+                  {!isFileUploaded && (
+                    <FaFileUpload
+                      className={s.uploadButton}
+                      onClick={handleImageUploadClick}
                     />
-                  ))}
+                  )}
+                  {isFileUploaded && (
+                    <div className={s.imagePreview}>
+                      <img
+                        style={{ width: "80%" }}
+                        src={imagePreview}
+                        alt="preview"
+                      />
+                    </div>
+                  )}
+                  <button
+                    className={s.uploadModal}
+                    onClick={handleImageUploadClick}
+                  >
+                    <h4 style={{ color: "#00000096" }}>파일 업로드</h4>
+                  </button>
                 </div>
-              )}
+              </div>
             </div>
           </div>
+          {isFileUploaded && (
+            <div className={s.fileNames}>
+              {uploadedFiles.map((file, index) => (
+                <h4
+                  key={index}
+                  className={s.fileName}
+                  style={{ fontWeight: "300" }}
+                >
+                  {file.name}
+                </h4>
+              ))}
+            </div>
+          )}
           <div className={s.categoryButtons}>
             <AiFillTag
               style={{

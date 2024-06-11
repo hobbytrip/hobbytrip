@@ -42,7 +42,7 @@ function RegForm() {
         originalId: userId,
       });
 
-      console.log("유저 커뮤니티 회원가입 성공", response.data);
+      console.error("유저 커뮤니티 회원가입 성공", response.data);
     } catch (error) {
       console.error("커뮤니티 회원가입 실패", error);
     }
