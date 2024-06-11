@@ -62,9 +62,9 @@ const ServerSetting = () => {
 
       const communityData = new Blob([data], { type: "application/json" });
       formData.append("requestDto", communityData);
-      console.log(profile);
-      if(profile !== null){
-        formData.append("profile", profile);
+      // console.log(profile);
+      if(profileImage !== null){
+        formData.append("profile", profileImage);
       }
       else{
         formData.append("profile", 'null');
@@ -119,8 +119,10 @@ const ServerSetting = () => {
               userId: userId,
             },
           });
+          console.log(serverInfo, userId)
           if (res.status === 200) {
             alert("삭제되었습니다");
+            console.log(res);
             nav('/main');
           } else {
             alert("삭제하는 중에 오류가 발생했습니다");
