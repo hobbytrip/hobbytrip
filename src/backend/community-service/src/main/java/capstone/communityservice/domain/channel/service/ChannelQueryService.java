@@ -50,7 +50,7 @@ public class ChannelQueryService {
             Pageable pageable = PageRequest.of(page, pageLimit, Sort.Direction.DESC, "createdAt");
 
 
-            Slice<Forum> forums = getForums(title, pageable);
+            Slice<Forum> forums = getForums(title, channelId, pageable);
 
             List<Long> forumIds = getForumIds(forums);
 
@@ -89,13 +89,13 @@ public class ChannelQueryService {
                 forumList, pageable, forums.hasNext());
     }
 
-    private Slice<Forum> getForums(String title, Pageable pageable) {
+    private Slice<Forum> getForums(String title, Long channelId, Pageable pageable) {
         Slice<Forum> forums;
 
         if(title == null || title.trim().isEmpty()){
-            forums = forumRepository.findForums(pageable);
+            forums = forumRepository.findForumsWithChannelId(channelId, pageable);
         } else{
-            forums = forumRepository.findForumsByTitle(title, pageable);
+            forums = forumRepository.findForumsByTitleWithChannelId(title, channelId, pageable);
         }
         return forums;
     }

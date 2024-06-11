@@ -14,9 +14,9 @@ public interface ForumRepository extends JpaRepository<Forum, Long> {
     @Query("select f from Forum f join fetch f.user where f.id = :forumId")
     Optional<Forum> findById(Long forumId);
 
-    @Query("select f from Forum f join fetch f.user where f.title like CONCAT('%', :title, '%') and f.deleted = false")
-    Slice<Forum> findForumsByTitle(String title, Pageable pageable);
+    @Query("select f from Forum f join fetch f.user where f.title like CONCAT('%', :title, '%') and f.channelId = :channelId and f.deleted = false")
+    Slice<Forum> findForumsByTitleWithChannelId(String title, Long channelId, Pageable pageable);
 
-    @Query("select f from Forum f join fetch f.user where f.deleted = false")
-    Slice<Forum> findForums(Pageable pageable);
+    @Query("select f from Forum f join fetch f.user where f.channelId = :channelId and f.deleted = false")
+    Slice<Forum> findForumsWithChannelId(Long channelId, Pageable pageable);
 }
