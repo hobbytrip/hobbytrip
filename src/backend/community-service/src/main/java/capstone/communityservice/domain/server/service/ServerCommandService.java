@@ -126,7 +126,8 @@ public class ServerCommandService {
 
         validateManager(findServer.getManagerId(), requestDto.getUserId());
 
-        fileUploadService.delete(findServer.getProfile());
+        if(findServer.getProfile() != null)
+            fileUploadService.delete(findServer.getProfile());
 
         serverKafkaTemplate.send(serverKafkaTopic, CommunityServerEventDto.of("server-delete", findServer));
 
@@ -141,9 +142,10 @@ public class ServerCommandService {
 
         validateManager(findServer.getManagerId(), requestDto.getUserId());
 
-        fileUploadService.delete(findServer.getProfile());
-
-        findServer.setProfile(null);
+        if(findServer.getProfile() != null){
+            fileUploadService.delete(findServer.getProfile());
+            findServer.setProfile(null);
+        }
 
         serverKafkaTemplate.send(serverKafkaTopic, CommunityServerEventDto.of("server-update", findServer));
 

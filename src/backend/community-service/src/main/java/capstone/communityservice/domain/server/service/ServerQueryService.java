@@ -119,16 +119,15 @@ public class ServerQueryService {
         UserLocationDto userLocation = stateServiceClient.getUserLocation(serverId, userId);
 
         System.out.println("userLocation: " + userLocation.getChannelId());
-        validateChatChannel(userLocation.getChannelId());
 
-        return chatServiceClient.getServerMessages(
+        return validateChatChannel(userLocation.getChannelId()) ? chatServiceClient.getServerMessages(
                 userLocation.getChannelId(),
                 0,
                 30
-        );
+        ) : null;
     }
 
-    private void validateChatChannel(Long channelId) {
+    private boolean validateChatChannel(Long channelId) {
         Channel findChannel = channelRepository.findById(channelId)
                 .orElseThrow(
                         () -> new ChannelException(
@@ -138,8 +137,10 @@ public class ServerQueryService {
         if(!findChannel.getChannelType()
                 .equals(ChannelType.CHAT))
         {
-            throw new ChannelException(Code.INTERNAL_ERROR, "Not Chat Channel");
+            return false;
         }
+
+        return true;
     }
 
     public void validateManager(Long managerId, Long userId){
