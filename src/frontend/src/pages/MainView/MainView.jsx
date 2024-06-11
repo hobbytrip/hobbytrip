@@ -6,12 +6,14 @@ import MainHeader from "../../components/MainView/MainHeader/MainHeader.jsx";
 import MyPlanet from "../../components/MainView/MyPlanet/MyPlanet.jsx";
 import MyFriend from "../../components/MainView/MyFriend/MyFriend.jsx";
 import style from "./MainView.module.css";
+import setSSE from "../../hooks/useSSE.js";
 
 const MainView = () => {
   const [servers, setServers] = useState(null);
   const [dms, setDms] = useState(null);
   const { userId } = useUserStore();
 
+  setSSE();
   useEffect(() => {
     if (userId) {
       const getMainData = async () => {

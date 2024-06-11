@@ -1,7 +1,7 @@
 const BASE_URL = "https://fittrip.site/api";
 const COMMUNITY_BASE_URL = "https://fittrip.site/api/community";
 const MEDIA_BASE_URL = "https://fittrip.site/api/sig";
-const NOTIFICATION_URL = "https://fittrip.site/api/notification";
+const NOTICE_URL = "https://fittrip.site/api/notice";
 const WS_BASE = "ws/api/chat";
 const API = {
   //유저
@@ -35,8 +35,18 @@ const API = {
   MEDIA: `${MEDIA_BASE_URL}/api/sessions`,
 
   // 알림
-  SERVER_SSE_SUB: `${BASE_URL}/user/api/server/subscribe`,
-  DM_SSE_SUB: `${BASE_URL}/user/api/dm/subscribe`,
+  SERVER_SSE_SUB: (userId) => 
+     `${NOTICE_URL}/server/subscribe?userId=${userId}`,
+  DM_SSE_SUB: (userId)  => 
+    `${NOTICE_URL}/dm/subscribe?userId=${userId}`,
+  SERVER_SSE_MAIN: (userId) => 
+    `${NOTICE_URL}/server/serverIds?userId=${userId}`,
+  DM_SSE_MAIN: (userId) => 
+    `${NOTICE_URL}/dm/dmRoomIds?userId=${userId}`,
+  SERVER_SSE_DEL: (serverId, userId) => 
+    `${NOTICE_URL}/server/${serverId}?userId=${userId}`,
+  DM_SSE_DEL: (roomId, userId) => 
+    `${NOTICE_URL}/server/${roomId}?userId=${userId}`,
 
   //DM 채팅
   SUBSCRIBE_DM: (roomId) => `/topic/direct/${roomId}`,
