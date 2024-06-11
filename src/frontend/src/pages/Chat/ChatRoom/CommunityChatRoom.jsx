@@ -72,17 +72,17 @@ function ChatRoom() {
     sendMessage,
     setChatList,
   } = useChatStore();
-  const {
-    setForumTypingUsers,
-    addForumMessage,
-    modifyForumMessage,
-    deleteForumMessage,
-  } = useForumStore((state) => ({
-    setForumTypingUsers: state.setForumTypingUsers,
-    addForumMessage: state.addForumMessage,
-    modifyForumMessage: state.modifyForumMessage,
-    deleteForumMessage: state.deleteForumMessage,
-  }));
+  // const {
+  //   setForumTypingUsers,
+  //   addForumMessage,
+  //   modifyForumMessage,
+  //   deleteForumMessage,
+  // } = useForumStore((state) => ({
+  //   setForumTypingUsers: state.setForumTypingUsers,
+  //   addForumMessage: state.addForumMessage,
+  //   modifyForumMessage: state.modifyForumMessage,
+  //   deleteForumMessage: state.deleteForumMessage,
+  // }));
   const chatList = useChatStore((state) => state.chatLists[serverId]) || [];
   const TYPE = "server";
 
@@ -100,7 +100,9 @@ function ChatRoom() {
   const connectWebSocket = (serverId) => {
     client.subscribe(API.SUBSCRIBE_CHAT(serverId), (frame) => {
       try {
+        console.log("subscribe success", serverId);
         const parsedMessage = JSON.parse(frame.body);
+        const files = JSON.parse(frame.body.files);
         // const filesInfo = JSON.parse(frame.body).files;
         if (parsedMessage.chatType === "SERVER") {
           if (
@@ -120,8 +122,21 @@ function ChatRoom() {
               )
             );
           } else if (parsedMessage.actionType === "SEND") {
+            // 전송
             sendMessage(parsedMessage);
             fetchChatHistory(page, serverId, channelId, setChatList);
+            if (files && files.length > 0) {
+              const fileUrls = files.map((file) => file.fileUrl);
+              const messageWithFiles = {
+                parsedMessage,
+                files: [...fileUrls],
+              };
+              sendMessage(messageBody.serverId, messageWithFiles);
+              client.publish({
+                destination: API.SEND_CHAT(TYPE),
+                body: JSON.stringify(messageWithFiles),
+              });
+            }
           } else if (parsedMessage.actionType === "MODIFY") {
             modifyMessage(
               serverId,
@@ -130,48 +145,6 @@ function ChatRoom() {
             );
           } else if (parsedMessage.actionType === "DELETE") {
             deleteMessage(serverId, parsedMessage.messageId);
-          }
-        }
-        //포럼
-        if (parsedMessage.chatType === "FORUM") {
-          if (
-            parsedMessage.actionType === "TYPING" &&
-            parsedMessage.userId !== userId
-          ) {
-            setForumTypingUsers((prevTypingUsers) => {
-              if (!prevTypingUsers.includes(parsedMessage.writer)) {
-                return [...prevTypingUsers, parsedMessage.writer];
-              }
-              return prevTypingUsers;
-            });
-          } else if (parsedMessage.actionType === "STOP_TYPING") {
-            setForumTypingUsers((prevTypingUsers) =>
-              prevTypingUsers.filter(
-                (username) => username !== parsedMessage.writer
-              )
-            );
-          } else if (parsedMessage.actionType === "SEND") {
-            // 전송
-            addForumMessage(
-              parsedMessage.serverId,
-              parsedMessage.forumId,
-              parsedMessage
-            );
-          } else if (parsedMessage.actionType === "MODIFY") {
-            //수정
-            modifyForumMessage(
-              parsedMessage.serverId,
-              parsedMessage.forumId,
-              parsedMessage.messageId,
-              parsedMessage.content
-            );
-          } else if (parsedMessage.actionType === "DELETE") {
-            //삭제
-            deleteForumMessage(
-              parsedMessage.serverId,
-              parsedMessage.forumId,
-              parsedMessage.messageId
-            );
           }
         }
       } catch (error) {
