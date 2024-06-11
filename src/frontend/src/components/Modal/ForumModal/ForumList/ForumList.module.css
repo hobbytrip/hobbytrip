@@ -40,8 +40,17 @@
   /* display: none; */
   color: var(--dark-gray);
 }
-
-/* .forumBox:hover .modals {
+.editInput {
+  border-radius: 5px;
+  padding: 2px;
+}
+.editTextarea {
+  background-color: white;
   display: flex;
-  gap: 5px;
-} */
+  padding: 2px;
+  /* height: 25px; */
+  border-radius: 5px;
+  border-style: none;
+  font-family: "Pretendard";
+  outline-style: none;
+}

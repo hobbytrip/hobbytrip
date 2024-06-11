@@ -16,6 +16,18 @@ const useForumStore = create((set) => ({
         [channelId]: [forum, ...(state.forumLists[channelId] || [])],
       },
     })),
+
+  modifyForum: (channelId, forumId, newTitle, newContent) =>
+    set((state) => ({
+      forumLists: {
+        ...state.forumLists,
+        [channelId]: state.forumLists[channelId].map((forum) =>
+          forum.forumId === forumId
+            ? { ...forum, title: newTitle, content: newContent }
+            : forum
+        ),
+      },
+    })),
   removeForum: (channelId, forumId) =>
     set((state) => ({
       forumLists: {
