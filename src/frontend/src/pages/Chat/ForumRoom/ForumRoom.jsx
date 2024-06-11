@@ -91,8 +91,31 @@ function ForumRoom() {
     }
   };
 
-  const handleEditForum = () => {
-    console.log("edit");
+  const handleEditForum = async (forumId, newTitle, newContent) => {
+    try {
+      const formdata = new FormData();
+      const messageBody = {
+        userId,
+        serverId,
+        channelId,
+        forumId: forumId,
+        title: newTitle,
+        content: newContent,
+      };
+      const jsonMsg = JSON.stringify(messageBody);
+
+      const requestDto = new Blob([jsonMsg], { type: "application/json" });
+      formdata.append("requestDto", requestDto);
+      await axios.patch(API.CUD_FORUM, formdata, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        withCredentials: true,
+      });
+    } catch (error) {
+      console.error("포럼 수정 실패", error);
+    }
   };
 
   const handleDeleteForum = async (forumId) => {
