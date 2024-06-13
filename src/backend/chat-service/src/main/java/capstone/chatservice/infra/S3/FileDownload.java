@@ -1,5 +1,7 @@
 package capstone.chatservice.infra.S3;
 
+import capstone.chatservice.domain.file.exception.FileException;
+import capstone.chatservice.global.exception.Code;
 import com.amazonaws.services.s3.AmazonS3Client;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,7 +26,7 @@ public class FileDownload {
     public void validateFileExistsAtUrl(String resourcePath) {
 
         if (!amazonS3Client.doesObjectExist(bucketName, resourcePath)) {
-            throw new RuntimeException("FILE_NOT_FOUND");
+            throw new FileException(Code.FILE_NOT_FOUND);
         }
     }
 }
