@@ -19,7 +19,6 @@ public class DirectMessageCreateRequest {
     private Long userId;
     private Long parentId;
     private String profileImage;
-    private String type;
     private String writer;
     private String content;
     private List<Long> receiverIds;
