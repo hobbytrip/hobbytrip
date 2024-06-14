@@ -24,10 +24,10 @@ function FriendList({ friends }) {
 
   return (
     <div className={s.wrapper}>
-      {!friends ? (
+      {!friends || friends.length === 0 ? (
         <div className={s.container}>
           <img src={friendEmpty} alt="친구없음" style={{ width: "150px" }} />
-          <h4 className={s.h4}>받은 요청이 없어요</h4>
+          <h4 className={s.h4}>아직 받은 친구 요청이 없어요</h4>
         </div>
       ) : (
         friends &&

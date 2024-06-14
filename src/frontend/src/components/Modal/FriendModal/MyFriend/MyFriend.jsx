@@ -87,12 +87,12 @@ function MyFriend() {
 
   const handleOnlineFriendsClick = () => {
     setView("online");
+    fetchFriends();
   };
 
   const handleWaitingFriendClick = () => {
     setView("waiting");
     fetchWaitingFriends();
-    console.log("대기중", waitingFriends);
   };
 
   //친구목록 불러오기
@@ -115,6 +115,11 @@ function MyFriend() {
           <FriendSearch />
           <div className={style.friendListContainer}>
             {view === "all" && <FriendList friends={friendList} />}
+            <FriendList
+              friends={friends.filter(
+                (friend) => friend.connectionState === "ONLINE"
+              )}
+            />
             {view === "waiting" && <WaitingFriends friends={waitingFriends} />}
           </div>
         </>
