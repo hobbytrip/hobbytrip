@@ -19,23 +19,24 @@
   font-family: "DOSSaemmul";
   font-weight: 600;
 }
-.form {
-  width: 100%;
-  position: relative;
-}
+
 .container {
   display: flex;
   flex-direction: row;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin-top: 30px;
+  margin-bottom: 10px;
   position: relative;
+}
+.form {
+  position: relative;
+  width: 100%;
 }
 .input {
   height: 30px;
   background-color: var(--light-gray);
   border-radius: 5px;
-  width: 100%;
   padding: 5px;
+  width: 100%;
 }
 .addFriendBtn {
   background-color: var(--main-purple);
@@ -50,7 +51,13 @@
   font-weight: 700;
   background-color: transparent;
   position: absolute;
-  left: -5px;
-  top: 55px;
   color: var(--main-purple);
+  cursor: pointer;
+  bottom: 410px;
+  left: 25px;
+}
+.error {
+  color: red;
+  margin-top: 10px;
+  font-family: "DOSSaemmul";
 }
