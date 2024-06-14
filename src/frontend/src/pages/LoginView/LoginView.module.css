@@ -22,7 +22,8 @@
   flex-direction: column;
 }
 .description {
-  font-size: 16px;
+  font-family: "DOSSaemmul";
+  font-size: 20px;
   font-weight: 700;
   color: var(--main-purple);
 }

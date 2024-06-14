@@ -1,7 +1,7 @@
 import { useState } from "react";
 import style from "./MyFriend.module.css";
 import { IoSearchOutline } from "react-icons/io5";
-import FriendComponent from "../FriendComponent/FriendComponent";
+import FriendList from "../FriendList/FriendList";
 import AddFriend from "../AddFriend/AddFriend";
 
 const FriendMenu = ({ onAddFriendClick }) => {
@@ -72,7 +72,7 @@ function MyFriend() {
           <FriendMenu onAddFriendClick={handleAddFriendClick} />
           <FriendSearch />
           <div className={style.friendListContainer}>
-            <FriendComponent />
+            <FriendList />
           </div>
         </>
       )}
