@@ -65,15 +65,16 @@ function ForumChat() {
     addForumMessage,
     modifyForumMessage,
     deleteForumMessage,
-    typingForumUsers,
+    setForumTypingUsers,
     setForumList,
   } = useForumStore((state) => ({
     addForumMessage: state.addForumMessage,
     modifyForumMessage: state.modifyForumMessage,
     deleteForumMessage: state.deleteForumMessage,
-    typingForumUsers: state.typingForumUsers,
+    setForumTypingUsers: state.setForumTypingUsers,
     setForumList: state.setForumList,
   }));
+  const forumTypingUsers = useForumStore();
   const messages = useForumStore(
     (state) => state.forumLists[serverId]?.[forumId] || []
   ); //해당 서버>포럼에 있는 message 가져오기

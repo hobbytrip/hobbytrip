@@ -3,7 +3,7 @@ import create from "zustand";
 
 const useForumStore = create((set) => ({
   forumLists: {},
-  typingForumUsers: [],
+  forumTypingUsers: [],
   setForumList: (serverId, forumId, messages) =>
     set((state) => {
       const newForumLists = { ...state.forumLists };
@@ -34,7 +34,7 @@ const useForumStore = create((set) => ({
       return { forumLists: newForumLists };
     }),
 
-  setForumTypingUsers: (users) => set({ typingForumUsers: users }),
+  setForumTypingUsers: (users) => set({ forumTypingUsers: users }),
   // 메시지 수정
   modifyForumMessage: (serverId, forumId, messageId, newContent) =>
     set((state) => {
