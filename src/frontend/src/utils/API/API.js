@@ -3,6 +3,7 @@ const COMMUNITY_BASE_URL = "https://fittrip.site/api/community";
 const MEDIA_BASE_URL = "https://fittrip.site/api/sig";
 const WS_BASE = "/ws/chat";
 const NOTICE_URL = "https://fittrip.site/api/notice";
+const FRIEND_URL = "https://fittrip.site/api/user/friends";
 
 const API = {
   //유저
@@ -10,6 +11,12 @@ const API = {
   SIGN_UP: `${BASE_URL}/user/signup`,
   LOG_OUT: `${BASE_URL}/user/logout`,
   GET_USER_PROFLIE: `${BASE_URL}/user/profile`,
+
+  //친구
+  ADD_FRIEND: (email) => `${FRIEND_URL}/${email}`,
+  DELETE_FRINEND: (friendShipId) => `${FRIEND_URL}/delete/${friendShipId}`,
+  WAITING_FRIEND: `${FRIEND_URL}/received`,
+  APPROVE_FRIEND: (friendShipId) => `${FRIEND_URL}/approve/${friendShipId}`,
 
   //커뮤니티 회원가입
   COMM_SIGNUP: `${BASE_URL}/community/user`,
@@ -43,17 +50,14 @@ const API = {
   MEDIA: `${MEDIA_BASE_URL}/api/sessions`,
 
   // 알림
-  SERVER_SSE_SUB: (userId) => 
-     `${NOTICE_URL}/server/subscribe?userId=${userId}`,
-  DM_SSE_SUB: (userId)  => 
-    `${NOTICE_URL}/dm/subscribe?userId=${userId}`,
-  SERVER_SSE_MAIN: (userId) => 
+  SERVER_SSE_SUB: (userId) => `${NOTICE_URL}/server/subscribe?userId=${userId}`,
+  DM_SSE_SUB: (userId) => `${NOTICE_URL}/dm/subscribe?userId=${userId}`,
+  SERVER_SSE_MAIN: (userId) =>
     `${NOTICE_URL}/server/serverIds?userId=${userId}`,
-  DM_SSE_MAIN: (userId) => 
-    `${NOTICE_URL}/dm/dmRoomIds?userId=${userId}`,
-  SERVER_SSE_DEL: (serverId, userId) => 
+  DM_SSE_MAIN: (userId) => `${NOTICE_URL}/dm/dmRoomIds?userId=${userId}`,
+  SERVER_SSE_DEL: (serverId, userId) =>
     `${NOTICE_URL}/server/${serverId}?userId=${userId}`,
-  DM_SSE_DEL: (roomId, userId) => 
+  DM_SSE_DEL: (roomId, userId) =>
     `${NOTICE_URL}/server/${roomId}?userId=${userId}`,
 
   //DM 채팅

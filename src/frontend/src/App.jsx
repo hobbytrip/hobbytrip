@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import useSSE from "./hooks/useSSE.js";
 import StartView from "./components/StartView/StartView";
 import LoginView from "./pages/LoginView/Loginview";

@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import s from "./AddFriend.module.css";
+import { axiosInstance } from "../../../../utils/axiosInstance";
+import API from "../../../../utils/API/API";
 
 const AddFriend = ({ onBackClick }) => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const isValidEmail = validateEmail(email);
     if (!isValidEmail) {
@@ -13,6 +15,12 @@ const AddFriend = ({ onBackClick }) => {
       return;
     }
     setError("");
+    try {
+      const response = await axiosInstance.post(API.ADD_FRIEND(email));
+      console.log("친구 요청 성공", response.data);
+    } catch (err) {
+      console.error("친구 요청 실패");
+    }
     console.log("친구 추가:", email);
   };
 
