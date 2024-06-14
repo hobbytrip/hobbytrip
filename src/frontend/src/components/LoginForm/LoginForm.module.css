@@ -2,13 +2,9 @@
   color: var(--mid-gray);
 }
 .container {
-  width: 100%;
-  height: 370px;
   display: flex;
   align-items: center;
   flex-direction: column;
-  padding-left: 10px;
-  padding-right: 10px;
 }
 .form {
   margin-top: 30px;
@@ -18,12 +14,8 @@
   padding: 30px 35px 60px;
   gap: 10px;
 
-  width: 391px;
-  height: 371px;
-
-  flex: none;
-  order: 1;
-  flex-grow: 0;
+  width: 300px;
+  /* height: 371px; */
 }
 .input {
   height: 35px;

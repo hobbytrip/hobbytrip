@@ -43,6 +43,14 @@
     url(./assets/fonts/woff2/Pretendard-Light.woff2) format("woff2");
 }
 
+@font-face {
+  font-family: "DOSSaemmul";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_eight@1.0/DOSSaemmul.woff")
+    format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
 :root {
   font-family: Pretendard;
   --main-purple: #4a0074;
