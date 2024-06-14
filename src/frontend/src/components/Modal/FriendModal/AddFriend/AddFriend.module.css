@@ -1,0 +1,56 @@
+@font-face {
+  font-family: "DOSSaemmul";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_eight@1.0/DOSSaemmul.woff")
+    format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+}
+.h3 {
+  font-family: "DOSSaemmul";
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+.h4 {
+  font-family: "DOSSaemmul";
+  font-weight: 600;
+}
+.form {
+  width: 100%;
+  position: relative;
+}
+.container {
+  display: flex;
+  flex-direction: row;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  position: relative;
+}
+.input {
+  height: 30px;
+  background-color: var(--light-gray);
+  border-radius: 5px;
+  width: 100%;
+  padding: 5px;
+}
+.addFriendBtn {
+  background-color: var(--main-purple);
+  color: white;
+  padding: 5px;
+  position: absolute;
+  right: 1px;
+  bottom: 7px;
+}
+.backBtn {
+  font-family: "DOSSaemmul";
+  font-weight: 700;
+  background-color: transparent;
+  position: absolute;
+  left: -5px;
+  top: 55px;
+  color: var(--main-purple);
+}

@@ -1,8 +1,10 @@
+import { useState } from "react";
 import style from "./MyFriend.module.css";
 import { IoSearchOutline } from "react-icons/io5";
 import FriendComponent from "../FriendComponent/FriendComponent";
+import AddFriend from "../AddFriend/AddFriend";
 
-const FriendMenu = () => {
+const FriendMenu = ({ onAddFriendClick }) => {
   return (
     <div className={style.friendMenuContainer}>
       <h3> 내 친구</h3>
@@ -23,7 +25,7 @@ const FriendMenu = () => {
           </button>
         </li>
         <li>
-          <button className={style.addFriend}>
+          <button className={style.addFriend} onClick={onAddFriendClick}>
             <h4>친구 추가하기</h4>
           </button>
         </li>
@@ -51,16 +53,31 @@ const FriendSearch = () => {
   );
 };
 
-const MyFriend = () => {
+function MyFriend() {
+  const [showAddFriend, setShowAddFriend] = useState(false);
+  const handleAddFriendClick = () => {
+    setShowAddFriend(true);
+  };
+
+  const handleBackToFriendsList = () => {
+    setShowAddFriend(false);
+  };
+
   return (
     <div className={style.wrapper}>
-      <FriendMenu />
-      <FriendSearch />
-      <div className={style.friendListContainer}>
-        <FriendComponent />
-      </div>
+      {showAddFriend ? (
+        <AddFriend onBackClick={handleBackToFriendsList} />
+      ) : (
+        <>
+          <FriendMenu onAddFriendClick={handleAddFriendClick} />
+          <FriendSearch />
+          <div className={style.friendListContainer}>
+            <FriendComponent />
+          </div>
+        </>
+      )}
     </div>
   );
-};
+}
 
 export default MyFriend;
