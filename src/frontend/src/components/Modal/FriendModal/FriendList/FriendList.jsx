@@ -32,7 +32,7 @@ function FriendList({ friends }) {
       ) : (
         friends &&
         friends.map((friend) => (
-          <FriendComponent key={friend.friendshipId} friend={friend} />
+          <FriendComponent key={friend.friendId} friend={friend} />
         ))
       )}
     </div>
