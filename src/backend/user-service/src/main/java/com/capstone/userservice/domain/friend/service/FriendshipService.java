@@ -100,6 +100,7 @@ public class FriendshipService {
                 WaitingFriendListResponse response = WaitingFriendListResponse.builder()
                         .friendshipId(x.getId())
                         .friendEmail(friend.getEmail())
+                        .friendName(friend.getUsername())
                         .status(x.getStatus())
                         .imageUrl(friend.getProfileImage())
                         .build();
