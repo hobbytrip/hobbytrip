@@ -16,7 +16,10 @@ const API = {
   ADD_FRIEND: (email) => `${FRIEND_URL}/${email}`,
   DELETE_FRINEND: (friendShipId) => `${FRIEND_URL}/delete/${friendShipId}`,
   WAITING_FRIEND: `${FRIEND_URL}/received`,
-  APPROVE_FRIEND: (friendShipId) => `${FRIEND_URL}/approve/${friendShipId}`,
+  ACCEPT_FRIEND_REQUEST: (friendShipId) =>
+    `${FRIEND_URL}/approve/${friendShipId}`,
+  REFUSE_FRIEND_REQUEST: (friendShipId) =>
+    `${FRIEND_URL}/delete/${friendShipId}`,
   GET_FRIENDS: `${FRIEND_URL}/friendList`,
 
   //커뮤니티 회원가입
