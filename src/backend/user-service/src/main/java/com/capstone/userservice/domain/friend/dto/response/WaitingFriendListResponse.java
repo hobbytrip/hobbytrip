@@ -15,6 +15,7 @@ public class WaitingFriendListResponse {
 
     private Long friendshipId;
     private String friendEmail;
+    private String friendName;
     private FriendshipStatus status;
     private String imageUrl;
 }
