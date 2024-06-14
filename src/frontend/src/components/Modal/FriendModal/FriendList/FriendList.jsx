@@ -4,6 +4,7 @@ import API from "../../../../utils/API/API";
 import useUserStore from "../../../../actions/useUserStore";
 import useFriendStore from "../../../../actions/useFriendStore";
 import s from "./FriendList.module.css";
+import friendEmpty from "../../../../assets/image/friendEmpty.jpg";
 import FriendComponent from "../FriendComponent/FriendComponent";
 
 function FriendList() {
@@ -29,9 +30,12 @@ function FriendList() {
   }, [fetchFriends]);
 
   return (
-    <div className={s.wrapper}>
+    <div className={s.friendContainer}>
       {!friends ? (
-        <div>친구 없음.</div>
+        <div className={s.container}>
+          <img src={friendEmpty} alt="친구없음" style={{ width: "150px" }} />
+          <h4 className={s.h4}>친구 목록이 비어있어요.</h4>
+        </div>
       ) : (
         friends &&
         friends.map((friend) => (

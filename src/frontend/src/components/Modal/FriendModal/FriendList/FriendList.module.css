@@ -1,8 +1,17 @@
-/* .friendContainer {
+.friendContainer {
   display: flex;
   align-items: center;
   justify-content: center;
   height: calc(61 - 20px);
-  padding: 10px 15px;
+  padding: 10px;
   width: 100%;
-} */
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.h4 {
+  font-family: "DOSSaemmul";
+}
