@@ -17,6 +17,7 @@ const API = {
   DELETE_FRINEND: (friendShipId) => `${FRIEND_URL}/delete/${friendShipId}`,
   WAITING_FRIEND: `${FRIEND_URL}/received`,
   APPROVE_FRIEND: (friendShipId) => `${FRIEND_URL}/approve/${friendShipId}`,
+  GET_FRIENDS: `${FRIEND_URL}/friendList`,
 
   //커뮤니티 회원가입
   COMM_SIGNUP: `${BASE_URL}/community/user`,
