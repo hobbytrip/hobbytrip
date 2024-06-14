@@ -13,7 +13,10 @@ const FriendMenu = ({
   onAddFriendClick,
 }) => {
   return (
-    <div className={style.friendMenuContainer}>
+    <div
+      className={style.friendMenuContainer}
+      style={{ fontFamily: "DOSSaemmul" }}
+    >
       <h3> 내 친구</h3>
       <ul className={style.friendMenuList}>
         <li>
