@@ -30,7 +30,7 @@ const MainView = () => {
       // setServer();
       getMainData();
     }
-  }, [userId]);
+  }, []);
 
   if (!userId) {
     return <div>Loading...</div>;

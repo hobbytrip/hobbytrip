@@ -30,34 +30,46 @@ export default function MediaCall() {
   const nav = useNavigate();
 
   const accessToken = localStorage.getItem('accessToken');
-  const OV = useRef(new OpenVidu());
+  const OV = useRef(null);
 
-  // 세션 참여 후 웹소켓과의 통신
+  useEffect(() => {
+    OV.current = new OpenVidu(); // 컴포넌트가 처음 마운트될 때만 초기화
+
+    return () => {
+      if (OV.current) {
+        OV.current = null;
+      }
+    };
+  }, []);
+
   const joinSession = useCallback((e) => {
     e.preventDefault();
-
+  
     const mySession = OV.current.initSession();
-
+    
     mySession.on('streamCreated', (event) => {
+      console.log('Stream created with id:', event.stream.streamId);
+      console.log('Subscribing to', event.stream.connection.connectionId); 
       const subscriber = mySession.subscribe(event.stream, undefined);
       setSubscribers((subscribers) => [...subscribers, subscriber]);
     });
-
+  
     mySession.on('streamDestroyed', (event) => {
+      console.log('Stream destroyed with id:', event.stream.streamId); // 로그 추가
       const streamManager = event.stream.streamManager;
       setSubscribers((prevSubscribers) => {
         return prevSubscribers.filter(subscriber => subscriber !== streamManager);
       });
     });
-
-    mySession.on('exception', (exception) => {
-      console.warn(exception);
+  
+    mySession.on('streamPlaying', (event) => {
+      console.log('Stream is playing for:', event.stream.streamId);
     });
-
+  
     setSession(mySession);
   }, []);
 
-  // publisher 설정
+   // publisher 설정
   useEffect(() => {
     if (session) {
       getToken().then(async (token) => {
@@ -136,7 +148,6 @@ export default function MediaCall() {
       })
       console.log(data, accessToken)
       axios.delete(`${API.MEDIA}/${newSessionId}/disconnect`,
-        
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
