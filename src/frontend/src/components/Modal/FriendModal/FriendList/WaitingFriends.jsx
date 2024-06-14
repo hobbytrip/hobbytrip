@@ -4,7 +4,7 @@ import API from "../../../../utils/API/API";
 import useUserStore from "../../../../actions/useUserStore";
 import s from "./FriendList.module.css";
 import friendEmpty from "../../../../assets/image/friendEmpty.jpg";
-import FriendComponent from "../FriendComponent/FriendComponent";
+import WaitingComponent from "../FriendComponent/WaitingComponent";
 
 function FriendList({ friends }) {
   const [dmNotice, setDmNotice] = useState([]);
@@ -32,7 +32,7 @@ function FriendList({ friends }) {
       ) : (
         friends &&
         friends.map((friend) => (
-          <FriendComponent key={friend.friendshipId} friend={friend} />
+          <WaitingComponent key={friend.friendshipId} friend={friend} />
         ))
       )}
     </div>

@@ -50,22 +50,18 @@
   color: var(--dark-gray);
 }
 
-.friendFunction {
-  display: flex;
-  align-items: center;
-  width: 55px;
-  height: 25px;
-  padding: 8px 0px 8px 15px;
-  gap: 5px;
-}
-
 .friendFunction button {
+  font-family: "DOSSaemmul";
   background: none;
   border: none;
   color: "#000000";
-  width: 25px;
+  /* width: 30px; */
   height: 24.66px;
-  padding: 3px 2px;
-  gap: 10px;
-  border-radius: 10px;
+  padding: 3px 5px;
+}
+.acceptBtn {
+  color: var(--main-purple);
+}
+.refuseBtn {
+  color: red;
 }

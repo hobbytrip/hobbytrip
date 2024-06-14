@@ -1,26 +1,36 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import style from "./MyFriend.module.css";
 import { IoSearchOutline } from "react-icons/io5";
 import FriendList from "../FriendList/FriendList";
 import AddFriend from "../AddFriend/AddFriend";
+import WaitingFriends from "../FriendList/WaitingFriends";
+import useFriendStore from "../../../../actions/useFriendStore";
 
-const FriendMenu = ({ onAddFriendClick }) => {
+const FriendMenu = ({
+  onAllFriendsClick,
+  onOnlineFriendsClick,
+  onWaitingFriendClick,
+  onAddFriendClick,
+}) => {
   return (
     <div className={style.friendMenuContainer}>
       <h3> 내 친구</h3>
       <ul className={style.friendMenuList}>
         <li>
-          <button>
+          <button onClick={onAllFriendsClick}>
             <h4>모두</h4>
           </button>
         </li>
         <li>
-          <button>
+          <button onClick={onOnlineFriendsClick}>
             <h4>온라인</h4>
           </button>
         </li>
         <li>
-          <button>
+          <button
+            className={style.waitingFriend}
+            onClick={onWaitingFriendClick}
+          >
             <h4>대기 중</h4>
           </button>
         </li>
@@ -55,6 +65,10 @@ const FriendSearch = () => {
 
 function MyFriend() {
   const [showAddFriend, setShowAddFriend] = useState(false);
+  const [view, setView] = useState("all");
+  const { fetchFriends, fetchWaitingFriends, friendList, waitingFriends } =
+    useFriendStore();
+
   const handleAddFriendClick = () => {
     setShowAddFriend(true);
   };
@@ -63,16 +77,42 @@ function MyFriend() {
     setShowAddFriend(false);
   };
 
+  const handleAllFriendsClick = () => {
+    setView("all");
+    fetchFriends();
+  };
+
+  const handleOnlineFriendsClick = () => {
+    setView("online");
+  };
+
+  const handleWaitingFriendClick = () => {
+    setView("waiting");
+    fetchWaitingFriends();
+    console.log("대기중", waitingFriends);
+  };
+
+  //친구목록 불러오기
+  useEffect(() => {
+    fetchFriends();
+  }, [fetchFriends]);
+
   return (
     <div className={style.wrapper}>
       {showAddFriend ? (
         <AddFriend onBackClick={handleBackToFriendsList} />
       ) : (
         <>
-          <FriendMenu onAddFriendClick={handleAddFriendClick} />
+          <FriendMenu
+            onAllFriendsClick={handleAllFriendsClick}
+            onOnlineFriendsClick={handleOnlineFriendsClick}
+            onWaitingFriendClick={handleWaitingFriendClick}
+            onAddFriendClick={handleAddFriendClick}
+          />
           <FriendSearch />
           <div className={style.friendListContainer}>
-            <FriendList />
+            {view === "all" && <FriendList friends={friendList} />}
+            {view === "waiting" && <WaitingFriends friends={waitingFriends} />}
           </div>
         </>
       )}

@@ -1,6 +1,4 @@
-import s from "./FriendComponent.module.css";
-import { AiFillMessage } from "react-icons/ai";
-import { VscKebabVertical } from "react-icons/vsc";
+import s from "./WaitingComponent.module.css";
 
 function FriendComponent({ friend }) {
   return (
@@ -18,11 +16,11 @@ function FriendComponent({ friend }) {
         <h4 className={s.friendName}>{friend.friendName}</h4>
       </div>
       <div className={s.friendFunction}>
-        <button>
-          <AiFillMessage style={{ width: "15.62px", height: "15.6px" }} />
+        <button className={s.acceptBtn}>
+          <h4>수락</h4>
         </button>
-        <button>
-          <VscKebabVertical style={{ height: "15px" }} />
+        <button className={s.refuseBtn}>
+          <h4>거절</h4>
         </button>
       </div>
     </li>
