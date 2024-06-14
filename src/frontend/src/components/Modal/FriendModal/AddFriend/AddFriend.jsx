@@ -6,6 +6,7 @@ import API from "../../../../utils/API/API";
 const AddFriend = ({ onBackClick }) => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
+  const [isAddFriendSuccess, setIsAddFriendSuccess] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,6 +19,8 @@ const AddFriend = ({ onBackClick }) => {
     try {
       const response = await axiosInstance.post(API.ADD_FRIEND(email));
       console.log("친구 요청 성공", response.data);
+      setIsAddFriendSuccess(true);
+      setEmail("");
     } catch (err) {
       console.error("친구 요청 실패");
     }
@@ -61,6 +64,11 @@ const AddFriend = ({ onBackClick }) => {
       {error && (
         <p className={s.error}>
           <h4>{error}</h4>
+        </p>
+      )}
+      {isAddFriendSuccess && (
+        <p className={s.success}>
+          <h4>친구추가가 완료되었습니다!</h4>
         </p>
       )}
       <button onClick={onBackClick} className={s.backBtn}>

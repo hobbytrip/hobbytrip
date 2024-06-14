@@ -51,6 +51,10 @@
 }
 .error {
   color: red;
-  margin-top: 10px;
+  margin-top: 5px;
+  font-family: "DOSSaemmul";
+}
+.success {
+  margin-top: 5px;
   font-family: "DOSSaemmul";
 }
