@@ -6,6 +6,8 @@ import useServerStore from "../../../actions/useServerStore";
 import CreateServer from "../../Modal/ServerModal/Servers/CreateServer/CreateServer";
 import { useNavigate } from "react-router-dom";
 import useUserStore from "../../../actions/useUserStore";
+import { axiosInstance } from "../../../utils/axiosInstance";
+import API from "../../../utils/API/API";
 
 const Leftbtn = ({ onClick }) => (
   <button className={style.leftBtn} onClick={onClick}>
@@ -35,6 +37,7 @@ const CreatePlanetbtn = ({ onClick }) => (
 const MyPlanet = ({ servers }) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [showCreateServer, setShowCreateServer] = useState(false);
+  const [serverNotice, setServerNotice] = useState([]);
   const nav = useNavigate();
 
   const { fetchServerData } = useServerStore((state) => ({
@@ -42,12 +45,25 @@ const MyPlanet = ({ servers }) => {
   }));
   const { userId } = useUserStore();
 
+  const getNotice = async () => {
+    try {
+      const res = await axiosInstance.get(API.SERVER_SSE_MAIN(userId));
+      if (res.data.success) {
+        setServerNotice(res.data.data);
+        console.log(res.data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching server notices:", error);
+    }
+  };
+
+  useEffect(() => {
+    getNotice();
+  }, [userId]);
+
   const serversPerPage = 4;
   const startIndex = currentPage * serversPerPage;
-  const endIndex = Math.min(
-    startIndex + serversPerPage,
-    (servers || []).length
-  );
+  const endIndex = Math.min(startIndex + serversPerPage, (servers || []).length);
 
   const handleCreateModalClick = () => {
     setShowCreateServer(true);
@@ -79,19 +95,23 @@ const MyPlanet = ({ servers }) => {
       <div className={style.planetContainer}>
         <Leftbtn onClick={handleLeft} />
         <div className={style.planetList}>
-          {(servers || []).slice(startIndex, endIndex).map((server) => (
-            <div key={server.serverId} className={style.planetItem}>
-              <button
-                className={style.planetThumb}
-                onClick={() => handleServerClick(server.serverId)}
-              >
-                {server.profile !== "null" && server.profile !== null ? (
-                  <img src={server.profile} className={style.planetIcon} />
-                ) : null}
-                <div className={style.serverName}>{server.name}</div>
-              </button>
-            </div>
-          ))}
+          {(servers || []).slice(startIndex, endIndex).map((server) => {
+            const hasNotice = serverNotice.includes(server.serverId);
+            return (
+              <div key={server.serverId} className={style.planetItem}>
+                <button
+                  className={style.planetThumb}
+                  onClick={() => handleServerClick(server.serverId)}
+                >
+                  {server.profile !== "null" && server.profile !== null ? (
+                    <img src={server.profile} className={style.planetIcon} />
+                  ) : null}
+                  <div className={style.serverName}>{server.name}</div>
+                  {hasNotice && <span className={style.redDot} />}
+                </button>
+              </div>
+            );
+          })}
           <CreatePlanetbtn onClick={handleCreateModalClick} />
         </div>
         <Rightbtn onClick={handleRight} />
