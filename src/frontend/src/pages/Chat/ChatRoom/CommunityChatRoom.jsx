@@ -77,57 +77,10 @@ function ChatRoom() {
 
   useEffect(() => {
     postUserLocation(userId, serverId, channelId);
-    // if (client && isConnected) {
-    //   client.unsubscribe(serverId);
-    // }
     if (client && isConnected) {
-      connectWebSocket(serverId);
       fetchChatHistory(page, serverId, channelId, setChatList);
     }
   }, [serverId]);
-  //소켓 연결
-  const connectWebSocket = (serverId) => {
-    client.subscribe(API.SUBSCRIBE_CHAT(serverId), (frame) => {
-      try {
-        console.log("subscribe success", serverId);
-        const parsedMessage = JSON.parse(frame.body);
-        const files = JSON.parse(frame.body.files);
-        // const filesInfo = JSON.parse(frame.body).files;
-        if (parsedMessage.chatType === "SERVER") {
-          if (
-            parsedMessage.actionType === "TYPING" &&
-            parsedMessage.userId !== userId
-          ) {
-            setTypingUsers((prevTypingUsers) => {
-              if (!prevTypingUsers.includes(parsedMessage.writer)) {
-                return [...prevTypingUsers, parsedMessage.writer];
-              }
-              return prevTypingUsers;
-            });
-          } else if (parsedMessage.actionType === "STOP_TYPING") {
-            setTypingUsers((prevTypingUsers) =>
-              prevTypingUsers.filter(
-                (username) => username !== parsedMessage.writer
-              )
-            );
-          } else if (parsedMessage.actionType === "SEND") {
-            // 전송
-            sendMessage(parsedMessage);
-          } else if (parsedMessage.actionType === "MODIFY") {
-            modifyMessage(
-              serverId,
-              parsedMessage.messageId,
-              parsedMessage.content
-            );
-          } else if (parsedMessage.actionType === "DELETE") {
-            deleteMessage(serverId, parsedMessage.messageId);
-          }
-        }
-      } catch (error) {
-        console.error("구독 오류", error);
-      }
-    });
-  };
 
   const handleSendMessage = async (messageContent, uploadedFiles) => {
     const messageBody = {

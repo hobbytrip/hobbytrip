@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import style from './CategoryList.module.css';
-import CreateItem from './CreateItem/CreateItem';
-import Channel from './Channel/Channel';
-import CreateChannel from '../../Modal/ServerModal/Channel/CreateChannel/CreateChannel';
-import CategorySetting from '../../Modal/ServerModal/Category/CategorySetting/CategorySetting';
-import useUserStore from '../../../actions/useUserStore';
-import useServerStore from '../../../actions/useServerStore';
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import style from "./CategoryList.module.css";
+import CreateItem from "./CreateItem/CreateItem";
+import Channel from "./Channel/Channel";
+import CreateChannel from "../../Modal/ServerModal/Channel/CreateChannel/CreateChannel";
+import CategorySetting from "../../Modal/ServerModal/Category/CategorySetting/CategorySetting";
+import useUserStore from "../../../actions/useUserStore";
+import useServerStore from "../../../actions/useServerStore";
+import useWebSocket from "../../../hooks/useSocketByServer";
 import { HiPlus } from "react-icons/hi2";
 import { IoClose, IoSettings } from "react-icons/io5";
-import { axiosInstance } from '../../../utils/axiosInstance';
-import API from '../../../utils/API/API';
+import { axiosInstance } from "../../../utils/axiosInstance";
+import API from "../../../utils/API/API";
 
 const CategoryList = () => {
   const [categories, setCategories] = useState([]);
@@ -26,30 +27,37 @@ const CategoryList = () => {
   }));
   const { userId } = useUserStore();
 
+  useWebSocket(serverId);
+
   useEffect(() => {
     deleteNotice();
-    console.log('category fetch')
-    console.log(serverId, userId)
+    console.log("category fetch");
+    console.log(serverId, userId);
     fetchServerData(serverId, userId);
   }, [serverId]);
 
   useEffect(() => {
     setCategories(serverData.serverCategories || []);
     setChannels(serverData.serverChannels || []);
-    setUncategorizedChannels((serverData.serverChannels || []).filter(channel => !channel.categoryId));
+    setUncategorizedChannels(
+      (serverData.serverChannels || []).filter((channel) => !channel.categoryId)
+    );
   }, [serverData]);
 
   const deleteNotice = async () => {
     try {
-      const res = await axiosInstance.delete(API.SERVER_SSE_DEL(serverId, userId), {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+      const res = await axiosInstance.delete(
+        API.SERVER_SSE_DEL(serverId, userId),
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
         }
-      });
-      console.log('notice reeeeeeeeeeeeead');
+      );
+      console.log("notice reeeeeeeeeeeeead");
       console.log(res.data);
     } catch (error) {
-      console.error('Error deleting notice:', error);
+      console.error("Error deleting notice:", error);
     }
   };
 
@@ -74,20 +82,20 @@ const CategoryList = () => {
       <div className={style.categoryList}>
         <div className={style.categoryHeader}>
           <button onClick={handleAddItem}>
-            <HiPlus style={{ width: '18px', height: '18px' }} />
+            <HiPlus style={{ width: "18px", height: "18px" }} />
           </button>
           <button onClick={handleCloseCategory}>
             <IoClose style={{ width: "18px", height: "18px" }} />
           </button>
         </div>
         <div className={style.uncategorizedChannels}>
-          {uncategorizedChannels.map(channel => (
+          {uncategorizedChannels.map((channel) => (
             <li key={channel.channelId}>
               <Channel channel={channel} serverId={serverId} />
             </li>
           ))}
         </div>
-        {categories.map(category => (
+        {categories.map((category) => (
           <Category
             key={category.categoryId}
             categoryId={category.categoryId}
