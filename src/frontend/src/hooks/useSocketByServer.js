@@ -3,6 +3,7 @@ import useUserStore from "../actions/useUserStore";
 import useChatStore from "../actions/useChatStore";
 import useForumStore from "../actions/useForumStore";
 import useWebSocketStore from "../actions/useWebSocketStore";
+import useUserStatusStore from "../actions/useUserStatusStore";
 import API from "../utils/API/API";
 
 const useWebSocket = (serverId) => {
@@ -24,6 +25,8 @@ const useWebSocket = (serverId) => {
     setForumTypingUsers: state.setForumTypingUsers,
   }));
 
+  const updateUserState = useUserStatusStore((state) => state.updateUserState);
+
   useEffect(() => {
     let subscription;
 
@@ -32,6 +35,16 @@ const useWebSocket = (serverId) => {
         try {
           console.log("subscribe success", serverId);
           const parsedMessage = JSON.parse(frame.body);
+          switch (parsedMessage.type) {
+            case "CONNECT":
+              updateUserState(parsedMessage.userId, "ONLINE");
+              break;
+            case "DISCONNECT":
+              updateUserState(parsedMessage.userId, "OFFLINE");
+              break;
+            default:
+              break;
+          }
           if (parsedMessage.chatType === "SERVER") {
             handleServerMessage(parsedMessage);
           } else if (parsedMessage.chatType === "FORUM") {
@@ -54,12 +67,6 @@ const useWebSocket = (serverId) => {
           }
           return prevTypingUsers;
         });
-      } else if (parsedMessage.actionType === "STOP_TYPING") {
-        setTypingUsers((prevTypingUsers) =>
-          prevTypingUsers.filter(
-            (username) => username !== parsedMessage.writer
-          )
-        );
       } else if (parsedMessage.actionType === "SEND") {
         sendMessage(parsedMessage);
       } else if (parsedMessage.actionType === "MODIFY") {
@@ -70,23 +77,7 @@ const useWebSocket = (serverId) => {
     };
 
     const handleForumMessage = (parsedMessage) => {
-      if (
-        parsedMessage.actionType === "TYPING" &&
-        parsedMessage.userId !== userId
-      ) {
-        setForumTypingUsers((prevTypingUsers) => {
-          if (!prevTypingUsers.includes(parsedMessage.writer)) {
-            return [...prevTypingUsers, parsedMessage.writer];
-          }
-          return prevTypingUsers;
-        });
-      } else if (parsedMessage.actionType === "STOP_TYPING") {
-        setForumTypingUsers((prevTypingUsers) =>
-          prevTypingUsers.filter(
-            (username) => username !== parsedMessage.writer
-          )
-        );
-      } else if (parsedMessage.actionType === "SEND") {
+      if (parsedMessage.actionType === "SEND") {
         addForumMessage(
           parsedMessage.serverId,
           parsedMessage.forumId,
@@ -105,6 +96,16 @@ const useWebSocket = (serverId) => {
           parsedMessage.forumId,
           parsedMessage.messageId
         );
+      } else if (
+        parsedMessage.actionType === "TYPING" &&
+        parsedMessage.userId !== userId
+      ) {
+        setForumTypingUsers((prevTypingUsers) => {
+          if (!prevTypingUsers.includes(parsedMessage.writer)) {
+            return [...prevTypingUsers, parsedMessage.writer];
+          }
+          return prevTypingUsers;
+        });
       }
     };
 
