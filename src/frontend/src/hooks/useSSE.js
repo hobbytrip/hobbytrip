@@ -1,7 +1,8 @@
-import { useEffect, useState, useCallback, useRef } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { EventSourcePolyfill } from 'event-source-polyfill';
 import API from '../utils/API/API';
 import useUserStore from '../actions/useUserStore';
+
 
 const useSSE = () => {
   const [isServerConnected, setIsServerConnected] = useState(false);
@@ -9,11 +10,11 @@ const useSSE = () => {
   const { userId, notificationEnabled } = useUserStore();
   const accessToken = localStorage.getItem('accessToken');
 
+  let lastHeartbeat = Date.now();
+  let retryCnt = 0;
   const serverSourceRef = useRef(null);
   const dmSourceRef = useRef(null);
-  const retryCntRef = useRef(0);
-  const lastHeartbeatRef = useRef(Date.now());
-
+  
   const closeSSE = useCallback(() => {
     console.log('Closing SSE sources');
     if (serverSourceRef.current && serverSourceRef.current.readyState !== EventSource.CLOSED) {
@@ -34,7 +35,7 @@ const useSSE = () => {
       console.log('DM SSE OPEN');
       setIsDmConnected(true);
     }
-    retryCntRef.current = 0;
+    retryCnt = 0;
   }, []);
 
   const handleError = useCallback((err, type) => {
@@ -45,17 +46,18 @@ const useSSE = () => {
       setIsDmConnected(false);
     }
 
-    if (err.target.readyState === EventSource.CLOSED || Date.now() - lastHeartbeatRef.current > 1800000) {
-      retryCntRef.current++;
-      if (retryCntRef.current < 3) {
-        setTimeout(connectSSE, 5000);
+    if (err.target.readyState === EventSource.CLOSED || Date.now() - lastHeartbeat > 1800000) {
+      retryCnt++;
+      if (retryCnt < 3) {
+        setTimeout(() => connectSSE(), 5000);
+      }
+      else{
+        return;
       }
     }
   }, []);
 
   const connectSSE = useCallback(() => {
-    closeSSE();
-
     const newServerSource = new EventSourcePolyfill(API.SERVER_SSE_SUB(userId), {
       headers: {
         'Content-Type': 'text/event-stream',
@@ -95,11 +97,11 @@ const useSSE = () => {
     };
 
     newServerSource.addEventListener('heartbeat', () => {
-      lastHeartbeatRef.current = Date.now();
+      lastHeartbeat = Date.now();
     });
 
     newDmSource.addEventListener('heartbeat', () => {
-      lastHeartbeatRef.current = Date.now();
+      lastHeartbeat = Date.now();
     });
 
     serverSourceRef.current = newServerSource;
