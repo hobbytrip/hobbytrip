@@ -72,17 +72,6 @@ function ChatRoom() {
     sendMessage,
     setChatList,
   } = useChatStore();
-  // const {
-  //   setForumTypingUsers,
-  //   addForumMessage,
-  //   modifyForumMessage,
-  //   deleteForumMessage,
-  // } = useForumStore((state) => ({
-  //   setForumTypingUsers: state.setForumTypingUsers,
-  //   addForumMessage: state.addForumMessage,
-  //   modifyForumMessage: state.modifyForumMessage,
-  //   deleteForumMessage: state.deleteForumMessage,
-  // }));
   const chatList = useChatStore((state) => state.chatLists[serverId]) || [];
   const TYPE = "server";
 
@@ -124,19 +113,6 @@ function ChatRoom() {
           } else if (parsedMessage.actionType === "SEND") {
             // 전송
             sendMessage(parsedMessage);
-            fetchChatHistory(page, serverId, channelId, setChatList);
-            if (files && files.length > 0) {
-              const fileUrls = files.map((file) => file.fileUrl);
-              const messageWithFiles = {
-                parsedMessage,
-                files: [...fileUrls],
-              };
-              sendMessage(messageBody.serverId, messageWithFiles);
-              client.publish({
-                destination: API.SEND_CHAT(TYPE),
-                body: JSON.stringify(messageWithFiles),
-              });
-            }
           } else if (parsedMessage.actionType === "MODIFY") {
             modifyMessage(
               serverId,
@@ -268,7 +244,7 @@ function ChatRoom() {
           >
             <div className={s.topInfos}>
               <IoChatbubbleEllipses className={s.chatIcon} />
-              <h1>일반 채널에 오신 것을 환영합니다</h1>
+              <h2>채팅을 시작해보세요!</h2>
             </div>
 
             <InfiniteScrollComponent
