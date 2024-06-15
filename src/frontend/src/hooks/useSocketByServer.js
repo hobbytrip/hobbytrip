@@ -25,8 +25,10 @@ const useWebSocket = (serverId) => {
   }));
 
   useEffect(() => {
+    let subscription;
+
     const connectWebSocket = () => {
-      client.subscribe(API.SUBSCRIBE_CHAT(serverId), (frame) => {
+      subscription = client.subscribe(API.SUBSCRIBE_CHAT(serverId), (frame) => {
         try {
           console.log("subscribe success", serverId);
           const parsedMessage = JSON.parse(frame.body);
@@ -108,8 +110,16 @@ const useWebSocket = (serverId) => {
 
     if (serverId) {
       connectWebSocket();
-      console.error("구독한 서버: ", serverId);
+      console.log("구독한 서버: ", serverId);
     }
+
+    //클린업 함수 추가
+    return () => {
+      if (subscription) {
+        subscription.unsubscribe();
+        console.log("구독 해제: ", serverId);
+      }
+    };
   }, [serverId]);
 };
 
