@@ -12,6 +12,7 @@ import ForumChatRoom from "./pages/Chat/ChatRoom/ForumChatRoom.jsx";
 import ForumRoom from "./pages/Chat/ForumRoom/ForumRoom.jsx";
 import SettingView from "./pages/ServerView/SettingView/SettingView.jsx";
 import CategoryView from "./pages/ServerView/CategoryView/CategoryView.jsx";
+import FriendsView from "./pages/ServerView/FriendsView/FriendsView.jsx";
 
 function App() {
   return (
@@ -30,12 +31,12 @@ function App() {
           path=":serverId/:channelId/forum/:forumId/chat"
           element={<ForumChatRoom />}
         />
-        <Route path="/:serverId/:channelId/vid" element={<MediaView />} />
         <Route path="/user/profile" element={<UserProfileView />} />
         <Route path="/main" element={<MainView />} />
         <Route path="/menu" element={<MenuView />} />
         <Route path="/:serverId/setting" element={<SettingView />} />
         <Route path="/:serverId/menu" element={<CategoryView />} />
+        <Route path="/:serverId/friends" element={<FriendsView />} />
         <Route path="/:serverId/:channelId/vid" element={<MediaView />} />
       </Routes>
     </Router>

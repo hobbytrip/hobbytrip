@@ -1,7 +1,8 @@
-import { useEffect, useState, useCallback, useRef } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { EventSourcePolyfill } from 'event-source-polyfill';
 import API from '../utils/API/API';
 import useUserStore from '../actions/useUserStore';
+
 
 const useSSE = () => {
   const [isServerConnected, setIsServerConnected] = useState(false);
@@ -9,11 +10,11 @@ const useSSE = () => {
   const { userId, notificationEnabled } = useUserStore();
   const accessToken = localStorage.getItem('accessToken');
 
+  let lastHeartbeat = Date.now();
+  let retryCnt = 0;
   const serverSourceRef = useRef(null);
   const dmSourceRef = useRef(null);
-  const retryCntRef = useRef(0);
-  const lastHeartbeatRef = useRef(Date.now());
-
+  
   const closeSSE = useCallback(() => {
     console.log('Closing SSE sources');
     if (serverSourceRef.current && serverSourceRef.current.readyState !== EventSource.CLOSED) {
@@ -34,7 +35,7 @@ const useSSE = () => {
       console.log('DM SSE OPEN');
       setIsDmConnected(true);
     }
-    retryCntRef.current = 0;
+    retryCnt = 0;
   }, []);
 
   const handleError = useCallback((err, type) => {
@@ -45,24 +46,25 @@ const useSSE = () => {
       setIsDmConnected(false);
     }
 
-    if (err.target.readyState === EventSource.CLOSED || Date.now() - lastHeartbeatRef.current > 1800000) {
-      retryCntRef.current++;
-      if (retryCntRef.current < 3) {
-        setTimeout(connectSSE, 5000);
+    if (err.target.readyState === EventSource.CLOSED || Date.now() - lastHeartbeat > 1800000) {
+      retryCnt++;
+      if (retryCnt < 3) {
+        setTimeout(() => connectSSE(), 5000);
+      }
+      else{
+        return;
       }
     }
   }, []);
 
   const connectSSE = useCallback(() => {
-    closeSSE();
-
-    const newServerSource = new EventSourcePolyfill(API.SERVER_SSE_SUB(userId), {
-      headers: {
-        'Content-Type': 'text/event-stream',
-        Authorization: `Bearer ${accessToken}`,
-      },
-      withCredentials: true,
-    });
+    // const newServerSource = new EventSourcePolyfill(API.SERVER_SSE_SUB(userId), {
+    //   headers: {
+    //     'Content-Type': 'text/event-stream',
+    //     Authorization: `Bearer ${accessToken}`,
+    //   },
+    //   withCredentials: true,
+    // });
 
     const newDmSource = new EventSourcePolyfill(API.DM_SSE_SUB(userId), {
       headers: {
@@ -72,19 +74,19 @@ const useSSE = () => {
       withCredentials: true,
     });
 
-    newServerSource.onopen = () => handleOpen('server');
+    // newServerSource.onopen = () => handleOpen('server');
     newDmSource.onopen = () => handleOpen('dm');
 
-    newServerSource.onerror = (err) => handleError(err, 'server');
+    // newServerSource.onerror = (err) => handleError(err, 'server');
     newDmSource.onerror = (err) => handleError(err, 'dm');
 
-    newServerSource.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      console.log('Server SSE Message:', data);
-      if (!notificationEnabled && document.hidden) {
-        showNotification(data, 'server');
-      }
-    };
+    // newServerSource.onmessage = (event) => {
+    //   const data = JSON.parse(event.data);
+    //   console.log('Server SSE Message:', data);
+    //   if (!notificationEnabled && document.hidden) {
+    //     showNotification(data, 'server');
+    //   }
+    // };
 
     newDmSource.onmessage = (event) => {
       const data = JSON.parse(event.data);
@@ -94,15 +96,15 @@ const useSSE = () => {
       }
     };
 
-    newServerSource.addEventListener('heartbeat', () => {
-      lastHeartbeatRef.current = Date.now();
-    });
+    // newServerSource.addEventListener('heartbeat', () => {
+    //   lastHeartbeat = Date.now();
+    // });
 
     newDmSource.addEventListener('heartbeat', () => {
-      lastHeartbeatRef.current = Date.now();
+      lastHeartbeat = Date.now();
     });
 
-    serverSourceRef.current = newServerSource;
+    // serverSourceRef.current = newServerSource;
     dmSourceRef.current = newDmSource;
   }, [closeSSE, handleOpen, handleError, notificationEnabled]);
 
@@ -123,8 +125,8 @@ const useSSE = () => {
     let notice;
     if (type === 'dm') {
       notice = new Notification(data.userId, alarmData);
-    } else if (type === 'server') {
-      notice = new Notification(data.serverId, alarmData);
+    // } else if (type === 'server') {
+    //   notice = new Notification(data.serverId, alarmData);
     } else {
       console.log('Notification type error');
     }
