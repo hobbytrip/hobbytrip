@@ -81,8 +81,6 @@ const API = {
   CUD_FORUM: `${BASE_URL}/community/forum`,
 
   //상태관리 
-  GET_SERVER_STATE: (serverId, userIds) =>
-    `${STATE_URL}?serverId=${serverId}&userIds=${userIds}`,
 };
 
 export default API;

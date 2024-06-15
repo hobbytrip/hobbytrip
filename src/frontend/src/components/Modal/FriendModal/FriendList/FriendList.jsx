@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { axiosInstance } from "../../../../utils/axiosInstance";
 import API from "../../../../utils/API/API";
 import useUserStore from "../../../../actions/useUserStore";
@@ -9,6 +9,10 @@ import FriendComponent from "../FriendComponent/FriendComponent";
 function FriendList({ friends }) {
   const [dmNotice, setDmNotice] = useState([]);
   const { userId } = useUserStore();
+
+  useEffect(() => {
+    getNotice();
+  }, [])
 
   const getNotice = async () => {
     try {
