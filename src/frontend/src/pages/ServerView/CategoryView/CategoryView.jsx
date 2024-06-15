@@ -1,7 +1,7 @@
-import style from './CategoryView.module.css';
-import CategoryList from '../../../components/ServerView/CategoryList/CategoryList';
+import style from "./CategoryView.module.css";
+import CategoryList from "../../../components/ServerView/CategoryList/CategoryList";
 import ChatHeader from "../../../components/Common/ChatRoom/CommunityChatHeader/ChatHeader";
-import ChatHeaderModal from '../../../components/Modal/ChatModal/ChatRoomInfo/ChatRoomInfo';
+import ChatHeaderModal from "../../../components/Modal/ChatModal/ChatRoomInfo/ChatRoomInfo";
 import ChatSearchBar from "../../../components/Modal/ChatModal/ChatSearchBar/ChatSearchBar";
 
 const CategoryView = () => {
