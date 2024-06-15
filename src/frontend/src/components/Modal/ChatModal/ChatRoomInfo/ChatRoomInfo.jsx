@@ -43,14 +43,15 @@ export default function ChatHeader({}) {
       </div>
       <div className={s.modals}>
         <TiUserAdd className={s.modal} onClick={handleInviteClick} />
-        <TiGroup className={s.modal} />
+        <TiGroup className={s.modal} 
+          onClick={() => nav(`/${serverData.serverInfo.serverId}/friends`)}/>
         <RiSettings3Fill
           className={s.modal}
           onClick={() => nav(`/${serverData.serverInfo.serverId}/setting`)}
         />
       </div>
       {isInviteOpen && (
-        <InviteServer userId={serverData.userId} onClose={handleInviteClose} />
+        <InviteServer onClose={handleInviteClose} />
       )}
     </div>
   );

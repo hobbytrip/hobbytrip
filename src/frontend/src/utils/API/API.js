@@ -4,6 +4,7 @@ const MEDIA_BASE_URL = "https://fittrip.site/api/sig";
 const WS_BASE = "/ws/chat";
 const NOTICE_URL = "https://fittrip.site/api/notice";
 const FRIEND_URL = "https://fittrip.site/api/user/friends";
+const STATE_URL = "https://fittrip.site/api/user/state";
 
 const API = {
   //유저
@@ -78,6 +79,10 @@ const API = {
   READ_FORUM: (channelId, userId) =>
     `${BASE_URL}/community/channel/${channelId}/${userId}`,
   CUD_FORUM: `${BASE_URL}/community/forum`,
+
+  //상태관리 
+  GET_SERVER_STATE: (serverId, userIds) =>
+    `${STATE_URL}?serverId=${serverId}&userIds=${userIds}`,
 };
 
 export default API;

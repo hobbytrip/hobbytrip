@@ -1,0 +1,15 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: var(--main-purple);
+}
+
+.container {
+  width: 390px;
+  top: 100px;
+  left: 1390px;
+  display: flex;
+  flex-direction: column;
+}
