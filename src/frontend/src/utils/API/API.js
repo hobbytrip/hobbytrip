@@ -14,7 +14,6 @@ const API = {
 
   //친구
   ADD_FRIEND: (email) => `${FRIEND_URL}/${email}`,
-  DELETE_FRINEND: (friendShipId) => `${FRIEND_URL}/delete/${friendShipId}`,
   WAITING_FRIEND: `${FRIEND_URL}/received`,
   ACCEPT_FRIEND_REQUEST: (friendShipId) =>
     `${FRIEND_URL}/approve/${friendShipId}`,

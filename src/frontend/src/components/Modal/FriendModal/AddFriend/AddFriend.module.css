@@ -46,8 +46,8 @@
   position: absolute;
   color: var(--main-purple);
   cursor: pointer;
-  bottom: 410px;
-  left: 25px;
+  bottom: 450px;
+  left: 43px;
 }
 .error {
   color: red;

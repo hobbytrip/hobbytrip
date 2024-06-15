@@ -115,11 +115,11 @@ function MyFriend() {
           <FriendSearch />
           <div className={style.friendListContainer}>
             {view === "all" && <FriendList friends={friendList} />}
-            <FriendList
-              friends={friends.filter(
+            {/* <FriendList
+              friends={friendList.filter(
                 (friend) => friend.connectionState === "ONLINE"
               )}
-            />
+            /> */}
             {view === "waiting" && <WaitingFriends friends={waitingFriends} />}
           </div>
         </>
