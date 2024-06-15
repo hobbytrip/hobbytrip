@@ -1,20 +1,22 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import s from "../ChatRoom/ChatRoom.module.css";
+import s from "./ForumRoom.module.css";
 import { axiosInstance } from "../../../utils/axiosInstance";
 import InfiniteScrollComponent from "../../../components/Common/ChatRoom/InfiniteScrollComponent";
 import API from "../../../utils/API/API";
 import useUserStore from "../../../actions/useUserStore";
+import useForumListStore from "../../../actions/useForumListStore";
 import TopHeader from "../../../components/Common/ChatRoom/CommunityChatHeader/ChatHeader";
 import ChatRoomInfo from "../../../components/Modal/ChatModal/ChatRoomInfo/ChatRoomInfo";
 import ForumModal from "../../../components/Modal/ForumModal/CreateForumModal/ForumModal";
 import ForumList from "../../../components/Modal/ForumModal/ForumList/ForumList";
 import axios from "axios";
-import emptycon from "../../../assets/image/emptyCon.jpg";
+import emptycon from "../../../assets/image/emptyCon.jpg"; // 이미지 경로 수정
 
 const fetchForumList = async (channelId, userId) => {
   const response = await axiosInstance.get(API.READ_FORUM(channelId, userId));
+  console.log(API.READ_FORUM(channelId, userId));
   console.error("API response:", response);
   return response.data.data.content;
 };
@@ -29,12 +31,19 @@ const categories = [
 ];
 
 function ForumRoom() {
-  const [forumList, setForumList] = useState([]);
+  const { serverId, channelId } = useParams();
+  const { userId } = useUserStore();
+  const {
+    forumLists,
+    setForumList,
+    addForum,
+    removeForum,
+    // resetForumList,
+  } = useForumListStore();
+  const forumList = forumLists[channelId] || [];
   const [page, setPage] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const forumListRef = useRef(null);
-  const { serverId, channelId } = useParams();
-  const { userId } = useUserStore();
   const accessToken = localStorage.getItem("accessToken");
 
   const { data, error, isLoading } = useQuery({
@@ -44,17 +53,18 @@ function ForumRoom() {
     keepPreviousData: true,
   });
 
+  // useEffect(() => {
+  //   resetForumList(channelId);
+  // }, [channelId]);
+
   useEffect(() => {
+    console.log("channelId", channelId);
+
     if (data && Array.isArray(data)) {
-      setForumList((prevForumList) => {
-        const existingIds = prevForumList.map((forum) => forum.forumId);
-        const newForumData = data.filter(
-          (forum) => !existingIds.includes(forum.forumId)
-        );
-        return [...prevForumList, ...newForumData];
-      });
+      console.log("data", data);
+      setForumList(channelId, data);
     }
-  }, [data]);
+  }, [data, channelId, setForumList]);
 
   useEffect(() => {
     if (page === 0 && forumListRef.current) {
@@ -63,7 +73,7 @@ function ForumRoom() {
   }, [forumList, page]);
 
   const handleNewForum = (newForum) => {
-    setForumList((prevForumList) => [newForum, ...prevForumList]);
+    addForum(channelId, newForum);
     if (forumListRef.current) {
       forumListRef.current.scrollTop = forumListRef.current.scrollHeight;
     }
@@ -78,6 +88,33 @@ function ForumRoom() {
       setSelectedCategory(null);
     } else {
       setSelectedCategory(category);
+    }
+  };
+
+  const handleEditForum = async (forumId, newTitle, newContent) => {
+    try {
+      const formdata = new FormData();
+      const messageBody = {
+        userId,
+        serverId,
+        channelId,
+        forumId: forumId,
+        title: newTitle,
+        content: newContent,
+      };
+      const jsonMsg = JSON.stringify(messageBody);
+
+      const requestDto = new Blob([jsonMsg], { type: "application/json" });
+      formdata.append("requestDto", requestDto);
+      await axios.patch(API.CUD_FORUM, formdata, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        withCredentials: true,
+      });
+    } catch (error) {
+      console.error("포럼 수정 실패", error);
     }
   };
 
@@ -96,9 +133,7 @@ function ForumRoom() {
         withCredentials: true,
       });
 
-      setForumList((prevForumList) =>
-        prevForumList.filter((forum) => forum.forumId !== forumId)
-      );
+      removeForum(channelId, forumId);
     } catch (error) {
       console.error("포럼 삭제 실패", error);
     }
@@ -122,9 +157,9 @@ function ForumRoom() {
         <TopHeader />
         <ChatRoomInfo />
         <div className={s.forumContainer}>
-          <ForumModal onNewForum={handleNewForum} />
+          <ForumModal onNewForum={() => handleNewForum} />
           <div className={s.categoryButtons}>
-            {categories.map((cat, index) => (
+            {categories.map((cat) => (
               <button
                 key={cat.value}
                 onClick={() => handleCategoryClick(cat.value)}
@@ -156,7 +191,7 @@ function ForumRoom() {
                 <ForumList
                   forumList={filteredForumList}
                   handleDeleteForum={handleDeleteForum}
-                  // handleEditForum={() => {}}
+                  handleEditForum={handleEditForum}
                 />
               </InfiniteScrollComponent>
             )}

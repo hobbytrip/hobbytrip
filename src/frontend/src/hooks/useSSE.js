@@ -38,6 +38,7 @@ const useSSE = () => {
       },
       withCredentials: true,
     });
+    setServerSource(newServerSource);
   
     const newDmSource = new EventSourcePolyfill(API.DM_SSE_SUB(userId), {
       headers: {
@@ -46,6 +47,7 @@ const useSSE = () => {
       },
       withCredentials: true,
     });
+    setDmSource(newDmSource);
   
     newServerSource.onopen = () => {
       console.log('Server SSE OPEN');

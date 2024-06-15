@@ -4,7 +4,7 @@ import API from "../../utils/API/API.js";
 import { axiosInstance } from "../../utils/axiosInstance.js";
 import MainHeader from "../../components/MainView/MainHeader/MainHeader.jsx";
 import MyPlanet from "../../components/MainView/MyPlanet/MyPlanet.jsx";
-import MyFriend from "../../components/MainView/MyFriend/MyFriend.jsx";
+import MyFriend from "../../components/Modal/FriendModal/MyFriend/MyFriend.jsx";
 import style from "./MainView.module.css";
 import setSSE from "../../hooks/useSSE.js";
 

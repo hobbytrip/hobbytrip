@@ -75,7 +75,7 @@ const MyPlanet = ({ servers }) => {
 
   return (
     <div className={style.wrapper}>
-      <h3> 내 행성 </h3>
+      <h3 style={{ fontFamily: "DOSSaemmul" }}> 내 행성 </h3>
       <div className={style.planetContainer}>
         <Leftbtn onClick={handleLeft} />
         <div className={style.planetList}>

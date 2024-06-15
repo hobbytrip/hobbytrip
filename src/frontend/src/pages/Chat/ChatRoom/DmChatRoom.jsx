@@ -1,30 +1,26 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
-// import { useQuery } from "@tanstack/react-query";
-import { IoChatbubbleEllipses } from "react-icons/io5";
+import { useParams, useLocation } from "react-router-dom";
 import s from "./ChatRoom.module.css";
+//components
 import TopHeader from "../../../components/Common/ChatRoom/CommunityChatHeader/ChatHeader";
-import ChatRoomInfo from "../../../components/Modal/ChatModal/ChatRoomInfo/ChatRoomInfo";
-import ChatSearchBar from "../../../components/Modal/ChatModal/ChatSearchBar/ChatSearchBar";
-import MessageSender from "../../../components/Modal/ChatModal/CreateChatModal/MessageSender/MessageSender";
-import ChatMessage from "../../../components/Modal/ChatModal/ChatMessage/ChatMessage";
-import ChatChannelType from "../../../components/Modal/ChatModal/ChatChannelType/ChatChannelType";
+import MessageSender from "../../../components/Modal/ForumModal/MessageSender/MessageSender";
+import ChatMessage from "../../../components/Common/ChatRoom/ChatMessage/ChatMessage";
 import InfiniteScrollComponent from "../../../components/Common/ChatRoom/InfiniteScrollComponent";
+//stores
 import useWebSocketStore from "../../../actions/useWebSocketStore";
-import useChatStore from "../../../actions/useChatStore";
-import useForumStore from "../../../actions/useForumStore";
-import API from "../../../utils/API/API";
+import useDmStore from "../../../actions/useDmStore";
 import useUserStore from "../../../actions/useUserStore";
 import useAuthStore from "../../../actions/useAuthStore";
+import API from "../../../utils/API/API";
 import axios from "axios";
-import { axiosInstance } from "../../../utils/axiosInstance";
 
-const fetchChatHistory = async (page, serverId, channelId, set) => {
+//dm 기록 받아오기
+const fetchDmHistory = async (page, roomId, setForumList) => {
   const token = localStorage.getItem("accessToken");
   try {
-    const response = await axios.get(API.GET_HISTORY, {
+    const response = await axios.get(API.GET_DM_HISTORY, {
       params: {
-        channelId: channelId,
+        roomId,
         page: page,
         size: 20,
       },
@@ -35,139 +31,121 @@ const fetchChatHistory = async (page, serverId, channelId, set) => {
     });
     const responseData = response.data.data;
     console.log("responseData", responseData);
-    if (responseData) {
-      set(serverId, responseData.data.reverse());
+    const datas = responseData.data.reverse();
+    console.log("fetch dm chats", datas);
+    // console.log("data", datas);
+    if (Array.isArray(datas) && datas) {
+      setForumList(serverId, forumId, datas);
     }
   } catch (err) {
-    console.error("채팅기록 불러오기 오류", err);
-    throw new Error("채팅기록 불러오기 오류");
+    console.error("포럼 기록 불러오기 오류", err);
+    throw new Error("포럼 기록 불러오기 오류");
   }
 };
 
-const postUserLocation = async (userId, serverId, channelId) => {
-  try {
-    await axiosInstance.post(API.POST_LOCATION, {
-      userId: userId,
-      serverId: serverId,
-      channelId: channelId,
-    });
-  } catch (err) {
-    console.error("사용자 위치 POST 실패", err);
-    throw new Error("사용자 위치 POST 실패");
-  }
-};
-
-function ChatRoom() {
+function DmChat() {
+  //타입 지정: dm
+  const TYPE = "direct";
   const { userId, nickname } = useUserStore();
-  const { serverId, channelId } = useParams();
+  const { roomId } = useParams();
   const [page, setPage] = useState(0);
   const chatListContainerRef = useRef(null);
   const { accessToken } = useAuthStore();
   const { client, isConnected } = useWebSocketStore();
+
+  //dmStore
   const {
-    typingUsers,
-    setTypingUsers,
-    deleteMessage,
-    modifyMessage,
-    sendMessage,
-    setChatList,
-  } = useChatStore();
-  // const {
-  //   setForumTypingUsers,
-  //   addForumMessage,
-  //   modifyForumMessage,
-  //   deleteForumMessage,
-  // } = useForumStore((state) => ({
-  //   setForumTypingUsers: state.setForumTypingUsers,
-  //   addForumMessage: state.addForumMessage,
-  //   modifyForumMessage: state.modifyForumMessage,
-  //   deleteForumMessage: state.deleteForumMessage,
-  // }));
-  const chatList = useChatStore((state) => state.chatLists[serverId]) || [];
-  const TYPE = "server";
+    addDmMessage,
+    modifyDmMesage,
+    deleteDmMessage,
+    setDmTypingUsers,
+    setDmList,
+  } = useDmStore((state) => ({
+    addDmMessage: state.addDmMessage,
+    modifyDmMesage: state.modifiedMessage,
+    deleteDmMessage: state.deleteDmMessage,
+    setDmTypingUsers: state.typingDmUsers,
+    setDmList: state.setDmList,
+  }));
+  const typingDmUsers = useDmStore();
+  const dms = useDmStore((state) => state.dmLists[roomId] || []);
 
   useEffect(() => {
-    postUserLocation(userId, serverId, channelId);
-    // if (client && isConnected) {
-    //   client.unsubscribe(serverId);
-    // }
     if (client && isConnected) {
-      connectWebSocket(serverId);
-      fetchChatHistory(page, serverId, channelId, setChatList);
+      console.log(client, isConnected);
+      connectWebSocket(roomId); //roomId로 채팅방 구독
+      fetchDmHistory(page, roomId, setDmList); //기록 받아오기
     }
-  }, [serverId]);
-  //소켓 연결
-  const connectWebSocket = (serverId) => {
-    client.subscribe(API.SUBSCRIBE_CHAT(serverId), (frame) => {
+    console.log("채팅Room ID", roomId);
+  }, [roomId]); //room id가 바뀔 때마다
+
+  const connectWebSocket = (roomId) => {
+    client.subscribe(API.SUBSCRIBE_DM(roomId), (frame) => {
       try {
-        console.log("subscribe success", serverId);
+        console.log("dm방 구독 성공", roomId);
+        // const dmRoomId = roomId;
         const parsedMessage = JSON.parse(frame.body);
-        const files = JSON.parse(frame.body.files);
-        // const filesInfo = JSON.parse(frame.body).files;
-        if (parsedMessage.chatType === "SERVER") {
+        const files = parsedMessage.files
+          ? JSON.parse(parsedMessage.files)
+          : [];
+        //DM
+        if (parsedMessage.chatType === "DM") {
           if (
             parsedMessage.actionType === "TYPING" &&
             parsedMessage.userId !== userId
           ) {
-            setTypingUsers((prevTypingUsers) => {
+            setDmTypingUsers((prevTypingUsers) => {
               if (!prevTypingUsers.includes(parsedMessage.writer)) {
                 return [...prevTypingUsers, parsedMessage.writer];
               }
               return prevTypingUsers;
             });
-          } else if (parsedMessage.actionType === "STOP_TYPING") {
-            setTypingUsers((prevTypingUsers) =>
-              prevTypingUsers.filter(
-                (username) => username !== parsedMessage.writer
-              )
-            );
           } else if (parsedMessage.actionType === "SEND") {
             // 전송
-            sendMessage(parsedMessage);
-            fetchChatHistory(page, serverId, channelId, setChatList);
+            addDmMessage(parsedMessage.dmRoomId, parsedMessage);
             if (files && files.length > 0) {
               const fileUrls = files.map((file) => file.fileUrl);
               const messageWithFiles = {
                 parsedMessage,
                 files: [...fileUrls],
               };
-              sendMessage(messageBody.serverId, messageWithFiles);
+              addDmMessage(messageBody.dmRoomId, messageWithFiles);
               client.publish({
                 destination: API.SEND_CHAT(TYPE),
                 body: JSON.stringify(messageWithFiles),
               });
             }
           } else if (parsedMessage.actionType === "MODIFY") {
-            modifyMessage(
-              serverId,
+            //수정
+            modifyDmMessage(
+              parsedMessage.dmRoomId,
               parsedMessage.messageId,
               parsedMessage.content
             );
           } else if (parsedMessage.actionType === "DELETE") {
-            deleteMessage(serverId, parsedMessage.messageId);
+            //삭제
+            deleteDmMessage(parsedMessage.dmRoomId, parsedMessage.messageId);
           }
         }
       } catch (error) {
-        console.error("구독 오류", error);
+        console.error("DM 구독 오류", error);
       }
     });
   };
 
   const handleSendMessage = async (messageContent, uploadedFiles) => {
     const messageBody = {
-      serverId: serverId,
-      channelId: channelId,
+      dmRoomId: roomId,
       userId: userId,
       parentId: 0,
       profileImage: "ho",
-      // type: TYPE,
       writer: nickname,
       content: messageContent,
+      receiverIds: [],
       createdAt: new Date().toISOString(),
     };
-
     const sendMessageWithoutFile = (messageBody) => {
-      sendMessage(messageBody);
+      addDmMessage(messageBody.dmRoomId, messageBody);
       client.publish({
         destination: API.SEND_CHAT(TYPE),
         body: JSON.stringify(messageBody),
@@ -181,6 +159,7 @@ function ChatRoom() {
     }
   };
 
+  //파일 업로드
   const uploadFiles = async (messageBody, uploadedFiles) => {
     const formData = new FormData();
     const jsonMsg = JSON.stringify(messageBody);
@@ -190,7 +169,7 @@ function ChatRoom() {
       formData.append("files", file);
     });
     try {
-      await axios.post(API.FILE_UPLOAD, formData, {
+      await axios.post(API.DM_FILE_UPLOAD, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${accessToken}`,
@@ -203,19 +182,20 @@ function ChatRoom() {
     }
   };
 
+  //메세지 수정
   const handleModifyMessage = (messageId, newContent) => {
     const messageBody = {
-      serverId: serverId,
+      dmRoomId: roomId,
       messageId: messageId,
       content: newContent,
       actionType: "MODIFY",
     };
-    const modifiedMessage = chatList.find(
+    const modifiedMessage = dms.find(
       (message) => message.messageId === messageId
     );
     if (modifiedMessage) {
       modifiedMessage.content = newContent;
-      modifyMessage(serverId, messageId, newContent);
+      modifyDmMesage(roomId, messageId, newContent);
       client.publish({
         destination: API.MODIFY_CHAT(TYPE),
         body: JSON.stringify(messageBody),
@@ -225,12 +205,11 @@ function ChatRoom() {
 
   const handleDeleteMessage = (messageId) => {
     const messageBody = {
-      serverId: serverId,
+      dmRoomId: roomId,
       messageId: messageId,
-      actionType: "DELETE",
     };
 
-    deleteMessage(serverId, messageId);
+    deleteDmMessage(roomId, messageId);
     client.publish({
       destination: API.DELETE_CHAT(TYPE),
       body: JSON.stringify(messageBody),
@@ -246,40 +225,34 @@ function ChatRoom() {
       chatListContainerRef.current.scrollTop =
         chatListContainerRef.current.scrollHeight;
     }
-  }, [chatList]);
+  }, [dms]);
 
-  const groupedMessages = groupMessagesByDate(chatList);
+  const groupedMessages = groupMessagesByDate(dms);
 
   return (
     <div className={s.chatRoomWrapper}>
       <div className={s.wrapper}>
         <div className={s.topContainer}>
           <TopHeader />
-          <ChatRoomInfo />
-          <ChatSearchBar />
         </div>
         <div className={s.chatContainer}>
-          <ChatChannelType />
           <div
             ref={chatListContainerRef}
             id="chatListContainer"
             className={s.chatListContainer}
-            style={{ overflowY: "auto", height: "530px" }}
+            style={{ overflowY: "auto", height: "720px", marginTop: "5px" }}
           >
-            <div className={s.topInfos}>
-              <IoChatbubbleEllipses className={s.chatIcon} />
-              <h1>일반 채널에 오신 것을 환영합니다</h1>
-            </div>
-
             <InfiniteScrollComponent
-              dataLength={chatList.length}
+              dataLength={dms.length}
               next={updatePage}
               hasMore={true}
               scrollableTarget="chatListContainer"
             >
               {Object.keys(groupedMessages).map((date) => (
                 <div key={date}>
-                  <h4 className={s.dateHeader}>{date}</h4>
+                  {date !== formattedDate && (
+                    <h4 className={s.dateHeader}>{date}</h4>
+                  )}
                   {groupedMessages[date].map((message, index) => (
                     <ChatMessage
                       key={index}
@@ -293,17 +266,16 @@ function ChatRoom() {
             </InfiniteScrollComponent>
           </div>
           <div className={s.messageSender}>
-            {typingUsers.length > 0 && (
+            {typingDmUsers.length > 0 && (
               <div className="typingIndicator">
-                {typingUsers.length >= 5
+                {typingDmUsers.length >= 5
                   ? "여러 사용자가 입력 중입니다..."
-                  : `${typingUsers.join(", ")} 입력 중입니다...`}
+                  : `${typingDmUsers.join(", ")} 입력 중입니다...`}
               </div>
             )}
             <MessageSender
               onMessageSend={handleSendMessage}
-              serverId={serverId}
-              channelId={channelId}
+              roomId={roomId}
               writer={nickname}
               client={client}
               TYPE={TYPE}
@@ -314,21 +286,25 @@ function ChatRoom() {
     </div>
   );
 }
-
 const groupMessagesByDate = (messages) => {
   const groupedMessages = {};
 
-  messages.forEach((message) => {
-    const date = new Date(message.createdAt);
-    const dateString = `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
+  console.log("messages:", messages);
 
-    if (!groupedMessages[dateString]) {
-      groupedMessages[dateString] = [];
-    }
-    groupedMessages[dateString].push(message);
-  });
+  if (Array.isArray(messages) && messages) {
+    messages.forEach((message) => {
+      const date = new Date(message.createdAt);
+      const dateString = `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
+
+      if (!groupedMessages[dateString]) {
+        groupedMessages[dateString] = [];
+      }
+      groupedMessages[dateString].push(message);
+    });
+  } else {
+    console.error("not array");
+  }
 
   return groupedMessages;
 };
-
-export default ChatRoom;
+export default DmChat;

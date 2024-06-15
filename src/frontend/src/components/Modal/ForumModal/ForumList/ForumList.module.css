@@ -1,13 +1,13 @@
 .forumBox {
   background-color: var(--light-gray);
-  padding: 10px;
+  padding: 15px;
   border-radius: 10px;
   display: flex;
   flex-direction: row;
   margin-bottom: 15px;
   margin-top: 10px;
-  position: relative;
   cursor: pointer;
+  position: relative;
 }
 
 .container {
@@ -34,13 +34,23 @@
 
 .modals {
   position: absolute;
+  /* left: 10px; */
   right: 10px;
-  top: 10px;
-  display: none;
+  /* bottom: 0px; */
+  /* display: none; */
   color: var(--dark-gray);
 }
-
-.forumBox:hover .modals {
+.editInput {
+  border-radius: 5px;
+  padding: 2px;
+}
+.editTextarea {
+  background-color: white;
   display: flex;
-  gap: 5px;
+  padding: 2px;
+  /* height: 25px; */
+  border-radius: 5px;
+  border-style: none;
+  font-family: "Pretendard";
+  outline-style: none;
 }
