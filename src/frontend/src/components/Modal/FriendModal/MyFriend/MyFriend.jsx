@@ -116,7 +116,7 @@ function MyFriend() {
           <div className={style.friendListContainer}>
             {view === "all" && <FriendList friends={friendList} />}
             {/* <FriendList
-              friends={friends.filter(
+              friends={friendList.filter(
                 (friend) => friend.connectionState === "ONLINE"
               )}
             /> */}
