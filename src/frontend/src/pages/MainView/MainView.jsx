@@ -13,7 +13,7 @@ const MainView = () => {
   const [dms, setDms] = useState(null);
   const { userId } = useUserStore();
 
-  setSSE();
+  // setSSE();
   useEffect(() => {
     if (userId) {
       const getMainData = async () => {
@@ -27,7 +27,6 @@ const MainView = () => {
           console.error("Error fetching server Data:", error);
         }
       };
-      // setServer();
       getMainData();
     }
   }, []);
@@ -39,10 +38,13 @@ const MainView = () => {
   return (
     <>
       <div className={style.wrapper}>
+        <header className={style.header}/>  
         <div className={style.container}>
-          <MainHeader />
-          <MyPlanet servers={servers} />
-          <MyFriend />
+          <div className={style.deskServers}>
+            <MainHeader className={style.mainHeader} />
+            <MyPlanet servers={servers} className={style.myPlanet} />
+          </div>
+          <MyFriend className={style.myFriend} />
         </div>
       </div>
     </>

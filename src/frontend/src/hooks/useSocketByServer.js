@@ -33,7 +33,7 @@ const useWebSocket = (serverId) => {
     const connectWebSocket = () => {
       subscription = client.subscribe(API.SUBSCRIBE_CHAT(serverId), (frame) => {
         try {
-          console.log("subscribe success", serverId);
+          console.error("subscribe success", serverId);
           const parsedMessage = JSON.parse(frame.body);
           switch (parsedMessage.type) {
             case "CONNECT":
@@ -115,12 +115,12 @@ const useWebSocket = (serverId) => {
     }
 
     //클린업 함수 추가
-    return () => {
-      if (subscription) {
-        subscription.unsubscribe();
-        console.log("구독 해제: ", serverId);
-      }
-    };
+    // return () => {
+    //   if (subscription) {
+    //     subscription.unsubscribe();
+    //     console.log("구독 해제: ", serverId);
+    //   }
+    // };
   }, [serverId]);
 };
 

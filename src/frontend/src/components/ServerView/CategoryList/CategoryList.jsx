@@ -38,7 +38,9 @@ const CategoryList = () => {
 
   useEffect(() => {
     setCategories(serverData.serverCategories || []);
+    console.log(categories)
     setChannels(serverData.serverChannels || []);
+    console.log(channels)
     setUncategorizedChannels(
       (serverData.serverChannels || []).filter((channel) => !channel.categoryId)
     );
