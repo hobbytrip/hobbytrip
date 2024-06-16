@@ -43,6 +43,9 @@ const MyPlanet = ({ servers }) => {
   const { fetchServerData } = useServerStore((state) => ({
     fetchServerData: state.fetchServerData,
   }));
+  const { serverData } = useServerStore((state) => ({
+    serverData: state.serverData,
+  }));
   const { userId } = useUserStore();
 
   const getNotice = async () => {
@@ -63,7 +66,10 @@ const MyPlanet = ({ servers }) => {
 
   const serversPerPage = 4;
   const startIndex = currentPage * serversPerPage;
-  const endIndex = Math.min(startIndex + serversPerPage, (servers || []).length);
+  const endIndex = Math.min(
+    startIndex + serversPerPage,
+    (servers || []).length
+  );
 
   const handleCreateModalClick = () => {
     setShowCreateServer(true);
@@ -86,7 +92,15 @@ const MyPlanet = ({ servers }) => {
   const handleServerClick = async (serverId) => {
     console.log("planet fetch");
     await fetchServerData(serverId, userId);
-    nav(`/${serverId}/menu`);
+
+    if (serverData && serverData.serverChannels) {
+      const defaultChatChannel = serverData.serverChannels.find(
+        (channel) => channel.channelType === "CHAT"
+      );
+      if (defaultChatChannel) {
+        nav(`/${serverId}/${defaultChatChannel.channelId}/chat`);
+      }
+    }
   };
 
   return (

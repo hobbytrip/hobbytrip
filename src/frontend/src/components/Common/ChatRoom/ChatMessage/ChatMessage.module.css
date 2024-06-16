@@ -12,9 +12,9 @@
   display: flex;
   flex-direction: column;
   /* align-items: center; */
-  gap: 5px;
+  /* gap: 5px;
   margin-bottom: 5px;
-  margin-left: 10px;
+  margin-left: 10px; */
 }
 .profileImg {
   background-color: var(--hot-pink);

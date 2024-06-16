@@ -9,11 +9,13 @@ export default function ChatHeader() {
   useSSE();
   return (
     <div className={s.ChatHeaderContainer}>
-      <img src={iconImg}
+      <img
+        src={iconImg}
         className={s.iconImg}
         alt="logo-img"
-        onClick={() => nav('/main')} />
-      <AiOutlineMenu className={s.chatCloseIcon} />
+        onClick={() => nav("/main")}
+      />
+      <AiOutlineMenu className={s.menuIcon} />
     </div>
   );
 }
