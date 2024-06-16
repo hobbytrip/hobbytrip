@@ -5,7 +5,7 @@
   gap: 5px;
   padding: 5px;
   @media (min-width: 432px) {
-    max-width: 270px;
+    max-width: 240px;
   }
 }
 

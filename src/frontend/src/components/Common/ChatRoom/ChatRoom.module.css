@@ -41,9 +41,9 @@
   overflow: auto;
   padding-left: 20px;
   padding-right: 20px;
-  margin-bottom: 30px;
+  margin-bottom: 50px;
   @media (min-width: 431px) {
-    max-height: 800px;
+    max-height: 750px;
   }
 }
 .topInfos {

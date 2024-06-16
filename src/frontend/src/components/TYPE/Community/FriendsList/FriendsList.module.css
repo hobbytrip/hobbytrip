@@ -1,8 +1,8 @@
 .wrapper {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  padding: 10px 30px 30px 10px;
+  gap: 15px;
+  /* padding: 10px 30px 30px 10px; */
   border-radius: 10px;
   color: var(--dark-gray);
   max-height: 1024px;
@@ -33,6 +33,7 @@ li {
   position: relative;
   @media (min-width: 432px) {
     padding: 0px;
+    padding: 10px 25px;
   }
 }
 
@@ -41,7 +42,7 @@ li {
   height: 33px;
   padding: 10px 33px;
   @media (min-width: 432px) {
-    height: 40px;
+    height: 20px;
     padding: 10px 30px;
   }
 }
