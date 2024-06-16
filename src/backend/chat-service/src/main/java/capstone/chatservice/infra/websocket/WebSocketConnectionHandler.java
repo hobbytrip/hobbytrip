@@ -1,5 +1,8 @@
 package capstone.chatservice.infra.websocket;
 
+import capstone.chatservice.global.common.JwtTokenHandler;
+import capstone.chatservice.global.exception.Code;
+import capstone.chatservice.global.exception.GlobalException;
 import capstone.chatservice.infra.client.CommunityServiceClient;
 import capstone.chatservice.infra.client.StateServiceClient;
 import capstone.chatservice.infra.client.UserServerDmInfo;
@@ -25,14 +28,30 @@ public class WebSocketConnectionHandler implements ChannelInterceptor {
 
     private final StateServiceClient stateClient;
     private final CommunityServiceClient communityClient;
+    private final JwtTokenHandler jwtTokenHandler;
     private final StateEventProducer stateEventProducer;
+
+    private static final String AUTH_PREFIX = "Authorization";
+    private static final String USER_ID = "userId";
+
+    @Override
+    public Message<?> preSend(Message<?> message, MessageChannel channel) {
+        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(message);
+        if (StompCommand.CONNECT.equals(headerAccessor.getCommand())) {
+            if (!jwtTokenHandler.validateToken(
+                    Objects.requireNonNull(headerAccessor.getFirstNativeHeader(AUTH_PREFIX)))) {
+                throw new GlobalException(Code.UNAUTHORIZED);
+            }
+        }
+        return message;
+    }
 
     @Override
     public void postSend(Message<?> message, MessageChannel channel, boolean sent) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(message);
 
         if (StompCommand.CONNECT.equals(headerAccessor.getCommand())) {
-            Long userId = Long.parseLong(Objects.requireNonNull(headerAccessor.getFirstNativeHeader("userId")));
+            Long userId = Long.parseLong(Objects.requireNonNull(headerAccessor.getFirstNativeHeader(USER_ID)));
             String sessionId = headerAccessor.getSessionId();
             ConnectionStateInfo connectionStateInfo = ConnectionStateInfo.builder()
                     .userId(userId)
