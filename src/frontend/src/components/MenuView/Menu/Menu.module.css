@@ -50,6 +50,19 @@
   gap: 5px;
 }
 
+.statusContainer {
+  display: flex;
+  align-items: center;
+}
+
+.statusCircle {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  margin-right: 5px;
+  background-color: #70CC40;
+}
+
 .menuListWrapper {
   display: flex;
   flex-direction: column;
