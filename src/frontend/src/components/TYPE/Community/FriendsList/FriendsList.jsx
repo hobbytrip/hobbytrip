@@ -6,6 +6,9 @@ import useServerStore from "../../../../actions/useServerStore";
 import { IoClose } from "react-icons/io5";
 import { FaCrown } from "react-icons/fa"; // 관리자 왕관 표시
 import useUserStatusStore from "../../../../actions/useUserStatusStore";
+import { AiFillMessage } from "react-icons/ai";
+import API from "../../../../utils/API/API";
+import { axiosInstance } from "../../../../utils/axiosInstance";
 
 const FriendsList = () => {
   const { serverData } = useServerStore((state) => ({
@@ -20,8 +23,24 @@ const FriendsList = () => {
   const setUserStatus = useUserStatusStore((state) => state.setUsers);
   const { onlineUsers, offlineUsers } = useUserStatusStore();
 
+  const { userId } = useUserStore();
+
   const handleBack = () => {
     nav(-1);
+  };
+
+  const handleMoveToDM = async (receiverId) => {
+    const ids = [userId, receiverId];
+    try {
+      const response = await axiosInstance.post(API.CREATE_DM, {
+        userIds: ids,
+      });
+      console.log("방 생성", response.data.data.dmId);
+      const dmId = response.data.data.dmId;
+      nav(`/${dmId}/dm`);
+    } catch (err) {
+      console.error("DM 방 생성 오류", err);
+    }
   };
 
   useEffect(() => {
@@ -66,6 +85,10 @@ const FriendsList = () => {
                     {userInfo.userId === managerId && (
                       <FaCrown className={style.crown} />
                     )}
+                    <AiFillMessage
+                      onClick={() => handleMoveToDM(userInfo.userId)}
+                      style={{ cursor: "pointer" }}
+                    />
                   </li>
                 );
               })}
@@ -98,6 +121,10 @@ const FriendsList = () => {
                     {userInfo.userId === managerId && (
                       <FaCrown className={style.crown} />
                     )}
+                    <AiFillMessage
+                      onClick={() => handleMoveToDM(userInfo.userId)}
+                      style={{ cursor: "pointer" }}
+                    />
                   </li>
                 );
               })}

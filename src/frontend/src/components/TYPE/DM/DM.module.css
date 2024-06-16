@@ -34,16 +34,6 @@
   color: black;
   font-family: "DOSSaemmul";
 }
-.serverName {
-  padding-left: 30px;
-  margin-left: 20px;
-  flex: 1;
-}
-.channelName {
-  padding-left: 30px;
-  position: absolute;
-  left: 20%;
-}
 .modals {
   position: absolute;
   right: 40px;
@@ -54,19 +44,13 @@
   flex: 1 1 auto;
 }
 
-.CategoryList {
+.dmHistoryList {
   flex: 1;
   border-right: 2px solid #ccc;
   min-width: 300px;
 }
 
 .ChatRoom {
-  flex: 3;
+  flex: 4;
   min-width: 431px;
-}
-
-.FriendsList {
-  flex: 1;
-  border-left: 2px solid #ccc;
-  min-width: 300px;
 }

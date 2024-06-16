@@ -11,6 +11,7 @@ import ForumChatRoom from "./pages/Chat/ChatRoom/ForumChatRoom.jsx";
 import ForumRoom from "./pages/Chat/ForumRoom/ForumRoom.jsx";
 import SettingView from "./pages/ServerView/SettingView/SettingView.jsx";
 import Server from "./components/TYPE/Community/Server.jsx";
+import DM from "./components/TYPE/DM/DM.jsx";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           path=":serverId/:channelId/forum/:forumId/chat"
           element={<ForumChatRoom />}
         />
+        <Route path="/:dmId/dm" element={<DM />} />
         <Route path="/user/profile" element={<UserProfileView />} />
         <Route path="/main" element={<MainView />} />
         <Route path="/menu" element={<MenuView />} />

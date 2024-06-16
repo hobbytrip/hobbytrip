@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams, useLocation } from "react-router-dom";
-import s from "./ChatRoom.module.css";
+import s from "../../Common/ChatRoom/ChatRoom.module.css";
+import { IoChatbubbleEllipses } from "react-icons/io5";
 //components
 import TopHeader from "../../../components/Common/ChatRoom/CommunityChatHeader/ChatHeader";
 import MessageSender from "../../../components/Modal/ForumModal/MessageSender/MessageSender";
@@ -12,7 +12,6 @@ import useDmStore from "../../../actions/useDmStore";
 import useUserStore from "../../../actions/useUserStore";
 import useAuthStore from "../../../actions/useAuthStore";
 import API from "../../../utils/API/API";
-import useFormatDate from "../../../hooks/useFormatDate";
 import axios from "axios";
 
 //dm 기록 받아오기
@@ -44,29 +43,17 @@ const fetchDmHistory = async (page, roomId, setDmList) => {
   }
 };
 
-function DmChat() {
+function DmChat({ roomId, userIds }) {
   //타입 지정: dm
   const TYPE = "direct";
   const { userId, nickname } = useUserStore();
-  const { roomId } = useParams();
   const [page, setPage] = useState(0);
   const chatListContainerRef = useRef(null);
   const { accessToken } = useAuthStore();
   const { client, isConnected } = useWebSocketStore();
-  const subscriptionRef = useRef(null);
 
   //dmStore
-  const {
-    addDmMessage,
-    modifyDmMessage,
-    deleteDmMessage,
-    setDmTypingUsers,
-    setDmList,
-  } = useDmStore((state) => ({
-    addDmMessage: state.addDmMessage,
-    modifyDmMessage: state.modifiedMessage,
-    deleteDmMessage: state.deleteDmMessage,
-    setDmTypingUsers: state.typingDmUsers,
+  const { setDmList } = useDmStore((state) => ({
     setDmList: state.setDmList,
   }));
   const typingDmUsers = useDmStore();
@@ -74,59 +61,12 @@ function DmChat() {
 
   useEffect(() => {
     if (client && isConnected) {
-      subscriptionRef.current = client.subscribe(
-        API.SUBSCRIBE_DM(roomId),
-        (frame) => {
-          try {
-            console.log("dm방 구독 성공", roomId);
-            const parsedMessage = JSON.parse(frame.body);
-            //DM
-            if (parsedMessage.chatType === "DM") {
-              if (
-                parsedMessage.actionType === "TYPING" &&
-                parsedMessage.userId !== userId
-              ) {
-                setDmTypingUsers((prevTypingUsers) => {
-                  if (!prevTypingUsers.includes(parsedMessage.writer)) {
-                    return [...prevTypingUsers, parsedMessage.writer];
-                  }
-                  return prevTypingUsers;
-                });
-              } else if (parsedMessage.actionType === "SEND") {
-                // 전송
-                addDmMessage(parsedMessage.dmRoomId, parsedMessage);
-              } else if (parsedMessage.actionType === "MODIFY") {
-                //수정
-                modifyDmMessage(
-                  parsedMessage.dmRoomId,
-                  parsedMessage.messageId,
-                  parsedMessage.content
-                );
-              } else if (parsedMessage.actionType === "DELETE") {
-                //삭제
-                deleteDmMessage(
-                  parsedMessage.dmRoomId,
-                  parsedMessage.messageId
-                );
-              }
-            }
-          } catch (error) {
-            console.error("DM 구독 오류", error);
-          }
-        }
-      );
+      fetchDmHistory(page, roomId, setDmList); //기록 받아오기console.log("채팅Room ID", roomId);
     }
-    fetchDmHistory(page, roomId, setDmList); //기록 받아오기
-    console.log("채팅Room ID", roomId);
-    return () => {
-      if (client) {
-        client.unsubscribe(subscriptionRef.current.id);
-        subscriptionRef.current = "";
-      }
-    };
   }, [roomId]); //room id가 바뀔 때마다
 
   const handleSendMessage = async (messageContent, uploadedFiles) => {
+    const receiverIds = userIds.filter((id) => id !== userId);
     const messageBody = {
       dmRoomId: roomId,
       userId: userId,
@@ -134,7 +74,7 @@ function DmChat() {
       profileImage: "ho",
       writer: nickname,
       content: messageContent,
-      receiverIds: [],
+      receiverIds: receiverIds,
       createdAt: new Date().toISOString(),
     };
     const sendMessageWithoutFile = (messageBody) => {
@@ -235,6 +175,10 @@ function DmChat() {
             className={s.chatListContainer}
             style={{ overflowY: "auto", height: "720px", marginTop: "5px" }}
           >
+            <div className={s.topInfos}>
+              <IoChatbubbleEllipses className={s.chatIcon} />
+              <h1>채팅을 시작해보세요!</h1>
+            </div>
             <InfiniteScrollComponent
               dataLength={dms.length}
               next={updatePage}
