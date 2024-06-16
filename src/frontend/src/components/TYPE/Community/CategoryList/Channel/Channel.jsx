@@ -61,9 +61,9 @@ const Channel = ({ channel, serverId }) => {
           {getIcon(type)}
           <h3>{channel.name}</h3>
         </button>
-        <TiUserAdd style={{ width: "17px", height: "17px" }} />
+        <TiUserAdd style={{ width: "20px", height: "20px" }} />
         <IoSettings
-          style={{ width: "17px", height: "17px" }}
+          style={{ width: "20px", height: "20px" }}
           onClick={handleChannelSetting}
         />
       </div>

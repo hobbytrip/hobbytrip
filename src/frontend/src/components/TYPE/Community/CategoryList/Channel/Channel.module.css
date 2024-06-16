@@ -4,20 +4,23 @@
   width: 321px;
   gap: 5px;
   padding: 5px;
+  @media (min-width: 432px) {
+    max-width: 270px;
+  }
 }
 
 .name {
-  display: flex; 
-  flex-direction: row; 
+  display: flex;
+  flex-direction: row;
   align-items: center;
   flex-grow: 1;
   border: none;
-  background: none; 
-  cursor: pointer; 
+  background: none;
+  cursor: pointer;
 }
 
 .name h3 {
-  margin-left: 5px; 
+  margin-left: 5px;
   text-align: left;
 }
 
@@ -53,4 +56,3 @@ button:focus {
 .closeBtn h4 {
   text-decoration: underline;
 }
-

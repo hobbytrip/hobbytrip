@@ -31,12 +31,17 @@
 
 .dropdownContent {
   width: 100px;
-  background-color: var(--dark-gray);
+  background-color: #0000008c;
   position: absolute;
   top: -50px;
   left: 0;
   z-index: 9999;
   border-radius: 5px;
+  @media (min-width: 432px) {
+    top: -170px;
+    width: 140px;
+    padding: 0;
+  }
 }
 .typingIndicator {
   display: flex;
@@ -62,6 +67,9 @@
   height: 40px;
   background-color: transparent;
   color: black;
+  @media (min-width: 432px) {
+    width: 100%;
+  }
 }
 
 .btn {

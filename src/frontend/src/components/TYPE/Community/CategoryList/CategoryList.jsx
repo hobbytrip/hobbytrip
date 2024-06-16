@@ -79,9 +79,11 @@ const CategoryList = () => {
       <div className={style.categoryList}>
         <div className={style.categoryHeader}>
           <button onClick={handleAddItem}>
-            <HiPlus style={{ width: "18px", height: "18px" }} />
+            <HiPlus
+              style={{ width: "18px", height: "18px", marginBottom: "-30px" }}
+            />
           </button>
-          <button onClick={handleCloseCategory}>
+          <button onClick={handleCloseCategory} className={style.closeCateBtn}>
             <IoClose style={{ width: "18px", height: "18px" }} />
           </button>
         </div>
@@ -138,13 +140,13 @@ const Category = ({ categoryId, name, serverId, channels }) => {
           <h3>{name}</h3>
           <button className={style.iconPurple}>
             <IoSettings
-              style={{ width: "17px", height: "17px" }}
+              style={{ width: "20px", height: "20px", marginRight: "-5px" }}
               onClick={handleCategorySetting}
             />
           </button>
           <button className={style.iconPurple}>
             <HiPlus
-              style={{ width: "17px", height: "17px" }}
+              style={{ width: "20px", height: "20px", marginRight: "-1px" }}
               onClick={handleAddChannel}
             />
           </button>

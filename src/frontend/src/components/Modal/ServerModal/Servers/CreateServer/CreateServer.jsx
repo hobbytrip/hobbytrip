@@ -52,10 +52,10 @@ function CreateServer() {
         // setServerData({ serverInfo: response.data.data });
         const serverId = response.data.data.serverId;
         console.log("create fetch");
-        const fetchedData = await fetchServerData(serverId, userId);
-
+        await fetchServerData(serverId, userId);
+        const fetchedData = useServerStore.getState().serverData;
         if (fetchedData && fetchedData.serverChannels) {
-          const defaultChatChannel = fetchedData.channels.find(
+          const defaultChatChannel = fetchedData.serverChannels.find(
             (channel) => channel.channelType === "CHAT"
           );
           if (defaultChatChannel) {

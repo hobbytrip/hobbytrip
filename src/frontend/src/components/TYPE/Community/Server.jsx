@@ -4,11 +4,15 @@ import useServerStore from "../../../actions/useServerStore";
 import useChatStore from "../../../actions/useChatStore";
 import useForumStore from "../../../actions/useForumStore";
 import useUserStatusStore from "../../../actions/useUserStatusStore";
+import useChannelDatas from "../../../hooks/useChannelDatas";
 import s from "./Server.module.css";
 import CategoryList from "./CategoryList/CategoryList";
 import ChatRoom from "./CommunityChatRoom";
 import FriendsList from "./FriendsList/FriendsList";
 import API from "../../../utils/API/API";
+import TopHeader from "../../Common/ChatRoom/CommunityChatHeader/ChatHeader";
+import { useParams } from "react-router-dom";
+import { AiOutlineMenu } from "react-icons/ai";
 
 //최상단. 데탑버전
 function Server() {
@@ -16,6 +20,7 @@ function Server() {
     serverData: state.serverData,
   }));
   const subscriptionRef = useRef(null); // 구독 객체 참조 추가
+  const { channelId } = useParams();
 
   const { setTypingUsers, deleteMessage, modifyMessage, sendMessage } =
     useChatStore((state) => ({
@@ -41,6 +46,8 @@ function Server() {
 
   const { client } = useWebSocketStore();
   const CURRENT_SERVER = serverData.serverInfo.serverId;
+
+  const { getChannelName, getChannelTypeIcon } = useChannelDatas(channelId);
 
   useEffect(() => {
     if (CURRENT_SERVER) {
@@ -102,6 +109,7 @@ function Server() {
       };
 
       if (client) {
+        console.log("channelId:", channelId);
         subscriptionRef.current = client.subscribe(
           API.SUBSCRIBE_CHAT(CURRENT_SERVER),
           (frame) => {
@@ -135,9 +143,39 @@ function Server() {
 
   return (
     <div className={s.wrapper}>
-      <CategoryList />
-      <ChatRoom />
-      <FriendsList />
+      <div className={s.Servers}>
+        <h1>하이</h1>
+      </div>
+      <div className={s.container}>
+        <div className={s.header}>
+          <TopHeader />
+        </div>
+        <div className={s.deskHeader}>
+          <div className={s.serverName}>
+            <h3>{serverData.serverInfo.name}</h3>
+          </div>
+          <div className={s.channelName}>
+            <h3>
+              {getChannelTypeIcon()}
+              {getChannelName()}
+            </h3>
+          </div>
+          <div className={s.modals}>
+            <AiOutlineMenu />
+          </div>
+        </div>
+        <div className={s.item}>
+          <div className={s.CategoryList}>
+            <CategoryList />
+          </div>
+          <div className={s.ChatRoom}>
+            <ChatRoom />
+          </div>
+          <div className={s.FriendsList}>
+            <FriendsList />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

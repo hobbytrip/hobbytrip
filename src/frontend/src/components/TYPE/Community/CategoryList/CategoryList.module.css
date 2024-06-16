@@ -2,11 +2,18 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 390px;
-  height: 611px;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   border-radius: 10px;
   color: var(--dark-gray);
+  gap: 20px;
+  padding: 10px;
+}
+.serverName {
+  display: flex;
+  padding: 10px;
+  @media (max-width: 431px) {
+    display: none;
+  }
 }
 
 .categoryList button {
@@ -20,9 +27,8 @@
 }
 
 .category {
-  width: 324px;
   gap: 10px;
-  padding: 9px 33px;
+  padding: 10px 20px;
   border-bottom: 1px solid var(--light-gray);
 }
 
@@ -33,6 +39,11 @@
   width: 318px;
   height: 19px;
   padding: 10px 25px;
+  @media (min-width: 432px) {
+    max-width: 270px;
+    padding: 0;
+    margin-bottom: 20px;
+  }
 }
 
 .categoryHeader button {
@@ -44,14 +55,11 @@
 
 .categoryName {
   display: flex;
+  font-family: "DOSSaemmul";
 }
 
 .category h3 {
   flex-grow: 1;
-}
-
-.iconPurple {
-  color: var(--main-purple);
 }
 
 .createServerModal {
@@ -70,6 +78,11 @@
 
 .createServerModal > * {
   z-index: 1000; /*오버레이*/
+}
+.closeCateBtn {
+  @media (min-width: 432px) {
+    display: none;
+  }
 }
 .closeBtn {
   background-color: transparent;

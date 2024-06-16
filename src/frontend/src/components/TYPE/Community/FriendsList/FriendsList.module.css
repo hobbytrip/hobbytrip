@@ -1,13 +1,11 @@
 .wrapper {
   display: flex;
   flex-direction: column;
-  width: 350px;
-  height: 599px;
-  gap: 11px;
+  gap: 20px;
   padding: 10px 30px 30px 10px;
-  background-color: #ffffff;
   border-radius: 10px;
   color: var(--dark-gray);
+  max-height: 1024px;
 }
 
 li {
@@ -16,6 +14,9 @@ li {
 }
 
 .backBtn {
+  @media (min-width: 432px) {
+    display: none;
+  }
   background: none;
   border: none;
   color: var(--dark-gray);
@@ -30,25 +31,33 @@ li {
   height: 19px;
   padding: 15px 25px;
   position: relative;
+  @media (min-width: 432px) {
+    padding: 0px;
+  }
 }
 
 .header {
-  display: flex;
-  align-items: center;
+  font-family: "DOSSaemmul";
   height: 33px;
-  gap: 10px;
-  padding: 9px 33px;
+  padding: 10px 33px;
+  @media (min-width: 432px) {
+    height: 40px;
+    padding: 10px 30px;
+  }
 }
 
 .list {
-  gap: 20px;
+  gap: 0px;
 }
 
 .friend {
   display: flex;
   align-items: center;
-  height: 20px;
+  height: 25px;
   gap: 4px;
+  @media (min-width: 432px) {
+    height: 50px;
+  }
 }
 
 .stateCircle {
@@ -58,6 +67,10 @@ li {
 }
 
 .profileImage {
+  @media (min-width: 432px) {
+    width: 50px;
+    height: 50px;
+  }
   width: 25px;
   height: 25px;
   border-radius: 50%;
@@ -65,10 +78,19 @@ li {
 
 .name {
   margin-right: 10px;
+  @media (min-width: 432px) {
+    /* font-size: 20px; */
+    font-weight: 600;
+  }
 }
 
 .crown {
   width: 18.75px;
   height: 15px;
   color: var(--main-purple);
+}
+.online {
+  @media (min-width: 432px) {
+    margin-bottom: 15px;
+  }
 }

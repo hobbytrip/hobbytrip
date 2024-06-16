@@ -1,0 +1,71 @@
+.wrapper {
+  display: flex;
+  flex-direction: row;
+  background-color: var(--main-purple);
+  height: 100vh;
+}
+.Servers {
+  min-width: 115px;
+  background-color: var(--main-purple);
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background-color: white;
+  margin-top: 30px;
+  border-top-left-radius: 15px;
+}
+.header {
+  flex: 0 0 auto; /* 헤더는 고정 높이 */
+  @media (min-width: 432px) {
+    display: none;
+  }
+}
+.deskHeader {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  position: relative;
+  border-bottom: 3px solid #ccc;
+  color: black;
+  font-family: "DOSSaemmul";
+}
+.serverName {
+  padding-left: 30px;
+  margin-left: 20px;
+  flex: 1;
+}
+.channelName {
+  padding-left: 30px;
+  position: absolute;
+  left: 20%;
+}
+.modals {
+  position: absolute;
+  right: 40px;
+}
+
+.item {
+  display: flex;
+  flex: 1 1 auto;
+}
+
+.CategoryList {
+  flex: 1;
+  border-right: 3px solid #ccc;
+  min-width: 300px;
+}
+
+.ChatRoom {
+  flex: 3;
+  min-width: 431px;
+}
+
+.FriendsList {
+  flex: 1;
+  border-left: 3px solid #ccc;
+  min-width: 300px;
+}
