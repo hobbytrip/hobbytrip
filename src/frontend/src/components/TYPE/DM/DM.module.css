@@ -14,7 +14,7 @@
   flex-direction: column;
   width: 100%;
   background-color: white;
-  margin-top: 30px;
+  margin-top: 20px;
   border-top-left-radius: 15px;
 }
 .header {
@@ -27,12 +27,34 @@
   display: flex;
   flex: 0 0 auto;
   align-items: center;
-  padding-top: 20px;
-  padding-bottom: 20px;
+  padding-top: 25px;
+  padding-bottom: 25px;
   position: relative;
   border-bottom: 2px solid #ccc;
   color: black;
   font-family: "DOSSaemmul";
+}
+.dmRoomIcon {
+  border-radius: 100%;
+  background-color: var(--mid-gray);
+  text-align: center;
+  width: 25px;
+  height: 25px;
+  position: relative;
+  position: absolute;
+  left: 320px;
+}
+.groupIcon {
+  color: rgba(255, 255, 255, 0.788);
+  font-size: 15px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.headerContent {
+  position: absolute;
+  left: 360px;
 }
 .modals {
   position: absolute;
@@ -51,6 +73,11 @@
 }
 
 .ChatRoom {
-  flex: 4;
+  flex: 3;
   min-width: 431px;
+}
+.userList {
+  flex: 1;
+  border-left: 2px solid #ccc;
+  min-width: 300px;
 }
