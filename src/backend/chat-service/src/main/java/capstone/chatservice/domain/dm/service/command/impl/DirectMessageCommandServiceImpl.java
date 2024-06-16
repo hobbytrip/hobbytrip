@@ -5,10 +5,12 @@ import capstone.chatservice.domain.dm.dto.DirectMessageDto;
 import capstone.chatservice.domain.dm.dto.request.DirectMessageCreateRequest;
 import capstone.chatservice.domain.dm.dto.request.DirectMessageDeleteRequest;
 import capstone.chatservice.domain.dm.dto.request.DirectMessageModifyRequest;
+import capstone.chatservice.domain.dm.exception.DmChatException;
 import capstone.chatservice.domain.dm.repository.DirectMessageRepository;
 import capstone.chatservice.domain.dm.service.command.DirectMessageCommandService;
 import capstone.chatservice.domain.model.ActionType;
 import capstone.chatservice.domain.model.ChatType;
+import capstone.chatservice.global.exception.Code;
 import capstone.chatservice.global.util.SequenceGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -44,7 +46,7 @@ public class DirectMessageCommandServiceImpl implements DirectMessageCommandServ
     @Override
     public DirectMessageDto modify(DirectMessageModifyRequest modifyRequest) {
         DirectMessage directMessage = messageRepository.findById(modifyRequest.getMessageId())
-                .orElseThrow(() -> new RuntimeException("no message"));
+                .orElseThrow(() -> new DmChatException(Code.NOT_FOUND));
 
         directMessage.modify(modifyRequest.getContent());
 
@@ -54,7 +56,7 @@ public class DirectMessageCommandServiceImpl implements DirectMessageCommandServ
     @Override
     public DirectMessageDto delete(DirectMessageDeleteRequest deleteRequest) {
         DirectMessage directMessage = messageRepository.findById(deleteRequest.getMessageId())
-                .orElseThrow(() -> new RuntimeException(" no message"));
+                .orElseThrow(() -> new DmChatException(Code.NOT_FOUND));
 
         directMessage.delete();
 

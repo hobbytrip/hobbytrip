@@ -18,7 +18,6 @@ public class ServerMessageCreateRequest {
     private Long userId;
     private Long parentId;
     private String profileImage;
-    private String type;
     private String writer;
     private String content;
     private List<UploadFile> files = null;

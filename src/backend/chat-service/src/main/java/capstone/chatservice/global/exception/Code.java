@@ -17,10 +17,15 @@ public enum Code {
     VALIDATION_ERROR(70001, HttpStatus.BAD_REQUEST, "Validation error"),
     NOT_FOUND(70002, HttpStatus.NOT_FOUND, "Requested resource is not found"),
 
+    FILE_COUNT_EXCEEDED(70003, HttpStatus.BAD_REQUEST, "파일 업로드 가능 개수는 10개 이하 입니다."),
+    FILE_SIZE_EXCEEDED(70004, HttpStatus.BAD_REQUEST, "업로드 할 수 있는 파일의 최대 크기는 5MB 입니다."),
+    FILE_UPLOAD_FAILED(70005, HttpStatus.BAD_REQUEST, "파일 업로드에 실패했습니다."),
+    FILE_NOT_FOUND(70006, HttpStatus.NOT_FOUND, "존재하지 않는 파일입니다."),
+
     INTERNAL_ERROR(70010, HttpStatus.INTERNAL_SERVER_ERROR, "Internal error"),
     DATA_ACCESS_ERROR(70011, HttpStatus.INTERNAL_SERVER_ERROR, "Data access error"),
 
-    UNAUTHORIZED(70000, HttpStatus.UNAUTHORIZED, "User unauthorized");
+    UNAUTHORIZED(70009, HttpStatus.UNAUTHORIZED, "User unauthorized");
 
     private final Integer code;
     private final HttpStatus httpStatus;

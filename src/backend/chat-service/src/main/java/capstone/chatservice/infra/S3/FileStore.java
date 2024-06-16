@@ -1,6 +1,8 @@
 package capstone.chatservice.infra.S3;
 
 import capstone.chatservice.domain.file.domain.UploadFile;
+import capstone.chatservice.domain.file.exception.FileException;
+import capstone.chatservice.global.exception.Code;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import java.io.IOException;
@@ -20,6 +22,7 @@ public class FileStore {
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
+    private static final int FILE_COUNT = 10;
     private static final String BASE_DIR = "chat/";
 
     private final AmazonS3Client amazonS3Client;
@@ -40,7 +43,7 @@ public class FileStore {
         try (InputStream inputStream = multipartFile.getInputStream()) {
             amazonS3Client.putObject(bucketName, storeFileName, inputStream, objectMetadata);
         } catch (IOException e) {
-            throw new RuntimeException("파일 저장 오류");
+            throw new FileException(Code.FILE_UPLOAD_FAILED);
         }
 
         return amazonS3Client.getUrl(bucketName, storeFileName).toString();
@@ -48,10 +51,7 @@ public class FileStore {
 
     public List<UploadFile> storeFiles(List<MultipartFile> multipartFiles) {
 
-        // 파일 업로드 개수 검증(10개 이하로 정의)
-        if (multipartFiles.size() > 10) {
-            throw new RuntimeException("파일 업로드 개수 오류");
-        }
+        validateFileUploadCount(multipartFiles);
 
         List<UploadFile> uploadFiles = new ArrayList<>();
         for (MultipartFile multipartFile : multipartFiles) {
@@ -75,5 +75,11 @@ public class FileStore {
     private String extractExt(String originalFilename) {
         int pos = originalFilename.lastIndexOf(".");
         return originalFilename.substring(pos + 1);
+    }
+
+    private void validateFileUploadCount(List<MultipartFile> multipartFiles) {
+        if (multipartFiles.size() > FILE_COUNT) {
+            throw new FileException(Code.FILE_COUNT_EXCEEDED);
+        }
     }
 }

@@ -7,8 +7,10 @@ import capstone.chatservice.domain.server.dto.ServerMessageDto;
 import capstone.chatservice.domain.server.dto.request.ServerMessageCreateRequest;
 import capstone.chatservice.domain.server.dto.request.ServerMessageDeleteRequest;
 import capstone.chatservice.domain.server.dto.request.ServerMessageModifyRequest;
+import capstone.chatservice.domain.server.exception.ServerChatException;
 import capstone.chatservice.domain.server.repository.ServerMessageRepository;
 import capstone.chatservice.domain.server.service.command.ServerMessageCommandService;
+import capstone.chatservice.global.exception.Code;
 import capstone.chatservice.global.util.SequenceGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -45,7 +47,7 @@ public class ServerMessageCommandServiceImpl implements ServerMessageCommandServ
     @Override
     public ServerMessageDto modify(ServerMessageModifyRequest modifyRequest) {
         ServerMessage serverMessage = messageRepository.findById(modifyRequest.getMessageId())
-                .orElseThrow(() -> new RuntimeException("no message"));
+                .orElseThrow(() -> new ServerChatException(Code.NOT_FOUND));
 
         serverMessage.modify(modifyRequest.getContent());
 
@@ -55,7 +57,7 @@ public class ServerMessageCommandServiceImpl implements ServerMessageCommandServ
     @Override
     public ServerMessageDto delete(ServerMessageDeleteRequest deleteRequest) {
         ServerMessage serverMessage = messageRepository.findById(deleteRequest.getMessageId())
-                .orElseThrow(() -> new RuntimeException("no message"));
+                .orElseThrow(() -> new ServerChatException(Code.NOT_FOUND));
 
         serverMessage.delete();
 

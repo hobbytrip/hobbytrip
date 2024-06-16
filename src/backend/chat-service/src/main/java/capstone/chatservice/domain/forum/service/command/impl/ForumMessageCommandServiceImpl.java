@@ -5,10 +5,12 @@ import capstone.chatservice.domain.forum.dto.ForumMessageDto;
 import capstone.chatservice.domain.forum.dto.request.ForumMessageCreateRequest;
 import capstone.chatservice.domain.forum.dto.request.ForumMessageDeleteRequest;
 import capstone.chatservice.domain.forum.dto.request.ForumMessageModifyRequest;
+import capstone.chatservice.domain.forum.exception.ForumChatException;
 import capstone.chatservice.domain.forum.repository.ForumMessageRepository;
 import capstone.chatservice.domain.forum.service.command.ForumMessageCommandService;
 import capstone.chatservice.domain.model.ActionType;
 import capstone.chatservice.domain.model.ChatType;
+import capstone.chatservice.global.exception.Code;
 import capstone.chatservice.global.util.SequenceGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -47,7 +49,7 @@ public class ForumMessageCommandServiceImpl implements ForumMessageCommandServic
     @Override
     public ForumMessageDto modify(ForumMessageModifyRequest modifyRequest) {
         ForumMessage forumMessage = forumMessageRepository.findById(modifyRequest.getMessageId())
-                .orElseThrow(() -> new RuntimeException("no message"));
+                .orElseThrow(() -> new ForumChatException(Code.NOT_FOUND));
 
         forumMessage.modify(modifyRequest.getContent());
 
@@ -57,7 +59,7 @@ public class ForumMessageCommandServiceImpl implements ForumMessageCommandServic
     @Override
     public ForumMessageDto delete(ForumMessageDeleteRequest deleteRequest) {
         ForumMessage forumMessage = forumMessageRepository.findById(deleteRequest.getMessageId())
-                .orElseThrow(() -> new RuntimeException("no message"));
+                .orElseThrow(() -> new ForumChatException(Code.NOT_FOUND));
 
         forumMessage.delete();
 
