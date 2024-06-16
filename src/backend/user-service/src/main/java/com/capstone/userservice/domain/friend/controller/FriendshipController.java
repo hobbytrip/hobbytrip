@@ -53,6 +53,14 @@ public class FriendshipController {
         return DataResponseDto.of(friendshipService.deleteFriendship(friendshipId));
     }
 
+    @GetMapping("/checkFriendship")
+    public DataResponseDto<Object> checkFriendship(HttpServletRequest request) {
+        String token = request.getHeader(Header);
+        String temp = trimToken(token);
+
+        return DataResponseDto.of(friendshipService.checkFriendship(temp));
+    }
+
     public String trimToken(String token) {
         return token.split(" ")[1].trim();
     }

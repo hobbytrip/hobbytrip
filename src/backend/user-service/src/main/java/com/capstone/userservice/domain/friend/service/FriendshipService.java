@@ -110,6 +110,7 @@ public class FriendshipService {
         return result;
     }
 
+
     @Transactional
     public List<FriendReadResponse> getFriendList(String token) {
         Long userId = tokenUtil.getUserId(token);
@@ -184,5 +185,21 @@ public class FriendshipService {
         friendshipRepository.delete(counterFriendship);
 
         return "ok";
+    }
+
+    @Transactional
+    public Boolean checkFriendship(String token) {
+        Long userId = tokenUtil.getUserId(token);
+
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new FriendException(Code.NOT_FOUND, "회원 조회를 실패했습니다."));
+        List<Friendship> friendshipList = user.getFriendshipList();
+
+        for (Friendship friendship : friendshipList) {
+            if (friendship.isFrom() && friendship.getStatus() == FriendshipStatus.WAITING) {
+                return true;
+            }
+        }
+        return false;
     }
 }
