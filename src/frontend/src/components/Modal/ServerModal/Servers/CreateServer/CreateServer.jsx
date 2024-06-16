@@ -43,7 +43,7 @@ function CreateServer() {
       const response = await axiosInstance.post(API.COMM_SERVER, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: localStorage.getItem('accessToken')
+          Authorization: localStorage.getItem("accessToken"),
         },
       });
 
@@ -51,9 +51,17 @@ function CreateServer() {
         console.log(response);
         // setServerData({ serverInfo: response.data.data });
         const serverId = response.data.data.serverId;
-        fetchServerData(serverId, userId);
-        console.log('create fetch')
-        nav(`/${serverId}/menu`);
+        console.log("create fetch");
+        const fetchedData = await fetchServerData(serverId, userId);
+
+        if (fetchedData && fetchedData.serverChannels) {
+          const defaultChatChannel = fetchedData.channels.find(
+            (channel) => channel.channelType === "CHAT"
+          );
+          if (defaultChatChannel) {
+            nav(`/${serverId}/${defaultChatChannel.channelId}/chat`);
+          }
+        }
       } else {
         console.log("행성 만들기 실패.");
         console.log(response);

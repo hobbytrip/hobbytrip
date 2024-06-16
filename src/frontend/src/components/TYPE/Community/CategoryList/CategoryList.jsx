@@ -3,22 +3,23 @@ import { useNavigate, useParams } from "react-router-dom";
 import style from "./CategoryList.module.css";
 import CreateItem from "./CreateItem/CreateItem";
 import Channel from "./Channel/Channel";
-import CreateChannel from "../../Modal/ServerModal/Channel/CreateChannel/CreateChannel";
-import CategorySetting from "../../Modal/ServerModal/Category/CategorySetting/CategorySetting";
-import useUserStore from "../../../actions/useUserStore";
-import useServerStore from "../../../actions/useServerStore";
+import CreateChannel from "../../../Modal/ServerModal/Channel/CreateChannel/CreateChannel";
+import CategorySetting from "../../../Modal/ServerModal/Category/CategorySetting/CategorySetting";
+import useUserStore from "../../../../actions/useUserStore";
+import useServerStore from "../../../../actions/useServerStore";
 import { HiPlus } from "react-icons/hi2";
 import { IoClose, IoSettings } from "react-icons/io5";
-import { axiosInstance } from "../../../utils/axiosInstance";
-import API from "../../../utils/API/API";
+import { axiosInstance } from "../../../../utils/axiosInstance";
+import API from "../../../../utils/API/API";
 
 const CategoryList = () => {
   const [categories, setCategories] = useState([]);
+  const [channels, setChannels] = useState([]);
   const [uncategorizedChannels, setUncategorizedChannels] = useState([]);
   const [showCreateItemModal, setShowCreateItemModal] = useState(false);
-  // const { serverId } = useParams();
-  const { serverId } = useServerStore();
   const nav = useNavigate();
+  const { userId } = useUserStore();
+  const { serverId } = useParams();
 
   const { serverData, fetchServerData } = useServerStore((state) => ({
     serverData: state.serverData,
@@ -113,8 +114,6 @@ const CategoryList = () => {
 const Category = ({ categoryId, name, serverId, channels }) => {
   const [showCreateChannel, setShowCreateChannel] = useState(false);
   const [showCategorySetting, setShowCategorySetting] = useState(false);
-  const nav = useNavigate();
-  const { userId } = useUserStore();
 
   const handleAddChannel = () => {
     setShowCreateChannel(true);

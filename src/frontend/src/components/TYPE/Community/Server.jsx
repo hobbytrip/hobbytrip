@@ -1,14 +1,20 @@
 import { useEffect, useRef } from "react";
-import useUserStore from "../actions/useUserStore";
-import useChatStore from "../actions/useChatStore";
-import useForumStore from "../actions/useForumStore";
-import useWebSocketStore from "../actions/useWebSocketStore";
-import useUserStatusStore from "../actions/useUserStatusStore";
-import API from "../utils/API/API";
+import useWebSocketStore from "../../../actions/useWebSocketStore";
+import useServerStore from "../../../actions/useServerStore";
+import useChatStore from "../../../actions/useChatStore";
+import useForumStore from "../../../actions/useForumStore";
+import useUserStatusStore from "../../../actions/useUserStatusStore";
+import s from "./Server.module.css";
+import CategoryList from "./CategoryList/CategoryList";
+import ChatRoom from "./CommunityChatRoom";
+import FriendsList from "./FriendsList/FriendsList";
+import API from "../../../utils/API/API";
 
-const useWebSocket = (serverId) => {
-  const { userId } = useUserStore();
-  const { client } = useWebSocketStore();
+//최상단. 데탑버전
+function Server() {
+  const { serverData } = useServerStore((state) => ({
+    serverData: state.serverData,
+  }));
   const subscriptionRef = useRef(null); // 구독 객체 참조 추가
 
   const { setTypingUsers, deleteMessage, modifyMessage, sendMessage } =
@@ -33,8 +39,11 @@ const useWebSocket = (serverId) => {
 
   const updateUserState = useUserStatusStore((state) => state.updateUserState);
 
+  const { client } = useWebSocketStore();
+  const CURRENT_SERVER = serverData.serverInfo.serverId;
+
   useEffect(() => {
-    if (serverId) {
+    if (CURRENT_SERVER) {
       const handleServerMessage = (parsedMessage) => {
         if (
           parsedMessage.actionType === "TYPING" &&
@@ -50,12 +59,12 @@ const useWebSocket = (serverId) => {
           sendMessage(parsedMessage);
         } else if (parsedMessage.actionType === "MODIFY") {
           modifyMessage(
-            serverId,
+            parsedMessage.serverId,
             parsedMessage.messageId,
             parsedMessage.content
           );
         } else if (parsedMessage.actionType === "DELETE") {
-          deleteMessage(serverId, parsedMessage.messageId);
+          deleteMessage(parsedMessage.serverId, parsedMessage.messageId);
         }
       };
 
@@ -94,10 +103,10 @@ const useWebSocket = (serverId) => {
 
       if (client) {
         subscriptionRef.current = client.subscribe(
-          API.SUBSCRIBE_CHAT(serverId),
+          API.SUBSCRIBE_CHAT(CURRENT_SERVER),
           (frame) => {
             try {
-              console.log("구독 성공: ", serverId);
+              console.log("구독 성공: ", CURRENT_SERVER);
               const parsedMessage = JSON.parse(frame.body);
               if (parsedMessage.type === "CONNECT") {
                 updateUserState(parsedMessage.userId, "ONLINE");
@@ -122,7 +131,15 @@ const useWebSocket = (serverId) => {
         subscriptionRef.current = "";
       }
     };
-  }, [serverId]);
-};
+  }, [CURRENT_SERVER]);
 
-export default useWebSocket;
+  return (
+    <div className={s.wrapper}>
+      <CategoryList />
+      <ChatRoom />
+      <FriendsList />
+    </div>
+  );
+}
+
+export default Server;
