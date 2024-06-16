@@ -12,7 +12,6 @@ import ChatChannelType from "../../../components/Modal/ChatModal/ChatChannelType
 import InfiniteScrollComponent from "../../../components/Common/ChatRoom/InfiniteScrollComponent";
 import useWebSocketStore from "../../../actions/useWebSocketStore";
 import useChatStore from "../../../actions/useChatStore";
-import useForumStore from "../../../actions/useForumStore";
 import API from "../../../utils/API/API";
 import useUserStore from "../../../actions/useUserStore";
 import useAuthStore from "../../../actions/useAuthStore";
@@ -66,7 +65,6 @@ function ChatRoom() {
   const { client, isConnected } = useWebSocketStore();
   const {
     typingUsers,
-    setTypingUsers,
     deleteMessage,
     modifyMessage,
     sendMessage,

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import style from "./CategoryList.module.css";
 import CreateItem from "./CreateItem/CreateItem";
@@ -7,6 +7,10 @@ import CreateChannel from "../../Modal/ServerModal/Channel/CreateChannel/CreateC
 import CategorySetting from "../../Modal/ServerModal/Category/CategorySetting/CategorySetting";
 import useUserStore from "../../../actions/useUserStore";
 import useServerStore from "../../../actions/useServerStore";
+import useWebSocketStore from "../../../actions/useWebSocketStore";
+import useForumStore from "../../../actions/useForumStore";
+import useChatStore from "../../../actions/useChatStore";
+import useUserStatusStore from "../../../actions/useUserStatusStore";
 import useWebSocket from "../../../hooks/useSocketByServer";
 import { HiPlus } from "react-icons/hi2";
 import { IoClose, IoSettings } from "react-icons/io5";
@@ -20,14 +24,35 @@ const CategoryList = () => {
   const [showCreateItemModal, setShowCreateItemModal] = useState(false);
   const { serverId } = useParams();
   const nav = useNavigate();
+  // const { userId } = useUserStore();
+  const { client } = useWebSocketStore();
+  const subscriptionRef = useRef(null); // 구독 객체 참조 추가
 
   const { serverData, fetchServerData } = useServerStore((state) => ({
     serverData: state.serverData,
     fetchServerData: state.fetchServerData,
   }));
-  const { userId } = useUserStore();
+  const { setTypingUsers, deleteMessage, modifyMessage, sendMessage } =
+    useChatStore((state) => ({
+      setTypingUsers: state.setTypingUsers,
+      deleteMessage: state.deleteMessage,
+      modifyMessage: state.modifyMessage,
+      sendMessage: state.sendMessage,
+    }));
 
-  useWebSocket(serverId);
+  const {
+    addForumMessage,
+    modifyForumMessage,
+    deleteForumMessage,
+    setForumTypingUsers,
+  } = useForumStore((state) => ({
+    addForumMessage: state.addForumMessage,
+    modifyForumMessage: state.modifyForumMessage,
+    deleteForumMessage: state.deleteForumMessage,
+    setForumTypingUsers: state.setForumTypingUsers,
+  }));
+  const { userId } = useUserStore();
+  const updateUserState = useUserStatusStore((state) => state.updateUserState);
 
   useEffect(() => {
     deleteNotice();
