@@ -15,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class ServerReadResponseDto {
     private ServerResponseDto server;
+    private List<ServerUserInfo> serverUserInfos;
     private List<CategoryResponseDto> categories;
     private List<ChannelResponseDto> channels;
     private ServerUsersStateResponse usersState;
@@ -22,6 +23,7 @@ public class ServerReadResponseDto {
 
     public static ServerReadResponseDto of(
             ServerResponseDto server,
+            List<ServerUserInfo> serverUserInfos,
             List<CategoryResponseDto> categories,
             List<ChannelResponseDto> channels,
             ServerUsersStateResponse usersState,
@@ -29,6 +31,7 @@ public class ServerReadResponseDto {
     ){
         return ServerReadResponseDto.builder()
                 .server(server)
+                .serverUserInfos(serverUserInfos)
                 .categories(categories)
                 .channels(channels)
                 .usersState(usersState)

@@ -7,15 +7,13 @@ import capstone.communityservice.domain.channel.entity.Channel;
 import capstone.communityservice.domain.channel.entity.ChannelType;
 import capstone.communityservice.domain.channel.exception.ChannelException;
 import capstone.communityservice.domain.channel.repository.ChannelRepository;
-import capstone.communityservice.domain.server.dto.OpenServerQueryDto;
-import capstone.communityservice.domain.server.dto.ServerReadResponseDto;
-import capstone.communityservice.domain.server.dto.ServerResponseDto;
+import capstone.communityservice.domain.server.dto.*;
+import capstone.communityservice.domain.server.entity.ServerUser;
 import capstone.communityservice.global.external.ChatServiceClient;
 import capstone.communityservice.global.external.StateServiceClient;
 import capstone.communityservice.global.external.dto.ServerMessageDto;
 import capstone.communityservice.global.external.dto.UserLocationDto;
 import capstone.communityservice.global.external.dto.ServerUsersStateResponse;
-import capstone.communityservice.domain.server.dto.ServerWithCountResponseDto;
 import capstone.communityservice.domain.server.entity.Server;
 import capstone.communityservice.domain.server.exception.ServerException;
 import capstone.communityservice.domain.server.repository.ServerRepository;
@@ -48,7 +46,7 @@ public class ServerQueryService {
     private final CategoryRepository categoryRepository;
 
     public ServerReadResponseDto read(Long serverId, Long userId) {
-        Server findServer = validateExistServer(serverId);
+        Server findServer = findServerWithServerUser(serverId);
 
         validateServerUser(serverId, userId);
 
@@ -63,6 +61,13 @@ public class ServerQueryService {
                     findServer,
                     usersState,
                     messages
+                );
+    }
+
+    private Server findServerWithServerUser(Long serverId) {
+        return serverRepository.findServerWithUserById(serverId)
+                .orElseThrow(() ->
+                        new ServerException(Code.NOT_FOUND, "Server Not Found")
                 );
     }
 
@@ -82,8 +87,15 @@ public class ServerQueryService {
                 .map(CategoryResponseDto::of)
                 .toList();
 
+        List<ServerUserInfo> serverUserInfos = findServer
+                .getServerUsers()
+                .stream()
+                .map(ServerUserInfo::of)
+                .toList();
+
         return ServerReadResponseDto.of(
                 ServerResponseDto.of(findServer),
+                serverUserInfos,
                 categories,
                 channels,
                 usersState,

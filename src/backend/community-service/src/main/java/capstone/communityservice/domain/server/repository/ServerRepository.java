@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ServerRepository extends JpaRepository<Server, Long> {
 
@@ -27,4 +28,7 @@ public interface ServerRepository extends JpaRepository<Server, Long> {
 
     @Query("select distinct(s) from Server s join fetch s.serverUsers su where su.user.id = :userId and s.deleted = false")
     List<Server> findServersWithUserId(Long userId);
+
+    @Query("select distinct(s) from Server s join fetch s.serverUsers su join fetch su.user where s.id = :serverId")
+    Optional<Server> findServerWithUserById(Long serverId);
 }

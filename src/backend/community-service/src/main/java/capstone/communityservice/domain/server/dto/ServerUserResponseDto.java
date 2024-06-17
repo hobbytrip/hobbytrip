@@ -11,13 +11,10 @@ import lombok.*;
 @AllArgsConstructor
 public class ServerUserResponseDto {
 
-    @NotNull
     private Long serverId;
 
-    @NotNull
     private Long userId;
 
-    @NotBlank
     private String name;
 
     public static ServerUserResponseDto of(ServerUser findServerUser, Long serverId, Long userId) {

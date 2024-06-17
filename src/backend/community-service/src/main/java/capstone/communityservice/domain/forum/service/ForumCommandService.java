@@ -199,7 +199,7 @@ public class ForumCommandService {
                 .forEach(fileUploadService::delete);
 
         List<Long> fileIds = files.stream()
-                .map(File::getId) // File 엔티티에 getId() 메소드가 있다고 가정
+                .map(File::getId)
                 .toList();
 
         fileRepository.deleteAllByIdIn(fileIds);
