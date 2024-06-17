@@ -9,6 +9,8 @@ import { RiGroupFill } from "react-icons/ri";
 import useDmHistoryStore from "../../../actions/useDmHistoryStore";
 import DmHistoryList from "./DmHistoryList/DmHistoryList";
 import UserList from "./UserList/UserList";
+import MainHeader from "../../MainView/MainHeader/MainHeader";
+import MyPlanet from "../../MainView/MyPlanet/MyPlanet";
 
 function DM() {
   const [dmInfo, setDmInfo] = useState(null);
@@ -38,7 +40,10 @@ function DM() {
   return (
     <div className={s.wrapper}>
       <div className={s.Servers}>
-        <h1>하이</h1>
+      <div className={s.deskServers}>
+        <MainHeader className={s.mainHeader} />
+        <MyPlanet className={s.myPlanet} />
+      </div>
       </div>
       <div className={s.container}>
         <div className={s.header}>

@@ -23,6 +23,7 @@
   height: 25px;
   padding: 5px;
   float: left;
+  margin-right: 10px;
 }
 .msgTopInfos {
   display: flex;
