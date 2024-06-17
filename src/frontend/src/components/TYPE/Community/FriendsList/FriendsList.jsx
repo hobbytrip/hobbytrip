@@ -86,7 +86,7 @@ const FriendsList = () => {
                       <FaCrown className={style.crown} />
                     )}
                     <AiFillMessage
-                      className={style.dmIcon}
+                      className={style.msgIcon}
                       onClick={() => handleMoveToDM(userInfo.userId)}
                       style={{ cursor: "pointer" }}
                     />
@@ -123,7 +123,7 @@ const FriendsList = () => {
                       <FaCrown className={style.crown} />
                     )}
                     <AiFillMessage
-                      className={style.dmIcon}
+                      className={style.msgIcon}
                       onClick={() => handleMoveToDM(userInfo.userId)}
                       style={{ cursor: "pointer" }}
                     />

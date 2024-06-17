@@ -14,7 +14,7 @@ const DmHistoryList = ({ dmHistoryList }) => {
     <div className={s.wrapper}>
       <h3 className={s.title}>다이렉트 메세지</h3>
       <div className={s.dmHistoryList}>
-        {dmHistoryList.map((dm) => (
+        {dmHistoryList && dmHistoryList.map((dm) => (
           <div
             key={dm.dmId}
             className={s.dmItem}

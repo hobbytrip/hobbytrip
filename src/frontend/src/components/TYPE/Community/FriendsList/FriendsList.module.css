@@ -97,10 +97,7 @@ li {
     margin-bottom: 15px;
   }
 }
-
-.dmIcon {
-  font-size: 16px;
+.msgIcon {
   position: absolute;
   right: 30px;
-  color: var(--dark-gray);
 }

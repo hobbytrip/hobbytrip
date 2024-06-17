@@ -53,8 +53,9 @@ function DmChat({ roomId, userIds }) {
   const { client, isConnected } = useWebSocketStore();
 
   //dmStore
-  const { setDmList } = useDmStore((state) => ({
+  const { setDmList, addDmMessage } = useDmStore((state) => ({
     setDmList: state.setDmList,
+    addDmMessage: state.addDmMessage
   }));
   const typingDmUsers = useDmStore();
   const dms = useDmStore((state) => state.dmLists[roomId]) || [];
@@ -66,7 +67,7 @@ function DmChat({ roomId, userIds }) {
   }, [roomId]); //room id가 바뀔 때마다
 
   const handleSendMessage = async (messageContent, uploadedFiles) => {
-    const receiverIds = userIds.filter((id) => id !== userId);
+    const receiverIds = userIds?.filter((id) => id !== userId);
     const messageBody = {
       dmRoomId: roomId,
       userId: userId,
