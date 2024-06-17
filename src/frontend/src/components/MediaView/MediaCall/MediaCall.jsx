@@ -4,15 +4,17 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import style from './MediaCall.module.css';
 import axios from 'axios';
 
-import ChatHeader from '../../Common/ChatRoom/CommunityChatHeader/ChatHeader';
-import ChatHeaderModal from '../../../components/Modal/ChatModal/ChatRoomInfo/ChatRoomInfo';
 import UserVideoComponent from './../UserVideoComponent';
 import useUserStore from '../../../actions/useUserStore';
 import API from '../../../utils/API/API';
 
 import { HiMiniSpeakerWave } from "react-icons/hi2";
 import { AiFillMessage } from "react-icons/ai";
-import { IoClose, IoVideocamOutline, IoVideocamOffOutline, IoCall, IoCallOutline } from "react-icons/io5";
+import { IoClose, 
+  IoVideocamOutline, 
+  IoVideocamOffOutline, 
+  IoCall, 
+  IoCallOutline } from "react-icons/io5";
 import { LuMonitor, LuMonitorOff } from "react-icons/lu";
 import { MdOutlineKeyboardVoice, MdKeyboardVoice } from "react-icons/md";
 
@@ -31,6 +33,8 @@ export default function MediaCall() {
 
   const accessToken = localStorage.getItem('accessToken');
   const OV = useRef(null);
+  const pc = new RTCPeerConnection();
+const state = pc.iceConnectionState;
 
   useEffect(() => {
     OV.current = new OpenVidu(); // 컴포넌트가 처음 마운트될 때만 초기화
@@ -46,16 +50,14 @@ export default function MediaCall() {
     e.preventDefault();
   
     const mySession = OV.current.initSession();
+    console.log(state);
     
     mySession.on('streamCreated', (event) => {
-      console.log('Stream created with id:', event.stream.streamId);
-      console.log('Subscribing to', event.stream.connection.connectionId); 
       const subscriber = mySession.subscribe(event.stream, undefined);
       setSubscribers((subscribers) => [...subscribers, subscriber]);
     });
   
     mySession.on('streamDestroyed', (event) => {
-      console.log('Stream destroyed with id:', event.stream.streamId); // 로그 추가
       const streamManager = event.stream.streamManager;
       setSubscribers((prevSubscribers) => {
         return prevSubscribers.filter(subscriber => subscriber !== streamManager);
@@ -205,8 +207,6 @@ export default function MediaCall() {
   return (
     <>
     <div className={style.wrapper}>
-    <ChatHeader />
-    <ChatHeaderModal />
       <div className={style.container}>
         <div className={style.headerContainer}>
           <HiMiniSpeakerWave style={{ width: '15px', height: '15px' }} />

@@ -1,13 +1,51 @@
 .wrapper {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column; /* 요소들이 수직으로 쌓이도록 설정 */
   height: 100vh;
   background-color: var(--main-purple);
 }
 
 .container {
   width: 390px;
-  height: 504px;
-  padding: 10px 0px 340px 0px;
+  padding: 10px 0;
+}
+
+.deskServers, .header {
+  display: none;
+}
+
+@media (min-width: 432px) {
+  .wrapper {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: transparent;
+    padding: 0; /* 공백 제거 */
+  }
+
+  .chatHeaders {
+    display: none;
+  }
+
+  .container {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    padding: 0;
+  }
+
+  .header {
+    display: block;
+    width: 100%;
+    height: 27px;
+    background-color: var(--dark-purple);
+  }
+
+  .deskServers {
+    display: flex;
+    flex-direction: column;
+    width: 118px;
+    height: 100%;
+    background: var(--dark-purple);
+  }
 }

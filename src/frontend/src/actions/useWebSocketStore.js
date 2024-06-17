@@ -3,10 +3,11 @@ import * as StompJs from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import useUserStatusStore from "./useUserStatusStore";
 
+
 const useWebSocketStore = create((set, get) => ({
   client: null,
   isConnected: false,
-
+    
   connect: (userId) => {
     const stompClient = new StompJs.Client({
       webSocketFactory: () => new SockJS("https://fittrip.site/stomp/ws-stomp"),

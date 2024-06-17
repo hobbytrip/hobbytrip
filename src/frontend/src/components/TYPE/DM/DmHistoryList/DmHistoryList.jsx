@@ -3,13 +3,10 @@ import s from "./DmHistoryList.module.css";
 import { RiGroupFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 
-const DmHistoryList = ({ dmId, dmHistoryList }) => {
+const DmHistoryList = ({ dmHistoryList }) => {
   const navigate = useNavigate();
-  const formatUserNames = (users) => {
-    return users.map((user) => user.name).join(", ");
-  };
 
-  const handleMoveToDm = () => {
+  const handleMoveToDm = (dmId) => {
     navigate(`/${dmId}/dm`);
   };
 
@@ -17,18 +14,24 @@ const DmHistoryList = ({ dmId, dmHistoryList }) => {
     <div className={s.wrapper}>
       <h3 className={s.title}>다이렉트 메세지</h3>
       <div className={s.dmHistoryList}>
-        <div className={s.dmRoomIcon}>
-          <RiGroupFill className={s.groupIcon} />
-        </div>
-        <div className={s.container}>
-          <div className={s.dmBox} onClick={handleMoveToDm}>
-            <h3 style={{ fontWeight: "600" }}>
-              {formatUserNames(dmHistoryList)}
-            </h3>
+        {dmHistoryList.map((dm) => (
+          <div
+            key={dm.dmId}
+            className={s.dmItem}
+            onClick={() => handleMoveToDm(dm.dmId)}
+          >
+            <div className={s.dmRoomIcon}>
+              <RiGroupFill className={s.groupIcon} />
+            </div>
+            <div className={s.container}>
+              <div className={s.dmBox}>
+                <h3 style={{ fontWeight: "600" }}>{dm.name}</h3>
+              </div>
+            </div>
           </div>
-          <h4 className={s.count}>총 {dmHistoryList.length}명</h4>
-        </div>
+        ))}
       </div>
+      {/* <h4 className={s.count}>총 {dmHistoryList.length}명</h4> */}
     </div>
   );
 };
