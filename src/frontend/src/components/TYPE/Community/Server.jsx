@@ -9,6 +9,8 @@ import s from "./Server.module.css";
 import CategoryList from "./CategoryList/CategoryList";
 import ChatRoom from "./CommunityChatRoom";
 import FriendsList from "./FriendsList/FriendsList";
+import MainHeader from "../../MainView/MainHeader/MainHeader";
+import MyPlanet from "../../MainView/MyPlanet/MyPlanet";
 import API from "../../../utils/API/API";
 import TopHeader from "../../Common/ChatRoom/CommunityChatHeader/ChatHeader";
 import { useParams } from "react-router-dom";
@@ -144,7 +146,10 @@ function Server() {
   return (
     <div className={s.wrapper}>
       <div className={s.Servers}>
-        <h1>하이</h1>
+      <div className={s.deskServers}>
+        <MainHeader className={s.mainHeader} />
+        <MyPlanet className={s.myPlanet} />
+      </div>
       </div>
       <div className={s.container}>
         <div className={s.header}>

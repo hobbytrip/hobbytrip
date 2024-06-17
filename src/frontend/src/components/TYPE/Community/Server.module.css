@@ -41,8 +41,8 @@
 }
 .channelName {
   padding-left: 30px;
-  position: absolute;
-  left: 20%;
+  position: fixed;
+  left: 29%;
 }
 .modals {
   position: absolute;
@@ -69,4 +69,15 @@
   flex: 1;
   border-left: 2px solid #ccc;
   min-width: 300px;
+}
+
+.deskServers{
+  display: none;
+}
+
+@media (min-width: 432px){
+  .deskServers{
+    display: block;
+    margin-top: 27px;
+  }
 }
