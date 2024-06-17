@@ -1,14 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
-// import { useQuery } from "@tanstack/react-query";
 import { IoChatbubbleEllipses } from "react-icons/io5";
-import s from "./ChatRoom.module.css";
-import TopHeader from "../../../components/Common/ChatRoom/CommunityChatHeader/ChatHeader";
+import s from "../../Common/ChatRoom/ChatRoom.module.css";
 import ChatRoomInfo from "../../../components/Modal/ChatModal/ChatRoomInfo/ChatRoomInfo";
 import ChatSearchBar from "../../../components/Modal/ChatModal/ChatSearchBar/ChatSearchBar";
 import MessageSender from "../../../components/Modal/ChatModal/CreateChatModal/MessageSender/MessageSender";
 import ChatMessage from "../../../components/Modal/ChatModal/ChatMessage/ChatMessage";
-import ChatChannelType from "../../../components/Modal/ChatModal/ChatChannelType/ChatChannelType";
 import InfiniteScrollComponent from "../../../components/Common/ChatRoom/InfiniteScrollComponent";
 import useWebSocketStore from "../../../actions/useWebSocketStore";
 import useChatStore from "../../../actions/useChatStore";
@@ -181,21 +178,21 @@ function ChatRoom() {
     <div className={s.chatRoomWrapper}>
       <div className={s.wrapper}>
         <div className={s.topContainer}>
-          <TopHeader />
+          {/* <TopHeader /> */}
           <ChatRoomInfo />
           <ChatSearchBar />
         </div>
         <div className={s.chatContainer}>
-          <ChatChannelType />
+          {/* <ChatChannelType /> */}
           <div
             ref={chatListContainerRef}
             id="chatListContainer"
             className={s.chatListContainer}
-            style={{ overflowY: "auto", height: "530px" }}
+            style={{ overflowY: "auto" }}
           >
             <div className={s.topInfos}>
               <IoChatbubbleEllipses className={s.chatIcon} />
-              <h2>채팅을 시작해보세요!</h2>
+              <h1>채팅을 시작해보세요!</h1>
             </div>
 
             <InfiniteScrollComponent

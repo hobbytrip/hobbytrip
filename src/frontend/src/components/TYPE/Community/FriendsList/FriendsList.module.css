@@ -1,0 +1,97 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  /* padding: 10px 30px 30px 10px; */
+  border-radius: 10px;
+  color: var(--dark-gray);
+  max-height: 1024px;
+}
+
+li {
+  font-size: 16px;
+  list-style: none;
+}
+
+.backBtn {
+  @media (min-width: 432px) {
+    display: none;
+  }
+  background: none;
+  border: none;
+  color: var(--dark-gray);
+  position: absolute;
+  right: 10px;
+}
+
+.listHeader {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 19px;
+  padding: 15px 25px;
+  position: relative;
+  @media (min-width: 432px) {
+    padding: 0px;
+    padding: 10px 25px;
+  }
+}
+
+.header {
+  font-family: "DOSSaemmul";
+  height: 33px;
+  padding: 10px 33px;
+  @media (min-width: 432px) {
+    height: 20px;
+    padding: 10px 30px;
+  }
+}
+
+.list {
+  gap: 0px;
+}
+
+.friend {
+  display: flex;
+  align-items: center;
+  height: 25px;
+  gap: 4px;
+  @media (min-width: 432px) {
+    height: 50px;
+  }
+}
+
+.stateCircle {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.profileImage {
+  @media (min-width: 432px) {
+    width: 50px;
+    height: 50px;
+  }
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+}
+
+.name {
+  margin-right: 10px;
+  @media (min-width: 432px) {
+    /* font-size: 20px; */
+    font-weight: 600;
+  }
+}
+
+.crown {
+  width: 18.75px;
+  height: 15px;
+  color: var(--main-purple);
+}
+.online {
+  @media (min-width: 432px) {
+    margin-bottom: 15px;
+  }
+}

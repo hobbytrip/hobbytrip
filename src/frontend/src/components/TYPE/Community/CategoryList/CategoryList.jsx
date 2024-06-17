@@ -3,22 +3,23 @@ import { useNavigate, useParams } from "react-router-dom";
 import style from "./CategoryList.module.css";
 import CreateItem from "./CreateItem/CreateItem";
 import Channel from "./Channel/Channel";
-import CreateChannel from "../../Modal/ServerModal/Channel/CreateChannel/CreateChannel";
-import CategorySetting from "../../Modal/ServerModal/Category/CategorySetting/CategorySetting";
-import useUserStore from "../../../actions/useUserStore";
-import useServerStore from "../../../actions/useServerStore";
+import CreateChannel from "../../../Modal/ServerModal/Channel/CreateChannel/CreateChannel";
+import CategorySetting from "../../../Modal/ServerModal/Category/CategorySetting/CategorySetting";
+import useUserStore from "../../../../actions/useUserStore";
+import useServerStore from "../../../../actions/useServerStore";
 import { HiPlus } from "react-icons/hi2";
 import { IoClose, IoSettings } from "react-icons/io5";
-import { axiosInstance } from "../../../utils/axiosInstance";
-import API from "../../../utils/API/API";
+import { axiosInstance } from "../../../../utils/axiosInstance";
+import API from "../../../../utils/API/API";
 
 const CategoryList = () => {
   const [categories, setCategories] = useState([]);
+  const [channels, setChannels] = useState([]);
   const [uncategorizedChannels, setUncategorizedChannels] = useState([]);
   const [showCreateItemModal, setShowCreateItemModal] = useState(false);
-  // const { serverId } = useParams();
-  const { serverId } = useServerStore();
   const nav = useNavigate();
+  const { userId } = useUserStore();
+  const { serverId } = useParams();
 
   const { serverData, fetchServerData } = useServerStore((state) => ({
     serverData: state.serverData,
@@ -34,9 +35,7 @@ const CategoryList = () => {
 
   useEffect(() => {
     setCategories(serverData.serverCategories || []);
-    console.log(categories)
     setChannels(serverData.serverChannels || []);
-    console.log(channels)
     setUncategorizedChannels(
       (serverData.serverChannels || []).filter((channel) => !channel.categoryId)
     );
@@ -80,9 +79,11 @@ const CategoryList = () => {
       <div className={style.categoryList}>
         <div className={style.categoryHeader}>
           <button onClick={handleAddItem}>
-            <HiPlus style={{ width: "18px", height: "18px" }} />
+            <HiPlus
+              style={{ width: "18px", height: "18px", marginBottom: "-30px" }}
+            />
           </button>
-          <button onClick={handleCloseCategory}>
+          <button onClick={handleCloseCategory} className={style.closeCateBtn}>
             <IoClose style={{ width: "18px", height: "18px" }} />
           </button>
         </div>
@@ -115,8 +116,6 @@ const CategoryList = () => {
 const Category = ({ categoryId, name, serverId, channels }) => {
   const [showCreateChannel, setShowCreateChannel] = useState(false);
   const [showCategorySetting, setShowCategorySetting] = useState(false);
-  const nav = useNavigate();
-  const { userId } = useUserStore();
 
   const handleAddChannel = () => {
     setShowCreateChannel(true);
@@ -141,13 +140,13 @@ const Category = ({ categoryId, name, serverId, channels }) => {
           <h3>{name}</h3>
           <button className={style.iconPurple}>
             <IoSettings
-              style={{ width: "17px", height: "17px" }}
+              style={{ width: "20px", height: "20px", marginRight: "-5px" }}
               onClick={handleCategorySetting}
             />
           </button>
           <button className={style.iconPurple}>
             <HiPlus
-              style={{ width: "17px", height: "17px" }}
+              style={{ width: "20px", height: "20px", marginRight: "-1px" }}
               onClick={handleAddChannel}
             />
           </button>

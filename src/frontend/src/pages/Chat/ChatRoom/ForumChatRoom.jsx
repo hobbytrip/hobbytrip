@@ -60,7 +60,7 @@ function ForumChat() {
   const { accessToken } = useAuthStore();
   const { client, isConnected } = useWebSocketStore();
 
-  const forumTypingUsers = useForumStore();
+  const { setForumList, forumTypingUsers } = useForumStore();
   const messages = useForumStore(
     (state) => state.forumLists[serverId]?.[forumId] || []
   ); //해당 서버>포럼에 있는 message 가져오기
@@ -233,9 +233,9 @@ function ForumChat() {
             </InfiniteScrollComponent>
           </div>
           <div className={s.messageSender}>
-            {typingForumUsers.length > 0 && (
+            {forumTypingUsers.length > 0 && (
               <div className="typingIndicator">
-                {typingForumUsers.length >= 5
+                {forumTypingUsers.length >= 5
                   ? "여러 사용자가 입력 중입니다..."
                   : `${forumTypingUsers.join(", ")} 입력 중입니다...`}
               </div>

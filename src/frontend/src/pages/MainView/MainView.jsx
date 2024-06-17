@@ -7,6 +7,9 @@ import MyPlanet from "../../components/MainView/MyPlanet/MyPlanet.jsx";
 import MyFriend from "../../components/Modal/FriendModal/MyFriend/MyFriend.jsx";
 import style from "./MainView.module.css";
 import setSSE from "../../hooks/useSSE.js";
+import DmHistoryList from "../../components/TYPE/DM/DmHistoryList/DmHistoryList.jsx";
+import { AiOutlineMenu } from "react-icons/ai";
+import { useNavigate } from "react-router-dom";
 
 const MainView = () => {
   const [servers, setServers] = useState(null);
@@ -44,11 +47,30 @@ const MainView = () => {
             <MainHeader className={style.mainHeader} />
             <MyPlanet servers={servers} className={style.myPlanet} />
           </div>
+          <div className={style.deskDms}>
+            <Menu />
+            <DmHistoryList />
+          </div>
           <MyFriend className={style.myFriend} />
         </div>
       </div>
     </>
   );
 };
+
+const Menu = () => {
+  const nav = useNavigate();
+  function handleGoToMenu(){
+    nav('/menu');
+  }
+  return(
+    <div className={style.menuContainer}>
+      <button onClick={handleGoToMenu}>
+        <AiOutlineMenu className={style.icon}/>
+        <span className={style.text}> 메뉴 </span>      
+      </button>
+    </div>
+  )
+}
 
 export default MainView;

@@ -1,0 +1,38 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+  gap: 15px;
+}
+.title {
+  font-family: "DOSSaemmul";
+}
+.dmHistoryList {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+
+  align-items: center;
+}
+.dmRoomIcon {
+  border-radius: 100%;
+  background-color: var(--mid-gray);
+  text-align: center;
+  width: 40px;
+  height: 40px;
+  position: relative;
+}
+.dmBox {
+  cursor: pointer;
+}
+.groupIcon {
+  color: rgba(255, 255, 255, 0.788);
+  font-size: 20px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.count {
+  font-weight: 400;
+}

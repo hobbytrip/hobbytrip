@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import API from "../utils/API/API";
 import { axiosInstance } from "../utils/axiosInstance";
-import useUserStatusStore from "./useUserStatusStore";
 
 const useServerStore = create((set) => ({
   serverData: {

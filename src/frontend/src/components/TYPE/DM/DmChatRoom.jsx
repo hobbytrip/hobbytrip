@@ -1,29 +1,26 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
-// import { useQuery } from "@tanstack/react-query";
+import s from "../../Common/ChatRoom/ChatRoom.module.css";
 import { IoChatbubbleEllipses } from "react-icons/io5";
-import s from "./ChatRoom.module.css";
+//components
 import TopHeader from "../../../components/Common/ChatRoom/CommunityChatHeader/ChatHeader";
-import ChatRoomInfo from "../../../components/Modal/ChatModal/ChatRoomInfo/ChatRoomInfo";
-import ChatSearchBar from "../../../components/Modal/ChatModal/ChatSearchBar/ChatSearchBar";
-import MessageSender from "../../../components/Modal/ChatModal/CreateChatModal/MessageSender/MessageSender";
-import ChatMessage from "../../../components/Modal/ChatModal/ChatMessage/ChatMessage";
-import ChatChannelType from "../../../components/Modal/ChatModal/ChatChannelType/ChatChannelType";
+import MessageSender from "../../../components/Modal/ForumModal/MessageSender/MessageSender";
+import ChatMessage from "../../../components/Common/ChatRoom/ChatMessage/ChatMessage";
 import InfiniteScrollComponent from "../../../components/Common/ChatRoom/InfiniteScrollComponent";
+//stores
 import useWebSocketStore from "../../../actions/useWebSocketStore";
-import useChatStore from "../../../actions/useChatStore";
-import API from "../../../utils/API/API";
+import useDmStore from "../../../actions/useDmStore";
 import useUserStore from "../../../actions/useUserStore";
 import useAuthStore from "../../../actions/useAuthStore";
+import API from "../../../utils/API/API";
 import axios from "axios";
-import { axiosInstance } from "../../../utils/axiosInstance";
 
-const fetchChatHistory = async (page, serverId, channelId, set) => {
+//dm 기록 받아오기
+const fetchDmHistory = async (page, roomId, setDmList) => {
   const token = localStorage.getItem("accessToken");
   try {
-    const response = await axios.get(API.GET_HISTORY, {
+    const response = await axios.get(API.GET_DM_HISTORY, {
       params: {
-        channelId: channelId,
+        roomId,
         page: page,
         size: 20,
       },
@@ -34,67 +31,54 @@ const fetchChatHistory = async (page, serverId, channelId, set) => {
     });
     const responseData = response.data.data;
     console.log("responseData", responseData);
-    if (responseData) {
-      set(serverId, responseData.data.reverse());
+    const datas = responseData.data.reverse();
+    console.log("fetch dm chats", datas);
+    // console.log("data", datas);
+    if (Array.isArray(datas) && datas) {
+      setDmList(roomId, datas);
     }
   } catch (err) {
-    console.error("채팅기록 불러오기 오류", err);
-    throw new Error("채팅기록 불러오기 오류");
+    console.error("DM 기록 불러오기 오류", err);
+    throw new Error("DM 기록 불러오기 오류");
   }
 };
 
-const postUserLocation = async (userId, serverId, channelId) => {
-  try {
-    await axiosInstance.post(API.POST_LOCATION, {
-      userId: userId,
-      serverId: serverId,
-      channelId: channelId,
-    });
-  } catch (err) {
-    console.error("사용자 위치 POST 실패", err);
-    throw new Error("사용자 위치 POST 실패");
-  }
-};
-
-function ChatRoom() {
+function DmChat({ roomId, userIds }) {
+  //타입 지정: dm
+  const TYPE = "direct";
   const { userId, nickname } = useUserStore();
-  const { serverId, channelId } = useParams();
   const [page, setPage] = useState(0);
   const chatListContainerRef = useRef(null);
   const { accessToken } = useAuthStore();
   const { client, isConnected } = useWebSocketStore();
-  const {
-    typingUsers,
-    deleteMessage,
-    modifyMessage,
-    sendMessage,
-    setChatList,
-  } = useChatStore();
-  const chatList = useChatStore((state) => state.chatLists[serverId]) || [];
-  const TYPE = "server";
+
+  //dmStore
+  const { setDmList } = useDmStore((state) => ({
+    setDmList: state.setDmList,
+  }));
+  const typingDmUsers = useDmStore();
+  const dms = useDmStore((state) => state.dmLists[roomId]) || [];
 
   useEffect(() => {
-    postUserLocation(userId, serverId, channelId);
     if (client && isConnected) {
-      fetchChatHistory(page, serverId, channelId, setChatList);
+      fetchDmHistory(page, roomId, setDmList); //기록 받아오기console.log("채팅Room ID", roomId);
     }
-  }, [serverId]);
+  }, [roomId]); //room id가 바뀔 때마다
 
   const handleSendMessage = async (messageContent, uploadedFiles) => {
+    const receiverIds = userIds.filter((id) => id !== userId);
     const messageBody = {
-      serverId: serverId,
-      channelId: channelId,
+      dmRoomId: roomId,
       userId: userId,
       parentId: 0,
       profileImage: "ho",
-      // type: TYPE,
       writer: nickname,
       content: messageContent,
+      receiverIds: receiverIds,
       createdAt: new Date().toISOString(),
     };
-
     const sendMessageWithoutFile = (messageBody) => {
-      sendMessage(messageBody);
+      addDmMessage(messageBody.dmRoomId, messageBody);
       client.publish({
         destination: API.SEND_CHAT(TYPE),
         body: JSON.stringify(messageBody),
@@ -108,6 +92,7 @@ function ChatRoom() {
     }
   };
 
+  //파일 업로드
   const uploadFiles = async (messageBody, uploadedFiles) => {
     const formData = new FormData();
     const jsonMsg = JSON.stringify(messageBody);
@@ -117,7 +102,7 @@ function ChatRoom() {
       formData.append("files", file);
     });
     try {
-      await axios.post(API.FILE_UPLOAD, formData, {
+      await axios.post(API.DM_FILE_UPLOAD, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${accessToken}`,
@@ -130,19 +115,20 @@ function ChatRoom() {
     }
   };
 
+  //메세지 수정
   const handleModifyMessage = (messageId, newContent) => {
     const messageBody = {
-      serverId: serverId,
+      dmRoomId: roomId,
       messageId: messageId,
       content: newContent,
       actionType: "MODIFY",
     };
-    const modifiedMessage = chatList.find(
+    const modifiedMessage = dms.find(
       (message) => message.messageId === messageId
     );
     if (modifiedMessage) {
       modifiedMessage.content = newContent;
-      modifyMessage(serverId, messageId, newContent);
+      modifyDmMesage(roomId, messageId, newContent);
       client.publish({
         destination: API.MODIFY_CHAT(TYPE),
         body: JSON.stringify(messageBody),
@@ -152,12 +138,11 @@ function ChatRoom() {
 
   const handleDeleteMessage = (messageId) => {
     const messageBody = {
-      serverId: serverId,
+      dmRoomId: roomId,
       messageId: messageId,
-      actionType: "DELETE",
     };
 
-    deleteMessage(serverId, messageId);
+    deleteDmMessage(roomId, messageId);
     client.publish({
       destination: API.DELETE_CHAT(TYPE),
       body: JSON.stringify(messageBody),
@@ -173,33 +158,29 @@ function ChatRoom() {
       chatListContainerRef.current.scrollTop =
         chatListContainerRef.current.scrollHeight;
     }
-  }, [chatList]);
+  }, [dms]);
 
-  const groupedMessages = groupMessagesByDate(chatList);
+  const groupedMessages = groupMessagesByDate(dms);
 
   return (
     <div className={s.chatRoomWrapper}>
       <div className={s.wrapper}>
         <div className={s.topContainer}>
           <TopHeader />
-          <ChatRoomInfo />
-          <ChatSearchBar />
         </div>
         <div className={s.chatContainer}>
-          <ChatChannelType />
           <div
             ref={chatListContainerRef}
             id="chatListContainer"
             className={s.chatListContainer}
-            style={{ overflowY: "auto", height: "530px" }}
+            style={{ overflowY: "auto", height: "720px", marginTop: "5px" }}
           >
             <div className={s.topInfos}>
               <IoChatbubbleEllipses className={s.chatIcon} />
-              <h2>채팅을 시작해보세요!</h2>
+              <h1>채팅을 시작해보세요!</h1>
             </div>
-
             <InfiniteScrollComponent
-              dataLength={chatList.length}
+              dataLength={dms.length}
               next={updatePage}
               hasMore={true}
               scrollableTarget="chatListContainer"
@@ -207,6 +188,7 @@ function ChatRoom() {
               {Object.keys(groupedMessages).map((date) => (
                 <div key={date}>
                   <h4 className={s.dateHeader}>{date}</h4>
+
                   {groupedMessages[date].map((message, index) => (
                     <ChatMessage
                       key={index}
@@ -220,17 +202,16 @@ function ChatRoom() {
             </InfiniteScrollComponent>
           </div>
           <div className={s.messageSender}>
-            {typingUsers.length > 0 && (
+            {typingDmUsers.length > 0 && (
               <div className="typingIndicator">
-                {typingUsers.length >= 5
+                {typingDmUsers.length >= 5
                   ? "여러 사용자가 입력 중입니다..."
-                  : `${typingUsers.join(", ")} 입력 중입니다...`}
+                  : `${typingDmUsers.join(", ")} 입력 중입니다...`}
               </div>
             )}
             <MessageSender
               onMessageSend={handleSendMessage}
-              serverId={serverId}
-              channelId={channelId}
+              roomId={roomId}
               writer={nickname}
               client={client}
               TYPE={TYPE}
@@ -241,21 +222,23 @@ function ChatRoom() {
     </div>
   );
 }
-
 const groupMessagesByDate = (messages) => {
   const groupedMessages = {};
+  console.log("message", messages);
+  if (Array.isArray(messages) && messages) {
+    messages.forEach((message) => {
+      const date = new Date(message.createdAt);
+      const dateString = `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
 
-  messages.forEach((message) => {
-    const date = new Date(message.createdAt);
-    const dateString = `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
-
-    if (!groupedMessages[dateString]) {
-      groupedMessages[dateString] = [];
-    }
-    groupedMessages[dateString].push(message);
-  });
+      if (!groupedMessages[dateString]) {
+        groupedMessages[dateString] = [];
+      }
+      groupedMessages[dateString].push(message);
+    });
+  } else {
+    console.error("not array");
+  }
 
   return groupedMessages;
 };
-
-export default ChatRoom;
+export default DmChat;
