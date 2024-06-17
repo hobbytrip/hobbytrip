@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import useUserStore from "../../../actions/useUserStore";
 import { axiosInstance } from "../../../utils/axiosInstance";
 import API from "../../../utils/API/API";
+import usePlanetsStore from "../../../actions/usePlantesStore";
 
 const Leftbtn = ({ onClick }) => (
   <button className={style.leftBtn} onClick={onClick}>
@@ -34,7 +35,7 @@ const CreatePlanetbtn = ({ onClick }) => (
   </button>
 );
 
-const MyPlanet = ({ servers }) => {
+const MyPlanet = ({}) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [showCreateServer, setShowCreateServer] = useState(false);
   const [serverNotice, setServerNotice] = useState([]);
@@ -48,6 +49,7 @@ const MyPlanet = ({ servers }) => {
     serverData: state.serverData,
   }));
   const { userId } = useUserStore();
+  const { servers } = usePlanetsStore();
 
   // const getNotice = async () => {
   //   try {

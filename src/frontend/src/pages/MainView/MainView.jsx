@@ -10,11 +10,12 @@ import setSSE from "../../hooks/useSSE.js";
 import DmHistoryList from "../../components/TYPE/DM/DmHistoryList/DmHistoryList.jsx";
 import { AiOutlineMenu } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
+import usePlanetsStore from "../../actions/usePlantesStore.js";
 
 const MainView = () => {
-  const [servers, setServers] = useState(null);
   const [dms, setDms] = useState(null);
   const { userId } = useUserStore();
+  const { setServers } = usePlanetsStore();
 
   // setSSE();
   useEffect(() => {
@@ -32,7 +33,7 @@ const MainView = () => {
       };
       getMainData();
     }
-  }, []);
+  }, [userId, setServers]);
 
   if (!userId) {
     return <div>Loading...</div>;
@@ -45,11 +46,11 @@ const MainView = () => {
         <div className={style.container}>
           <div className={style.deskServers}>
             <MainHeader className={style.mainHeader} />
-            <MyPlanet servers={servers} className={style.myPlanet} />
+            <MyPlanet className={style.myPlanet} />
           </div>
           <div className={style.deskDms}>
             <Menu />
-            <DmHistoryList />
+            <DmHistoryList dmHistoryList={dms} />
           </div>
           <MyFriend className={style.myFriend} />
         </div>

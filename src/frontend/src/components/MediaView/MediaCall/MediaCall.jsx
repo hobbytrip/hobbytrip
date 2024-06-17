@@ -4,15 +4,17 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import style from './MediaCall.module.css';
 import axios from 'axios';
 
-import ChatHeader from '../../Common/ChatRoom/CommunityChatHeader/ChatHeader';
-import ChatHeaderModal from '../../../components/Modal/ChatModal/ChatRoomInfo/ChatRoomInfo';
 import UserVideoComponent from './../UserVideoComponent';
 import useUserStore from '../../../actions/useUserStore';
 import API from '../../../utils/API/API';
 
 import { HiMiniSpeakerWave } from "react-icons/hi2";
 import { AiFillMessage } from "react-icons/ai";
-import { IoClose, IoVideocamOutline, IoVideocamOffOutline, IoCall, IoCallOutline } from "react-icons/io5";
+import { IoClose, 
+  IoVideocamOutline, 
+  IoVideocamOffOutline, 
+  IoCall, 
+  IoCallOutline } from "react-icons/io5";
 import { LuMonitor, LuMonitorOff } from "react-icons/lu";
 import { MdOutlineKeyboardVoice, MdKeyboardVoice } from "react-icons/md";
 
@@ -205,8 +207,6 @@ const state = pc.iceConnectionState;
   return (
     <>
     <div className={style.wrapper}>
-    <ChatHeader />
-    <ChatHeaderModal />
       <div className={style.container}>
         <div className={style.headerContainer}>
           <HiMiniSpeakerWave style={{ width: '15px', height: '15px' }} />
