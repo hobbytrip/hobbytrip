@@ -21,7 +21,8 @@ function DM() {
         const response = await axiosInstance.get(API.READ_DM(dmId));
         setDmInfo(response.data.data);
         console.log(dmInfo);
-        setDmHistoryList(response.data.data.dmUserInfos);
+        // setDmHistoryList(response.data.data.dm);
+        useDmHistoryStore.getState().addDmHistory(response.data.data.dm);
       } catch (error) {
         console.error("Failed to fetch DM info:", error);
       }
@@ -51,7 +52,7 @@ function DM() {
         </div>
         <div className={s.item}>
           <div className={s.dmHistoryList}>
-            <DmHistoryList dmId={dmId} dmHistoryList={dmHistoryList} />
+            <DmHistoryList dmHistoryList={dmHistoryList} />
           </div>
           <div className={s.ChatRoom}>
             <DmChat

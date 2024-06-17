@@ -30,7 +30,7 @@ function FriendList({ friends }) {
     <div className={s.wrapper}>
       {!friends ? (
         <div className={s.container}>
-          <img src={friendEmpty} alt="친구없음" style={{ width: "150px" }} />
+          <img src={friendEmpty} alt="친구없음" />
           <h4 className={s.h4}>친구 목록이 비어있어요</h4>
         </div>
       ) : (
