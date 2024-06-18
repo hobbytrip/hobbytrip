@@ -18,7 +18,6 @@ function RegForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const setUserInfo = useUserStore((state) => state.setUserInfo);
 
   const handleChange = (e) => {
     const { name, type, checked, value } = e.target;
@@ -31,15 +30,6 @@ function RegForm() {
 
   const moveToLogin = () => {
     navigate("/login");
-  };
-
-  const setUser = async () => {
-    try {
-      const response = await axiosInstance.get(API.GET_USER_PROFLIE);
-      setUserInfo(response.data);
-    } catch (err) {
-      console.err("유저 프로필 정보 GET 실패", err);
-    }
   };
 
   const postUserIdToCommunity = async (userId) => {
