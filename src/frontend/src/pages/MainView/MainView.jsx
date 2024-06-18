@@ -11,15 +11,18 @@ import DmHistoryList from "../../components/TYPE/DM/DmHistoryList/DmHistoryList.
 import { AiOutlineMenu } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import usePlanetsStore from "../../actions/usePlantesStore.js";
+import useWebSocketStore from "../../actions/useWebSocketStore";
 
 const MainView = () => {
   const [dms, setDms] = useState(null);
-  const { userId } = useUserStore();
+  const { USER } = useUserStore();
   const { setServers } = usePlanetsStore();
+  const USERID = USER.userId;
 
   // setSSE();
   useEffect(() => {
-    if (userId) {
+    if (USERID) {
+      useWebSocketStore.getState().connect(USERID);
       const getMainData = async () => {
         try {
           const response = await axiosInstance.get(API.READ_MAIN(userId));
@@ -33,16 +36,16 @@ const MainView = () => {
       };
       getMainData();
     }
-  }, [userId, setServers]);
+  }, [USERID, setServers]);
 
-  if (!userId) {
+  if (!USERID) {
     return <div>Loading...</div>;
   }
 
   return (
     <>
       <div className={style.wrapper}>
-        <header className={style.header}/>  
+        <header className={style.header} />
         <div className={style.container}>
           <div className={style.deskServers}>
             <MainHeader className={style.mainHeader} />
@@ -61,17 +64,17 @@ const MainView = () => {
 
 const Menu = () => {
   const nav = useNavigate();
-  function handleGoToMenu(){
-    nav('/menu');
+  function handleGoToMenu() {
+    nav("/menu");
   }
-  return(
+  return (
     <div className={style.menuContainer}>
       <button onClick={handleGoToMenu}>
-        <AiOutlineMenu className={style.icon}/>
-        <span className={style.text}> 메뉴 </span>      
+        <AiOutlineMenu className={style.icon} />
+        <span className={style.text}> 메뉴 </span>
       </button>
     </div>
-  )
-}
+  );
+};
 
 export default MainView;
