@@ -26,7 +26,7 @@ function Server() {
   }));
   const nav = useNavigate();
   const subscriptionRef = useRef(null); // 구독 객체 참조 추가
-  const { serverId, channelId } = useParams();
+  const { channelId } = useParams();
 
   const { setTypingUsers, deleteMessage, modifyMessage, sendMessage } =
     useChatStore((state) => ({
@@ -51,7 +51,7 @@ function Server() {
   const updateUserState = useUserStatusStore((state) => state.updateUserState);
 
   const { client } = useWebSocketStore();
-  const CURRENT_SERVER = serverId;
+  const CURRENT_SERVER = serverData.serverInfo.serverId;
 
   const { getChannelName, getChannelTypeIcon } = useChannelDatas(channelId);
 

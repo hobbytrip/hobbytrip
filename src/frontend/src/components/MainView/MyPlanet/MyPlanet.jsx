@@ -84,7 +84,7 @@ const MyPlanet = ({}) => {
   }, []); 
 
   if(innerWidth >= 432){
-    serversPerPage = ((innerHeight - 86) / 80) - 1;
+    serversPerPage = ((innerHeight - 86) / 80) - 2;
   }
   else {
     serversPerPage = 4;
