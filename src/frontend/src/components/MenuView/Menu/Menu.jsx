@@ -79,31 +79,14 @@ const MenuList = () => {
 
 const Menu = () => {
   const nav = useNavigate();
-  const {
-    userId,
-    email,
-    nickname,
-    name,
-    birthdate,
-    notificationEnabled,
-    createAt,
-  } = useUserStore();
-  const USER = {
-    userId,
-    email,
-    nickname,
-    name,
-    birthdate,
-    notificationEnabled,
-    createAt,
-  };
   const moveToUserProfile = () => {
     nav("/user/profile");
   };
   return (
     <div className={style.wrapper}>
-      <button onClick={moveToUserProfile}>버튼</button>
-      <ProfileCard user={USER} />
+      <div onClick={moveToUserProfile} className={style.profileCard}>
+        <ProfileCard user={USER} />
+      </div>
       <MenuList />
     </div>
   );

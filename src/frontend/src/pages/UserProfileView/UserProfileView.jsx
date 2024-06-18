@@ -1,101 +1,54 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import s from "./UserProfileView.module.css";
-import { axiosInstance } from "../../utils/axiosInstance";
 import ProfileCard from "../../components/ProfileCard/ProfileCard";
 import useUserStore from "../../actions/useUserStore";
 import NotificationBox from "../../components/NotificationBox/NotificationBox";
-import API from "../../utils/API/API";
 
 function UserProfileView() {
   const { notificationEnabled, updateUserInfo } = useUserStore();
-  const [isEditingName, setIsEditingName] = useState(false);
   const [isEditingStatusMsg, setIsEditingStatusMsg] = useState(false);
-  const [editedName, setEditedName] = useState("");
   const [editedStatusMsg, setEditedStatusMsg] = useState("");
-  const [USER, setUSER] = useState([]);
   const [editedNoti, setEditedNoti] = useState(notificationEnabled);
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await axiosInstance.get(API.GET_USER_PROFLIE);
-        setUSER(response.data);
-      } catch (error) {
-        console.error("유저 데이터 fetch 실패", error);
-      }
-    };
-
-    fetchUserData();
-  }, []);
-
-  const handleNameChange = (e) => {
-    setEditedName(e.target.value);
-  };
+  const { USER } = useUserStore();
 
   const handleStatusMsgChange = (e) => {
     setEditedStatusMsg(e.target.value);
   };
 
-  const handleSaveName = () => {
-    updateUserInfo("nickname", { nickname: editedName });
-    setIsEditingName(false);
-    console.log(editedName);
-  };
-
-  const handleSaveStatusMsg = () => {
-    updateUserInfo("statusMessage", { statusMessage: editedStatusMsg });
-    setIsEditingStatusMsg(false);
-    console.log(editedStatusMsg);
+  const handleSaveStatusMsg = async () => {
+    try {
+      await updateUserInfo("statusMessage", { statusMessage: editedStatusMsg });
+      setUSER((prev) => ({ ...prev, statusMessage: editedStatusMsg }));
+      setIsEditingStatusMsg(false);
+      console.log(editedStatusMsg);
+    } catch (error) {
+      console.error("Status message update failed", error);
+    }
   };
 
   const handleChangeNoti = async (e) => {
     const isEnabled = e.target.checked;
     setEditedNoti(isEnabled);
-    updateUserInfo("notificationEnabled", { notificationEnabled: isEnabled });
+    updateUserInfo("notice", { notice: isEnabled });
     console.log(isEnabled);
   };
 
   if (!USER.userId) {
     return <p>Loading...</p>;
   }
-
   return (
     <div className={s.wrapper}>
       <div className={s.container}>
         <h2 className={s.title}>내 계정</h2>
         <div className={s.profileContainer}>
           <>
-            <ProfileCard usere={USER} />
+            <div className={s.profileCard}>
+              <ProfileCard user={USER} />
+            </div>
             <div className={s.form}>
               <div className={s.infos}>
                 <h3>사용자명</h3>
-                {isEditingName ? (
-                  <div className={s.wr}>
-                    <input
-                      value={editedName}
-                      onChange={handleNameChange}
-                      className={s.inputBox}
-                    />
-                    <button className={s.profileBtn} onClick={handleSaveName}>
-                      저장
-                    </button>
-                  </div>
-                ) : (
-                  <div className={s.wr}>
-                    <div className={s.profileInfoBox}>
-                      <h4>{USER.name}</h4>
-                    </div>
-                    <button
-                      className={s.profileBtn}
-                      onClick={() => {
-                        setEditedName(USER.name);
-                        setIsEditingName(true);
-                      }}
-                    >
-                      수정
-                    </button>
-                  </div>
-                )}
+                <h4>{USER.name}</h4>
               </div>
             </div>
             <div className={s.form}>
@@ -118,12 +71,12 @@ function UserProfileView() {
                 ) : (
                   <div className={s.wr}>
                     <div className={s.profileInfoBox}>
-                      <h4>{editedStatusMsg}</h4>
+                      <h4>{USER.statusMessage}</h4>
                     </div>
                     <button
                       className={s.profileBtn}
                       onClick={() => {
-                        setEditedStatusMsg(statusMessage);
+                        setEditedStatusMsg(USER.statusMessage);
                         setIsEditingStatusMsg(true);
                       }}
                     >
@@ -149,7 +102,7 @@ function UserProfileView() {
               </div>
             </div>
             <NotificationBox
-              notificationEnabled={notificationEnabled}
+              notificationEnabled={editedNoti}
               handleChange={handleChangeNoti}
             />
           </>

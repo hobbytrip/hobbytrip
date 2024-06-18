@@ -7,9 +7,6 @@ import { axiosInstance } from "../../utils/axiosInstance";
 import API from "../../utils/API/API";
 
 function RegForm() {
-  const setUserInfo = useUserStore((state) => state.setUserInfo);
-  const { userId } = useUserStore();
-
   const [form, setForm] = useState({
     email: "",
     username: "",
@@ -21,6 +18,7 @@ function RegForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const setUserInfo = useUserStore((state) => state.setUserInfo);
 
   const handleChange = (e) => {
     const { name, type, checked, value } = e.target;
@@ -33,6 +31,15 @@ function RegForm() {
 
   const moveToLogin = () => {
     navigate("/login");
+  };
+
+  const setUser = async () => {
+    try {
+      const response = await axiosInstance.get(API.GET_USER_PROFLIE);
+      setUserInfo(response.data);
+    } catch (err) {
+      console.err("유저 프로필 정보 GET 실패", err);
+    }
   };
 
   const postUserIdToCommunity = async (userId) => {
@@ -54,10 +61,11 @@ function RegForm() {
     try {
       const response = await axiosInstance.post(API.SIGN_UP, form);
       if (response.data.success) {
-        setUserInfo(response.data.data);
         console.log("회원가입 성공:", response.data.data);
         postUserIdToCommunity(response.data.data.userId);
 
+        //회원정보 설정
+        await setUser();
         navigate("/login");
       } else {
         setError(response.data.message);

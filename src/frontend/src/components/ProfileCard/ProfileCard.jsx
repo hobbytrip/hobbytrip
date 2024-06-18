@@ -1,11 +1,8 @@
-import React, { useEffect } from "react";
+import React from "react";
 import s from "./ProfileCard.module.css";
 import DefaultIcon from "../Common/DefaultIcon/DefaultIcon";
 
-function ProfileCard(user) {
-  // useEffect(() => {
-  //   console.log("user:", user);
-  // }, []);
+function ProfileCard({ user }) {
   return (
     <div className={s.profileCard}>
       <DefaultIcon profile={user} />
