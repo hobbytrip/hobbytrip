@@ -28,9 +28,6 @@ const CategoryList = () => {
 
   useEffect(() => {
     deleteNotice();
-    console.log("category fetch");
-    console.log(serverId, userId);
-    fetchServerData(serverId, userId);
   }, [serverId]);
 
   useEffect(() => {

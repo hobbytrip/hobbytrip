@@ -41,7 +41,7 @@
   padding: 10px 25px;
   @media (min-width: 432px) {
     max-width: 270px;
-    padding: 0;
+    padding: 0px;
     margin-bottom: 20px;
   }
 }
