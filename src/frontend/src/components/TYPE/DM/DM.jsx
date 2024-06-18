@@ -30,7 +30,6 @@ function DM() {
         const response = await axiosInstance.get(API.READ_DM(dmId));
         setDmInfo(response.data.data);
         console.log(dmInfo);
-        // setDmHistoryList(response.data.data.dm);
         useDmHistoryStore.getState().addDmHistory(response.data.data.dm);
       } catch (error) {
         console.error("Failed to fetch DM info:", error);
@@ -67,10 +66,10 @@ function DM() {
   return (
     <div className={s.wrapper}>
       <div className={s.Servers}>
-      <div className={s.deskServers}>
-        <MainHeader className={s.mainHeader} />
-        <MyPlanet className={s.myPlanet} />
-      </div>
+        <div className={s.deskServers}>
+          <MainHeader className={s.mainHeader} />
+          <MyPlanet className={s.myPlanet} />
+        </div>
       </div>
       <div className={s.container}>
         <div className={s.header}>
