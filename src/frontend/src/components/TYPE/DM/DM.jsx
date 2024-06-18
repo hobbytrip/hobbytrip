@@ -11,11 +11,18 @@ import DmHistoryList from "./DmHistoryList/DmHistoryList";
 import UserList from "./UserList/UserList";
 import MainHeader from "../../MainView/MainHeader/MainHeader";
 import MyPlanet from "../../MainView/MyPlanet/MyPlanet";
+import useServerStore from "../../../actions/useServerStore";
+import useUserStore from "../../../actions/useUserStore";
 
 function DM() {
   const [dmInfo, setDmInfo] = useState(null);
   const { dmId } = useParams();
   const { dmHistoryList, setDmHistoryList } = useDmHistoryStore();
+  const { serverData } = useServerStore(state => ({
+    serverData: state.serverData
+  }));
+  const { userId } = useUserStore();
+  const serverId = serverData.serverInfo.serverId;
 
   useEffect(() => {
     const fetchDMInfo = async () => {
@@ -31,6 +38,26 @@ function DM() {
 
     fetchDMInfo();
   }, [dmId]);
+
+  useEffect(() => {
+    const deleteNotice = async () => {
+      try {
+        const res = await axiosInstance.delete(
+          API.DM_SSE_DEL(serverId, userId),
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+          }
+        );
+        console.log("DM notice reeeeeeeeeeeeead");
+        console.log(res.data);
+      } catch (error) {
+        console.error("Error deleting notice:", error);
+      }
+    };
+    deleteNotice();  
+  })
 
   if (dmInfo === null) {
     return <div>Loading...</div>;

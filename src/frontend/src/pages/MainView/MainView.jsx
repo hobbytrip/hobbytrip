@@ -17,7 +17,7 @@ const MainView = () => {
   const { userId } = useUserStore();
   const { setServers } = usePlanetsStore();
 
-  // setSSE();
+  setSSE();
   useEffect(() => {
     if (userId) {
       const getMainData = async () => {
@@ -52,7 +52,9 @@ const MainView = () => {
             <Menu />
             <DmHistoryList dmHistoryList={dms} />
           </div>
-          <MyFriend className={style.myFriend} />
+          <div className={style.myFriend}>
+            <MyFriend className={style.myFriend} />
+          </div>
         </div>
       </div>
     </>
