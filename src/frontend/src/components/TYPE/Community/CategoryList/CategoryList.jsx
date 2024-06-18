@@ -48,7 +48,7 @@ const CategoryList = () => {
           },
         }
       );
-      console.log("notice reeeeeeeeeeeeead");
+      console.log("Server notice reeeeeeeeeeeeead");
       console.log(res.data);
     } catch (error) {
       console.error("Error deleting notice:", error);

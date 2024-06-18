@@ -1,14 +1,35 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import s from "./DmHistoryList.module.css";
 import { RiGroupFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
+import useUserStore from "../../../../actions/useUserStore";
+import { axiosInstance } from "../../../../utils/axiosInstance";
+import API from "../../../../utils/API/API";
 
 const DmHistoryList = ({ dmHistoryList }) => {
+  const [dmNotice, setDmNotice] = useState([]);
   const navigate = useNavigate();
+  const { userId } = useUserStore();
 
   const handleMoveToDm = (dmId) => {
     navigate(`/${dmId}/dm`);
   };
+
+  const getNotice = async () => {
+    try {
+      const res = await axiosInstance.get(API.DM_SSE_MAIN(userId));
+      if (res.data.success) {
+        setDmNotice(res.data.data);
+        console.log(res.data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching server notices:", error);
+    }
+  };
+
+  useEffect(() => {
+    getNotice();
+  }, [userId]);
 
   return (
     <div className={s.wrapper}>

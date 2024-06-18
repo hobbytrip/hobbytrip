@@ -12,12 +12,11 @@ const useServerStore = create((set) => ({
     messages: null,
   },
   setServerData: (newServerData) => set({ serverData: newServerData }),
-  setServerInfo: (newServerInfo) => set((state) => ({
+  setServerInfo: (newServerInfo) => set({
     serverData: {
-      ...state.serverData,
       serverInfo: newServerInfo,
     },
-  })),
+  }),
   fetchServerData: async (serverId, userId) => {
     try {
       const accessToken = localStorage.getItem("accessToken");

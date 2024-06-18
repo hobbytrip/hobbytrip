@@ -24,7 +24,6 @@
     height: 100vh;
     display: flex;
     flex-direction: column;
-    background-color: transparent;
   }
 
   .container {
@@ -43,7 +42,10 @@
 
   .deskDms {
     display: block;
+    width: 180px;
     height: 100%;
+    background-color: white;
+    border-radius: 20px 0px 0px 0px;
   }
 
   .deskServers {
@@ -52,6 +54,11 @@
     width: 118px;
     height: 100%;
     background: var(--dark-purple);
+  }
+
+  .myFriend {
+    width: calc(100% - 280px);
+    height: 100%;
   }
 
   .menuContainer {
