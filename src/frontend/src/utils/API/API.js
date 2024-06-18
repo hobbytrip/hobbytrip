@@ -12,6 +12,7 @@ const API = {
   SIGN_UP: `${BASE_URL}/user/signup`,
   LOG_OUT: `${BASE_URL}/user/logout`,
   GET_USER_PROFLIE: `${BASE_URL}/user/profile`,
+  UPDATE_PROFILE: (endpoint) => `${BASE_URL}/user/profile/${endpoint}`,
 
   //친구
   ADD_FRIEND: (email) => `${FRIEND_URL}/${email}`,
@@ -84,11 +85,9 @@ const API = {
     `${BASE_URL}/community/channel/${channelId}/${userId}`,
   CUD_FORUM: `${BASE_URL}/community/forum`,
 
-
   //상태관리
   GET_SERVER_STATE: (serverId, userIds) =>
     `${STATE_URL}?serverId=${serverId}&userIds=${userIds}`,
-
 };
 
 export default API;

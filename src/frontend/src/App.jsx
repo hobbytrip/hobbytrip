@@ -32,7 +32,6 @@ function App() {
           element={<ForumChatRoom />}
         />
         <Route path="/:dmId/dm" element={<DM />} />
-        <Route path="/user/profile" element={<UserProfileView />} />
         <Route path="/main" element={<MainView />} />
         <Route path="/menu" element={<MenuView />} />
         <Route path="/:serverId/setting" element={<SettingView />} />

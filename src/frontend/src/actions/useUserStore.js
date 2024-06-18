@@ -1,6 +1,7 @@
 import { create } from "zustand";
-import { axiosInstance } from "../utils/axiosInstance";
+import axios from "axios";
 import { persist } from "zustand/middleware";
+import API from "../utils/API/API";
 
 const useUserStore = create(
   persist(
@@ -11,14 +12,16 @@ const useUserStore = create(
       username: "",
       birthdate: "",
       notificationEnabled: false,
-      createAt: "",
+      createdAt: "",
       setUserInfo: (userInfo) => set(userInfo),
       updateUserInfo: async (endpoint, updates) => {
         try {
-          const response = await axiosInstance.patch(
-            `/user/profile/${endpoint}`,
-            updates
-          );
+          const response = await axios.patch(API.UPDATE_PROFILE(endpoint), {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+            updates,
+          });
           if (response.data) {
             set((state) => ({
               ...state,
