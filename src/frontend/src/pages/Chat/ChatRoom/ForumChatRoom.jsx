@@ -60,27 +60,108 @@ function ForumChat() {
   const { accessToken } = useAuthStore();
   const { client, isConnected } = useWebSocketStore();
 
-  const { setForumList, forumTypingUsers } = useForumStore();
+  //ForumStore
+  const {
+    addForumMessage,
+    modifyForumMessage,
+    deleteForumMessage,
+    setForumTypingUsers,
+    setForumList,
+  } = useForumStore((state) => ({
+    addForumMessage: state.addForumMessage,
+    modifyForumMessage: state.modifyForumMessage,
+    deleteForumMessage: state.deleteForumMessage,
+    setForumTypingUsers: state.setForumTypingUsers,
+    setForumList: state.setForumList,
+  }));
+  const forumTypingUsers = useForumStore();
   const messages = useForumStore(
     (state) => state.forumLists[serverId]?.[forumId] || []
   ); //해당 서버>포럼에 있는 message 가져오기
 
-  const { addForumMessage, modifyForumMessage, deleteForumMessage } = useForumStore((state) => ({
-    addForumMessage : state.addForumMessage,
-    modifyForumMessage: state.modifiedMessage,
-    deleteForumMessage: state.deleteForumMessage
-  }));
-
   useEffect(() => {
     if (client && isConnected) {
       console.log(client, isConnected);
+      connectWebSocket(serverId);
       fetchForumHistory(page, serverId, forumId, setForumList);
       console.log("forum from chat room", forum);
     }
     console.log("server", serverId);
     console.log("channel", channelId);
     console.log("forum", forumId);
-  }, [serverId, forumId]);
+  }, [serverId, forumId]); //포럼 id가 바뀔 때마다
+
+  const connectWebSocket = (serverId) => {
+    client.subscribe(API.SUBSCRIBE_CHAT(serverId), (frame) => {
+      try {
+        console.log("subscribe success", serverId);
+        const parsedMessage = JSON.parse(frame.body);
+        const files = parsedMessage.files
+          ? JSON.parse(parsedMessage.files)
+          : [];
+        //포럼
+        if (parsedMessage.chatType === "FORUM") {
+          if (
+            parsedMessage.actionType === "TYPING" &&
+            parsedMessage.userId !== userId
+          ) {
+            setForumTypingUsers((prevTypingUsers) => {
+              if (!prevTypingUsers.includes(parsedMessage.writer)) {
+                return [...prevTypingUsers, parsedMessage.writer];
+              }
+              return prevTypingUsers;
+            });
+          } else if (parsedMessage.actionType === "STOP_TYPING") {
+            setForumTypingUsers((prevTypingUsers) =>
+              prevTypingUsers.filter(
+                (username) => username !== parsedMessage.writer
+              )
+            );
+          } else if (parsedMessage.actionType === "SEND") {
+            // 전송
+            addForumMessage(
+              parsedMessage.serverId,
+              parsedMessage.forumId,
+              parsedMessage
+            );
+            if (files && files.length > 0) {
+              const fileUrls = files.map((file) => file.fileUrl);
+              const messageWithFiles = {
+                parsedMessage,
+                files: [...fileUrls],
+              };
+              addForumMessage(
+                messageBody.serverId,
+                messageBody.forumId,
+                messageWithFiles
+              );
+              client.publish({
+                destination: API.SEND_CHAT(TYPE),
+                body: JSON.stringify(messageWithFiles),
+              });
+            }
+          } else if (parsedMessage.actionType === "MODIFY") {
+            //수정
+            modifyForumMessage(
+              parsedMessage.serverId,
+              parsedMessage.forumId,
+              parsedMessage.messageId,
+              parsedMessage.content
+            );
+          } else if (parsedMessage.actionType === "DELETE") {
+            //삭제
+            deleteForumMessage(
+              parsedMessage.serverId,
+              parsedMessage.forumId,
+              parsedMessage.messageId
+            );
+          }
+        }
+      } catch (error) {
+        console.error("구독 오류", error);
+      }
+    });
+  };
 
   const handleSendMessage = async (messageContent, uploadedFiles) => {
     const messageBody = {
