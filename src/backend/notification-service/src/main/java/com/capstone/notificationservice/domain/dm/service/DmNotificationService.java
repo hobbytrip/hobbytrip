@@ -88,17 +88,17 @@ public class DmNotificationService {
             emitter.send(SseEmitter.event()
                     .id(eventId)
                     .name("userId")
-                    .data(String.valueOf(data.getUserId()))
-                    .name("dmRoomId")
-                    .data(String.valueOf(data.getDmRoomId()))
-                    .name("content")
-                    .data(String.valueOf(data.getContent()))
-                    .name("writer")
-                    .data(String.valueOf(data.getProfileImage()))
-                    .name("alarmType")
-                    .data(String.valueOf(data.getAlarmType()))
-                    .name("receiverIds")
-                    .data(userIds));
+                    .data(String.valueOf(data.getUserId())));
+//                    .name("dmRoomId")
+//                    .data(String.valueOf(data.getDmRoomId()))
+//                    .name("content")
+//                    .data(String.valueOf(data.getContent()))
+//                    .name("writer")
+//                    .data(String.valueOf(data.getProfileImage()))
+//                    .name("alarmType")
+//                    .data(String.valueOf(data.getAlarmType()))
+//                    .name("receiverIds")
+//                    .data(userIds));
         } catch (IOException e) {
             emitterRepository.deleteById(emitterId);
             throw new DmException(Code.INTERNAL_ERROR, "연결 오류 !");
