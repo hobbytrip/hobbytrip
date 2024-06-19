@@ -9,7 +9,8 @@ import API from "../../../../utils/API/API";
 const DmHistoryList = ({ dmHistoryList }) => {
   const [dmNotice, setDmNotice] = useState([]);
   const navigate = useNavigate();
-  const { userId } = useUserStore();
+  const { USER } = useUserStore();
+  const userId = USER.userId;
 
   const handleMoveToDm = (dmId) => {
     navigate(`/${dmId}/dm`);
@@ -35,22 +36,23 @@ const DmHistoryList = ({ dmHistoryList }) => {
     <div className={s.wrapper}>
       <h3 className={s.title}>다이렉트 메세지</h3>
       <div className={s.dmHistoryList}>
-        {dmHistoryList && dmHistoryList.map((dm) => (
-          <div
-            key={dm.dmId}
-            className={s.dmItem}
-            onClick={() => handleMoveToDm(dm.dmId)}
-          >
-            <div className={s.dmRoomIcon}>
-              <RiGroupFill className={s.groupIcon} />
-            </div>
-            <div className={s.container}>
-              <div className={s.dmBox}>
-                <h3 style={{ fontWeight: "600" }}>{dm.name}</h3>
+        {dmHistoryList &&
+          dmHistoryList.map((dm) => (
+            <div
+              key={dm.dmId}
+              className={s.dmItem}
+              onClick={() => handleMoveToDm(dm.dmId)}
+            >
+              <div className={s.dmRoomIcon}>
+                <RiGroupFill className={s.groupIcon} />
+              </div>
+              <div className={s.container}>
+                <div className={s.dmBox}>
+                  <h3 style={{ fontWeight: "600" }}>{dm.name}</h3>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
       {/* <h4 className={s.count}>총 {dmHistoryList.length}명</h4> */}
     </div>
