@@ -14,6 +14,7 @@ import useUserStore from "../../../actions/useUserStore";
 import useAuthStore from "../../../actions/useAuthStore";
 import axios from "axios";
 import { axiosInstance } from "../../../utils/axiosInstance";
+import useServerStore from "../../../actions/useServerStore";
 
 const fetchChatHistory = async (page, serverId, channelId, set) => {
   const token = localStorage.getItem("accessToken");
@@ -69,7 +70,13 @@ function ChatRoom() {
     sendMessage,
     setChatList,
   } = useChatStore();
+  const { serverData } = useServerStore();
+  const { userInfos } = serverData.serverUserInfos;
+
+  const SERVER_USER_MAP = userInfos.map((user) => user.userId);
   const chatList = useChatStore((state) => state.chatLists[serverId]) || [];
+
+  //타입: 서버
   const TYPE = "server";
 
   useEffect(() => {
@@ -86,10 +93,11 @@ function ChatRoom() {
       userId: userId,
       parentId: 0,
       profileImage: "ho",
-      // type: TYPE,
       writer: nickname,
       content: messageContent,
       createdAt: new Date().toISOString(),
+      receiverIds: SERVER_USER_MAP,
+      mentionType: "EVERYONE",
     };
 
     const sendMessageWithoutFile = (messageBody) => {
@@ -180,12 +188,10 @@ function ChatRoom() {
     <div className={s.chatRoomWrapper}>
       <div className={s.wrapper}>
         <div className={s.topContainer}>
-          {/* <TopHeader /> */}
           <ChatRoomInfo />
           <ChatSearchBar />
         </div>
         <div className={s.chatContainer}>
-          {/* <ChatChannelType /> */}
           <div
             ref={chatListContainerRef}
             id="chatListContainer"
