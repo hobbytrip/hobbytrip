@@ -32,7 +32,7 @@ const MenuList = () => {
   const handleLogout = async () => {
     if (window.confirm("로그아웃 하시겠습니까?")) {
       try {
-        await Logout(accessToken, refreshToken, setTokens, nav);
+        await Logout(nav);
       } catch (error) {
         console.error("로그아웃 실패", error);
       }

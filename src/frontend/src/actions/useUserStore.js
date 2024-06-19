@@ -4,9 +4,19 @@ import API from "../utils/API/API";
 import useAuthStore from "./useAuthStore";
 
 const useUserStore = create((set) => ({
-  USER: {},
+  USER: JSON.parse(localStorage.getItem("user")) || {},
   notificationEnabled: false,
-  setUserInfo: (user) => set({ USER: user }),
+
+  setUserInfo: (user) => {
+    localStorage.setItem("user", JSON.stringify(user));
+    set({ USER: user });
+  },
+
+  clearUserInfo: () => {
+    localStorage.removeItem("user");
+    set({ USER: {} });
+  },
+
   updateUserInfo: async (endpoint, updates) => {
     try {
       const { accessToken } = useAuthStore.getState();
@@ -17,14 +27,16 @@ const useUserStore = create((set) => ({
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
-
           withCredentials: true,
         }
       );
+
       if (response.data) {
+        const updatedUser = { ...useUserStore.getState().USER, ...updates };
+        localStorage.setItem("user", JSON.stringify(updatedUser));
         set((state) => ({
           ...state,
-          ...updates,
+          USER: updatedUser,
         }));
       } else {
         console.error("Failed to update user data");
@@ -33,8 +45,13 @@ const useUserStore = create((set) => ({
       console.log("Error updating user data:", error);
     }
   },
+
   setNotificationEnabled: (enabled) =>
     set(() => ({ notificationEnabled: enabled })),
+  clearUserInfo: () => {
+    localStorage.removeItem("user");
+    set({ USER: {} });
+  },
 }));
 
 export default useUserStore;

@@ -1,26 +1,21 @@
-// import { axiosInstance } from "../axiosInstance";
 import API from "../../utils/API/API";
-import axios from "axios";
+import useAuthStore from "../../actions/useAuthStore";
+import useUserStore from "../../actions/useUserStore";
+import { axiosInstance } from "../axiosInstance";
 
-const Logout = async (accessToken, refreshToken, setTokens, navigate) => {
+const Logout = async (navigate) => {
+  const { accessToken, refreshToken, clearTokens } = useAuthStore.getState();
+  const { clearUserInfo } = useUserStore.getState();
   try {
-    const response = await axios.post(
-      API.LOG_OUT,
-      {
-        accessToken,
-        refreshToken,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-        withCredentials: true,
-      }
-    );
-    if (response.status === 200) {
+    const response = await axiosInstance.post(API.LOG_OUT, {
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+    });
+    if (response.data) {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
-      setTokens(null, null);
+      clearTokens();
+      clearUserInfo();
       navigate("/login");
     }
   } catch (error) {

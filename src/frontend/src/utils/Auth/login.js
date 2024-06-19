@@ -15,6 +15,12 @@ const Login = async (email, password) => {
     if (response.data) {
       console.error(response.data.data);
       const { accessToken, refreshToken } = response.data.data;
+      
+      //기존 로그인 정보 삭제
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+
+      // 새로운 로그인 정보 
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
 
