@@ -1,12 +1,8 @@
 package com.capstone.notificationservice.domain.user.entity;
 
 
-import com.capstone.notificationservice.domain.common.AlarmType;
-import com.capstone.notificationservice.domain.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -31,9 +27,14 @@ public class UserNotification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
+    @Column(name = "user_notification_id")
     private Long userNotificationId;
 
-    @Column(name = "user_notification_id")
+    @Column(name = "userId")
     private Long userId;
+
+    @ManyToOne
+    @JoinColumn(name = "receiver_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private User receiver;
 }

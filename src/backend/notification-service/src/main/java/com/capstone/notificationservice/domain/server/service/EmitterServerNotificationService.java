@@ -87,7 +87,6 @@ public class EmitterServerNotificationService {
     }
 
 
-    @Transactional
     public void send(Long userId, Long serverId, String writer, String content, String profileImage,
                      List<Long> receiverIds, AlarmType alarmType,  MentionType mentionType) {
         List<User> receivers = receiverIds.stream()

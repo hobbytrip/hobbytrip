@@ -16,4 +16,9 @@ public class UserService {
     public Optional<User> findUser(Long userId) {
         return userRepository.findById(userId);
     }
+
+    @Transactional
+    public User findUser(String Email) {
+        return userRepository.findByEmail(Email);
+    }
 }
