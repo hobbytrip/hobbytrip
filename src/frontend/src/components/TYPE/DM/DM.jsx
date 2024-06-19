@@ -18,10 +18,11 @@ function DM() {
   const [dmInfo, setDmInfo] = useState(null);
   const { dmId } = useParams();
   const { dmHistoryList, setDmHistoryList } = useDmHistoryStore();
-  const { serverData } = useServerStore(state => ({
-    serverData: state.serverData
+  const { serverData } = useServerStore((state) => ({
+    serverData: state.serverData,
   }));
-  const { userId } = useUserStore();
+  const { USER } = useUserStore();
+  const userId = USER.userId;
   const serverId = serverData.serverInfo.serverId;
 
   useEffect(() => {
@@ -56,8 +57,8 @@ function DM() {
         console.error("Error deleting notice:", error);
       }
     };
-    deleteNotice();  
-  })
+    deleteNotice();
+  });
 
   if (dmInfo === null) {
     return <div>Loading...</div>;
