@@ -54,7 +54,9 @@ const postUserLocation = async (userId, serverId, channelId) => {
 };
 
 function ChatRoom() {
-  const { userId, nickname } = useUserStore();
+  const { USER } = useUserStore();
+  const userId = USER.userId;
+  const nickname = USER.name;
   const { serverId, channelId } = useParams();
   const [page, setPage] = useState(0);
   const chatListContainerRef = useRef(null);

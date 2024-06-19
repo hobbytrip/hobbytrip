@@ -61,7 +61,7 @@ const ChatMessage = ({ message, onModifyMessage, onDeleteMessage }) => {
             </div>
             {message.files.map((file, index) => (
               <div key={index} className={s.fileContainer}>
-                {isImageFile(file.originalFilename) ? (
+                {file.originalFilename && isImageFile(file.originalFilename) ? (
                   <img
                     src={file.fileUrl}
                     className={s.imgContent}
@@ -72,7 +72,7 @@ const ChatMessage = ({ message, onModifyMessage, onDeleteMessage }) => {
                   <div className={s.fileDownload}>
                     <div className={s.inner}>
                       <h4 style={{ fontWeight: "500" }}>
-                        {file.originalFilename}
+                        {file.originalFilename || "Unknown file"}
                       </h4>
                     </div>
                     <div className={s.innerBtm}>
@@ -164,6 +164,9 @@ const ChatMessage = ({ message, onModifyMessage, onDeleteMessage }) => {
   };
 
   const isImageFile = (fileName) => {
+    if (!fileName) {
+      return false;
+    }
     const imageExtensions = [".jpg", ".jpeg", ".png", ".gif"];
     const extension = fileName
       .substring(fileName.lastIndexOf("."))
