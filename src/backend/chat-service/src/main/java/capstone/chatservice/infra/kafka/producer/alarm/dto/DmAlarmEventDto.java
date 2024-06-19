@@ -16,6 +16,8 @@ public class DmAlarmEventDto {
     private Long userId;
     private Long dmRoomId;
     private String content;
+    private String writer;
+    private String profileImage;
     private AlarmType alarmType;
     private List<Long> receiverIds;
 
@@ -24,6 +26,8 @@ public class DmAlarmEventDto {
                 createRequest.getUserId(),
                 createRequest.getDmRoomId(),
                 createRequest.getContent(),
+                createRequest.getWriter(),
+                createRequest.getProfileImage(),
                 AlarmType.DM,
                 createRequest.getReceiverIds()
         );
