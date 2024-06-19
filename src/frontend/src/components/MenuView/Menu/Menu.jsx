@@ -20,7 +20,7 @@ const MenuList = () => {
   const [notification, setNotification] = useState(notificationEnabled);
   const nav = useNavigate();
   const { accessToken, refreshToken } = useAuthStore();
-
+  const { setTokens } = useAuthStore.getState();
   const handleHome = () => {
     nav("/main");
   };
@@ -30,8 +30,13 @@ const MenuList = () => {
   };
 
   const handleLogout = async () => {
-    alert("로그아웃 하시겠습니까?");
-    await Logout(accessToken, refreshToken);
+    if (window.confirm("로그아웃 하시겠습니까?")) {
+      try {
+        await Logout(accessToken, refreshToken, setTokens, nav);
+      } catch (error) {
+        console.error("로그아웃 실패", error);
+      }
+    }
   };
 
   return (
@@ -81,6 +86,7 @@ const MenuList = () => {
 };
 
 const Menu = () => {
+  const { USER } = useUserStore();
   const nav = useNavigate();
   const moveToUserProfile = () => {
     nav("/user/profile");
