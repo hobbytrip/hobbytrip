@@ -15,10 +15,10 @@ const ServerSetting = () => {
   const [serverCategory, setServerCategory] = useState("");
   const [profileImage, setProfileImage] = useState(null);
   const [profilePreview, setProfilePreview] = useState(null);
-  const { serverData, setServerInfo } = useServerStore((state) => ({
-    serverData: state.serverData,
+  const { setServerInfo } = useServerStore((state) => ({
     setServerInfo: state.setServerInfo
   }));
+  const { serverData } = useServerStore();
   const { updateServer } = usePlanetsStore(state => ({
     updateServer: state.updateServer
   }));

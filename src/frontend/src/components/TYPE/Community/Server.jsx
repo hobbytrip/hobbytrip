@@ -21,9 +21,7 @@ import { RiSettings3Fill } from "react-icons/ri";
 //최상단. 데탑버전
 function Server() {
   const [isInviteOpen, setInviteOpen] = useState(false);
-  const { serverData } = useServerStore((state) => ({
-    serverData: state.serverData,
-  }));
+  const { serverData } = useServerStore();
   const nav = useNavigate();
   const subscriptionRef = useRef(null); // 구독 객체 참조 추가
   const { channelId } = useParams();

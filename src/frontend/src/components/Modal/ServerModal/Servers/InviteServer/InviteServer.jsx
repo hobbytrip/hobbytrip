@@ -8,9 +8,7 @@ import { FiSearch } from "react-icons/fi";
 
 function InviteServer({ onClose }) {
   const [link, setLink] = useState("");
-  const { serverData } = useServerStore((state) => ({
-    serverData: state.serverData,
-  }));
+  const { serverData } = useServerStore();
   const serverInfo = serverData.serverInfo;
 
   const handleClose = () => {

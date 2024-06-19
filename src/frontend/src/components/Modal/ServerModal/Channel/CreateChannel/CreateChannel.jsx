@@ -16,10 +16,10 @@ function CreateChannel({ categoryId, onClose, onBack }) {
   const [name, setName] = useState("");
   const [type, setType] = useState("CHAT");
   const [open, setOpen] = useState(false);
-  const { serverData, setServerData } = useServerStore((state) => ({
-    serverData: state.serverData,
+  const { setServerData } = useServerStore((state) => ({
     setServerData: state.setServerData,
   }));
+  const { serverData } = useServerStore();
   const { USER } = useUserStore();
   const userId = USER.userId;
 
