@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum MentionType {
 
-    EVERYONE("MENTION-EVERYONE"), HERE("MENTION-HERE"), USER("MENTION-USER");
+    EVERYONE("MENTION-EVERYONE"), HERE("MENTION-HERE"), USER("MENTION-USER"), NO_ALERT("NO_ALERT");
 
     private final String type;
 }

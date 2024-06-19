@@ -7,6 +7,9 @@ import capstone.chatservice.domain.server.dto.request.ServerMessageDeleteRequest
 import capstone.chatservice.domain.server.dto.request.ServerMessageModifyRequest;
 import capstone.chatservice.domain.server.service.command.ServerMessageCommandService;
 import capstone.chatservice.infra.S3.FileStore;
+import capstone.chatservice.infra.kafka.producer.alarm.AlarmEventProducer;
+import capstone.chatservice.infra.kafka.producer.alarm.dto.MentionType;
+import capstone.chatservice.infra.kafka.producer.alarm.dto.ServerAlarmEventDto;
 import capstone.chatservice.infra.kafka.producer.chat.ChatEventProducer;
 import capstone.chatservice.infra.kafka.producer.state.StateEventProducer;
 import capstone.chatservice.infra.kafka.producer.state.dto.UserLocationEventDto;
@@ -28,14 +31,18 @@ public class ServerMessageCommandController {
 
     private final FileStore fileStore;
     private final ChatEventProducer producerService;
+    private final AlarmEventProducer alarmEventProducer;
     private final StateEventProducer stateEventProducer;
     private final ServerMessageCommandService commandService;
 
     @MessageMapping("/server/message/send")
     public void save(ServerMessageCreateRequest createRequest) {
-        log.info(createRequest.getContent());
         ServerMessageDto messageDto = commandService.save(createRequest);
         producerService.sendToServerChatTopic(messageDto);
+        if (!createRequest.getMentionType().equals(MentionType.NO_ALERT)) {
+            ServerAlarmEventDto serverAlarmEventDto = ServerAlarmEventDto.from(createRequest);
+            alarmEventProducer.sendToServerAlarmEventTopic(serverAlarmEventDto);
+        }
     }
 
     @MessageMapping("/server/message/modify")
