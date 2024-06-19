@@ -88,14 +88,14 @@ public class DmNotificationService {
     }
 
 
-    public void send(Long userId, Long dmRoomId, AlarmType alarmType, String content, List<Long> receiverIds) {
+    public void send(Long userId, Long dmRoomId, String content, String writer, String profileImage, AlarmType alarmType,  List<Long> receiverIds) {
         List<User> receivers = receiverIds.stream()
                 .map(userService::findUser)
                 .flatMap(Optional::stream)
                 .collect(Collectors.toList());
 
         List<DmNotification> dmNotifications = notificationRepository.saveAll(
-                createNotification(userId, dmRoomId, alarmType, content, receivers));
+                createNotification(userId, dmRoomId, content,writer,profileImage, alarmType, receivers));
 
         dmNotifications.forEach(dmNotification -> {
             String receiverId = userId + "_" + System.currentTimeMillis();
@@ -110,8 +110,8 @@ public class DmNotificationService {
         });
     }
 
-    private List<DmNotification> createNotification(Long userId, Long dmRoomId, AlarmType alarmType, String content,
-                                                    List<User> receivers) {
+    private List<DmNotification> createNotification(Long userId, Long dmRoomId, String content, String writer, String profileImage,
+                                                    AlarmType alarmType, List<User> receivers) {
         return receivers.stream()
                 .map(receiver -> DmNotification.builder()
                         .receiver(receiver)
@@ -147,12 +147,16 @@ public class DmNotificationService {
         AlarmType alarmType = dmNotificationDto.getAlarmType(); // String을 AlarmType으로 변환
         String content = dmNotificationDto.getContent();
         List<Long> receiverIds = dmNotificationDto.getReceiverIds(); // 수신자 ID 목록, DmNotificationDto에 해당 필드가 존재한다고 가정
-
-        send(sendId, dmRoomId, alarmType, content, receiverIds);
+        String writer=dmNotificationDto.getWriter();
+        String profileImage=dmNotificationDto.getProfileImage();
+        log.info("dmAlarmConsumer");
         log.info("getUserId {}", dmNotificationDto.getUserId());
         log.info("getDmRoomId {}", dmNotificationDto.getDmRoomId());
         log.info("getAlarmType {}", dmNotificationDto.getAlarmType());
         log.info("getContent {}", dmNotificationDto.getContent());
         log.info("getReceiverIds {}", dmNotificationDto.getReceiverIds());
+
+        send(sendId, dmRoomId, content, writer, profileImage, alarmType, receiverIds);
+
     }
 }

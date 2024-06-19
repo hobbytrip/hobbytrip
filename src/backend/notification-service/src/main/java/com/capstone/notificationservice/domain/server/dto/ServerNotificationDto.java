@@ -11,11 +11,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class ServerNotificationDto {
-    private Long notificationId;
     private Long userId;
     private Long serverId;
-    private List<Long> receiverIds;
-    private MentionType mentionType;
-    private AlarmType alarmType;
+    private String writer;
     private String content;
+    private String profileImage;
+    private List<Long> receiverIds;
+    private AlarmType alarmType;
+    private MentionType mentionType;
+
 }

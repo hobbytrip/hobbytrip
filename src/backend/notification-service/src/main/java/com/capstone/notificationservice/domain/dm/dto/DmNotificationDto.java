@@ -12,9 +12,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class DmNotificationDto {
-    private Long dmRoomId;
     private Long userId;
-    private List<Long> receiverIds;
+    private Long dmRoomId;
     private String content;
+    private String writer;
+    private String profileImage;
     private AlarmType alarmType;
+    private List<Long> receiverIds;
 }
