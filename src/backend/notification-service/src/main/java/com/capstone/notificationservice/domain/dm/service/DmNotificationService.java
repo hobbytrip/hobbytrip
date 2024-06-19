@@ -84,8 +84,10 @@ public class DmNotificationService {
             users.append(",");
         }
         String userIds=users.substring(0,users.length()-1);
+        log.info("3 userId {}", String.valueOf(data.getUserId()));
+
         try {
-            log.info("userId {}", String.valueOf(data.getUserId()));
+            log.info("4 userId {}", String.valueOf(data.getUserId()));
             emitter.send(SseEmitter.event()
                     .id(eventId)
                     .name("userId")
@@ -152,9 +154,11 @@ public class DmNotificationService {
             String receiverId = userId + "_" + System.currentTimeMillis();
             String eventId = receiverId + "_" + System.currentTimeMillis();
             Map<String, SseEmitter> emitters = emitterRepository.findAllEmitterStartWithByUserId(receiverId);
+            log.info("1 userId {}", userId);
             emitters.forEach(
                     (key, emitter) -> {
                         emitterRepository.saveEventCache(key, dmNotification);
+                        log.info("2 userId {}", userId);
                         sendNotificationDto(emitter, eventId, key, DmNotificationResponse.from(dmNotification, userId));
                     }
             );
