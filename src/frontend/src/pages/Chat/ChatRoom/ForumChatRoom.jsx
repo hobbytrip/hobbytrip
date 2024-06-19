@@ -320,9 +320,9 @@ function ForumChat() {
             </InfiniteScrollComponent>
           </div>
           <div className={s.messageSender}>
-            {typingForumUsers.length > 0 && (
+            {forumTypingUsers.length > 0 && (
               <div className="typingIndicator">
-                {typingForumUsers.length >= 5
+                {forumTypingUsers.length >= 5
                   ? "여러 사용자가 입력 중입니다..."
                   : `${forumTypingUsers.join(", ")} 입력 중입니다...`}
               </div>

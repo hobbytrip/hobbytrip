@@ -3,18 +3,17 @@ import { EventSourcePolyfill } from 'event-source-polyfill';
 import API from '../utils/API/API';
 import useUserStore from '../actions/useUserStore';
 
-
 const useSSE = () => {
   const [isServerConnected, setIsServerConnected] = useState(false);
   const [isDmConnected, setIsDmConnected] = useState(false);
   const { userId, notificationEnabled } = useUserStore();
   const accessToken = localStorage.getItem('accessToken');
-
   let lastHeartbeat = Date.now();
   let retryCnt = 0;
+
   const serverSourceRef = useRef(null);
   const dmSourceRef = useRef(null);
-  
+
   const closeSSE = useCallback(() => {
     console.log('Closing SSE sources');
     if (serverSourceRef.current && serverSourceRef.current.readyState !== EventSource.CLOSED) {
@@ -51,13 +50,12 @@ const useSSE = () => {
       if (retryCnt < 3) {
         setTimeout(() => connectSSE(), 5000);
       }
-      else{
-        return;
-      }
     }
   }, []);
 
   const connectSSE = useCallback(() => {
+    closeSSE();
+
     const newServerSource = new EventSourcePolyfill(API.SERVER_SSE_SUB(userId), {
       headers: {
         'Content-Type': 'text/event-stream',
@@ -74,19 +72,11 @@ const useSSE = () => {
       withCredentials: true,
     });
 
-    newServerSource.onopen = () => handleOpen('server');
     newDmSource.onopen = () => handleOpen('dm');
-
-    newServerSource.onerror = (err) => handleError(err, 'server');
     newDmSource.onerror = (err) => handleError(err, 'dm');
-
-    newServerSource.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      console.log('Server SSE Message:', data);
-      if (!notificationEnabled && document.hidden) {
-        showNotification(data, 'server');
-      }
-    };
+    
+    newServerSource.onopen = () => handleOpen('server');
+    newServerSource.onerror = (err) => handleError(err, 'server');
 
     newDmSource.onmessage = (event) => {
       const data = JSON.parse(event.data);
@@ -96,17 +86,13 @@ const useSSE = () => {
       }
     };
 
-    newServerSource.addEventListener('heartbeat', () => {
-      lastHeartbeat = Date.now();
-    });
-
     newDmSource.addEventListener('heartbeat', () => {
       lastHeartbeat = Date.now();
     });
 
     serverSourceRef.current = newServerSource;
     dmSourceRef.current = newDmSource;
-  }, [closeSSE, handleOpen, handleError, notificationEnabled]);
+  }, [userId]);
 
   useEffect(() => {
     if (userId && accessToken) {
@@ -125,13 +111,11 @@ const useSSE = () => {
     let notice;
     if (type === 'dm') {
       notice = new Notification(data.userId, alarmData);
-    } else if (type === 'server') {
-      notice = new Notification(data.serverId, alarmData);
     } else {
       console.log('Notification type error');
     }
     notice.addEventListener('click', (e) => {
-      // 필요한 경우 클릭 이벤트 로직 추가
+      // 클릭 이벤트 처리 로직 추가
     });
   };
 

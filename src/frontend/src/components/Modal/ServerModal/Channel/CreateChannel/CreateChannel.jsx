@@ -33,7 +33,6 @@ function CreateChannel({ categoryId, onClose, onBack }) {
         channelType: type,
         name: name,
       };
-      console.log(data)
       const res = await axiosInstance.post(API.COMM_CHANNEL, data);
 
       if (res.data.success) {

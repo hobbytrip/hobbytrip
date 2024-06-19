@@ -7,18 +7,25 @@ const useServerStore = create((set) => ({
     serverInfo: null,
     serverCategories: null,
     serverChannels: null,
+    serverUserInfos: null,
     userStatus: null,
     messages: null,
   },
   setServerData: (newServerData) => set({ serverData: newServerData }),
+  setServerInfo: (newServerInfo) => set((state) => ({
+    serverData: {
+      ...state.serverData,
+      serverInfo: newServerInfo,
+    },
+  })),
   fetchServerData: async (serverId, userId) => {
     try {
       const accessToken = localStorage.getItem("accessToken");
-      console.log(serverId, userId)
-      const res = await axiosInstance.get(API.GET_SERVER(serverId, userId),{
+      console.log(serverId, userId);
+      const res = await axiosInstance.get(API.GET_SERVER(serverId, userId), {
         headers: {
-          Authorization: `Bearer ${accessToken}`
-        }
+          Authorization: `Bearer ${accessToken}`,
+        },
       });
       const resData = res?.data?.data;
       console.error(resData);
@@ -29,6 +36,7 @@ const useServerStore = create((set) => ({
             serverInfo: resData.server,
             serverCategories: resData.categories,
             serverChannels: resData.channels,
+            serverUserInfos: resData.serverUserInfos,
             userStatus: resData.usersState,
             messages: resData.messages,
           },
@@ -40,6 +48,7 @@ const useServerStore = create((set) => ({
             serverInfo: null,
             serverCategories: null,
             serverChannels: null,
+            serverUserInfos: null,
             userStatus: null,
             messages: null,
           },
@@ -52,6 +61,7 @@ const useServerStore = create((set) => ({
           serverInfo: null,
           serverCategories: null,
           serverChannels: null,
+          serverUserInfos: null,
           userStatus: null,
           messages: null,
         },

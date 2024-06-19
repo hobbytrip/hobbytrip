@@ -7,6 +7,7 @@ import API from "../../../../../utils/API/API";
 import JoinServer from "../JoinServer/JoinServer";
 import useUserStore from "../../../../../actions/useUserStore";
 import { TbCameraPlus } from "react-icons/tb";
+import usePlanetsStore from "../../../../../actions/usePlantesStore";
 
 function CreateServer() {
   const [name, setName] = useState("");
@@ -19,6 +20,7 @@ function CreateServer() {
   const imgRef = useRef();
   const nav = useNavigate();
   const { userId } = useUserStore();
+  const { addServer } = usePlanetsStore();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -43,17 +45,26 @@ function CreateServer() {
       const response = await axiosInstance.post(API.COMM_SERVER, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: localStorage.getItem('accessToken')
+          Authorization: localStorage.getItem("accessToken"),
         },
       });
 
       if (response.data.success) {
         console.log(response);
         // setServerData({ serverInfo: response.data.data });
+        addServer(response.data.data);
         const serverId = response.data.data.serverId;
-        fetchServerData(serverId, userId);
-        console.log('create fetch')
-        nav(`/${serverId}/menu`);
+        console.log("create fetch");
+        await fetchServerData(serverId, userId);
+        const fetchedData = useServerStore.getState().serverData;
+        if (fetchedData && fetchedData.serverChannels) {
+          const defaultChatChannel = fetchedData.serverChannels.find(
+            (channel) => channel.channelType === "CHAT"
+          );
+          if (defaultChatChannel) {
+            nav(`/${serverId}/${defaultChatChannel.channelId}/chat`);
+          }
+        }
       } else {
         console.log("행성 만들기 실패.");
         console.log(response);

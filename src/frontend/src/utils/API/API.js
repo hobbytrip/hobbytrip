@@ -4,6 +4,7 @@ const MEDIA_BASE_URL = "https://fittrip.site/api/sig";
 const WS_BASE = "/ws/chat";
 const NOTICE_URL = "https://fittrip.site/api/notice";
 const FRIEND_URL = "https://fittrip.site/api/user/friends";
+const STATE_URL = "https://fittrip.site/api/user/state";
 
 const API = {
   //유저
@@ -24,6 +25,10 @@ const API = {
   //커뮤니티 회원가입
   COMM_SIGNUP: `${BASE_URL}/community/user`,
   READ_MAIN: (userId) => `${BASE_URL}/community/user/${userId}`,
+
+  //커뮤니티 DM
+  CREATE_DM: `${BASE_URL}/community/dm`,
+  READ_DM: (dmId) => `${BASE_URL}/community/dm/${dmId}`,
 
   //const WS_BASE = "ws/chat";
   //소켓
@@ -66,7 +71,7 @@ const API = {
   //DM 채팅
   SUBSCRIBE_DM: (roomId) => `/topic/direct/${roomId}`,
   DM_FILE_UPLOAD: `${BASE_URL}/chat/direct/message/file`,
-  GET_DM_HISTORY: `${BASE_URL}/chat/direct/messages/channel`,
+  GET_DM_HISTORY: `${BASE_URL}/chat/direct/messages/room`,
   GET_DM_COMMENTS: `${BASE_URL}/chat/direct/comments`,
 
   //FORUM 채팅
@@ -78,6 +83,12 @@ const API = {
   READ_FORUM: (channelId, userId) =>
     `${BASE_URL}/community/channel/${channelId}/${userId}`,
   CUD_FORUM: `${BASE_URL}/community/forum`,
+
+
+  //상태관리
+  GET_SERVER_STATE: (serverId, userIds) =>
+    `${STATE_URL}?serverId=${serverId}&userIds=${userIds}`,
+
 };
 
 export default API;

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { axiosInstance } from "../../../../utils/axiosInstance";
 import API from "../../../../utils/API/API";
 import useUserStore from "../../../../actions/useUserStore";
@@ -9,6 +9,10 @@ import FriendComponent from "../FriendComponent/FriendComponent";
 function FriendList({ friends }) {
   const [dmNotice, setDmNotice] = useState([]);
   const { userId } = useUserStore();
+
+  useEffect(() => {
+    getNotice();
+  }, [])
 
   const getNotice = async () => {
     try {
@@ -26,7 +30,7 @@ function FriendList({ friends }) {
     <div className={s.wrapper}>
       {!friends ? (
         <div className={s.container}>
-          <img src={friendEmpty} alt="친구없음" style={{ width: "150px" }} />
+          <img src={friendEmpty} alt="친구없음" />
           <h4 className={s.h4}>친구 목록이 비어있어요</h4>
         </div>
       ) : (

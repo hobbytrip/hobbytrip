@@ -1,0 +1,90 @@
+.categoryList {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 10px;
+  color: var(--dark-gray);
+  gap: 20px;
+  padding: 10px;
+}
+.serverName {
+  display: flex;
+  padding: 10px;
+  @media (max-width: 431px) {
+    display: none;
+  }
+}
+
+.categoryList button {
+  background: none;
+  border: none;
+  color: var(--dark-gray);
+}
+
+.categoryList li {
+  list-style-type: none;
+}
+
+.category {
+  gap: 10px;
+  /* padding: 10px 20px; */
+  border-bottom: 1px solid var(--light-gray);
+}
+
+.categoryHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 318px;
+  height: 19px;
+  padding: 10px 25px;
+  @media (min-width: 432px) {
+    max-width: 270px;
+    padding: 0px;
+    margin-bottom: 20px;
+  }
+}
+
+.categoryHeader button {
+  width: 22px;
+  height: 18px;
+  gap: 10px;
+  padding: 5px 3px;
+}
+
+.categoryName {
+  display: flex;
+  font-family: "DOSSaemmul";
+}
+
+.category h3 {
+  flex-grow: 1;
+}
+
+.createServerModal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 999;
+}
+
+.createServerModal > * {
+  z-index: 1000; /*오버레이*/
+}
+.closeCateBtn {
+  @media (min-width: 432px) {
+    display: none;
+  }
+}
+.closeBtn {
+  background-color: transparent;
+  margin-top: 10px;
+}

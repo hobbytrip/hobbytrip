@@ -1,5 +1,5 @@
 .wrapper {
-  display: flex; 
+  display: flex;
   height: 100vh;
   align-items: center;
   justify-content: center;
@@ -12,4 +12,81 @@
   left: 1390px;
   display: flex;
   flex-direction: column;
+}
+
+.header,
+.deskDms {
+  display: none;
+}
+
+@media (min-width: 432px) {
+  .wrapper {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .container {
+    display: flex;
+    width: 100%; 
+    height: calc(100% - 27px);
+    flex-direction: row;
+  }
+
+  .header {
+    display: block;
+    width: 100%;
+    height: 27px;
+    background-color: var(--dark-purple);
+  }
+
+  .deskDms {
+    display: block;
+    width: 180px;
+    height: 100%;
+    background-color: white;
+    border-radius: 20px 0px 0px 0px;
+  }
+
+  .deskServers {
+    display: flex;
+    flex-direction: column;
+    width: 118px;
+    height: 100%;
+    background: var(--dark-purple);
+  }
+
+  .myFriend {
+    width: calc(100% - 280px);
+    height: 100%;
+  }
+
+  .menuContainer {
+    height: 8%;
+  }
+
+  .menuContainer button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: none;
+    border: none;
+    padding: 30px;
+  }
+
+  .menuContainer button .icon {
+    height: 20px;
+    width: 20px;
+  }
+
+  .menuContainer button .text {
+    align-items: center;
+    justify-content: center;
+    font-size: large;
+    font-weight: 600;
+    width: 80%;
+    font-family: "DOSSaemmul";
+  }
 }

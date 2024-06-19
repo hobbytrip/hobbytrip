@@ -7,11 +7,15 @@ import MyPlanet from "../../components/MainView/MyPlanet/MyPlanet.jsx";
 import MyFriend from "../../components/Modal/FriendModal/MyFriend/MyFriend.jsx";
 import style from "./MainView.module.css";
 import setSSE from "../../hooks/useSSE.js";
+import DmHistoryList from "../../components/TYPE/DM/DmHistoryList/DmHistoryList.jsx";
+import { AiOutlineMenu } from "react-icons/ai";
+import { useNavigate } from "react-router-dom";
+import usePlanetsStore from "../../actions/usePlantesStore.js";
 
 const MainView = () => {
-  const [servers, setServers] = useState(null);
   const [dms, setDms] = useState(null);
   const { userId } = useUserStore();
+  const { setServers } = usePlanetsStore();
 
   setSSE();
   useEffect(() => {
@@ -27,10 +31,9 @@ const MainView = () => {
           console.error("Error fetching server Data:", error);
         }
       };
-      // setServer();
       getMainData();
     }
-  }, []);
+  }, [userId, setServers]);
 
   if (!userId) {
     return <div>Loading...</div>;
@@ -39,14 +42,38 @@ const MainView = () => {
   return (
     <>
       <div className={style.wrapper}>
+        <header className={style.header}/>  
         <div className={style.container}>
-          <MainHeader />
-          <MyPlanet servers={servers} />
-          <MyFriend />
+          <div className={style.deskServers}>
+            <MainHeader className={style.mainHeader} />
+            <MyPlanet className={style.myPlanet} />
+          </div>
+          <div className={style.deskDms}>
+            <Menu />
+            <DmHistoryList dmHistoryList={dms} />
+          </div>
+          <div className={style.myFriend}>
+            <MyFriend className={style.myFriend} />
+          </div>
         </div>
       </div>
     </>
   );
 };
+
+const Menu = () => {
+  const nav = useNavigate();
+  function handleGoToMenu(){
+    nav('/menu');
+  }
+  return(
+    <div className={style.menuContainer}>
+      <button onClick={handleGoToMenu}>
+        <AiOutlineMenu className={style.icon}/>
+        <span className={style.text}> 메뉴 </span>      
+      </button>
+    </div>
+  )
+}
 
 export default MainView;

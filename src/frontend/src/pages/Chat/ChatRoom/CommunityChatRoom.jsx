@@ -12,7 +12,6 @@ import ChatChannelType from "../../../components/Modal/ChatModal/ChatChannelType
 import InfiniteScrollComponent from "../../../components/Common/ChatRoom/InfiniteScrollComponent";
 import useWebSocketStore from "../../../actions/useWebSocketStore";
 import useChatStore from "../../../actions/useChatStore";
-import useForumStore from "../../../actions/useForumStore";
 import API from "../../../utils/API/API";
 import useUserStore from "../../../actions/useUserStore";
 import useAuthStore from "../../../actions/useAuthStore";
@@ -66,92 +65,20 @@ function ChatRoom() {
   const { client, isConnected } = useWebSocketStore();
   const {
     typingUsers,
-    setTypingUsers,
     deleteMessage,
     modifyMessage,
     sendMessage,
     setChatList,
   } = useChatStore();
-  // const {
-  //   setForumTypingUsers,
-  //   addForumMessage,
-  //   modifyForumMessage,
-  //   deleteForumMessage,
-  // } = useForumStore((state) => ({
-  //   setForumTypingUsers: state.setForumTypingUsers,
-  //   addForumMessage: state.addForumMessage,
-  //   modifyForumMessage: state.modifyForumMessage,
-  //   deleteForumMessage: state.deleteForumMessage,
-  // }));
   const chatList = useChatStore((state) => state.chatLists[serverId]) || [];
   const TYPE = "server";
 
   useEffect(() => {
     postUserLocation(userId, serverId, channelId);
-    // if (client && isConnected) {
-    //   client.unsubscribe(serverId);
-    // }
     if (client && isConnected) {
-      connectWebSocket(serverId);
       fetchChatHistory(page, serverId, channelId, setChatList);
     }
   }, [serverId]);
-  //소켓 연결
-  const connectWebSocket = (serverId) => {
-    client.subscribe(API.SUBSCRIBE_CHAT(serverId), (frame) => {
-      try {
-        console.log("subscribe success", serverId);
-        const parsedMessage = JSON.parse(frame.body);
-        const files = JSON.parse(frame.body.files);
-        // const filesInfo = JSON.parse(frame.body).files;
-        if (parsedMessage.chatType === "SERVER") {
-          if (
-            parsedMessage.actionType === "TYPING" &&
-            parsedMessage.userId !== userId
-          ) {
-            setTypingUsers((prevTypingUsers) => {
-              if (!prevTypingUsers.includes(parsedMessage.writer)) {
-                return [...prevTypingUsers, parsedMessage.writer];
-              }
-              return prevTypingUsers;
-            });
-          } else if (parsedMessage.actionType === "STOP_TYPING") {
-            setTypingUsers((prevTypingUsers) =>
-              prevTypingUsers.filter(
-                (username) => username !== parsedMessage.writer
-              )
-            );
-          } else if (parsedMessage.actionType === "SEND") {
-            // 전송
-            sendMessage(parsedMessage);
-            fetchChatHistory(page, serverId, channelId, setChatList);
-            if (files && files.length > 0) {
-              const fileUrls = files.map((file) => file.fileUrl);
-              const messageWithFiles = {
-                parsedMessage,
-                files: [...fileUrls],
-              };
-              sendMessage(messageBody.serverId, messageWithFiles);
-              client.publish({
-                destination: API.SEND_CHAT(TYPE),
-                body: JSON.stringify(messageWithFiles),
-              });
-            }
-          } else if (parsedMessage.actionType === "MODIFY") {
-            modifyMessage(
-              serverId,
-              parsedMessage.messageId,
-              parsedMessage.content
-            );
-          } else if (parsedMessage.actionType === "DELETE") {
-            deleteMessage(serverId, parsedMessage.messageId);
-          }
-        }
-      } catch (error) {
-        console.error("구독 오류", error);
-      }
-    });
-  };
 
   const handleSendMessage = async (messageContent, uploadedFiles) => {
     const messageBody = {
@@ -268,7 +195,7 @@ function ChatRoom() {
           >
             <div className={s.topInfos}>
               <IoChatbubbleEllipses className={s.chatIcon} />
-              <h1>일반 채널에 오신 것을 환영합니다</h1>
+              <h2>채팅을 시작해보세요!</h2>
             </div>
 
             <InfiniteScrollComponent
