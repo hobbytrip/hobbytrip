@@ -206,7 +206,7 @@ public class DmNotificationService {
         log.info("getContent {}", dmNotificationDto.getContent());
         log.info("getReceiverIds {}", dmNotificationDto.getReceiverIds());
 
-        send(sendId, dmRoomId, content, writer, profileImage, alarmType, receiverIds);
+        sendDto(sendId, dmRoomId, content, writer, profileImage, alarmType, receiverIds);
 
     }
 }
