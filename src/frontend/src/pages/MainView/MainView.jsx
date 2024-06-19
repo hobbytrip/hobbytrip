@@ -17,7 +17,7 @@ const MainView = () => {
   const { userId } = useUserStore();
   const { setServers } = usePlanetsStore();
 
-  setSSE();
+  // setSSE();
   useEffect(() => {
     if (userId) {
       const getMainData = async () => {

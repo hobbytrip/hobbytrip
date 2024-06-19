@@ -24,7 +24,8 @@ class VideoComponent extends Component {
       <video autoPlay={true} ref={this.videoRef} 
         style={{
           width: '180px',
-          height: '150px'
+          height: '150px',
+          borderRadius: '15px'
         }} />
     )
   }
