@@ -76,6 +76,34 @@ public class DmNotificationService {
             throw new DmException(Code.INTERNAL_ERROR, "연결 오류 !");
         }
     }
+    private void sendNotificationDto(SseEmitter emitter, String eventId, String emitterId, DmNotificationDto data) {
+        StringBuilder users = new StringBuilder();
+
+        for(Long userId :data.getReceiverIds() ){
+            users.append(userId);
+            users.append(",");
+        }
+        String userIds=users.substring(0,users.length()-1);
+        try {
+            emitter.send(SseEmitter.event()
+                    .id(eventId)
+                    .name("userId")
+                    .data(data.getUserId())
+                    .name("dmRoomId")
+                    .data(data.getDmRoomId())
+                    .name("content")
+                    .data(data.getContent())
+                    .name("writer")
+                    .data(data.getProfileImage())
+                    .name("alarmType")
+                    .data(data.getAlarmType())
+                    .name("receiverIds")
+                    .data(userIds));
+        } catch (IOException e) {
+            emitterRepository.deleteById(emitterId);
+            throw new DmException(Code.INTERNAL_ERROR, "연결 오류 !");
+        }
+    }
 
     private Boolean hasLostData(String lastEventId) {
         return !lastEventId.isEmpty();
@@ -106,6 +134,27 @@ public class DmNotificationService {
                     (key, emitter) -> {
                         emitterRepository.saveEventCache(key, dmNotification);
                         sendNotification(emitter, eventId, key, DmNotificationResponse.from(dmNotification, userId));
+                    }
+            );
+        });
+    }
+    public void sendDto(Long userId, Long dmRoomId, String content, String writer, String profileImage, AlarmType alarmType,  List<Long> receiverIds) {
+        List<User> receivers = receiverIds.stream()
+                .map(userService::findUser)
+                .flatMap(Optional::stream)
+                .collect(Collectors.toList());
+
+        List<DmNotification> dmNotifications = notificationRepository.saveAll(
+                createNotification(userId, dmRoomId, content,writer,profileImage, alarmType, receivers));
+
+        dmNotifications.forEach(dmNotification -> {
+            String receiverId = userId + "_" + System.currentTimeMillis();
+            String eventId = receiverId + "_" + System.currentTimeMillis();
+            Map<String, SseEmitter> emitters = emitterRepository.findAllEmitterStartWithByUserId(receiverId);
+            emitters.forEach(
+                    (key, emitter) -> {
+                        emitterRepository.saveEventCache(key, dmNotification);
+                        sendNotificationDto(emitter, eventId, key, DmNotificationResponse.from(dmNotification, userId));
                     }
             );
         });
@@ -157,7 +206,7 @@ public class DmNotificationService {
         log.info("getContent {}", dmNotificationDto.getContent());
         log.info("getReceiverIds {}", dmNotificationDto.getReceiverIds());
 
-        send(sendId, dmRoomId, content, writer, profileImage, alarmType, receiverIds);
+        sendDto(sendId, dmRoomId, content, writer, profileImage, alarmType, receiverIds);
 
     }
 }

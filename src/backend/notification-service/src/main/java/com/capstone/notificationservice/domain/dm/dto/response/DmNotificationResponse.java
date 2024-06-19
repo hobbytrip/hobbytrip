@@ -2,6 +2,7 @@ package com.capstone.notificationservice.domain.dm.dto.response;
 
 
 import com.capstone.notificationservice.domain.common.AlarmType;
+import com.capstone.notificationservice.domain.dm.dto.DmNotificationDto;
 import com.capstone.notificationservice.domain.dm.entity.DmNotification;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -9,11 +10,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class DmNotificationResponse {
+public class DmNotificationResponse extends DmNotificationDto {
     private Long notificationId;
     private Long dmRoomId;
     private Long userId;
