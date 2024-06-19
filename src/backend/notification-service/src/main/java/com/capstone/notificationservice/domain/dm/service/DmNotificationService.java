@@ -147,8 +147,8 @@ public class DmNotificationService {
                 .flatMap(Optional::stream)
                 .collect(Collectors.toList());
 
-        List<DmNotification> dmNotifications = notificationRepository.saveAll(
-                createNotification(userId, dmRoomId, content,writer,profileImage, alarmType, receivers));
+        List<DmNotification> dmNotifications =
+                createNotification(userId, dmRoomId, content,writer,profileImage, alarmType, receivers);
 
         dmNotifications.forEach(dmNotification -> {
             String receiverId = userId + "_" + System.currentTimeMillis();
@@ -204,6 +204,7 @@ public class DmNotificationService {
         List<Long> receiverIds = dmNotificationDto.getReceiverIds(); // 수신자 ID 목록, DmNotificationDto에 해당 필드가 존재한다고 가정
         String writer=dmNotificationDto.getWriter();
         String profileImage=dmNotificationDto.getProfileImage();
+
         log.info("dmAlarmConsumer");
         log.info("getUserId {}", dmNotificationDto.getUserId());
         log.info("getDmRoomId {}", dmNotificationDto.getDmRoomId());
