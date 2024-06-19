@@ -93,7 +93,7 @@ public class UserNotificationService {
             emitters.forEach(
                     (key, emitter) -> {
                         emitterRepository.saveEventCache(key, userId);
-                        sendNotification(emitter, eventCreatedTime, key, userId);
+                        sendNotification(emitter, eventCreatedTime, key,new UserNotificationDto(userId, receiverEmail));
                     }
             );
     }
