@@ -12,4 +12,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class FriendAlarmEventDto {
     private Long userId;
+    private String receiverEmail;
 }

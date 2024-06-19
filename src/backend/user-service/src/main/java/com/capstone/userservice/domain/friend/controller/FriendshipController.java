@@ -29,7 +29,7 @@ public class FriendshipController {
         String token = request.getHeader(Header);
         String temp = trimToken(token);
 
-        FriendAlarmEventDto friendAlarmEventDto = new FriendAlarmEventDto(tokenUtil.getUserId(temp));
+        FriendAlarmEventDto friendAlarmEventDto = new FriendAlarmEventDto(tokenUtil.getUserId(temp), email);
         friendAlarmEventProducer.sendToFriendAlarmEventTopic(friendAlarmEventDto);
 
         return DataResponseDto.of(friendshipService.createFriendship(temp, email));
