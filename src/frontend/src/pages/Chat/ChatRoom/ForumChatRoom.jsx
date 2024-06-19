@@ -81,13 +81,6 @@ function ForumChat() {
     (state) => state.forumLists[serverId]?.[forumId] || []
   ); //해당 서버>포럼에 있는 message 가져오기
 
-  const { addForumMessage, modifyForumMessage, deleteForumMessage } =
-    useForumStore((state) => ({
-      addForumMessage: state.addForumMessage,
-      modifyForumMessage: state.modifiedMessage,
-      deleteForumMessage: state.deleteForumMessage,
-    }));
-
   useEffect(() => {
     if (client && isConnected) {
       console.log(client, isConnected);

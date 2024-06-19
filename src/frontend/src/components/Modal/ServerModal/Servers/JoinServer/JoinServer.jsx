@@ -12,13 +12,14 @@ function JoinServer({ onClose }) {
   const nav = useNavigate();
   const { serverData, fetchServerData } = useServerStore((state) => ({
     serverData: state.serverData,
-    fetchServerData: state.fetchServerData
+    fetchServerData: state.fetchServerData,
   }));
 
   const { USER } = useUserStore();
   const userId = USER.userId;
-  const { addServer } = usePlanetsStore(state => ({
-    addServer: state.addServer
+  const { addServer } = usePlanetsStore((state) => ({
+    addServer: state.addServer,
+  }));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
