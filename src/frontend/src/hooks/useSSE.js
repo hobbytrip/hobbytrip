@@ -6,8 +6,10 @@ import useUserStore from '../actions/useUserStore';
 const useSSE = () => {
   const [isServerConnected, setIsServerConnected] = useState(false);
   const [isDmConnected, setIsDmConnected] = useState(false);
-  const { userId, notificationEnabled } = useUserStore();
+  const { USER, notificationEnabled } = useUserStore();
   const accessToken = localStorage.getItem('accessToken');
+  console.log(accessToken);
+  const userId = USER.userId;
 
   let lastHeartbeat = Date.now();
   let retryCnt = 0;
@@ -57,13 +59,13 @@ const useSSE = () => {
   }, []);
 
   const connectSSE = useCallback(() => {
-    // const newServerSource = new EventSourcePolyfill(API.SERVER_SSE_SUB(userId), {
-    //   headers: {
-    //     'Content-Type': 'text/event-stream',
-    //     Authorization: `Bearer ${accessToken}`,
-    //   },
-    //   withCredentials: true,
-    // });
+    const newServerSource = new EventSourcePolyfill(API.SERVER_SSE_SUB(userId), {
+      headers: {
+        'Content-Type': 'text/event-stream',
+        Authorization: `Bearer ${accessToken}`,
+      },
+      withCredentials: true,
+    });
 
     const newDmSource = new EventSourcePolyfill(API.DM_SSE_SUB(userId), {
       headers: {
@@ -73,19 +75,19 @@ const useSSE = () => {
       withCredentials: true,
     });
 
-    // newServerSource.onopen = () => handleOpen('server');
+    newServerSource.onopen = () => handleOpen('server');
     newDmSource.onopen = () => handleOpen('dm');
 
-    // newServerSource.onerror = (err) => handleError(err, 'server');
+    newServerSource.onerror = (err) => handleError(err, 'server');
     newDmSource.onerror = (err) => handleError(err, 'dm');
 
-    // newServerSource.onmessage = (event) => {
-    //   const data = JSON.parse(event.data);
-    //   console.log('Server SSE Message:', data);
-    //   if (!notificationEnabled && document.hidden) {
-    //     showNotification(data, 'server');
-    //   }
-    // };
+    newServerSource.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      console.log('Server SSE Message:', data);
+      if (!notificationEnabled && document.hidden) {
+        showNotification(data, 'server');
+      }
+    };
 
     newDmSource.onmessage = (event) => {
       const data = JSON.parse(event.data);
@@ -95,15 +97,15 @@ const useSSE = () => {
       }
     };
 
-    // newServerSource.addEventListener('heartbeat', () => {
-    //   lastHeartbeat = Date.now();
-    // });
+    newServerSource.addEventListener('heartbeat', () => {
+      lastHeartbeat = Date.now();
+    });
 
     newDmSource.addEventListener('heartbeat', () => {
       lastHeartbeat = Date.now();
     });
 
-    // serverSourceRef.current = newServerSource;
+    serverSourceRef.current = newServerSource;
     dmSourceRef.current = newDmSource;
   }, [closeSSE, handleOpen, handleError, notificationEnabled]);
 
@@ -124,8 +126,8 @@ const useSSE = () => {
     let notice;
     if (type === 'dm') {
       notice = new Notification(data.userId, alarmData);
-    // } else if (type === 'server') {
-    //   notice = new Notification(data.serverId, alarmData);
+    } else if (type === 'server') {
+      notice = new Notification(data.serverId, alarmData);
     } else {
       console.log('Notification type error');
     }
