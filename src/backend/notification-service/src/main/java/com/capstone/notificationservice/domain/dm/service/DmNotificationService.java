@@ -7,6 +7,7 @@ import com.capstone.notificationservice.domain.dm.dto.response.DmNotificationRes
 import com.capstone.notificationservice.domain.dm.entity.DmNotification;
 import com.capstone.notificationservice.domain.dm.exception.DmException;
 import com.capstone.notificationservice.domain.dm.repository.EmitterRepository;
+import com.capstone.notificationservice.domain.dm.repository.EmitterRepositoryImpl;
 import com.capstone.notificationservice.domain.dm.repository.NotificationRepository;
 import com.capstone.notificationservice.domain.server.exception.ServerException;
 import com.capstone.notificationservice.domain.user.entity.User;
@@ -113,14 +114,15 @@ public class DmNotificationService {
     }
 
     private void sendLostData(String lastEventId, Long userId, String emitterId, SseEmitter emitter) {
-        Map<String, SseEmitter> eventCaches = emitterRepository.findAllEmitterStartWithByUserId(String.valueOf(userId));
+            Map<String, SseEmitter> eventCaches = emitterRepository.findAllEmitterStartWithByUserId(String.valueOf(userId));
         eventCaches.entrySet().stream()
                 .filter(entry -> lastEventId.compareTo(entry.getKey()) < 0)
                 .forEach(entry -> sendNotification(emitter, entry.getKey(), emitterId, entry.getValue()));
     }
 
 
-    public void send(Long userId, Long dmRoomId, String content, String writer, String profileImage, AlarmType alarmType,  List<Long> receiverIds) {
+    public void send(Long userId, Long dmRoomId, String content, String writer, String profileImage,
+                     AlarmType alarmType,  List<Long> receiverIds) {
         List<User> receivers = receiverIds.stream()
                 .map(userService::findUser)
                 .flatMap(Optional::stream)
@@ -141,7 +143,8 @@ public class DmNotificationService {
             );
         });
     }
-    public void sendDto(Long userId, Long dmRoomId, String content, String writer, String profileImage, AlarmType alarmType,  List<Long> receiverIds) {
+    public void sendDto(Long userId, Long dmRoomId, String content, String writer, String profileImage,
+                        AlarmType alarmType,  List<Long> receiverIds) {
         List<User> receivers = receiverIds.stream()
                 .map(userService::findUser)
                 .flatMap(Optional::stream)
