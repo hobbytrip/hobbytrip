@@ -88,34 +88,35 @@ public class EmitterServerNotificationService {
 
 
     @Transactional
-    public void send(Long userId, Long serverId, MentionType mentionType, AlarmType alarmType, String content,
-                     List<Long> receiverIds) {
+    public void send(Long userId, Long serverId, String writer, String content, String profileImage,
+                     List<Long> receiverIds, AlarmType alarmType,  MentionType mentionType) {
         List<User> receivers = receiverIds.stream()
                 .map(userService::findUser)
                 .flatMap(Optional::stream)
                 .collect(Collectors.toList());
 
-        List<ServerNotification> dmNotifications = serverNotificationRepository.saveAll(
-                createNotification(serverId, alarmType, mentionType, content, receivers));
+        List<ServerNotification> serverNotifications = serverNotificationRepository.saveAll(
+                createNotification(userId, serverId, writer, content, profileImage, receivers, alarmType, mentionType));
 
 
-        dmNotifications.forEach(dmNotification -> {
+        serverNotifications.forEach(serverNotification -> {
             String receiverId = userId + "_" + System.currentTimeMillis();
             String eventId = receiverId + "_" + System.currentTimeMillis();
             Map<String, SseEmitter> emitters = emitterRepository.findAllEmitterStartWithByUserId(receiverId);
             emitters.forEach(
                     (key, emitter) -> {
-                        emitterRepository.saveEventCache(key, dmNotification);
+                        emitterRepository.saveEventCache(key, serverNotification);
                         sendNotification(emitter, eventId, key,
-                                ServerNotificationResponse.from(dmNotification, userId));
+                                ServerNotificationResponse.from(serverNotification, userId));
                     }
             );
         });
     }
 
-    private List<ServerNotification> createNotification(Long serverId, AlarmType alarmType, MentionType mentionType,
-                                                        String content,
-                                                        List<User> receivers) {
+    private List<ServerNotification> createNotification(Long userId, Long serverId, String writer, String content,
+                                                        String profileImage, List<User> receivers, AlarmType alarmType,
+                                                        MentionType mentionType
+                                                        ) {
         return receivers.stream()
                 .map(receiver -> ServerNotification.builder()
                         .receiver(receiver)
@@ -155,12 +156,14 @@ public class EmitterServerNotificationService {
         MentionType mentionType = serverNotificationDto.getMentionType();
         String content = serverNotificationDto.getContent();
         List<Long> receiverIds = serverNotificationDto.getReceiverIds(); // 수신자 ID 목록, DmNotificationDto에 해당 필드가 존재한다고 가정
+        String writer=serverNotificationDto.getWriter();
+        String profileImage=serverNotificationDto.getProfileImage();
 
-        send(sendId, serverId, mentionType, alarmType, content, receiverIds);
-        log.info("getSendId {}", serverNotificationDto.getUserId());
+        log.info("getUserId {}", serverNotificationDto.getUserId());
         log.info("getServerId {}", serverNotificationDto.getServerId());
-        log.info("getAlarmType {}", serverNotificationDto.getAlarmType());
         log.info("getContent {}", serverNotificationDto.getContent());
-        log.info("getReceiverIds {}", serverNotificationDto.getReceiverIds());
+
+        send(sendId, serverId, writer, content, profileImage, receiverIds, alarmType,mentionType);
+
     }
 }
