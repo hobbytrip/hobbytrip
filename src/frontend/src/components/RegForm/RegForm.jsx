@@ -1,7 +1,6 @@
 import { useState } from "react";
 import s from "./RegForm.module.css";
 import { useNavigate } from "react-router-dom";
-import useUserStore from "../../actions/useUserStore";
 import NotificationBox from "../NotificationBox/NotificationBox";
 import { axiosInstance } from "../../utils/axiosInstance";
 import API from "../../utils/API/API";

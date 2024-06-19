@@ -18,7 +18,8 @@ function CreateServer() {
   const fetchServerData = useServerStore((state) => state.fetchServerData);
   const imgRef = useRef();
   const nav = useNavigate();
-  const { userId } = useUserStore();
+  const { USER } = useUserStore();
+  const userId = USER.userId;
 
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -8,6 +8,7 @@ const STATE_URL = "https://fittrip.site/api/user/state";
 
 const API = {
   //유저
+  REISSUE: `${BASE_URL}/user/reissue`,
   LOG_IN: `${BASE_URL}/user/login`,
   SIGN_UP: `${BASE_URL}/user/signup`,
   LOG_OUT: `${BASE_URL}/user/logout`,

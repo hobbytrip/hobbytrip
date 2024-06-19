@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import style from "./CategorySetting.module.css"
+import style from "./CategorySetting.module.css";
 import useServerStore from "../../../../../actions/useServerStore";
 import API from "../../../../../utils/API/API";
 import { axiosInstance } from "../../../../../utils/axiosInstance";
 import useUserStore from "../../../../../actions/useUserStore";
-import {  HiHome } from "react-icons/hi2";
+import { HiHome } from "react-icons/hi2";
 
 function CategorySetting({ categoryId, onClose }) {
   const [name, setName] = useState("");
@@ -12,7 +12,8 @@ function CategorySetting({ categoryId, onClose }) {
     serverData: state.serverData,
     setServerData: state.setServerData,
   }));
-  const { userId } = useUserStore();
+  const { USER } = useUserStore();
+  const userId = USER.userId;
 
   const serverId = serverData.serverInfo.serverId;
   useEffect(() => {
@@ -57,12 +58,14 @@ function CategorySetting({ categoryId, onClose }) {
       if (res.data.success) {
         console.log(res);
         const updatedCategory = res.data.data;
-        const updatedCategories = serverData.serverCategories.map((category) => {
-          if (category.categoryId === updatedCategory.categoryId) {
-            return updatedCategory;
+        const updatedCategories = serverData.serverCategories.map(
+          (category) => {
+            if (category.categoryId === updatedCategory.categoryId) {
+              return updatedCategory;
+            }
+            return category;
           }
-          return category;
-        });
+        );
         setServerData({ ...serverData, serverCategories: updatedCategories });
         onClose();
       } else {
@@ -114,10 +117,10 @@ function CategorySetting({ categoryId, onClose }) {
     <>
       <form className={style.formWrapper} onSubmit={handleSubmit}>
         <div className={style.topContainer}>
-        <h3>
+          <h3>
             <b>
-              <HiHome style={{marginRight:'5px'}} />
-              마을 설정          
+              <HiHome style={{ marginRight: "5px" }} />
+              마을 설정
             </b>
           </h3>
         </div>
@@ -149,10 +152,11 @@ function CategorySetting({ categoryId, onClose }) {
           <h5>삭제하기</h5>
         </button>
       </form>
-      <button 
+      <button
         className={style.backBtn}
         onClick={onClose}
-        style={{color:'white'}}>
+        style={{ color: "white" }}
+      >
         <h4> 뒤로 가기</h4>
       </button>
     </>
@@ -160,4 +164,3 @@ function CategorySetting({ categoryId, onClose }) {
 }
 
 export default CategorySetting;
-

@@ -15,7 +15,8 @@ const FriendsList = () => {
   const managerId = serverData.serverInfo.managerId;
   const serverUserStatus = serverData.userStatus.usersConnectionState; //유저 상태
   const serverUserInfos = serverData.serverUserInfos; //서버 유저 정보
-  const { userId } = useUserStore();
+  const { USER } = useUserStore();
+  const userId = USER.userId;
   const nav = useNavigate();
 
   const setUserStatus = useUserStatusStore((state) => state.setUsers);

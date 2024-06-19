@@ -2,26 +2,24 @@ import style from "./Menu.module.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useUserStore from "../../../actions/useUserStore";
+import useAuthStore from "../../../actions/useAuthStore";
 import { AiFillHome } from "react-icons/ai";
 import { PiPlanetDuotone } from "react-icons/pi";
 import { FaBell } from "react-icons/fa";
 import { ImExit } from "react-icons/im";
 import ProfileCard from "../../ProfileCard/ProfileCard";
+import Logout from "../../../utils/Auth/logout";
 import {
   IoSettings,
   IoCheckmarkCircleOutline,
   IoCheckmarkCircle,
 } from "react-icons/io5";
-// import { axiosInstance } from '../../../utils/axiosInstance';
-// import API from '../../../utils/API/API';
-
-// IoCheckmarkCircleOutline - 체크 안 했을 때 (비어있음)
-// IoCheckmarkCircle - 체크 했을 때 (색 채워짐)
 
 const MenuList = () => {
   const { notificationEnabled } = useUserStore();
   const [notification, setNotification] = useState(notificationEnabled);
   const nav = useNavigate();
+  const { accessToken, refreshToken } = useAuthStore();
 
   const handleHome = () => {
     nav("/main");
@@ -29,6 +27,11 @@ const MenuList = () => {
 
   const handleAlarmToggle = () => {
     setNotification(!notification);
+  };
+
+  const handleLogout = async () => {
+    alert("로그아웃 하시겠습니까?");
+    await Logout(accessToken, refreshToken);
   };
 
   return (
@@ -68,7 +71,7 @@ const MenuList = () => {
             )}
           </button>
         </div>
-        <button>
+        <button onClick={handleLogout}>
           <ImExit className={style.icon} />
           <h3> 로그아웃 </h3>
         </button>

@@ -25,7 +25,7 @@ const MainView = () => {
       useWebSocketStore.getState().connect(USERID);
       const getMainData = async () => {
         try {
-          const response = await axiosInstance.get(API.READ_MAIN(userId));
+          const response = await axiosInstance.get(API.READ_MAIN(USERID));
           const resData = response.data.data;
           console.log(resData);
           setServers(resData.servers);

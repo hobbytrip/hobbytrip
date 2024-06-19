@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
 import API from "../utils/API/API";
+import useAuthStore from "./useAuthStore";
 
 const useUserStore = create((set) => ({
   USER: {},
@@ -8,13 +9,13 @@ const useUserStore = create((set) => ({
   setUserInfo: (user) => set({ USER: user }),
   updateUserInfo: async (endpoint, updates) => {
     try {
-      console.log(localStorage.getItem("accessToken"));
+      const { accessToken } = useAuthStore.getState();
       const response = await axios.patch(
         API.UPDATE_PROFILE(endpoint),
         updates,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            Authorization: `Bearer ${accessToken}`,
           },
 
           withCredentials: true,

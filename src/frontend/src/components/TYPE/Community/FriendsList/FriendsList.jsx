@@ -23,7 +23,8 @@ const FriendsList = () => {
   const setUserStatus = useUserStatusStore((state) => state.setUsers);
   const { onlineUsers, offlineUsers } = useUserStatusStore();
 
-  const { userId } = useUserStore();
+  const { USER } = useUserStore();
+  const userId = USER.userId;
 
   const handleBack = () => {
     nav(-1);
@@ -86,7 +87,7 @@ const FriendsList = () => {
                       <FaCrown className={style.crown} />
                     )}
                     <AiFillMessage
-                    className={style.msgIcon}
+                      className={style.msgIcon}
                       onClick={() => handleMoveToDM(userInfo.userId)}
                       style={{ cursor: "pointer" }}
                     />
@@ -123,7 +124,7 @@ const FriendsList = () => {
                       <FaCrown className={style.crown} />
                     )}
                     <AiFillMessage
-                    className={style.msgIcon}
+                      className={style.msgIcon}
                       onClick={() => handleMoveToDM(userInfo.userId)}
                       style={{ cursor: "pointer" }}
                     />
