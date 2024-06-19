@@ -85,6 +85,7 @@ public class DmNotificationService {
         }
         String userIds=users.substring(0,users.length()-1);
         try {
+            log.info("userId {}", String.valueOf(data.getUserId()));
             emitter.send(SseEmitter.event()
                     .id(eventId)
                     .name("userId")
