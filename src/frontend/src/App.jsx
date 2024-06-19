@@ -15,32 +15,33 @@ import DM from "./components/TYPE/DM/DM.jsx";
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<StartView />} />
-        <Route path="/login" element={<LoginView />} />
-        <Route path="/register" element={<RegView />} />
-        <Route path="/user/profile" element={<UserProfileView />} />
-        <Route path="/:serverId/:channelId/chat" element={<Server />} />
-        {/* <Route
+    <>
+      <Router>
+        <Routes>
+          <Route path="/" element={<StartView />} />
+          <Route path="/login" element={<LoginView />} />
+          <Route path="/register" element={<RegView />} />
+          <Route path="/user/profile" element={<UserProfileView />} />
+          <Route path="/:serverId/:channelId/chat" element={<Server />} />
+          {/* <Route
           path=":serverId/:channelId/chat"
           element={<CommunityChatRoom />}
         /> */}
-        <Route path=":serverId/:channelId/forum" element={<ForumRoom />} />
-        <Route
-          path=":serverId/:channelId/forum/:forumId/chat"
-          element={<ForumChatRoom />}
-        />
-        <Route path="/:dmId/dm" element={<DM />} />
-        <Route path="/user/profile" element={<UserProfileView />} />
-        <Route path="/main" element={<MainView />} />
-        <Route path="/menu" element={<MenuView />} />
-        <Route path="/:serverId/setting" element={<SettingView />} />
-        {/* <Route path="/:serverId/menu" element={<CategoryView />} />
+          <Route path=":serverId/:channelId/forum" element={<ForumRoom />} />
+          <Route
+            path=":serverId/:channelId/forum/:forumId/chat"
+            element={<ForumChatRoom />}
+          />
+          <Route path="/:dmId/dm" element={<DM />} />
+          <Route path="/main" element={<MainView />} />
+          <Route path="/menu" element={<MenuView />} />
+          <Route path="/:serverId/setting" element={<SettingView />} />
+          {/* <Route path="/:serverId/menu" element={<CategoryView />} />
         <Route path="/:serverId/friends" element={<FriendsView />} /> */}
-        <Route path="/:serverId/:channelId/vid" element={<MediaView />} />
-      </Routes>
-    </Router>
+          <Route path="/:serverId/:channelId/vid" element={<MediaView />} />
+        </Routes>
+      </Router>
+    </>
   );
 }
 

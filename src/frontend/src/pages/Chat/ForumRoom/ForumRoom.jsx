@@ -32,14 +32,10 @@ const categories = [
 
 function ForumRoom() {
   const { serverId, channelId } = useParams();
-  const { userId } = useUserStore();
-  const {
-    forumLists,
-    setForumList,
-    addForum,
-    removeForum,
-    // resetForumList,
-  } = useForumListStore();
+  const { USER } = useUserStore();
+  const userId = USER.userId;
+  const { forumLists, setForumList, addForum, removeForum } =
+    useForumListStore();
   const forumList = forumLists[channelId] || [];
   const [page, setPage] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -52,10 +48,6 @@ function ForumRoom() {
     staleTime: 1000 * 60 * 5,
     keepPreviousData: true,
   });
-
-  // useEffect(() => {
-  //   resetForumList(channelId);
-  // }, [channelId]);
 
   useEffect(() => {
     console.log("channelId", channelId);

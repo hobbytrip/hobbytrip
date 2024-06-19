@@ -18,7 +18,8 @@ const CategoryList = () => {
   const [uncategorizedChannels, setUncategorizedChannels] = useState([]);
   const [showCreateItemModal, setShowCreateItemModal] = useState(false);
   const nav = useNavigate();
-  const { userId } = useUserStore();
+  const { USER } = useUserStore();
+  const userId = USER.userId;
   const { serverId } = useParams();
 
   const { serverData, fetchServerData } = useServerStore((state) => ({

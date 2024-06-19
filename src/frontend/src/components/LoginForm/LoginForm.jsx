@@ -1,14 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import s from "./LoginForm.module.css";
-import Login from "../../hooks/User/login";
-import useUserStore from "../../actions/useUserStore";
+import Login from "../../utils/Auth/login";
 
 function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-  const { userId } = useUserStore();
   const navigate = useNavigate();
 
   const handleInput = (e) => {
@@ -21,13 +19,11 @@ function LoginForm() {
     e.preventDefault();
     setError(null);
     try {
-      await Login(email, password, userId);
-      // await postUserIdToCommunity();
-
+      await Login(email, password);
       navigate("/main");
     } catch (e) {
       setError("로그인 실패: " + e.message);
-      console.error(e);
+      throw error;
     }
   };
 

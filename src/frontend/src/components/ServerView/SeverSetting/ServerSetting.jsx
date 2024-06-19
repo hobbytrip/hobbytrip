@@ -7,12 +7,12 @@ import useUserStore from '../../../actions/useUserStore';
 import usePlanetsStore from '../../../actions/usePlantesStore';
 import { TbCameraPlus, TbCheck } from "react-icons/tb";
 import { IoClose } from "react-icons/io5";
-import { axiosInstance } from '../../../utils/axiosInstance';
+import { axiosInstance } from "../../../utils/axiosInstance";
 
 const ServerSetting = () => {
-  const [serverName, setServerName] = useState('');
-  const [serverDescription, setServerDescription] = useState('');
-  const [serverCategory, setServerCategory] = useState('');
+  const [serverName, setServerName] = useState("");
+  const [serverDescription, setServerDescription] = useState("");
+  const [serverCategory, setServerCategory] = useState("");
   const [profileImage, setProfileImage] = useState(null);
   const [profilePreview, setProfilePreview] = useState(null);
   const { serverData, setServerInfo } = useServerStore((state) => ({
@@ -22,7 +22,8 @@ const ServerSetting = () => {
   const { updateServer } = usePlanetsStore(state => ({
     updateServer: state.updateServer
   }));
-  const { userId } = useUserStore();
+  const { USER } = useUserStore();
+  const userId = USER.userId;
   const imgRef = useRef();
   const nav = useNavigate();
   const serverInfo = serverData.serverInfo;
@@ -38,7 +39,7 @@ const ServerSetting = () => {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
-    if (serverName === '') {
+    if (serverName === "") {
       alert("행성 이름을 적어주세요");
       return;
     } else if (String(userId) !== String(serverInfo.managerId)) {
@@ -49,13 +50,12 @@ const ServerSetting = () => {
     try {
       const formData = new FormData();
       let prevProfile;
-      if(serverInfo.profile){
+      if (serverInfo.profile) {
         prevProfile = serverInfo.profile;
+      } else {
+        prevProfile = "null";
       }
-      else{
-        prevProfile = 'null';
-      }
-      
+
       const data = JSON.stringify({
         serverId: serverInfo.serverId,
         userId: userId,
@@ -67,11 +67,10 @@ const ServerSetting = () => {
       const communityData = new Blob([data], { type: "application/json" });
       formData.append("requestDto", communityData);
       // console.log(profile);
-      if(profileImage !== null){
+      if (profileImage !== null) {
         formData.append("profile", profileImage);
-      }
-      else{
-        formData.append("profile", 'null');
+      } else {
+        formData.append("profile", "null");
       }
 
       const res = await axiosInstance.patch(API.COMM_SERVER, formData, {
@@ -126,11 +125,11 @@ const ServerSetting = () => {
               userId: userId,
             },
           });
-          console.log(serverInfo, userId)
+          console.log(serverInfo, userId);
           if (res.status === 200) {
             alert("삭제되었습니다");
             console.log(res);
-            nav('/main');
+            nav("/main");
           } else {
             alert("삭제하는 중에 오류가 발생했습니다");
             console.error(res);
@@ -186,38 +185,34 @@ const ServerSetting = () => {
             <h4>행성 아이콘 변경하기</h4>
             <div className={style.addImg}>
               <div>
-                {profilePreview !== null ? 
-                  <img src={profilePreview} alt="profile preview" /> : null}
+                {profilePreview !== null ? (
+                  <img src={profilePreview} alt="profile preview" />
+                ) : null}
               </div>
               <label className={style.addImgBtn}>
                 <h4>이미지 업로드</h4>
                 <input
                   type="file"
                   ref={imgRef}
-                  style={{ display: 'none' }}
+                  style={{ display: "none" }}
                   onChange={handleImage}
                 />
-                <TbCameraPlus style={{ width: '15px', height: '15px' }} />
+                <TbCameraPlus style={{ width: "15px", height: "15px" }} />
               </label>
-              <button onClick={handleDeleteImage}>
-                이미지 삭제
-              </button>
+              <button onClick={handleDeleteImage}>이미지 삭제</button>
             </div>
           </div>
-          <button
-            className={style.deleteServer}
-            onClick={handleDelete}
-          >
+          <button className={style.deleteServer} onClick={handleDelete}>
             행성 삭제하기
           </button>
         </div>
       </div>
       <div className={style.submitBtn}>
         <button onClick={handleClose}>
-          <IoClose style={{ width: '18px', height: '18px' }} />
+          <IoClose style={{ width: "18px", height: "18px" }} />
         </button>
         <button onClick={handleUpdate}>
-          <TbCheck style={{ width: '18px', height: '18px' }} />
+          <TbCheck style={{ width: "18px", height: "18px" }} />
         </button>
       </div>
     </div>

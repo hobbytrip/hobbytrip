@@ -1,13 +1,16 @@
 import style from "./CreateChannel.module.css";
 import { useState } from "react";
-import { IoCheckmarkCircleOutline, IoCheckmarkCircle, IoDocuments } from "react-icons/io5";
+import {
+  IoCheckmarkCircleOutline,
+  IoCheckmarkCircle,
+  IoDocuments,
+} from "react-icons/io5";
 import { HiUserGroup, HiMiniSpeakerWave } from "react-icons/hi2";
 import { MdOutlineNumbers } from "react-icons/md";
 import useServerStore from "../../../../../actions/useServerStore";
 import API from "../../../../../utils/API/API";
 import { axiosInstance } from "../../../../../utils/axiosInstance";
 import useUserStore from "../../../../../actions/useUserStore";
-
 
 function CreateChannel({ categoryId, onClose, onBack }) {
   const [name, setName] = useState("");
@@ -17,11 +20,12 @@ function CreateChannel({ categoryId, onClose, onBack }) {
     serverData: state.serverData,
     setServerData: state.setServerData,
   }));
-  const { userId } = useUserStore();
+  const { USER } = useUserStore();
+  const userId = USER.userId;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (name === '') {
+    if (name === "") {
       alert("채널 이름을 입력해주세요");
       return;
     }
@@ -37,11 +41,13 @@ function CreateChannel({ categoryId, onClose, onBack }) {
 
       if (res.data.success) {
         console.log(res);
-        const updatedChannels = [...(serverData.serverChannels || []), res.data.data];
+        const updatedChannels = [
+          ...(serverData.serverChannels || []),
+          res.data.data,
+        ];
         setServerData({ ...serverData, serverChannels: updatedChannels });
         console.log(serverData);
         onClose();
-
       } else {
         console.log("채널 만들기 실패.");
         console.log(res);
@@ -52,20 +58,21 @@ function CreateChannel({ categoryId, onClose, onBack }) {
   };
 
   const handleClose = () => {
-    if(categoryId){
+    if (categoryId) {
       onClose();
-    }
-    else{
+    } else {
       onBack();
     }
-  }
+  };
 
   return (
     <>
       <form className={style.formWrapper} onSubmit={handleSubmit}>
         <div className={style.topContainer}>
-          <HiUserGroup style={{ width: '20px', height: '20px' }} />
-          <h3><b> 채널 만들기 </b></h3>
+          <HiUserGroup style={{ width: "20px", height: "20px" }} />
+          <h3>
+            <b> 채널 만들기 </b>
+          </h3>
         </div>
         <div className={style.type}>
           <div className={style.label}>
@@ -81,7 +88,9 @@ function CreateChannel({ categoryId, onClose, onBack }) {
               {type === "CHAT" ? (
                 <IoCheckmarkCircle className={style.purpleIcon} />
               ) : (
-                <IoCheckmarkCircleOutline style={{ width: '18px', height: '18px' }} />
+                <IoCheckmarkCircleOutline
+                  style={{ width: "18px", height: "18px" }}
+                />
               )}
             </div>
             <div
@@ -90,9 +99,12 @@ function CreateChannel({ categoryId, onClose, onBack }) {
             >
               <HiMiniSpeakerWave />
               <h4> 음성, 화상 </h4>
-              {type === 'VOICE' ? (<IoCheckmarkCircle className={style.purpleIcon} />
+              {type === "VOICE" ? (
+                <IoCheckmarkCircle className={style.purpleIcon} />
               ) : (
-                <IoCheckmarkCircleOutline style={{ width: '18px', height: '18px' }} />
+                <IoCheckmarkCircleOutline
+                  style={{ width: "18px", height: "18px" }}
+                />
               )}
             </div>
             <div
@@ -101,9 +113,12 @@ function CreateChannel({ categoryId, onClose, onBack }) {
             >
               <IoDocuments />
               <h4> 포럼 </h4>
-              {type === 'FORUM' ? (<IoCheckmarkCircle className={style.purpleIcon} />
+              {type === "FORUM" ? (
+                <IoCheckmarkCircle className={style.purpleIcon} />
               ) : (
-                <IoCheckmarkCircleOutline style={{ width: '18px', height: '18px' }} />
+                <IoCheckmarkCircleOutline
+                  style={{ width: "18px", height: "18px" }}
+                />
               )}
             </div>
           </div>
@@ -128,9 +143,12 @@ function CreateChannel({ categoryId, onClose, onBack }) {
             <h5> 선택한 친구들만 방을 볼 수 있어요.</h5>
           </div>
           <div onClick={() => setOpen(!open)}>
-            {open ? (<IoCheckmarkCircle className={style.purpleIcon} />
+            {open ? (
+              <IoCheckmarkCircle className={style.purpleIcon} />
             ) : (
-              <IoCheckmarkCircleOutline style={{ width: '18px', height: '18px' }} />
+              <IoCheckmarkCircleOutline
+                style={{ width: "18px", height: "18px" }}
+              />
             )}
           </div>
         </div>
@@ -138,14 +156,19 @@ function CreateChannel({ categoryId, onClose, onBack }) {
         <div className={style.createContainer}>
           <button
             className={style.createBtn}
-            style={{ backgroundColor: 'var(--main-purple)', color: 'white' }}
-            type="submit">
+            style={{ backgroundColor: "var(--main-purple)", color: "white" }}
+            type="submit"
+          >
             방 만들기
           </button>
         </div>
       </form>
-      
-      <button className={style.backBtn} onClick={handleClose} style={{color:'white'}}>
+
+      <button
+        className={style.backBtn}
+        onClick={handleClose}
+        style={{ color: "white" }}
+      >
         <h4> 뒤로 가기</h4>
       </button>
     </>

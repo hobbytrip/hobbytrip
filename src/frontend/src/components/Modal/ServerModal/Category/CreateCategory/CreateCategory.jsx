@@ -12,7 +12,8 @@ function CreateCategory({ onClose, onBack }) {
     serverData: state.serverData,
     setServerData: state.setServerData,
   }));
-  const { userId } = useUserStore();
+  const { USER } = useUserStore();
+  const userId = USER.userId;
 
   const handleSubmit = async (e) => {
     e.preventDefault();

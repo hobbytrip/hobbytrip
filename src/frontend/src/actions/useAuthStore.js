@@ -5,6 +5,9 @@ const useAuthStore = create((set) => ({
   refreshToken: null,
   setTokens: (accessToken, refreshToken) =>
     set({ accessToken: accessToken, refreshToken: refreshToken }),
+  clearTokens: () => {
+    set({ accessToken: null, refreshToken: null });
+  },
 }));
 
 export default useAuthStore;

@@ -14,10 +14,11 @@ function JoinServer({ onClose }) {
     serverData: state.serverData,
     fetchServerData: state.fetchServerData
   }));
-  const { userId } = useUserStore();
+
+  const { USER } = useUserStore();
+  const userId = USER.userId;
   const { addServer } = usePlanetsStore(state => ({
     addServer: state.addServer
-  }));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
