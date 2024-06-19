@@ -40,6 +40,7 @@ const MyPlanet = ({}) => {
   const [showCreateServer, setShowCreateServer] = useState(false);
   const [serverNotice, setServerNotice] = useState([]);
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
+  const [innerHeight, setInnerHeight] = useState(window.innerHeight);
   const nav = useNavigate();
 
   const { fetchServerData } = useServerStore((state) => ({
@@ -72,6 +73,7 @@ const MyPlanet = ({}) => {
 
   const resizeListener = () => {
     setInnerWidth(window.innerWidth);
+    setInnerHeight(window.innerHeight);
   };
 
   useEffect(() => {
@@ -82,9 +84,10 @@ const MyPlanet = ({}) => {
     };
   }, []);
 
-  if (innerWidth >= 432) {
-    serversPerPage = 7;
-  } else {
+  if(innerWidth >= 432){
+    serversPerPage = ((innerHeight - 86) / 80) - 2;
+  }
+  else {
     serversPerPage = 4;
   }
 

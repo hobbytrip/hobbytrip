@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import useWebSocketStore from "../../../actions/useWebSocketStore";
 import useServerStore from "../../../actions/useServerStore";
 import useChatStore from "../../../actions/useChatStore";
@@ -13,14 +13,18 @@ import MainHeader from "../../MainView/MainHeader/MainHeader";
 import MyPlanet from "../../MainView/MyPlanet/MyPlanet";
 import API from "../../../utils/API/API";
 import TopHeader from "../../Common/ChatRoom/CommunityChatHeader/ChatHeader";
-import { useParams } from "react-router-dom";
-import { AiOutlineMenu } from "react-icons/ai";
+import InviteServer from "../../Modal/ServerModal/Servers/InviteServer/InviteServer";
+import { useNavigate, useParams } from "react-router-dom";
+import { TiUserAdd } from "react-icons/ti";
+import { RiSettings3Fill } from "react-icons/ri";
 
 //최상단. 데탑버전
 function Server() {
+  const [isInviteOpen, setInviteOpen] = useState(false);
   const { serverData } = useServerStore((state) => ({
     serverData: state.serverData,
   }));
+  const nav = useNavigate();
   const subscriptionRef = useRef(null); // 구독 객체 참조 추가
   const { channelId } = useParams();
 
@@ -143,6 +147,14 @@ function Server() {
     };
   }, [CURRENT_SERVER]);
 
+  const handleInviteClick = () => {
+    setInviteOpen(true);
+  };
+
+  const handleInviteClose = () => {
+    setInviteOpen(false);
+  };
+
   return (
     <div className={s.wrapper}>
       <div className={s.Servers}>
@@ -166,7 +178,9 @@ function Server() {
             </h3>
           </div>
           <div className={s.modals}>
-            <AiOutlineMenu />
+            <TiUserAdd onClick={handleInviteClick} />
+            <RiSettings3Fill 
+              onClick={() => nav(`/${serverData.serverInfo.serverId}/setting`)}/>
           </div>
         </div>
         <div className={s.item}>
@@ -181,6 +195,9 @@ function Server() {
           </div>
         </div>
       </div>
+      {isInviteOpen && (
+        <InviteServer onClose={handleInviteClose} />
+      )}
     </div>
   );
 }

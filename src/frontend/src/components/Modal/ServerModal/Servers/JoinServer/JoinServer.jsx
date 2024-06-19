@@ -5,16 +5,20 @@ import useUserStore from "../../../../../actions/useUserStore";
 import useServerStore from "../../../../../actions/useServerStore";
 import API from "../../../../../utils/API/API";
 import { axiosInstance } from "../../../../../utils/axiosInstance";
+import usePlanetsStore from "../../../../../actions/usePlantesStore";
 
 function JoinServer({ onClose }) {
   const [link, setLink] = useState("");
   const nav = useNavigate();
-  const { serverData, setServerData } = useServerStore((state) => ({
+  const { serverData, fetchServerData } = useServerStore((state) => ({
     serverData: state.serverData,
-    setServerData: state.setServerData,
+    fetchServerData: state.fetchServerData
   }));
+
   const { USER } = useUserStore();
   const userId = USER.userId;
+  const { addServer } = usePlanetsStore(state => ({
+    addServer: state.addServer
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,25 +39,25 @@ function JoinServer({ onClose }) {
         serverId: serverId,
         invitationCode: inviteLink,
       };
-      console.log(data);
 
       const res = await axiosInstance.post(API.JOIN_SERVER, data);
 
       if (res.data.success) {
-        console.log(res);
-        setServerData({ serverInfo: res.data.data });
-        if (serverData && serverData.serverChannels) {
-          const defaultChatChannel = serverData.serverChannels.find(
+        console.log("Join server response:", res.data);
+        const updatedServerInfo = res.data.data;
+        addServer(updatedServerInfo);
+        await fetchServerData(serverId, userId);
+        const fetchedData = useServerStore.getState().serverData;
+        if (fetchedData && fetchedData.serverChannels) {
+          const defaultChatChannel = fetchedData.serverChannels.find(
             (channel) => channel.channelType === "CHAT"
           );
           if (defaultChatChannel) {
             nav(`/${serverId}/${defaultChatChannel.channelId}/chat`);
           }
         }
-        // nav(`/${serverId}/menu`);
-        onClose();
       } else {
-        console.log(res);
+        console.error("Join server error:", res.data.message);
         alert(res.data.message);
       }
     } catch (error) {

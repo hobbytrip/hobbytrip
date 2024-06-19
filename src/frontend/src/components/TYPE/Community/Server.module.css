@@ -45,6 +45,9 @@
   left: 29%;
 }
 .modals {
+  display: flex;
+  justify-content: space-between;
+  width: 40px;
   position: absolute;
   right: 40px;
 }

@@ -29,9 +29,6 @@ const CategoryList = () => {
 
   useEffect(() => {
     deleteNotice();
-    console.log("category fetch");
-    console.log(serverId, userId);
-    fetchServerData(serverId, userId);
   }, [serverId]);
 
   useEffect(() => {
@@ -52,7 +49,7 @@ const CategoryList = () => {
           },
         }
       );
-      console.log("notice reeeeeeeeeeeeead");
+      console.log("Server notice reeeeeeeeeeeeead");
       console.log(res.data);
     } catch (error) {
       console.error("Error deleting notice:", error);

@@ -1,9 +1,10 @@
-import style from "./ServerSetting.module.css";
-import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import API from "../../../utils/API/API";
-import useServerStore from "../../../actions/useServerStore";
-import useUserStore from "../../../actions/useUserStore";
+import style from './ServerSetting.module.css';
+import React, { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import API from '../../../utils/API/API';
+import useServerStore from '../../../actions/useServerStore';
+import useUserStore from '../../../actions/useUserStore';
+import usePlanetsStore from '../../../actions/usePlantesStore';
 import { TbCameraPlus, TbCheck } from "react-icons/tb";
 import { IoClose } from "react-icons/io5";
 import { axiosInstance } from "../../../utils/axiosInstance";
@@ -14,9 +15,12 @@ const ServerSetting = () => {
   const [serverCategory, setServerCategory] = useState("");
   const [profileImage, setProfileImage] = useState(null);
   const [profilePreview, setProfilePreview] = useState(null);
-  const { serverData, setServerData } = useServerStore((state) => ({
+  const { serverData, setServerInfo } = useServerStore((state) => ({
     serverData: state.serverData,
-    setServerData: state.setServerData,
+    setServerInfo: state.setServerInfo
+  }));
+  const { updateServer } = usePlanetsStore(state => ({
+    updateServer: state.updateServer
   }));
   const { USER } = useUserStore();
   const userId = USER.userId;
@@ -39,7 +43,7 @@ const ServerSetting = () => {
       alert("행성 이름을 적어주세요");
       return;
     } else if (String(userId) !== String(serverInfo.managerId)) {
-      alert("삭제 권한이 없습니다");
+      alert("수정 권한이 없습니다");
       return;
     }
 
@@ -76,7 +80,10 @@ const ServerSetting = () => {
       });
 
       if (res.data.success) {
-        setServerData(res.data.data);
+        setServerInfo(res.data.data);
+        updateServer(res.data.data);
+        // setServerData(res.data.data);
+        console.log(serverData)
         nav(-1);
       } else {
         console.log(res);

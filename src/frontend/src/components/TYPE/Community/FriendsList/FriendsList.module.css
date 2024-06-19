@@ -91,12 +91,13 @@ li {
   height: 15px;
   color: var(--main-purple);
 }
+
 .online {
   @media (min-width: 432px) {
     margin-bottom: 15px;
   }
 }
-.msgIcon{
+.msgIcon {
   position: absolute;
   right: 30px;
 }

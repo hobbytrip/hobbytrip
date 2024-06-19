@@ -11,11 +11,18 @@ import DmHistoryList from "./DmHistoryList/DmHistoryList";
 import UserList from "./UserList/UserList";
 import MainHeader from "../../MainView/MainHeader/MainHeader";
 import MyPlanet from "../../MainView/MyPlanet/MyPlanet";
+import useServerStore from "../../../actions/useServerStore";
+import useUserStore from "../../../actions/useUserStore";
 
 function DM() {
   const [dmInfo, setDmInfo] = useState(null);
   const { dmId } = useParams();
   const { dmHistoryList, setDmHistoryList } = useDmHistoryStore();
+  const { serverData } = useServerStore(state => ({
+    serverData: state.serverData
+  }));
+  const { userId } = useUserStore();
+  const serverId = serverData.serverInfo.serverId;
 
   useEffect(() => {
     const fetchDMInfo = async () => {
@@ -23,7 +30,6 @@ function DM() {
         const response = await axiosInstance.get(API.READ_DM(dmId));
         setDmInfo(response.data.data);
         console.log(dmInfo);
-        // setDmHistoryList(response.data.data.dm);
         useDmHistoryStore.getState().addDmHistory(response.data.data.dm);
       } catch (error) {
         console.error("Failed to fetch DM info:", error);
@@ -33,6 +39,26 @@ function DM() {
     fetchDMInfo();
   }, [dmId]);
 
+  useEffect(() => {
+    const deleteNotice = async () => {
+      try {
+        const res = await axiosInstance.delete(
+          API.DM_SSE_DEL(serverId, userId),
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+          }
+        );
+        console.log("DM notice reeeeeeeeeeeeead");
+        console.log(res.data);
+      } catch (error) {
+        console.error("Error deleting notice:", error);
+      }
+    };
+    deleteNotice();  
+  })
+
   if (dmInfo === null) {
     return <div>Loading...</div>;
   }
@@ -40,10 +66,10 @@ function DM() {
   return (
     <div className={s.wrapper}>
       <div className={s.Servers}>
-      <div className={s.deskServers}>
-        <MainHeader className={s.mainHeader} />
-        <MyPlanet className={s.myPlanet} />
-      </div>
+        <div className={s.deskServers}>
+          <MainHeader className={s.mainHeader} />
+          <MyPlanet className={s.myPlanet} />
+        </div>
       </div>
       <div className={s.container}>
         <div className={s.header}>

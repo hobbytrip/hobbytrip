@@ -7,6 +7,7 @@ import API from "../../../../../utils/API/API";
 import JoinServer from "../JoinServer/JoinServer";
 import useUserStore from "../../../../../actions/useUserStore";
 import { TbCameraPlus } from "react-icons/tb";
+import usePlanetsStore from "../../../../../actions/usePlantesStore";
 
 function CreateServer() {
   const [name, setName] = useState("");
@@ -18,8 +19,10 @@ function CreateServer() {
   const fetchServerData = useServerStore((state) => state.fetchServerData);
   const imgRef = useRef();
   const nav = useNavigate();
+
   const { USER } = useUserStore();
   const userId = USER.userId;
+  const { addServer } = usePlanetsStore();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -51,6 +54,7 @@ function CreateServer() {
       if (response.data.success) {
         console.log(response);
         // setServerData({ serverInfo: response.data.data });
+        addServer(response.data.data);
         const serverId = response.data.data.serverId;
         console.log("create fetch");
         await fetchServerData(serverId, userId);

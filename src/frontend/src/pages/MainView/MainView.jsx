@@ -19,7 +19,7 @@ const MainView = () => {
   const { setServers } = usePlanetsStore();
   const USERID = USER.userId;
 
-  // setSSE();
+  setSSE();
   useEffect(() => {
     if (USERID) {
       useWebSocketStore.getState().connect(USERID);
@@ -55,7 +55,9 @@ const MainView = () => {
             <Menu />
             <DmHistoryList dmHistoryList={dms} />
           </div>
-          <MyFriend className={style.myFriend} />
+          <div className={style.myFriend}>
+            <MyFriend className={style.myFriend} />
+          </div>
         </div>
       </div>
     </>
