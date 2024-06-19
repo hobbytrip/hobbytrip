@@ -7,10 +7,10 @@ import {  HiUserGroup } from "react-icons/hi2";
 
 function ChannelSetting({ userId, channel, onClose }) { 
   const [name, setName] = useState("");
-  const { serverData, setServerData } = useServerStore((state) => ({
-    serverData: state.serverData,
+  const { setServerData } = useServerStore((state) => ({
     setServerData: state.setServerData
   }));
+  const { serverData } = useServerStore();
   const channelId = channel.channelId;
   const categoryId = channel.categoryId;
 

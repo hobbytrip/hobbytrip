@@ -16,9 +16,7 @@ export default function ChatHeader({}) {
     getRandomPlanetIcon();
   }, []);
 
-  const { serverData } = useServerStore((state) => ({
-    serverData: state.serverData,
-  }));
+  const { serverData } = useServerStore();
   const name = serverData?.serverInfo?.name || "";
 
   const handleInviteClick = () => {

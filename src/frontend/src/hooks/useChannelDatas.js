@@ -1,9 +1,7 @@
 import useServerStore from "../actions/useServerStore";
 
 function useChannelDatas(channelId) {
-  const { serverData } = useServerStore((state) => ({
-    serverData: state.serverData,
-  }));
+  const { serverData } = useServerStore();
   const channels = serverData.serverChannels;
   const channel = channels.find(
     (channel) => String(channel.channelId) === String(channelId)

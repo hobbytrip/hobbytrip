@@ -8,10 +8,10 @@ import { HiHome } from "react-icons/hi2";
 
 function CategorySetting({ categoryId, onClose }) {
   const [name, setName] = useState("");
-  const { serverData, setServerData } = useServerStore((state) => ({
-    serverData: state.serverData,
+  const { setServerData } = useServerStore((state) => ({
     setServerData: state.setServerData,
   }));
+  const serverData = useServerStore();
   const { USER } = useUserStore();
   const userId = USER.userId;
 

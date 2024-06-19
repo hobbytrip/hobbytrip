@@ -43,12 +43,10 @@ const MyPlanet = ({}) => {
   const [innerHeight, setInnerHeight] = useState(window.innerHeight);
   const nav = useNavigate();
 
-  const { fetchServerData } = useServerStore((state) => ({
+  const {  fetchServerData } = useServerStore((state) => ({
     fetchServerData: state.fetchServerData,
   }));
-  const { serverData } = useServerStore((state) => ({
-    serverData: state.serverData,
-  }));
+  const { serverData } = useServerStore();
   const { USER } = useUserStore();
   const userId = USER.userId;
   const { servers } = usePlanetsStore();
@@ -113,16 +111,21 @@ const MyPlanet = ({}) => {
   };
 
   const handleServerClick = async (serverId) => {
-    console.log("planet fetch");
+    console.log("버튼");
     await fetchServerData(serverId, userId);
-
+    console.log('fetched server Data', serverData)
+    console.log('serverChannels', serverData.serverChannels);
     if (serverData && serverData.serverChannels) {
       const defaultChatChannel = serverData.serverChannels.find(
         (channel) => channel.channelType === "CHAT"
       );
+      console.log('채널Id', defaultChatChannel)
       if (defaultChatChannel) {
         nav(`/${serverId}/${defaultChatChannel.channelId}/chat`);
       }
+    }
+    else{
+      console.error('nav err: ', serverData)
     }
   };
 

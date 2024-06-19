@@ -10,10 +10,10 @@ import usePlanetsStore from "../../../../../actions/usePlantesStore";
 function JoinServer({ onClose }) {
   const [link, setLink] = useState("");
   const nav = useNavigate();
-  const { serverData, fetchServerData } = useServerStore((state) => ({
-    serverData: state.serverData,
+  const { fetchServerData } = useServerStore((state) => ({
     fetchServerData: state.fetchServerData,
   }));
+  const { serverData } = useServerStore();
 
   const { USER } = useUserStore();
   const userId = USER.userId;

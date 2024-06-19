@@ -6,7 +6,7 @@ import useSSE from "../../../../hooks/useSSE";
 
 export default function ChatHeader() {
   const nav = useNavigate();
-  useSSE();
+  // useSSE();
   return (
     <div className={s.ChatHeaderContainer}>
       <img

@@ -12,6 +12,7 @@ import { AiOutlineMenu } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import usePlanetsStore from "../../actions/usePlantesStore.js";
 import useWebSocketStore from "../../actions/useWebSocketStore";
+import useSSE from "../../hooks/useSSE.js";
 
 const MainView = () => {
   const [dms, setDms] = useState(null);
@@ -19,7 +20,7 @@ const MainView = () => {
   const { setServers } = usePlanetsStore();
   const USERID = USER.userId;
 
-  setSSE();
+  // useSSE();
   useEffect(() => {
     if (USERID) {
       useWebSocketStore.getState().connect(USERID);

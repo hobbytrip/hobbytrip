@@ -20,10 +20,10 @@ const CategoryList = () => {
   const { serverId } = useServerStore();
   const nav = useNavigate();
 
-  const { serverData, fetchServerData } = useServerStore((state) => ({
-    serverData: state.serverData,
+  const { fetchServerData } = useServerStore((state) => ({
     fetchServerData: state.fetchServerData,
   }));
+  const { serverData } = useServerStore();
 
   useEffect(() => {
     deleteNotice();

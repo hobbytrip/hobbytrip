@@ -8,10 +8,10 @@ import useUserStore from "../../../../../actions/useUserStore";
 
 function CreateCategory({ onClose, onBack }) {
   const [name, setName] = useState("");
-  const { serverData, setServerData } = useServerStore((state) => ({
-    serverData: state.serverData,
+  const { setServerData } = useServerStore((state) => ({
     setServerData: state.setServerData,
   }));
+  const { serverData } = useServerStore();
   const { USER } = useUserStore();
   const userId = USER.userId;
 
