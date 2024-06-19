@@ -10,6 +10,7 @@ import com.capstone.notificationservice.domain.dm.repository.EmitterRepository;
 import com.capstone.notificationservice.domain.dm.repository.NotificationRepository;
 import com.capstone.notificationservice.domain.server.exception.ServerException;
 import com.capstone.notificationservice.domain.user.entity.User;
+import com.capstone.notificationservice.domain.user.entity.UserNotification;
 import com.capstone.notificationservice.domain.user.service.UserService;
 import com.capstone.notificationservice.global.exception.Code;
 import com.fasterxml.jackson.core.JsonProcessingException;
