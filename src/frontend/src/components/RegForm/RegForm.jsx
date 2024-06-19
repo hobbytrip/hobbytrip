@@ -1,15 +1,11 @@
 import { useState } from "react";
 import s from "./RegForm.module.css";
 import { useNavigate } from "react-router-dom";
-import useUserStore from "../../actions/useUserStore";
 import NotificationBox from "../NotificationBox/NotificationBox";
 import { axiosInstance } from "../../utils/axiosInstance";
 import API from "../../utils/API/API";
 
 function RegForm() {
-  const setUserInfo = useUserStore((state) => state.setUserInfo);
-  const { userId } = useUserStore();
-
   const [form, setForm] = useState({
     email: "",
     username: "",
@@ -54,10 +50,11 @@ function RegForm() {
     try {
       const response = await axiosInstance.post(API.SIGN_UP, form);
       if (response.data.success) {
-        setUserInfo(response.data.data);
         console.log("회원가입 성공:", response.data.data);
         postUserIdToCommunity(response.data.data.userId);
 
+        //회원정보 설정
+        await setUser();
         navigate("/login");
       } else {
         setError(response.data.message);

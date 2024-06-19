@@ -23,7 +23,8 @@ const FriendsList = () => {
   const setUserStatus = useUserStatusStore((state) => state.setUsers);
   const { onlineUsers, offlineUsers } = useUserStatusStore();
 
-  const { userId } = useUserStore();
+  const { USER } = useUserStore();
+  const userId = USER.userId;
 
   const handleBack = () => {
     nav(-1);

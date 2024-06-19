@@ -8,15 +8,16 @@ import FriendComponent from "../FriendComponent/FriendComponent";
 
 function FriendList({ friends }) {
   const [dmNotice, setDmNotice] = useState([]);
-  const { userId } = useUserStore();
+  const { USER } = useUserStore();
+  const USERID = USER.userId;
 
   useEffect(() => {
     getNotice();
-  }, [])
+  }, []);
 
   const getNotice = async () => {
     try {
-      const res = await axiosInstance.get(API.DM_SSE_MAIN(userId));
+      const res = await axiosInstance.get(API.DM_SSE_MAIN(USERID));
       if (res.data.success) {
         setDmNotice(res.data.data);
         console.log(res.data.data);

@@ -49,7 +49,8 @@ const MyPlanet = ({}) => {
   const { serverData } = useServerStore((state) => ({
     serverData: state.serverData,
   }));
-  const { userId } = useUserStore();
+  const { USER } = useUserStore();
+  const userId = USER.userId;
   const { servers } = usePlanetsStore();
 
   // const getNotice = async () => {
@@ -68,7 +69,7 @@ const MyPlanet = ({}) => {
   //   getNotice();
   // }, [userId]);
 
-  let serversPerPage; 
+  let serversPerPage;
 
   const resizeListener = () => {
     setInnerWidth(window.innerWidth);
@@ -81,7 +82,7 @@ const MyPlanet = ({}) => {
     return () => {
       window.removeEventListener("resize", resizeListener);
     };
-  }, []); 
+  }, []);
 
   if(innerWidth >= 432){
     serversPerPage = ((innerHeight - 86) / 80) - 2;
@@ -89,7 +90,7 @@ const MyPlanet = ({}) => {
   else {
     serversPerPage = 4;
   }
-  
+
   const handleCreateModalClick = () => {
     setShowCreateServer(true);
   };
@@ -104,7 +105,10 @@ const MyPlanet = ({}) => {
 
   const handleRight = () => {
     setCurrentPage((prevPage) =>
-      Math.min(prevPage + 1, Math.ceil((servers?.length || 0) / serversPerPage) - 1)
+      Math.min(
+        prevPage + 1,
+        Math.ceil((servers?.length || 0) / serversPerPage) - 1
+      )
     );
   };
 
@@ -129,7 +133,10 @@ const MyPlanet = ({}) => {
         <Leftbtn onClick={handleLeft} />
         <div className={style.planetList}>
           {(servers || [])
-            .slice(currentPage * serversPerPage, (currentPage + 1) * serversPerPage)
+            .slice(
+              currentPage * serversPerPage,
+              (currentPage + 1) * serversPerPage
+            )
             .map((server) => {
               const hasNotice = serverNotice.includes(server.serverId);
               return (
@@ -139,7 +146,11 @@ const MyPlanet = ({}) => {
                     onClick={() => handleServerClick(server.serverId)}
                   >
                     {server.profile !== "null" && server.profile !== null ? (
-                      <img src={server.profile} className={style.planetIcon} alt="" />
+                      <img
+                        src={server.profile}
+                        className={style.planetIcon}
+                        alt=""
+                      />
                     ) : (
                       <div className={style.serverName}>{server.name}</div>
                     )}

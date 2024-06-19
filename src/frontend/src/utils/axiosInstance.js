@@ -1,7 +1,7 @@
 import axios from "axios";
+import reIssueToken from "./Auth/reissueToken";
 
 export const axiosInstance = axios.create({
-  // baseURL: "https://fittrip.site/api",
   headers: {
     "Content-Type": "application/json",
   },
@@ -14,11 +14,40 @@ axiosInstance.interceptors.request.use(
     if (accessToken) {
       config.headers["Authorization"] = `Bearer ${accessToken}`;
     }
-    // console.log("axios config : ", config);
     return config;
   },
   (error) => {
-    // console.log("axios config : ", error);
+    return Promise.reject(error);
+  }
+);
+
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+
+    //401 unauthorized인 경우
+    if (error.response && error.response.status === 401) {
+      if (!originalRequest._retry) {
+        originalRequest._retry = true;
+        try {
+          const newAccessToken = await reIssueToken();
+          axios.defaults.headers.common["Authorization"] =
+            `Bearer ${newAccessToken}`;
+          originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
+          return axiosInstance(originalRequest);
+        } catch (err) {
+          return Promise.reject(err);
+        }
+      }
+    }
+
+    // 오류 응답이 없는 경우
+    if (!error.response) {
+      console.error("Network/Server error");
+      return Promise.reject(new Error("Network/Server error"));
+    }
+
     return Promise.reject(error);
   }
 );

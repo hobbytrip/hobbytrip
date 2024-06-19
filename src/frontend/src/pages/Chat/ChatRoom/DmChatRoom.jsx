@@ -47,7 +47,9 @@ const fetchDmHistory = async (page, roomId, setDmList) => {
 function DmChat() {
   //타입 지정: dm
   const TYPE = "direct";
-  const { userId, nickname } = useUserStore();
+  const { USER } = useUserStore();
+  const userId = USER.userId;
+  const nickname = USER.name;
   const { roomId } = useParams();
   const [page, setPage] = useState(0);
   const chatListContainerRef = useRef(null);

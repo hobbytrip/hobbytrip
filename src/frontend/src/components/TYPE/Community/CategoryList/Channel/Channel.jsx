@@ -12,7 +12,8 @@ const Channel = ({ channel, serverId }) => {
   const [showChannelSetting, setShowChannelSetting] = useState(false);
 
   const nav = useNavigate();
-  const { userId } = useUserStore();
+  const { USER } = useUserStore();
+  const userId = USER.userId;
   const channelId = channel.channelId;
   const type = channel.channelType;
 

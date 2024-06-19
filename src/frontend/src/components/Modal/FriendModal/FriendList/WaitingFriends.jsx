@@ -8,7 +8,8 @@ import WaitingComponent from "../FriendComponent/WaitingComponent";
 
 function FriendList({ friends }) {
   const [dmNotice, setDmNotice] = useState([]);
-  const { userId } = useUserStore();
+  const { USER } = useUserStore();
+  const userId = USER.userId;
 
   const getNotice = async () => {
     try {

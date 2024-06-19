@@ -53,7 +53,9 @@ function ForumChat() {
   const forumCreatedDate = new Date(forum.createAt);
   const formattedDate = `${forumCreatedDate.getFullYear()}년 ${forumCreatedDate.getMonth() + 1}월 ${forumCreatedDate.getDate()}일`;
 
-  const { userId, nickname } = useUserStore();
+  const { USER } = useUserStore();
+  const userId = USER.userId;
+  const nickname = USER.name;
   const { serverId, channelId, forumId } = useParams();
   const [page, setPage] = useState(0);
   const chatListContainerRef = useRef(null);
@@ -78,6 +80,13 @@ function ForumChat() {
   const messages = useForumStore(
     (state) => state.forumLists[serverId]?.[forumId] || []
   ); //해당 서버>포럼에 있는 message 가져오기
+
+  const { addForumMessage, modifyForumMessage, deleteForumMessage } =
+    useForumStore((state) => ({
+      addForumMessage: state.addForumMessage,
+      modifyForumMessage: state.modifiedMessage,
+      deleteForumMessage: state.deleteForumMessage,
+    }));
 
   useEffect(() => {
     if (client && isConnected) {

@@ -11,7 +11,8 @@ import useUserStore from "../../../../actions/useUserStore";
 
 function ForumModal({ onNewForum }) {
   const { serverId, channelId } = useParams();
-  const { userId, nickname } = useUserStore();
+  const { USER } = useUserStore();
+  const userId = USER.userId;
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [category, setCategory] = useState("CHALLENGE66");
