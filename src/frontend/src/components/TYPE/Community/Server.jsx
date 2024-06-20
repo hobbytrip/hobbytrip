@@ -20,7 +20,7 @@ import { RiSettings3Fill } from "react-icons/ri";
 //최상단. 데탑버전
 function Server() {
   const [isInviteOpen, setInviteOpen] = useState(false);
-  const { serverData } = useServerStore();
+  const { serverData } = useServerStore.getState();
   const nav = useNavigate();
   const subscriptionRef = useRef(null); // 구독 객체 참조 추가
   const { serverId, channelId } = useParams(); //channelId와 serverId 가져오기
@@ -28,7 +28,8 @@ function Server() {
   const { client } = useWebSocketStore();
   const { setMessage } = useChatStore();
 
-  const { getChannelName, getChannelTypeIcon } = useChannelDatas(channelId);
+  console.error(serverData.serverChannels);
+  const { getChannelName, getChannelTypeIcon } = useChannelDatas(channelId, serverData.serverChannels );
 
   let CURRENT_SERVER = serverId;
 

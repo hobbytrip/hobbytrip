@@ -25,7 +25,7 @@ class VideoComponent extends Component {
         style={{
           width: '180px',
           height: '150px',
-          borderRadius: '15px'
+          borderRadius: '10px'
         }} />
     )
   }

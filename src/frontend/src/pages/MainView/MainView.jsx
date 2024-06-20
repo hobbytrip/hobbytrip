@@ -6,12 +6,10 @@ import MainHeader from "../../components/MainView/MainHeader/MainHeader.jsx";
 import MyPlanet from "../../components/MainView/MyPlanet/MyPlanet.jsx";
 import MyFriend from "../../components/Modal/FriendModal/MyFriend/MyFriend.jsx";
 import style from "./MainView.module.css";
-import setSSE from "../../hooks/useSSE.js";
 import DmHistoryList from "../../components/TYPE/DM/DmHistoryList/DmHistoryList.jsx";
 import { AiOutlineMenu } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import usePlanetsStore from "../../actions/usePlantesStore.js";
-import useSSE from "../../hooks/useSSE.js";
 
 const MainView = () => {
   const [dms, setDms] = useState(null);
@@ -19,7 +17,6 @@ const MainView = () => {
   const { setServers } = usePlanetsStore();
   const USERID = USER.userId;
 
-  // useSSE();
   useEffect(() => {
     if (USERID) {
       const getMainData = async () => {

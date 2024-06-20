@@ -38,6 +38,7 @@ function CreateCategory({ onClose, onBack }) {
           res.data.data,
         ];
         setServerData({ ...serverData, serverCategories: updatedCategories });
+        console.error(serverData.serverCategories);
         onClose();
       } else {
         console.log("카테고리 만들기 실패.");
