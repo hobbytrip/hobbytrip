@@ -52,9 +52,6 @@ function RegForm() {
       if (response.data.success) {
         console.log("회원가입 성공:", response.data.data);
         postUserIdToCommunity(response.data.data.userId);
-
-        //회원정보 설정
-        await setUser();
         navigate("/login");
       } else {
         setError(response.data.message);

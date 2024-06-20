@@ -6,9 +6,10 @@ import useServerStore from "../../../actions/useServerStore";
 import CreateServer from "../../Modal/ServerModal/Servers/CreateServer/CreateServer";
 import { useNavigate } from "react-router-dom";
 import useUserStore from "../../../actions/useUserStore";
+import usePlanetsStore from "../../../actions/usePlantesStore";
 import { axiosInstance } from "../../../utils/axiosInstance";
 import API from "../../../utils/API/API";
-import usePlanetsStore from "../../../actions/usePlantesStore";
+import useFetchServer from "../../../hooks/useFetchServer";
 
 const Leftbtn = ({ onClick }) => (
   <button className={style.leftBtn} onClick={onClick}>
@@ -43,29 +44,13 @@ const MyPlanet = ({}) => {
   const [innerHeight, setInnerHeight] = useState(window.innerHeight);
   const nav = useNavigate();
 
-  const {  fetchServerData } = useServerStore((state) => ({
-    fetchServerData: state.fetchServerData,
+  const { serverData } = useServerStore((state) => ({
+    serverData: state.serverData,
   }));
-  const { serverData } = useServerStore();
+  const { setServerData } = useServerStore();
   const { USER } = useUserStore();
   const userId = USER.userId;
   const { servers } = usePlanetsStore();
-
-  // const getNotice = async () => {
-  //   try {
-  //     const res = await axiosInstance.get(API.SERVER_SSE_MAIN(userId));
-  //     if (res.data.success) {
-  //       setServerNotice(res.data.data);
-  //       console.log(res.data.data);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching server notices:", error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   getNotice();
-  // }, [userId]);
 
   let serversPerPage;
 
@@ -82,10 +67,9 @@ const MyPlanet = ({}) => {
     };
   }, []);
 
-  if(innerWidth >= 432){
-    serversPerPage = ((innerHeight - 86) / 80) - 2;
-  }
-  else {
+  if (innerWidth >= 432) {
+    serversPerPage = (innerHeight - 86) / 80 - 2;
+  } else {
     serversPerPage = 4;
   }
 
@@ -111,21 +95,21 @@ const MyPlanet = ({}) => {
   };
 
   const handleServerClick = async (serverId) => {
-    console.log("버튼");
-    await fetchServerData(serverId, userId);
-    console.log('fetched server Data', serverData)
-    console.log('serverChannels', serverData.serverChannels);
-    if (serverData && serverData.serverChannels) {
-      const defaultChatChannel = serverData.serverChannels.find(
+    console.log("SERVERID", serverId);
+    console.log("USERID", userId);
+    const res = await axiosInstance.get(API.GET_SERVER(serverId, userId));
+    const data = res.data.data;
+
+    console.log(serverData);
+    if (data) {
+      setServerData(data);
+      const defaultChatChannel = data.channels.find(
         (channel) => channel.channelType === "CHAT"
       );
-      console.log('채널Id', defaultChatChannel)
+      console.error(defaultChatChannel);
       if (defaultChatChannel) {
         nav(`/${serverId}/${defaultChatChannel.channelId}/chat`);
       }
-    }
-    else{
-      console.error('nav err: ', serverData)
     }
   };
 
@@ -141,7 +125,6 @@ const MyPlanet = ({}) => {
               (currentPage + 1) * serversPerPage
             )
             .map((server) => {
-              const hasNotice = serverNotice.includes(server.serverId);
               return (
                 <div key={server.serverId} className={style.planetItem}>
                   <button
@@ -157,7 +140,6 @@ const MyPlanet = ({}) => {
                     ) : (
                       <div className={style.serverName}>{server.name}</div>
                     )}
-                    {hasNotice && <span className={style.redDot} />}
                   </button>
                 </div>
               );

@@ -1,46 +1,12 @@
-import { create } from "zustand";
+import create from "zustand";
 
 const useChatStore = create((set) => ({
-  chatLists: {},
-  typingUsers: [],
-  setChatList: (serverId, messages) =>
-    set((state) => ({
-      chatLists: {
-        [serverId]: [...messages],
-      },
-    })),
-  sendMessage: (message) => {
-    set((state) => ({
-      chatLists: {
-        ...state.chatLists,
-        [message.serverId]: [
-          ...(state.chatLists[message.serverId] || []),
-          message,
-        ],
-      },
-    }));
-  },
-  setTypingUsers: (users) => set({ typingUsers: users }),
-  modifyMessage: (serverId, messageId, newContent) =>
-    set((state) => ({
-      chatLists: {
-        ...state.chatLists,
-        [serverId]: state.chatLists[serverId].map((message) =>
-          message.messageId === messageId
-            ? { ...message, content: newContent }
-            : message
-        ),
-      },
-    })),
-  deleteMessage: (serverId, messageId) =>
-    set((state) => ({
-      chatLists: {
-        ...state.chatLists,
-        [serverId]: state.chatLists[serverId].filter(
-          (message) => message.messageId !== messageId
-        ),
-      },
-    })),
+  //소켓으로 받은 새로운 메세지(전송, 삭제, 수정)
+  MESSAGE: null,
+  // 받은 메세지 저장
+  setMessage: (message) => set({ MESSAGE: message }),
+  //메세지 처리가 끝나면 해당 메세지 store에서 제거
+  removeMessage: () => set({ MESSAGE: null }),
 }));
 
 export default useChatStore;
