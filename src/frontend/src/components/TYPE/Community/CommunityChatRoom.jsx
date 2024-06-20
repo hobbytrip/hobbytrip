@@ -7,7 +7,6 @@ import ChatSearchBar from "../../../components/Modal/ChatModal/ChatSearchBar/Cha
 import MessageSender from "../../../components/Modal/ChatModal/CreateChatModal/MessageSender/MessageSender";
 import ChatMessage from "../../../components/Modal/ChatModal/ChatMessage/ChatMessage";
 import InfiniteScrollComponent from "../../../components/Common/ChatRoom/InfiniteScrollComponent";
-import useWebSocketStore from "../../../actions/useWebSocketStore";
 import useChatStore from "../../../actions/useChatStore";
 import API from "../../../utils/API/API";
 import useUserStore from "../../../actions/useUserStore";
@@ -15,8 +14,9 @@ import useAuthStore from "../../../actions/useAuthStore";
 import axios from "axios";
 import { axiosInstance } from "../../../utils/axiosInstance";
 import useServerStore from "../../../actions/useServerStore";
+import useWebSocketStore from "../../../actions/useWebSocketStore";
 
-const fetchChatHistory = async (page, serverId, channelId, set) => {
+const fetchChatHistory = async (page, channelId, setMessages) => {
   const token = localStorage.getItem("accessToken");
   try {
     const response = await axios.get(API.GET_HISTORY, {
@@ -31,13 +31,14 @@ const fetchChatHistory = async (page, serverId, channelId, set) => {
       withCredentials: true,
     });
     const responseData = response.data.data;
-    console.log("responseData", responseData);
     if (responseData) {
-      set(serverId, responseData.data.reverse());
+      const historys = responseData.data.reverse();
+      console.log(historys);
+      setMessages(historys);
     }
   } catch (err) {
-    console.error("채팅기록 불러오기 오류", err);
-    throw new Error("채팅기록 불러오기 오류");
+    console.error("채팅 기록 불러오기 오류", err);
+    throw new Error("채팅 기록 불러오기 오류");
   }
 };
 
@@ -56,40 +57,86 @@ const postUserLocation = async (userId, serverId, channelId) => {
 
 function ChatRoom() {
   const { USER } = useUserStore();
+  const { accessToken } = useAuthStore();
+  const { serverData } = useServerStore();
+  const { client } = useWebSocketStore();
+  const { removeMessage } = useChatStore();
+
+  const { userInfos } = serverData.serverUserInfos;
   const userId = USER.userId;
   const nickname = USER.name;
+
   const { serverId, channelId } = useParams();
-  const [page, setPage] = useState(0);
-  const chatListContainerRef = useRef(null);
-  const { accessToken } = useAuthStore();
-  const { client, isConnected } = useWebSocketStore();
-  const {
-    typingUsers,
-    deleteMessage,
-    modifyMessage,
-    sendMessage,
-    setChatList,
-  } = useChatStore();
-  const { serverData } = useServerStore();
-  const { userInfos } = serverData.serverUserInfos;
-
-  const SERVER_USER_MAP = userInfos.map((user) => user.userId);
-  const chatList = useChatStore((state) => state.chatLists[serverId]) || [];
-
-  //타입: 서버
+  let CURRENT_SERVER = serverId;
+  let CURRENT_CHANNEL = channelId;
+  //서버에 있는 유저 저장 MAP
+  const SERVER_USER_MAP = userInfos?.map((user) => user.userId);
   const TYPE = "server";
+  //store에 들어온 메세지 let 변수에 담아줌.
+  let chatMessage = useChatStore((state) => state.MESSAGE);
+  //해당 채팅방의 메세지를 관리
+  const [messages, setMessages] = useState([]);
+  //무한스크롤을 위한 Ref
+  const chatListContainerRef = useRef(null);
+  const [page, setPage] = useState(0);
 
   useEffect(() => {
-    postUserLocation(userId, serverId, channelId);
-    if (client && isConnected) {
-      fetchChatHistory(page, serverId, channelId, setChatList);
-    }
-  }, [serverId]);
+    //채팅기록 fetch -> channelID 바뀔 때
+    console.log("CURRENT_SERVER", CURRENT_SERVER);
+    console.log("CURRENT_CHANNEL", CURRENT_CHANNEL);
+    fetchChatHistory(page, CURRENT_CHANNEL, setMessages);
+  }, [CURRENT_CHANNEL]);
 
+  //사용자 위치 서버에 POST -> 서버와 채널 바뀔 때
+  useEffect(() => {
+    postUserLocation(userId, CURRENT_SERVER, CURRENT_CHANNEL);
+  }, [CURRENT_SERVER, CURRENT_CHANNEL]);
+
+  useEffect(() => {
+    if (chatListContainerRef.current) {
+      chatListContainerRef.current.scrollTop =
+        chatListContainerRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  useEffect(() => {
+    if (chatMessage) {
+      console.log("chatMessage O");
+      //현재 채널 메세지만 렌더링
+      if (chatMessage.channelId === CURRENT_CHANNEL) {
+        if (chatMessage.actionType === "MODIFY") {
+          setMessages((prevMessages) => {
+            return [...prevMessages].map((prevMessage) => {
+              if (prevMessage.messageId === chatMessage.messageId) {
+                return { ...prevMessage, message: chatMessage.message };
+              } else {
+                return prevMessage;
+              }
+            });
+          });
+        } else if (chatMessage.actionType === "DELETE") {
+          setMessages((prevMessages) => {
+            return prevMessages.filter(
+              (prevMessage) => prevMessage.messageId !== chatMessage.messageId
+            );
+          });
+        } else {
+          setMessages((prevMessages) => [...prevMessages, chatMessage]);
+        }
+      } else {
+        console.log("no chatMessage");
+      }
+    }
+
+    //처리가 끝난 메세지는 store에서 제거
+    removeMessage(chatMessage);
+  }, [chatMessage]);
+
+  //서버에 publish
   const handleSendMessage = async (messageContent, uploadedFiles) => {
     const messageBody = {
-      serverId: serverId,
-      channelId: channelId,
+      serverId: CURRENT_SERVER,
+      channelId: CURRENT_CHANNEL,
       userId: userId,
       parentId: 0,
       profileImage: "ho",
@@ -100,19 +147,14 @@ function ChatRoom() {
       mentionType: "EVERYONE",
     };
 
-    const sendMessageWithoutFile = (messageBody) => {
-      sendMessage(messageBody);
-      client.publish({
-        destination: API.SEND_CHAT(TYPE),
-        body: JSON.stringify(messageBody),
-      });
-    };
-
     if (uploadedFiles.length >= 1) {
       await uploadFiles(messageBody, uploadedFiles);
-    } else {
-      sendMessageWithoutFile(messageBody);
     }
+
+    client.publish({
+      destination: API.SEND_CHAT(TYPE),
+      body: JSON.stringify(messageBody),
+    });
   };
 
   const uploadFiles = async (messageBody, uploadedFiles) => {
@@ -144,17 +186,11 @@ function ChatRoom() {
       content: newContent,
       actionType: "MODIFY",
     };
-    const modifiedMessage = chatList.find(
-      (message) => message.messageId === messageId
-    );
-    if (modifiedMessage) {
-      modifiedMessage.content = newContent;
-      modifyMessage(serverId, messageId, newContent);
-      client.publish({
-        destination: API.MODIFY_CHAT(TYPE),
-        body: JSON.stringify(messageBody),
-      });
-    }
+
+    client.publish({
+      destination: API.MODIFY_CHAT(TYPE),
+      body: JSON.stringify(messageBody),
+    });
   };
 
   const handleDeleteMessage = (messageId) => {
@@ -163,8 +199,6 @@ function ChatRoom() {
       messageId: messageId,
       actionType: "DELETE",
     };
-
-    deleteMessage(serverId, messageId);
     client.publish({
       destination: API.DELETE_CHAT(TYPE),
       body: JSON.stringify(messageBody),
@@ -175,14 +209,7 @@ function ChatRoom() {
     setPage((prevPage) => prevPage + 1);
   };
 
-  useEffect(() => {
-    if (chatListContainerRef.current) {
-      chatListContainerRef.current.scrollTop =
-        chatListContainerRef.current.scrollHeight;
-    }
-  }, [chatList]);
-
-  const groupedMessages = groupMessagesByDate(chatList);
+  const groupedMessages = groupMessagesByDate(messages);
 
   return (
     <div className={s.chatRoomWrapper}>
@@ -204,7 +231,7 @@ function ChatRoom() {
             </div>
 
             <InfiniteScrollComponent
-              dataLength={chatList.length}
+              dataLength={Object.keys(messages).length}
               next={updatePage}
               hasMore={true}
               scrollableTarget="chatListContainer"
@@ -225,17 +252,17 @@ function ChatRoom() {
             </InfiniteScrollComponent>
           </div>
           <div className={s.messageSender}>
-            {typingUsers.length > 0 && (
+            {/* {typingUsers.length > 0 && (
               <div className="typingIndicator">
                 {typingUsers.length >= 5
                   ? "여러 사용자가 입력 중입니다..."
                   : `${typingUsers.join(", ")} 입력 중입니다...`}
               </div>
-            )}
+            )} */}
             <MessageSender
               onMessageSend={handleSendMessage}
-              serverId={serverId}
-              channelId={channelId}
+              serverId={CURRENT_SERVER}
+              channelId={CURRENT_CHANNEL}
               writer={nickname}
               client={client}
               TYPE={TYPE}

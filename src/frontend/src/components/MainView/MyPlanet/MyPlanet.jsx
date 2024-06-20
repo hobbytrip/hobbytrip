@@ -43,10 +43,11 @@ const MyPlanet = ({}) => {
   const [innerHeight, setInnerHeight] = useState(window.innerHeight);
   const nav = useNavigate();
 
-  const {  fetchServerData } = useServerStore((state) => ({
+  const { fetchServerData } = useServerStore((state) => ({
     fetchServerData: state.fetchServerData,
   }));
   const { serverData } = useServerStore();
+  console.log(serverData);
   const { USER } = useUserStore();
   const userId = USER.userId;
   const { servers } = usePlanetsStore();
@@ -82,10 +83,9 @@ const MyPlanet = ({}) => {
     };
   }, []);
 
-  if(innerWidth >= 432){
-    serversPerPage = ((innerHeight - 86) / 80) - 2;
-  }
-  else {
+  if (innerWidth >= 432) {
+    serversPerPage = (innerHeight - 86) / 80 - 2;
+  } else {
     serversPerPage = 4;
   }
 
@@ -111,21 +111,20 @@ const MyPlanet = ({}) => {
   };
 
   const handleServerClick = async (serverId) => {
-    console.log("버튼");
+    console.log("행성 클릭");
     await fetchServerData(serverId, userId);
-    console.log('fetched server Data', serverData)
-    console.log('serverChannels', serverData.serverChannels);
+    console.log("설정된 serverData", serverData);
     if (serverData && serverData.serverChannels) {
       const defaultChatChannel = serverData.serverChannels.find(
         (channel) => channel.channelType === "CHAT"
       );
-      console.log('채널Id', defaultChatChannel)
+      console.log("채널Id", defaultChatChannel);
+      console.log("채널Id 설정 후 serverData", serverData);
       if (defaultChatChannel) {
         nav(`/${serverId}/${defaultChatChannel.channelId}/chat`);
       }
-    }
-    else{
-      console.error('nav err: ', serverData)
+    } else {
+      console.error("nav err: ", serverData);
     }
   };
 
@@ -141,7 +140,7 @@ const MyPlanet = ({}) => {
               (currentPage + 1) * serversPerPage
             )
             .map((server) => {
-              const hasNotice = serverNotice.includes(server.serverId);
+              // const hasNotice = serverNotice.includes(server.serverId);
               return (
                 <div key={server.serverId} className={style.planetItem}>
                   <button
@@ -157,7 +156,7 @@ const MyPlanet = ({}) => {
                     ) : (
                       <div className={style.serverName}>{server.name}</div>
                     )}
-                    {hasNotice && <span className={style.redDot} />}
+                    {/* {hasNotice && <span className={style.redDot} />} */}
                   </button>
                 </div>
               );

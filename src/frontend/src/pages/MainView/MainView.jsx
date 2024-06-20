@@ -11,7 +11,6 @@ import DmHistoryList from "../../components/TYPE/DM/DmHistoryList/DmHistoryList.
 import { AiOutlineMenu } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import usePlanetsStore from "../../actions/usePlantesStore.js";
-import useWebSocketStore from "../../actions/useWebSocketStore";
 import useSSE from "../../hooks/useSSE.js";
 
 const MainView = () => {
@@ -23,7 +22,6 @@ const MainView = () => {
   // useSSE();
   useEffect(() => {
     if (USERID) {
-      useWebSocketStore.getState().connect(USERID);
       const getMainData = async () => {
         try {
           const response = await axiosInstance.get(API.READ_MAIN(USERID));
