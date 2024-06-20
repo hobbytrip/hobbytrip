@@ -1,6 +1,7 @@
 # 커뮤니티 서버
 <img width="1051" alt="스크린샷 2024-06-20 19 22 03" src="https://github.com/hobbytrip/hobbytrip/assets/75834815/6508ca88-cf57-4098-a087-708935bc0545">
 
+
 ## 메인 화면 읽기
 
 | 항목 | 내용 |
@@ -21,10 +22,52 @@
     "code": 0,
     "data": {
         "servers": [
-            // 서버 목록 데이터
+            {
+                "serverId": 1,
+                "name": "example",
+                "profile": null
+            },
+            {
+                "serverId": 2,
+                "name": "example",
+                "profile": null
+            },
+            {
+                "serverId": 3,
+                "name": "example",
+                "profile": null
+            }
         ],
         "dms": [
-            // DM 목록 데이터
+             {
+                "dmId": 1,
+                "name": "abc, abc",
+                "profile": null
+            },
+            {
+                "dmId": 2,
+                "name": "abc, abc",
+                "profile": null
+            },
+            {
+                "dmId": 3,
+                "name": "abc, abc",
+                "profile": null
+            },
+            {   "success": true,    
+			          "code": 0,    
+			          "message": "Ok",    
+			          "data": {"servers": [{"serverId": 1,
+			                          "name": "example",
+			                          "profile": null},
+			                          {"serverId": 2,
+				                          "name": "example","profile": null},            
+				                         {"serverId": 3,"name": "example""profile": null}],        
+				                         "dms": [{"dmId": 1, "name": "abc, abc","profile": null }, 
+				                         { "dmId": 2,"name": "abc, abc", "profile": null },            
+				                         {"dmId": 3, "name": "abc, abc", "profile": null},            
+								                {"dmId": 4, "name": "abc, abc","profile": null
+            }
         ]
     }
 }
@@ -53,7 +96,11 @@
     "success": true,
     "code": 0,
     "data": {
-        // 응답 데이터
+        "id": 1,
+        "originalId": 4,
+        "email": "abc4@naver.com",
+        "name": "abc",
+        "profile": "http://image.png"
     }
 }
 ```
@@ -81,7 +128,12 @@ formdata.append("profileImage", profileImage);
     "success": true,
     "code": 0,
     "data": {
-        // 응답 데이터
+        "serverId": 1,
+        "managerId": 4,
+        "profile": null,
+        "description": null,
+        "name": "example",
+        "open": false
     }
 }
 ```
@@ -105,7 +157,52 @@ formdata.append("profileImage", profileImage);
     "success": true,
     "code": 0,
     "data": {
-        // 응답 데이터
+         "server": {
+            "serverId": 1,
+            "managerId": 1,
+            "profile": null,
+            "description": null,
+            "name": "example",
+            "open": false
+        },
+        "serverUserInfos": [
+            {
+                "userId": 1,
+                "name": "test123"
+            }
+        ],
+        "categories": [
+            {
+                "categoryId": 1,
+                "name": "채팅 채널"
+            },
+            {
+                "categoryId": 2,
+                "name": "음성 채널"
+            }
+        ],
+        "channels": [
+            {
+                "channelId": 1,
+                "categoryId": 1,
+                "channelType": "CHAT",
+                "name": "일반"
+            },
+            {
+                "channelId": 2,
+                "categoryId": 2,
+                "channelType": "VOICE",
+                "name": "일반"
+            },
+            {
+                "channelId": 3,
+                "categoryId": null,
+                "channelType": "FORUM",
+                "name": "테스트 포럼"
+            }
+        ],
+        "usersState": null,
+        "messages": null
     }
 }
 ```
@@ -159,7 +256,12 @@ formdata.append("profileImage", profileImage);
     "success": true,
     "code": 0,
     "data": {
-        // 응답 데이터
+        "serverId": 1,
+        "managerId": 1,
+        "profile": null,
+        "description": null,
+        "name": "example",
+        "open": false
     }
 }
 ```
@@ -216,7 +318,12 @@ formdata.append("profileImage", profileImage);
     "success": true,
     "code": 0,
     "data": {
-        // 응답 데이터
+        "serverId": 1,
+        "managerId": 4,
+        "profile": null,
+        "description": null,
+        "name": "example",
+        "open": true
     }
 }
 ```
@@ -244,7 +351,9 @@ formdata.append("profileImage", profileImage);
     "success": true,
     "code": 0,
     "data": {
-        // 응답 데이터
+        "serverId": 1,
+        "userId": 2,
+        "name": "abcd"
     }
 }
 ```
@@ -268,7 +377,12 @@ formdata.append("profileImage", profileImage);
     "success": true,
     "code": 0,
     "data": {
-        // 응답 데이터
+        "serverId": 1,
+        "managerId": 1,
+        "profile": null,
+        "description": null,
+        "name": "example",
+        "open": false
     }
 }
 ```
@@ -284,16 +398,20 @@ formdata.append("profileImage", profileImage);
 | **REST API** | `/api/community/server/{serverId}` |
 
 ### Request
-(해당 없음)
+```json
+{
+    "serverId" : 1,
+    "userId" : 4
+}
+```
 
 ### Response
 ```json
 {
     "success": true,
     "code": 0,
-    "data": {
-        // 응답 데이터
-    }
+    "message": "Ok",
+    "data": "Server delete success!!"
 }
 ```
 
@@ -308,16 +426,21 @@ formdata.append("profileImage", profileImage);
 | **REST API** | `/api/community/server/{serverId}/user/{userId}` |
 
 ### Request
-(해당 없음)
+```json
+{
+    "userId" : 1,
+    "serverId" : 1,
+    "serverUserId" : 2
+}
+```
 
 ### Response
 ```json
 {
     "success": true,
     "code": 0,
-    "data": {
-        // 응답 데이터
-    }
+    "message": "Ok",
+    "data": "ServerUser delete success!!"
 }
 ```
 
@@ -339,11 +462,81 @@ formdata.append("profileImage", profileImage);
 {
     "success": true,
     "code": 0,
-    "data": {
-        "topServers": [
-            // 인기 오픈 서버 목록 데이터
-        ]
-    }
+    "message": "Ok",
+    "data": [
+        {
+            "serverId": 1,
+            "managerId": 1,
+            "profile": "image.png",
+            "description": null,
+            "open": true,
+            "userCount": 3
+        },
+        {
+            "serverId": 11,
+            "managerId": 1,
+            "profile": "image.png",
+            "description": null,
+            "open": true,
+            "userCount": 1
+        },
+        {
+            "serverId": 10,
+            "managerId": 1,
+            "profile": "image.png",
+            "description": null,
+            "open": true,
+            "userCount": 1
+        },
+        {
+            "serverId": 9,
+            "managerId": 1,
+            "profile": "image.png",
+            "description": null,
+            "open": true,
+            "userCount": 1
+        },
+        {
+            "serverId": 8,
+            "managerId": 1,
+            "profile": "image.png",
+            "description": null,
+            "open": true,
+            "userCount": 1
+        },
+        {
+            "serverId": 7,
+            "managerId": 1,
+            "profile": "image.png",
+            "description": null,
+            "open": true,
+            "userCount": 1
+        },
+        {
+            "serverId": 2,
+            "managerId": 1,
+            "profile": "image.png",
+            "description": null,
+            "open": true,
+            "userCount": 1
+        },
+        {
+            "serverId": 4,
+            "managerId": 1,
+            "profile": "image.png",
+            "description": null,
+            "open": true,
+            "userCount": 1
+        },
+        {
+            "serverId": 3,
+            "managerId": 1,
+            "profile": "image.png",
+            "description": null,
+            "open": true,
+            "userCount": 1
+        }
+    ]
 }
 ```
 
@@ -365,9 +558,17 @@ formdata.append("profileImage", profileImage);
 {
     "success": true,
     "code": 0,
+    "message": "Ok",
     "data": {
-        "servers": [
-            // 서버 목록 데이터
+        "numberOfElements": 1,
+        "totalPages": 1,
+        "hasNext": false,
+        "data": [
+            {
+                "serverId": 1,
+                "serverName": "example",
+                "userCount": 2
+            }
         ]
     }
 }
@@ -395,8 +596,11 @@ formdata.append("profileImage", profileImage);
 {
     "success": true,
     "code": 0,
+    "message": "Ok",
     "data": {
-        // 응답 데이터
+        "dmId": 1,
+        "name": "abc, abc",
+        "profile": null
     }
 }
 ```
@@ -419,8 +623,28 @@ formdata.append("profileImage", profileImage);
 {
     "success": true,
     "code": 0,
+    "message": "Ok",
     "data": {
-        // 응답 데이터
+        "dm": {
+            "dmId": 1,
+            "name": "abc, abc, abc, abc",
+            "profile": null
+        },
+        "dmUserInfos": [
+            {
+                "userId": 1,
+                "name": "test123"
+            }
+        ],
+        "userOnOff": {
+            "connectionStates": {
+                "1": "online",
+                "2": "offline",
+                "3": "online",
+                "4": "offline"
+            }
+        },
+        "messages": null
     }
 }
 ```
@@ -448,8 +672,11 @@ formdata.append("profileImage", profileImage);
 {
     "success": true,
     "code": 0,
+    "message": "Ok",
     "data": {
-        // 응답 데이터
+        "dmId": 1,
+        "name": "abc, abc, abc, abc",
+        "profile": null
     }
 }
 ```
@@ -477,8 +704,11 @@ formdata.append("profileImage", profileImage);
 {
     "success": true,
     "code": 0,
+    "message": "Ok",
     "data": {
-        // 응답 데이터
+        "dmId": 1,
+        "name": "hello",
+        "profile": null
     }
 }
 ```
@@ -494,11 +724,16 @@ formdata.append("profileImage", profileImage);
 | **REST API** | `/api/community/dm/profile` |
 
 ### Request
-```json
-{
-    "dmId": 1,
-    "profileImage": "profileImageUrl"
-}
+```javascript
+const formdata = new FormData();
+formdata.append("requestDto", "{\"dmId\":1}");
+formdata.append("profile", fileInput.files[0], "image.png");
+
+const requestOptions = {
+  method: "PATCH",
+  body: formdata,
+  redirect: "follow"
+};
 ```
 
 ### Response
@@ -506,8 +741,11 @@ formdata.append("profileImage", profileImage);
 {
     "success": true,
     "code": 0,
+    "message": "Ok",
     "data": {
-        // 응답 데이터
+        "dmId": 1,
+        "name": "hello",
+        "profile": "http://image.png"
     }
 }
 ```
@@ -523,16 +761,20 @@ formdata.append("profileImage", profileImage);
 | **REST API** | `/api/community/dm/profile` |
 
 ### Request
-(해당 없음)
+```json
+{
+    "dmId" : 1,
+    "profile" : "http://image.png"
+}
+```
 
 ### Response
 ```json
 {
     "success": true,
     "code": 0,
-    "data": {
-        // 응답 데이터
-    }
+    "message": "Ok",
+    "data": "Dm profile delete success!!"
 }
 ```
 
@@ -559,9 +801,8 @@ formdata.append("profileImage", profileImage);
 {
     "success": true,
     "code": 0,
-    "data": {
-        // 응답 데이터
-    }
+    "message": "Ok",
+    "data": "DmUser delete success!!"
 }
 ```
 
@@ -578,8 +819,9 @@ formdata.append("profileImage", profileImage);
 ### Request
 ```json
 {
-    "serverId": 1,
-    "categoryName": "newCategory"
+    "userId" : 1,
+    "serverId" : 1,
+    "name" : "채팅채널5"
 }
 ```
 
@@ -588,8 +830,10 @@ formdata.append("profileImage", profileImage);
 {
     "success": true,
     "code": 0,
+    "message": "Ok",
     "data": {
-        // 응답 데이터
+        "categoryId": 3,
+        "name": "채팅채널5"
     }
 }
 ```
@@ -607,8 +851,10 @@ formdata.append("profileImage", profileImage);
 ### Request
 ```json
 {
-    "categoryId": 1,
-    "categoryName": "updatedCategory"
+    "userId" : 1,
+    "serverId" : 1,
+    "categoryId" : 3,
+    "name" : "채팅채널12"
 }
 ```
 
@@ -617,8 +863,10 @@ formdata.append("profileImage", profileImage);
 {
     "success": true,
     "code": 0,
+    "message": "Ok",
     "data": {
-        // 응답 데이터
+        "categoryId": 3,
+        "name": "채팅채널12"
     }
 }
 ```
@@ -634,16 +882,22 @@ formdata.append("profileImage", profileImage);
 | **REST API** | `/api/community/category` |
 
 ### Request
-(해당 없음)
+```json
+{
+    "userId" : 1,
+    "serverId" : 1,
+    "categoryId" : 3
+}
+```
+
 
 ### Response
 ```json
 {
     "success": true,
     "code": 0,
-    "data": {
-        // 응답 데이터
-    }
+    "message": "Ok",
+    "data": "Category delete success!"
 }
 ```
 
@@ -660,8 +914,11 @@ formdata.append("profileImage", profileImage);
 ### Request
 ```json
 {
-    "categoryId": 1,
-    "channelName": "newChannel"
+    "userId" : 1,
+    "serverId" : 1,
+    "categoryId" : 1,
+    "channelType" : "CHAT",
+    "name" : "테스트 채널"
 }
 ```
 
@@ -670,11 +927,221 @@ formdata.append("profileImage", profileImage);
 {
     "success": true,
     "code": 0,
+    "message": "Ok",
     "data": {
-        // 응답 데이터
+        "channelId": 3,
+        "categoryId": 1,
+        "channelType": "CHAT",
+        "name": "테스트 채널"
     }
 }
 ```
+
+## 채널 읽기
+
+| 항목 | 내용 |
+|---|---|
+| **설계 완료** | Yes |
+| **기능** | 채널 읽기 |
+| **설명** | 포럼 목록을 불러옵니다. |
+| **메소드** | `GET` |
+| **REST API** | `/api/community/channel/{channelId}/{userId}?title=3&page=1` |
+
+### Request
+(해당없음)
+
+
+### Response
+```json
+{
+    "success": true,
+    "code": 0,
+    "message": "Ok",
+    "data": {
+        "content": [
+            {
+                "forumId": 10,
+                "channelId": 3,
+                "title": "테스트 포럼3",
+                "writer": "abc",
+                "content": "테스트 포럼3",
+                "forumCategory": "CHALLENGE66",
+                "createAt": "2024-05-11T19:45:33.102408",
+                "updateAt": "2024-05-11T19:45:33.102408",
+                "files": [
+                    {
+                        "fileId": 21,
+                        "fileUrl": "http://image.png"
+                    },
+                    {
+                        "fileId": 22,
+                        "fileUrl": "http://image.png"
+                    }
+                ],
+                "forumMessageCount" : 1
+            },
+            {
+                "forumId": 8,
+                "channelId": 3,
+                "title": "테스트 포럼3",
+                "writer": "abc",
+                "content": "테스트 포럼3",
+                "forumCategory": "CHALLENGE66",
+                "createAt": "2024-05-09T13:19:51.189937",
+                "updateAt": "2024-05-09T13:19:51.189937",
+                "files": [
+                    {
+                        "fileId": 15,
+                        "fileUrl": "http://image.png"
+                    },
+                    {
+                        "fileId": 16,
+                        "fileUrl": "http://image.png"
+                    }
+                ],
+                "forumMessageCount" : 1
+            },
+            {
+                "forumId": 7,
+                "channelId": 3,
+                "title": "테스트 포럼3",
+                "writer": "abc",
+                "content": "테스트 포럼3",
+                "forumCategory": "CHALLENGE66",
+                "createAt": "2024-05-09T13:19:50.629682",
+                "updateAt": "2024-05-09T13:19:50.629682",
+                "files": [
+                    {
+                        "fileId": 13,
+                        "fileUrl": "http://image.png"
+                    },
+                    {
+                        "fileId": 14,
+                        "fileUrl": "http://image.png"
+                    }
+                ],
+                "forumMessageCount" : 1
+            },
+            {
+                "forumId": 6,
+                "channelId": 3,
+                "title": "테스트 포럼3",
+                "writer": "abc",
+                "content": "테스트 포럼3",
+                "forumCategory": "CHALLENGE66",
+                "createAt": "2024-05-09T13:19:50.1436",
+                "updateAt": "2024-05-09T13:19:50.1436",
+                "files": [
+                    {
+                        "fileId": 11,
+                        "fileUrl": "http://image.png"
+                    },
+                    {
+                        "fileId": 12,
+                        "fileUrl": "http://image.png"
+                    }
+                ],
+                "forumMessageCount" : 1
+            },
+            {
+                "forumId": 5,
+                "channelId": 3,
+                "title": "테스트 포럼3",
+                "writer": "abc",
+                "content": "테스트 포럼3",
+	              "forumCategory": "CHALLENGE66",
+                "createAt": "2024-05-09T13:19:49.710342",
+                "updateAt": "2024-05-09T13:19:49.710342",
+                "files": [
+                    {
+                        "fileId": 9,
+                        "fileUrl": "http://image.png"
+                    },
+                    {
+                        "fileId": 10,
+                        "fileUrl": "http://image.png"
+                    }
+                ],
+                "forumMessageCount" : 1
+            },
+            {
+                "forumId": 4,
+                "channelId": 3,
+                "title": "테스트 포럼3",
+                "writer": "abc",
+                "content": "테스트 포럼3",
+                "forumCategory": "CHALLENGE66",
+                "createAt": "2024-05-09T13:19:49.223886",
+                "updateAt": "2024-05-09T13:19:49.223886",
+                "files": [
+                    {
+                        "fileId": 7,
+                        "fileUrl": "http://image.png"
+                    },
+                    {
+                        "fileId": 8,
+                        "fileUrl": "http://image.png"
+                    }
+                ],
+                "forumMessageCount" : 1
+            },
+            {
+                "forumId": 3,
+                "channelId": 3,
+                "title": "테스트 포럼3",
+                "writer": "abc",
+                "content": "테스트 포럼3",
+                "forumCategory": "CHALLENGE66",
+                "createAt": "2024-05-09T13:19:48.758317",
+                "updateAt": "2024-05-09T13:19:48.758317",
+                "files": [
+                    {
+                        "fileId": 5,
+                        "fileUrl": "http://image.png"
+                    },
+                    {
+                        "fileId": 6,
+                        "fileUrl": "http://image.png"
+                    }
+                ],
+                "forumMessageCount" : 1
+            },
+            {
+                "forumId": 2,
+                "channelId": 3,
+                "title": "테스트 포럼3",
+                "writer": "abc",
+                "content": "테스트 포럼3",
+                "forumCategory": "CHALLENGE66",
+                "createAt": "2024-05-09T13:19:48.156112",
+                "updateAt": "2024-05-09T13:19:48.156112",
+                "files": [
+                    {
+                        "fileId": 3,
+                        "fileUrl": "http://image.png"
+                    },
+                    {
+                        "fileId": 4,
+                        "fileUrl": "http://image.png"
+                    }
+                ],
+                "forumMessageCount" : 1
+            }
+        ],
+        "sort": {
+            "sorted": true,
+            "direction": "DESC",
+            "orderProperty": "createdAt"
+        },
+        "currentPage": 0,
+        "size": 15,
+        "first": true,
+        "last": true
+    }
+}
+```
+
+
 
 ## 채널 업데이트
 
@@ -689,8 +1156,11 @@ formdata.append("profileImage", profileImage);
 ### Request
 ```json
 {
-    "channelId": 1,
-    "channelName": "updatedChannel"
+    "userId" : 1,
+    "serverId" : 1,
+    "channelId" : 3,
+    "categoryId" : 1,
+    "name" : "테스트 업데이트 채널"
 }
 ```
 
@@ -699,8 +1169,12 @@ formdata.append("profileImage", profileImage);
 {
     "success": true,
     "code": 0,
+    "message": "Ok",
     "data": {
-        // 응답 데이터
+        "channelId": 3,
+        "categoryId": 1,
+        "channelType": "CHAT",
+        "name": "테스트 업데이트 채널"
     }
 }
 ```
@@ -716,16 +1190,21 @@ formdata.append("profileImage", profileImage);
 | **REST API** | `/api/community/channel` |
 
 ### Request
-(해당 없음)
+```json
+{
+    "userId" : 1,
+    "serverId" : 1,
+    "channelId" : 3
+}
+```
 
 ### Response
 ```json
 {
     "success": true,
     "code": 0,
-    "data": {
-        // 응답 데이터
-    }
+    "message": "Ok",
+    "data": "Channel delete success!"
 }
 ```
 
@@ -742,11 +1221,9 @@ formdata.append("profileImage", profileImage);
 ### Request
 ```javascript
 const formdata = new FormData();
-formdata.append("serverId", 1);
-formdata.append("channelId", 3);
-formdata.append("title", "포럼 제목");
-formdata.append("content", "포럼 내용");
-formdata.append("files", fileInput.files[0]);
+formdata.append("requestDto", "{\"userId\":1, \"serverId\":1, \"channelId\":3, \"title\":\"테스트 포럼3\", \"content\":\"테스트 포럼3\", \"forumCategory\":\"CHALLENGE66\"}");
+formdata.append("files", fileInput.files[0], "도서 검색1-1.png");
+formdata.append("files", fileInput.files[0], "도서 검색2-2.png");
 ```
 
 ### Response
@@ -754,8 +1231,26 @@ formdata.append("files", fileInput.files[0]);
 {
     "success": true,
     "code": 0,
+    "message": "Ok",
     "data": {
-        // 응답 데이터
+        "forumId": 1,
+        "channelId": 3,
+        "title": "테스트 포럼3",
+        "writer": "test123",
+        "content": "테스트 포럼3",
+        "forumCategory": "CHALLENGE66",
+        "createAt": "2024-06-01T12:55:23.275569",
+        "updateAt": "2024-06-01T12:55:23.275569",
+        "files": [
+            {
+                "fileId": 1,
+                "fileUrl": "https://fittrip-bucket.s3.ap-northeast-2.amazonaws.com/community/b1ad4645-18fc-472c-ad8a-e8bea4de557a.png"
+            },
+            {
+                "fileId": 2,
+                "fileUrl": "https://fittrip-bucket.s3.ap-northeast-2.amazonaws.com/community/a379461b-03c2-4dfa-a978-b3eaf650de65.png"
+            }
+        ]
     }
 }
 ```
@@ -778,8 +1273,29 @@ formdata.append("files", fileInput.files[0]);
 {
     "success": true,
     "code": 0,
+    "message": "Ok",
     "data": {
-        // 응답 데이터
+        "forum": {
+            "forumId": 10,
+            "channelId": 3,
+            "title": "테스트 포럼3",
+            "writer": "abc",
+            "content": "테스트 포럼3",
+            "forumCategory": "CHALLENGE66",
+            "createAt": "2024-05-11T19:45:33.102408",
+            "updateAt": "2024-05-11T19:45:33.102408",
+            "files": [
+                {
+                    "fileId": 21,
+                    "fileUrl": "http://image.png"
+                },
+                {
+                    "fileId": 22,
+                    "fileUrl": "http://image.png"
+                }
+            ]
+        },
+        "messages": null
     }
 }
 ```
@@ -797,10 +1313,20 @@ formdata.append("files", fileInput.files[0]);
 ### Request
 ```javascript
 const formdata = new FormData();
-formdata.append("forumId", 1);
-formdata.append("title", "수정된 포럼 제목");
-formdata.append("content", "수정된 포럼 내용");
-formdata.append("files", fileInput.files[0]);
+formdata.append("requestDto", "{\"userId\":1, \"serverId\":1, \"channelId\":3, \"forumId\":2, \"title\":\"테스트 포럼2\", \"content\":\"테스트 포럼2\"}");
+formdata.append("filesId", "[1]");
+formdata.append("files", fileInput.files[0], "도서 검색3-1.png");
+
+const requestOptions = {
+  method: "PATCH",
+  body: formdata,
+  redirect: "follow"
+};
+
+fetch("http://localhost:8080/forum", requestOptions)
+  .then((response) => response.text())
+  .then((result) => console.log(result))
+  .catch((error) => console.error(error));
 ```
 
 ### Response
@@ -808,8 +1334,22 @@ formdata.append("files", fileInput.files[0]);
 {
     "success": true,
     "code": 0,
+    "message": "Ok",
     "data": {
-        // 응답 데이터
+        "title": "테스트 포럼2",
+        "content": "테스트 포럼2",
+        "createAt": "2024-05-09T13:19:42.910085",
+        "updateAt": "2024-05-09T13:19:42.910085",
+        "files": [
+            {
+                "fileId": 19,
+                "fileUrl": "http://image.png"
+            },
+            {
+                "fileId": 20,
+                "fileUrl": "http://image.png"
+            }
+        ]
     }
 }
 ```
@@ -827,9 +1367,10 @@ formdata.append("files", fileInput.files[0]);
 ### Request
 ```json
 {
-    "forumId": 1,
-    "serverId": 1,
-    "channelId": 3
+    "serverId" : 1,
+    "channelId":3,
+    "forumId":9,
+    "userId": 1
 }
 ```
 
@@ -838,11 +1379,11 @@ formdata.append("files", fileInput.files[0]);
 {
     "success": true,
     "code": 0,
-    "data": {
-        // 응답 데이터
-    }
+    "message": "Ok",
+    "data": "Forum delete success!!"
 }
 ```
+
 
 
 
