@@ -1,4 +1,5 @@
 # 미디어 시그널링 서버
+<img width="1169" alt="스크린샷 2024-06-20 19 16 55" src="https://github.com/hobbytrip/hobbytrip/assets/75834815/c2651d10-3f48-49b8-b888-7e44a67ebb34">
 
 ## 세션 생성
 
