@@ -1,3 +1,6 @@
+# 유저 서비스 API 명세서
+<img width="1173" alt="스크린샷 2024-06-20 19 15 44" src="https://github.com/hobbytrip/hobbytrip/assets/75834815/6909766c-28aa-46bc-ad97-732d013c9861">
+
 ## 로그인
 
 | 항목 | 내용 |
