@@ -21,9 +21,9 @@ public class LocationStateQueryController {
 
         UserLocationDto userLocationState = locationStateQueryService.getUserLocationState(serverId, userId);
         Long channelId = userLocationState.getChannelId();
-        log.info("######### 컨트롤러에서 반환하는 channelId 값 ###########");
-        log.info("userId {}", serverId);
-        log.info("serverId {}", userId);
+        log.info("######### 컨트롤러에서 반환하는 값 ###########");
+        log.info("userId {}", userId);
+        log.info("serverId {}", serverId);
         log.info("channelId {}", channelId);
         log.info("##################");
         return userLocationState;

@@ -27,8 +27,6 @@ public class LocationStateCommandServiceImpl implements LocationStateCommandServ
         log.info("userId {}", userLocationEventDto.getUserId());
         log.info("serverId {}", serverId);
         log.info("channelId {}", channelId);
-        Long savedChannelId = hashOperations.get(hashKey, serverId);
-        log.info("저장된 값 조회 savedChannelId {}", savedChannelId);
         log.info("################");
     }
 }
