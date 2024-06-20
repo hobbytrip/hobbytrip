@@ -1,4 +1,5 @@
 # 커뮤니티 서버
+<img width="1051" alt="스크린샷 2024-06-20 19 22 03" src="https://github.com/hobbytrip/hobbytrip/assets/75834815/6508ca88-cf57-4098-a087-708935bc0545">
 
 ## 메인 화면 읽기
 
