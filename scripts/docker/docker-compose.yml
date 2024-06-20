@@ -1,0 +1,260 @@
+version: '3'
+services:
+  # kafka
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka
+    ports:
+      - "9092:9092"
+      - "9093:9093"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka:9092,OUTSIDE://localhost:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_LISTENERS: INSIDE://0.0.0.0:9092,OUTSIDE://0.0.0.0:9093
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+    depends_on:
+      - zookeeper
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+  # MSA Service Discovery
+  discovery-service:
+    image: hanyoonsoo/discovery-service:1.0
+    container_name: discovery-service
+    ports:
+      - "8761:8761"
+    depends_on:
+      - zookeeper
+      - kafka
+  # MSA API Gateway
+  gateway-service:
+    image: hanyoonsoo/gateway-service:1.0
+    container_name: gateway-service
+    ports:
+      - "8000:8000"
+    environment:
+      jasypt.encryptor.password: ${JASYPT_PASSWORD}
+    depends_on:
+      - zookeeper
+      - kafka
+      - discovery-service
+    volumes:
+      - ./logs/gateway-service:/logs
+  # USER-SERVICE
+  redis-user:
+    image: redis:latest
+    container_name: redis-user
+    ports:
+      - "6380:6379"
+  mysql-user:
+    image: mysql:latest
+    container_name: mysql-user
+    environment:
+      MYSQL_ROOT_PASSWORD: rootroot
+      MYSQL_DATABASE: capstone
+      MYSQL_USER: ryudain
+      MYSQL_PASSWORD: ${PASSWORD}
+    ports:
+      - "3306:3306"
+  user-service:
+    image: hanyoonsoo/user-service:1.0
+    container_name: user-service
+    environment:
+      jasypt.encryptor.password: ${JASYPT_PASSWORD}
+    depends_on:
+      - zookeeper
+      - kafka
+      - redis-user
+      - mysql-user
+      - discovery-service
+      - gateway-service
+    volumes:
+      - ./logs/user-service:/logs
+  user-service-temp:
+    image: hanyoonsoo/user-service:1.0
+    container_name: user-service-temp
+    environment:
+      jasypt.encryptor.password: ${JASYPT_PASSWORD}
+    depends_on:
+      - zookeeper
+      - kafka
+      - redis-user
+      - mysql-user
+      - discovery-service
+      - gateway-service
+  # COMMUNITY-SERVICE
+  redis-community:
+    image: redis:latest
+    container_name: redis-community
+    ports:
+      - "6381:6379"
+  mariadb-community:
+    image: mariadb:latest
+    container_name: mariadb-community
+    environment:
+      MYSQL_ROOT_PASSWORD: rootroot
+      MYSQL_DATABASE: capstone
+      MYSQL_USER: fittrip
+      MYSQL_PASSWORD: fittrip0923@@
+    ports:
+      - "3307:3306"
+  community-service:
+    image: hanyoonsoo/community-service:1.0
+    container_name: community-service
+    environment:
+      jasypt.encryptor.password: ${JASYPT_PASSWORD}
+    depends_on:
+      - zookeeper
+      - kafka
+      - redis-community
+      - mariadb-community
+      - discovery-service
+      - gateway-service
+    volumes:
+      - ./logs/community-service:/logs
+  community-service-temp:
+    image: hanyoonsoo/community-service:1.0
+    container_name: community-service-temp
+    environment:
+      jasypt.encryptor.password: ${JASYPT_PASSWORD}
+    depends_on:
+      - zookeeper
+      - kafka
+      - redis-community
+      - mariadb-community
+      - discovery-service
+      - gateway-service
+      - community-service
+  # CHAT-SERVICE
+  mongo-chat:
+    image: mongo:latest
+    container_name: mongo-chat
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: capstone
+  chat-service:
+    image: hanyoonsoo/chat-service:1.0
+    container_name: chat-service
+    environment:
+      jasypt.encryptor.password: ${JASYPT_PASSWORD}
+    depends_on:
+      - zookeeper
+      - kafka
+      - mongo-chat
+      - discovery-service
+      - gateway-service
+    volumes:
+      - ./logs/chat-service:/logs
+  chat-service-temp:
+    image: hanyoonsoo/chat-service:1.0
+    container_name: chat-service-temp
+    environment:
+      jasypt.encryptor.password: ${JASYPT_PASSWORD}
+    depends_on:
+      - zookeeper
+      - kafka
+      - mongo-chat
+      - discovery-service
+      - gateway-service
+      - chat-service
+  # SIG-SERVICE
+  sig-service:
+    image: hanyoonsoo/sig-service:1.0
+    container_name: sig-service
+    environment:
+      jasypt.encryptor.password: ${JASYPT_PASSWORD}
+    depends_on:
+      - zookeeper
+      - kafka
+      - discovery-service
+      - gateway-service
+    volumes:
+      - ./logs/sig-service:/logs
+  sig-service-temp:
+    image: hanyoonsoo/sig-service:1.0
+    container_name: sig-service-temp
+    environment:
+      jasypt.encryptor.password: ${JASYPT_PASSWORD}
+    depends_on:
+      - zookeeper
+      - kafka
+      - discovery-service
+      - gateway-service
+  # STATE-SERVICE
+  redis-state:
+    image: redis:latest
+    container_name: redis-state
+    ports:
+      - "6382:6379"
+  state-service:
+    image: hanyoonsoo/state-service:1.0
+    container_name: state-service
+    environment:
+      jasypt.encryptor.password: ${JASYPT_PASSWORD}
+    depends_on:
+      - zookeeper
+      - kafka
+      - discovery-service
+      - gateway-service
+      - redis-state
+    volumes:
+      - ./logs/state-service:/logs
+  state-service-temp:
+    image: hanyoonsoo/state-service:1.0
+    container_name: state-service-temp
+    environment:
+      jasypt.encryptor.password: ${JASYPT_PASSWORD}
+    depends_on:
+      - zookeeper
+      - kafka
+      - discovery-service
+      - gateway-service
+      - redis-state
+      - state-service
+  # NOTIFICATION-SERVICE
+  mysql-notification:
+    image: mysql:latest
+    container_name: mysql-notification
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: capstone
+    ports:
+      - "3308:3306"
+  notification-service:
+    image: hanyoonsoo/notification-service:1.0
+    container_name: notification-service
+    environment:
+      jasypt.encryptor.password: ${JASYPT_PASSWORD}
+    depends_on:
+      - zookeeper
+      - kafka
+      - discovery-service
+      - gateway-service
+      - mysql-notification
+    volumes:
+      - ./logs/notification-service:/logs
+  notification-service-temp:
+    image: hanyoonsoo/notification-service:1.0
+    container_name: notification-service-temp
+    environment:
+      jasypt.encryptor.password: ${JASYPT_PASSWORD}
+    depends_on:
+      - zookeeper
+      - kafka
+      - discovery-service
+      - gateway-service
+      - mysql-notification
