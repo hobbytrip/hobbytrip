@@ -1,0 +1,185 @@
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+
+scrape_configs:
+  - job_name: community-logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: community-logs
+          __path__: /var/log/community-service/community.log
+    pipeline_stages:
+      - multiline:
+          firstline: '^\d{2}:\d{2}:\d{2}\.\d{3} \[.*\] INFO  .* \[Web Request (START|END)\]'
+          max_wait_time: 1s
+          max_lines: 500
+  - job_name: communtiy-err-logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: community-err-logs
+          __path__: /var/log/community-service/community_err.log
+    pipeline_stages:
+      - multiline:
+          firstline: '^\d{2}:\d{2}:\d{2}\.\d{3} \[.*\] ERROR'
+          max_wait_time: 1s
+          max_lines: 500
+  - job_name: chat-logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: chat-logs
+          __path__: /var/log/chat-service/chat.log
+    pipeline_stages:
+      - multiline:
+          firstline: '^\d{2}:\d{2}:\d{2}\.\d{3} \[.*\] INFO  .* \[Web Request (START|END)\]'
+          max_wait_time: 1s
+          max_lines: 500
+
+  - job_name: chat-err-logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: chat-err-logs
+          __path__: /var/log/chat-service/chat_err.log
+    pipeline_stages:
+      - multiline:
+          firstline: '^\d{2}:\d{2}:\d{2}\.\d{3} \[.*\] ERROR'
+          max_wait_time: 1s
+          max_lines: 500
+
+  - job_name: notice-logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: notice-logs
+          __path__: /var/log/notification-service/notice.log
+    pipeline_stages:
+      - multiline:
+          firstline: '^\d{2}:\d{2}:\d{2}\.\d{3} \[.*\] INFO  .* \[Web Request (START|END)\]'
+          max_wait_time: 1s
+          max_lines: 500
+
+  - job_name: notice-err-logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: notice-err-logs
+          __path__: /var/log/notification-service/notice_err.log
+    pipeline_stages:
+      - multiline:
+          firstline: '^\d{2}:\d{2}:\d{2}\.\d{3} \[.*\] ERROR'
+          max_wait_time: 1s
+          max_lines: 500
+  - job_name: user-logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: user-logs
+          __path__: /var/log/user-service/user.log
+    pipeline_stages:
+      - multiline:
+          firstline: '^\d{2}:\d{2}:\d{2}\.\d{3} \[.*\] INFO  .* \[Web Request (START|END)\]'
+          max_wait_time: 1s
+          max_lines: 500
+
+  - job_name: user-err-logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: user-err-logs
+          __path__: /var/log/user-service/user_err.log
+    pipeline_stages:
+      - multiline:
+          firstline: '^\d{2}:\d{2}:\d{2}\.\d{3} \[.*\] ERROR'
+          max_wait_time: 1s
+          max_lines: 500
+
+  - job_name: state-logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: state-logs
+          __path__: /var/log/state-service/state.log
+    pipeline_stages:
+      - multiline:
+          firstline: '^\d{2}:\d{2}:\d{2}\.\d{3} \[.*\] INFO  .* \[Web Request (START|END)\]'
+          max_wait_time: 1s
+          max_lines: 500
+
+  - job_name: state-err-logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: state-err-logs
+          __path__: /var/log/state-service/state_err.log
+    pipeline_stages:
+      - multiline:
+          firstline: '^\d{2}:\d{2}:\d{2}\.\d{3} \[.*\] ERROR'
+          max_wait_time: 1s
+          max_lines: 500
+
+  - job_name: sig-logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: sig-logs
+          __path__: /var/log/sig-service/sig.log
+    pipeline_stages:
+      - multiline:
+          firstline: '^\d{2}:\d{2}:\d{2}\.\d{3} \[.*\] INFO  .* \[Web Request (START|END)\]'
+          max_wait_time: 1s
+          max_lines: 500
+
+  - job_name: sig-err-logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: sig-err-logs
+          __path__: /var/log/sig-service/sig_err.log
+    pipeline_stages:
+      - multiline:
+          firstline: '^\d{2}:\d{2}:\d{2}\.\d{3} \[.*\] ERROR'
+          max_wait_time: 1s
+          max_lines: 500
+
+  - job_name: gateway-logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: gateway-logs
+          __path__: /var/log/gateway-service/gateway.log
+    pipeline_stages:
+      - multiline:
+          firstline: '^\d{2}:\d{2}:\d{2}\.\d{3} \[.*\] INFO  .* \[Web Request (START|END)\]'
+          max_wait_time: 1s
+          max_lines: 500
+
+  - job_name: gateway-err-logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: gateway-err-logs
+          __path__: /var/log/gateway-service/gateway_err.log
+    pipeline_stages:
+      - multiline:
+          firstline: '^\d{2}:\d{2}:\d{2}\.\d{3} \[.*\] ERROR'
+          max_wait_time: 1s
+          max_lines: 500
