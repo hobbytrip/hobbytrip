@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import style from "./CategoryList.module.css";
 import CreateItem from "./CreateItem/CreateItem";
 import Channel from "./Channel/Channel";
@@ -9,58 +9,26 @@ import useUserStore from "../../../actions/useUserStore";
 import useServerStore from "../../../actions/useServerStore";
 import { HiPlus } from "react-icons/hi2";
 import { IoClose, IoSettings } from "react-icons/io5";
-import { axiosInstance } from "../../../utils/axiosInstance";
-import API from "../../../utils/API/API";
 
 const CategoryList = () => {
-  const [categories, setCategories] = useState([]);
-  const [uncategorizedChannels, setUncategorizedChannels] = useState([]);
   const [showCreateItemModal, setShowCreateItemModal] = useState(false);
-  // const { serverId } = useParams();
-  const { serverId } = useServerStore();
+  const { USER } = useUserStore();
+  const userId = USER.userId;
   const nav = useNavigate();
-
-  const { fetchServerData } = useServerStore((state) => ({
+  const { serverData, fetchServerData } = useServerStore((state) => ({
+    serverData: state.serverData,
     fetchServerData: state.fetchServerData,
   }));
-  const { serverData } = useServerStore();
+  const serverId = serverData?.serverInfo?.serverId;
 
   useEffect(() => {
-    deleteNotice();
-    console.log("category fetch");
-    console.log(serverId, userId);
-    fetchServerData(serverId, userId);
-  }, [serverId]);
-
-  useEffect(() => {
-    setCategories(serverData.serverCategories || []);
-    console.log(categories)
-    setChannels(serverData.serverChannels || []);
-    console.log(channels)
-    setUncategorizedChannels(
-      (serverData.serverChannels || []).filter((channel) => !channel.categoryId)
-    );
+    if (serverId && userId) {
+      fetchServerData(serverId, userId);
+    }
   }, [serverData]);
 
-  const deleteNotice = async () => {
-    try {
-      const res = await axiosInstance.delete(
-        API.SERVER_SSE_DEL(serverId, userId),
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      );
-      console.log("notice reeeeeeeeeeeeead");
-      console.log(res.data);
-    } catch (error) {
-      console.error("Error deleting notice:", error);
-    }
-  };
-
   const handleCloseCategory = () => {
-    nav("initialChat?");
+    nav(-1);
   };
 
   const handleCloseCreateItemModal = () => {
@@ -72,7 +40,7 @@ const CategoryList = () => {
   };
 
   const getCategoryChannels = (categoryId) => {
-    return channels.filter((channel) => channel.categoryId === categoryId);
+    return (serverData?.serverChannels || []).filter((channel) => channel.categoryId === categoryId);
   };
 
   return (
@@ -87,18 +55,18 @@ const CategoryList = () => {
           </button>
         </div>
         <div className={style.uncategorizedChannels}>
-          {uncategorizedChannels.map((channel) => (
+          {(serverData?.serverChannels || []).filter((channel) => !channel.categoryId).map((channel) => (
             <li key={channel.channelId}>
-              <Channel channel={channel} serverId={serverId} />
+              <Channel channel={channel} serverId={serverData?.serverInfo?.serverId} />
             </li>
           ))}
         </div>
-        {categories.map((category) => (
+        {(serverData?.serverCategories || []).map((category) => (
           <Category
             key={category.categoryId}
             categoryId={category.categoryId}
             name={category.name}
-            serverId={serverId}
+            serverId={serverData?.serverInfo?.serverId}
             channels={getCategoryChannels(category.categoryId)}
           />
         ))}
@@ -115,8 +83,6 @@ const CategoryList = () => {
 const Category = ({ categoryId, name, serverId, channels }) => {
   const [showCreateChannel, setShowCreateChannel] = useState(false);
   const [showCategorySetting, setShowCategorySetting] = useState(false);
-  const nav = useNavigate();
-  const { userId } = useUserStore();
 
   const handleAddChannel = () => {
     setShowCreateChannel(true);

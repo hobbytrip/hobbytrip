@@ -25,9 +25,9 @@ const SearchForm = () => {
 }
 
 const MenuBtn = () => {
-  const navigator = useNavigate();
+  const nav = useNavigate();
   function onClick(){
-    navigator('/menu');
+    nav('/menu');
   }
   return (
     <button className={style.menuBtn} onClick={onClick}>

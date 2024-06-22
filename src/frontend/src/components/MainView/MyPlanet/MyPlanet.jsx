@@ -2,14 +2,13 @@ import { useEffect, useState } from "react";
 import style from "./MyPlanet.module.css";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { FaPlus } from "react-icons/fa6";
-import useServerStore from "../../../actions/useServerStore";
+import useServerStore from "../../../actions/useServerStore"; 
 import CreateServer from "../../Modal/ServerModal/Servers/CreateServer/CreateServer";
 import { useNavigate } from "react-router-dom";
 import useUserStore from "../../../actions/useUserStore";
 import usePlanetsStore from "../../../actions/usePlantesStore";
 import { axiosInstance } from "../../../utils/axiosInstance";
 import API from "../../../utils/API/API";
-import useFetchServer from "../../../hooks/useFetchServer";
 
 const Leftbtn = ({ onClick }) => (
   <button className={style.leftBtn} onClick={onClick}>
@@ -36,21 +35,19 @@ const CreatePlanetbtn = ({ onClick }) => (
   </button>
 );
 
-const MyPlanet = ({}) => {
+const MyPlanet = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [showCreateServer, setShowCreateServer] = useState(false);
-  const [serverNotice, setServerNotice] = useState([]);
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
   const [innerHeight, setInnerHeight] = useState(window.innerHeight);
   const nav = useNavigate();
-
-  const { serverData } = useServerStore((state) => ({
-    serverData: state.serverData,
-  }));
-  const { setServerData } = useServerStore();
+  const { serverData } = useServerStore.getState();
+  const { setServerData } = useServerStore((state) => ({
+    setServerData: state.setServerData
+  }))
   const { USER } = useUserStore();
   const userId = USER.userId;
-  const { servers } = usePlanetsStore();
+  const { servers } = usePlanetsStore(); 
 
   let serversPerPage;
 
@@ -68,7 +65,7 @@ const MyPlanet = ({}) => {
   }, []);
 
   if (innerWidth >= 432) {
-    serversPerPage = (innerHeight - 86) / 80 - 2;
+    serversPerPage = Math.floor((innerHeight - 86) / 80) - 2;
   } else {
     serversPerPage = 4;
   }
@@ -95,21 +92,22 @@ const MyPlanet = ({}) => {
   };
 
   const handleServerClick = async (serverId) => {
-    console.log("SERVERID", serverId);
-    console.log("USERID", userId);
-    const res = await axiosInstance.get(API.GET_SERVER(serverId, userId));
-    const data = res.data.data;
-
-    console.log(serverData);
-    if (data) {
-      setServerData(data);
-      const defaultChatChannel = data.channels.find(
-        (channel) => channel.channelType === "CHAT"
-      );
-      console.error(defaultChatChannel);
-      if (defaultChatChannel) {
-        nav(`/${serverId}/${defaultChatChannel.channelId}/chat`);
+    try {
+      const res = await axiosInstance.get(API.GET_SERVER(serverId, userId));
+      const data = res.data.data;
+      console.error(data);
+      if (data) {
+        setServerData(data);
+        console.error(serverData);
+        const defaultChatChannel = serverData.serverChannels.find(
+          (channel) => channel.channelType === "CHAT"
+        );
+        if (defaultChatChannel) {
+          nav(`/${serverId}/${defaultChatChannel.channelId}/chat`);
+        }
       }
+    } catch (error) {
+      console.error("Error fetching server data:", error);
     }
   };
 

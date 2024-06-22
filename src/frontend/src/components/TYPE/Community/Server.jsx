@@ -27,19 +27,14 @@ function Server() {
   const updateUserState = useUserStatusStore((state) => state.updateUserState);
   const { client } = useWebSocketStore();
   const { setMessage } = useChatStore();
+  console.error(serverData);
+  console.error(serverData.serverChannels)
 
-  console.error(serverData.serverChannels);
   const { getChannelName, getChannelTypeIcon } = useChannelDatas(channelId, serverData.serverChannels );
 
   let CURRENT_SERVER = serverId;
 
   useEffect(() => {
-    console.log("serverId", serverId);
-    console.log(
-      " serverData.serverInfo.serverId",
-      serverData.serverInfo.serverId
-    );
-
     if (serverId === serverData.serverInfo.serverId) {
       CURRENT_SERVER = serverData.serverInfo.serverId;
     }

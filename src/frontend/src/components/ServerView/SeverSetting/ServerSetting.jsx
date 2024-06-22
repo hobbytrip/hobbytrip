@@ -18,7 +18,7 @@ const ServerSetting = () => {
   const { setServerInfo } = useServerStore((state) => ({
     setServerInfo: state.setServerInfo
   }));
-  const { serverData } = useServerStore();
+  const { serverData } = useServerStore.getState();
   const { updateServer } = usePlanetsStore(state => ({
     updateServer: state.updateServer
   }));
@@ -82,7 +82,6 @@ const ServerSetting = () => {
       if (res.data.success) {
         setServerInfo(res.data.data);
         updateServer(res.data.data);
-        // setServerData(res.data.data);
         console.log(serverData)
         nav(-1);
       } else {

@@ -16,10 +16,10 @@ function CreateChannel({ categoryId, onClose, onBack }) {
   const [name, setName] = useState("");
   const [type, setType] = useState("CHAT");
   const [open, setOpen] = useState(false);
-  const { setServerData } = useServerStore((state) => ({
-    setServerData: state.setServerData,
+  const { setServerChannels } = useServerStore((state) => ({
+    setServerChannels: state.setServerChannels,
   }));
-  const { serverData } = useServerStore();
+  const { serverData } = useServerStore.getState();
   const { USER } = useUserStore();
   const userId = USER.userId;
 
@@ -45,12 +45,10 @@ function CreateChannel({ categoryId, onClose, onBack }) {
           ...(serverData.serverChannels || []),
           res.data.data,
         ];
-        setServerData({ ...serverData, serverChannels: updatedChannels });
-        console.log(serverData);
+        setServerChannels(updatedChannels);
         onClose();
       } else {
-        console.log("채널 만들기 실패.");
-        console.log(res);
+        console.log("채널 만들기 실패", res);
       }
     } catch (error) {
       console.error("데이터 post 에러:", error);

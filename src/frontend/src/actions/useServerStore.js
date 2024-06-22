@@ -9,25 +9,74 @@ const useServerStore = create((set) => ({
     userStatus: null,
     messages: null,
   },
-  setServerData: (data) => {
-    set({
+  setServerData: (newData) => {
+    set(() => ({
       serverData: {
-        serverInfo: data.server,
-        serverCategories: data.categories,
-        serverChannels: data.channels,
-        serverUserInfos: data.serverUserInfos,
-        userStatus: data.usersState,
-        messages: data.messages,
+        serverInfo: newData.server,
+        serverCategories: newData.categories || null,
+        serverChannels: newData.channels || null,
+        serverUserInfos: newData.serverUserInfos || null,
+        userStatus: newData.usersState || null,
+        messages: newData.messages || null,
       },
-    });
+    }));
   },
-  setServerInfo: (newServerInfo) =>
+  setServerInfo: (newServerInfo) => {
     set((state) => ({
       serverData: {
         ...state.serverData,
         serverInfo: newServerInfo,
       },
-    })),
+    }));
+  },
+  setServerCategories: (newServerCategories) => {
+    set((state) => ({
+      serverData: {
+        ...state.serverData,
+        serverCategories: newServerCategories,
+      },
+    }));
+  },
+  setServerChannels: (newServerChannels) => {
+    set((state) => ({
+      serverData: {
+        ...state.serverData,
+        serverChannels: newServerChannels,
+      },
+    }));
+  },
+  setServerUserInfos: (newServerUserInfos) => {
+    set((state) => ({
+      serverData: {
+        ...state.serverData,
+        serverUserInfos: newServerUserInfos,
+      },
+    }));
+  },
+  setUserStatus: (newUserStatus) => {
+    set((state) => ({
+      serverData: {
+        ...state.serverData,
+        serverUserStatus: newUserStatus,
+      },
+    }));
+  },
+  setUserStatus: (newUserStatus) => {
+    set((state) => ({
+      serverData: {
+        ...state.serverData,
+        serverUserStatus: newUserStatus,
+      },
+    }));
+  },
+  setMessages: (newMessages) => {
+    set((state) => ({
+      serverData: {
+        ...state.serverData,
+        serverMessages: newMessages,
+      },
+    }));
+  },
 }));
 
 export default useServerStore;

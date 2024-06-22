@@ -16,7 +16,7 @@ function CreateServer() {
   const [profileImage, setProfileImage] = useState(null);
   const [profilePreview, setProfilePreview] = useState(null);
   const [showJoinServer, setShowJoinServer] = useState(false);
-  const fetchServerData = useServerStore((state) => state.fetchServerData);
+  // const fetchServerData = useServerStore((state) => state.fetchServerData);
   const imgRef = useRef();
   const nav = useNavigate();
 
@@ -53,11 +53,10 @@ function CreateServer() {
 
       if (response.data.success) {
         console.log(response);
-        // setServerData({ serverInfo: response.data.data });
         addServer(response.data.data);
         const serverId = response.data.data.serverId;
         console.log("create fetch");
-        await fetchServerData(serverId, userId);
+        await axiosInstance.get(API.GET_SERVER(serverId, userId));
         const fetchedData = useServerStore.getState().serverData;
         if (fetchedData && fetchedData.serverChannels) {
           const defaultChatChannel = fetchedData.serverChannels.find(

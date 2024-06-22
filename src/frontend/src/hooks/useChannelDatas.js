@@ -1,6 +1,8 @@
 import useServerStore from "../actions/useServerStore";
 
 function useChannelDatas(channelId, channels) {
+  const { serverData } = useServerStore.getState();
+  // console.error(serverData);
   const channel = channels.find(
     (channel) => String(channel.channelId) === String(channelId)
   );

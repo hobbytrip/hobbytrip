@@ -8,10 +8,10 @@ import useUserStore from "../../../../../actions/useUserStore";
 
 function CreateCategory({ onClose, onBack }) {
   const [name, setName] = useState("");
-  const { setServerData } = useServerStore((state) => ({
-    setServerData: state.setServerData,
+  const { setServerCategories } = useServerStore((state) => ({
+    setServerCategories: state.setServerCategories,
   }));
-  const { serverData } = useServerStore();
+  const { serverData } = useServerStore.getState();
   const { USER } = useUserStore();
   const userId = USER.userId;
 
@@ -37,12 +37,10 @@ function CreateCategory({ onClose, onBack }) {
           ...(serverData.serverCategories || []),
           res.data.data,
         ];
-        setServerData({ ...serverData, serverCategories: updatedCategories });
-        console.error(serverData.serverCategories);
+        setServerCategories(updatedCategories);
         onClose();
       } else {
-        console.log("카테고리 만들기 실패.");
-        console.log(res);
+        console.log("카테고리 만들기 실패", res);
       }
     } catch (error) {
       console.error("데이터 post 에러:", error);
