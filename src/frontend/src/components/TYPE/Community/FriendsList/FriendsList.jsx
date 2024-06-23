@@ -11,7 +11,7 @@ import API from "../../../../utils/API/API";
 import { axiosInstance } from "../../../../utils/axiosInstance";
 
 const FriendsList = () => {
-  const { serverData } = useServerStore();
+  const { serverData } = useServerStore.getState();
 
   const managerId = serverData.serverInfo.managerId;
   const serverUserStatus = serverData.userStatus.usersConnectionState; //유저 상태
