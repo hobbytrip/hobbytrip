@@ -1,0 +1,145 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--light-gray);
+  /* position: relative; */
+  margin: 5px;
+  border-radius: 10px;
+  padding: 10px;
+}
+.top {
+  display: flex;
+  flex-direction: row;
+  margin-top: 5px;
+}
+.inputs {
+  width: 70%;
+}
+.uploadContainer {
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  position: relative;
+}
+.imageModals {
+  position: absolute;
+}
+.imageArea {
+  border-radius: 5px;
+  /* width: 25%; */
+  /* height: 80px; */
+  /* background-color: #00000015; */
+}
+.uploadButton {
+  color: #00000096;
+  width: 30px;
+  height: 30px;
+  margin-top: 25px;
+}
+.searchContainer {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.searchBar {
+  width: 300px;
+  height: 40px;
+  background-color: var(--light-gray);
+  border-radius: 5px;
+  color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  justify-content: center;
+  padding-left: 40px;
+  font-size: 16px;
+}
+.searchIcon {
+  color: var(--dark-gray);
+  font-size: 22px;
+  position: absolute;
+  left: 10px;
+  top: 10px;
+}
+.newPostButton {
+  position: absolute;
+  margin-left: 10px;
+  padding: 5px 10px;
+  border: none;
+  background-color: var(--main-purple);
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  right: 10px;
+  font-size: 16px;
+}
+.forumModal {
+  width: 95%;
+  display: flex;
+  flex-direction: column;
+}
+.titleInput {
+  font-size: 20px;
+  background-color: transparent;
+}
+.contentArea {
+  margin-top: 10px;
+  border-style: none;
+  width: 100%;
+  height: 100px;
+  margin-bottom: 10px;
+  background-color: transparent;
+  font-family: "Pretendard";
+  font-size: 16px;
+}
+.contentArea:focus {
+  outline: none;
+}
+.categoryButtons {
+  display: flexbox;
+  align-items: start;
+  border-bottom: 1px solid #00000042;
+  padding-bottom: 10px;
+}
+.categoryButton {
+  background-color: #00000042;
+  color: var(--dark-gray);
+  font-size: 12px;
+  font-weight: 600;
+  margin-right: 5px;
+  margin-top: 5px;
+  padding-right: 10px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  border-radius: 16px;
+}
+.activeCategory {
+  background-color: var(--main-purple);
+  color: white;
+}
+.forumModalButtons {
+  display: flex;
+  justify-content: flex-end;
+}
+.newPost {
+  margin-top: 10px;
+  margin-left: auto;
+  padding: 5px 15px;
+  border: none;
+  background-color: var(--main-purple);
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100px;
+}
+.removeAll {
+  color: #00000096;
+  font-size: 25px;
+  margin-right: 5px;
+}
+.fileNames {
+  display: flex;
+  flex-direction: column;
+}

@@ -1,0 +1,114 @@
+  .wrapper {
+    width: 390px;
+    height: 844px;
+  }
+
+  .container {
+    justify-content: center;
+    width: 390px;
+    height: 712px;
+    background-color: var(--black);
+    border-radius: 20px 20px 0 0;
+    color: #FFFFFF;
+  }
+
+  .wrapper button {
+    background: none;
+    border: none;
+    color: #FFFFFF;
+  }
+
+  .headerContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 324px;
+    height: 37px;
+    gap: 5px;
+    padding: 9px 33px;
+    color: #FFFFFF;
+  }
+
+  .headerContainer h4 {
+    align-items: center;
+    width: 255px;
+    height: 19px;
+  }
+
+  .mediaContainer {
+    position: relative; 
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    height: 637px;
+    padding: 10px;
+  }
+
+  .videoContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    height: 580px;
+    width: 390px;
+    gap: 10px;
+  }
+
+  .videoContainer .enter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .mediaDeviceContainer {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 390px;
+    height: 45px;
+    gap: 19px;
+    bottom: 19px;
+  }
+
+  .mediaDeviceContainer button {
+    align-items: center;
+    justify-content: center;
+    background-color: var(--dark-gray);
+    width: 45px;
+    height: 45px;
+    border-radius: 300px;
+  }
+
+  .mediaDeviceContainer button :only-child {
+    width: 25px;
+    height: 25px;
+  }
+
+
+  @media(min-width: 432px){
+    .wrapper {
+      height: 100%;
+      width: 100%;
+      /* border-radius: 0px; */
+    }
+    
+    .container {
+      height: 100%;
+      width: 100%;
+      border-radius: 0px;
+    }
+
+    .headerContainer {
+      display: flex;
+      align-items: center;
+      width: 90%;
+      height: 8%;
+      justify-content: space-between;
+    }
+    
+    .headerContainer h4 {
+      flex-grow: 1;
+    }
+  }

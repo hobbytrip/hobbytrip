@@ -1,0 +1,24 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 15x;
+  padding: 10px;
+}
+.header {
+  display: flex;
+  position: relative;
+  border-bottom: 1px solid #c7c7c7;
+  padding: 5px;
+  margin-bottom: 80px;
+}
+.icon {
+  width: 80px;
+  margin-bottom: 10px;
+}
+.category {
+  color: var(--main-purple);
+}
+.closebtn {
+  position: absolute;
+  right: 0px;
+}

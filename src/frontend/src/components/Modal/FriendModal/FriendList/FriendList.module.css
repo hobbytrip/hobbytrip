@@ -1,0 +1,32 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.container img {
+  width: 150px;
+}
+.h4 {
+  font-family: "DOSSaemmul";
+}
+
+@media (min-width: 432px) {
+  .wrapper {
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .container {
+    width: 100%;
+  }
+
+  .container img {
+    width: 70%; 
+    height: auto; /* Height will adjust automatically to maintain aspect ratio */
+  }
+}
