@@ -1,0 +1,100 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.2.4'
+	id 'io.spring.dependency-management' version '1.1.4'
+}
+
+group = 'capstone'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = '17'
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+ext {
+	set('springCloudVersion', "2023.0.0")
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	//===Configuration===//
+	/* tika */
+	implementation group: 'org.apache.tika', name: 'tika-core', version: '1.24'
+
+	/* jasypt */
+	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
+
+	//===DB===//
+
+	/* h2 */
+	runtimeOnly 'com.h2database:h2'
+
+	/* mariadb */
+	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+
+	/* Redis 추가 */
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	//===Valid===//
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
+
+	//===AWS S3===//
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+
+	//===Spring Cloud===//
+
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+	
+	/* Actuator */
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+	/* openfeign */
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
+	/* kafka */
+	implementation 'org.springframework.kafka:spring-kafka'
+	testImplementation 'org.springframework.kafka:spring-kafka-test'
+
+
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+//test {
+//	useJUnitPlatform()
+//	systemProperty 'jasypt.encryptor.password', findProperty("jasypt.encryptor.password")
+//}
+
+processResources.dependsOn('copySecret')
+
+tasks.register('copySecret', Copy) {
+	from './community-service-yml'
+	include "*.yml"  // 복사할 파일들
+	into 'src/main/resources'  // 복사 위치
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}

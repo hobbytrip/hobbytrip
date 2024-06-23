@@ -1,0 +1,18 @@
+[submodule "src/backend/sig-service/submodule-test"]
+	path = src/backend/sig-service/submodule-test
+	url = https://github.com/youcastle03/submodule-test.git
+[submodule "src/backend/chat-service/chat-service-yml"]
+	path = src/backend/chat-service/chat-service-yml
+	url = https://github.com/acs0209/chat-service-yml.git
+[submodule "src/backend/community-service/community-service-yml"]
+        path = src/backend/community-service/community-service-yml
+        url = https://github.com/HanYoonSoo/community-service-yml.git
+[submodule "src/backend/state-service/state-service-yml"]
+   	path = src/backend/state-service/state-service-yml
+  	url = https://github.com/acs0209/state-service-yml.git
+[submodule "src/backend/user-service/secure-submodule"]
+   	path = src/backend/user-service/secure-submodule
+  	url = https://github.com/ryudain05/secure-submodule.git
+[submodule "src/backend/notification-service/notification-service"]
+   	path = src/backend/notification-service/notification-service
+  	url = https://github.com/ryudain05/notification-service.git

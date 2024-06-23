@@ -1,0 +1,152 @@
+#server port
+server:
+  port: 8080
+
+#database
+spring:
+  application:
+    name: user-service
+  config:
+    import: "optional:configserver:"
+
+  datasource:
+    driver-class-name: ENC(99GcqaF31b2h7drzcZPTJpaBmTIiWfPht1Lph0SgWlO3oREkCgo72SQwvSNz3V/r)
+    url: ENC(AvU8qb8WzCs5WCGeSjx9QfNVG2TDDaVgWdW0V0UCCUCOZ2M9u3QsRpZlbvSU/43jbSlPaPyYl2FEnuohUUygH3NuojMRU+0mmoER2yAejdvK1utSxEGjDb7/nyaUKouaBNmtY52gt1Y16WPAJ9HkG96ziOrerV/7wUnJL7slV2cUkj7UvhW74YFHtSxNObdoIHteOgqXSzs=)
+    username: ENC(V2TyEui0GOcMhhqaNh87NodY7eXRgx3i)
+    password: ENC(9Eq1eaBBSV0uDdF+lEqhMMU2XFy34g4ph88+s+prHpA=)
+    hikari:
+      maximum-pool-size: 10
+      connection-timeout: 10000
+      validation-timeout: 10000
+      max-lifetime: 580000
+      # Session wait_timeout 수정
+      connection-init-sql: set wait_timeout = 600
+  
+  #redis
+  redis:
+    data:
+      host: ENC(oZGkcBRy8GCgXGUvvUMjSKPHWP30zYlh50FfULgmhgA=)
+      port: ENC(Yta+05r0SM/PPb6MTLvwaF+B2QKgmBv5)
+
+
+#spring data jpa
+jpa:
+  hibernate:
+    ddl-auto: none
+    defer-datasource-initialization: true
+    format_sql: ture
+    show_sql: ture
+  sql:
+    init:
+      mode: never
+  naming:
+    physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+#logging level
+logging:
+  level:
+    wish.cloud: DEBUG
+    org.springframework.security.web: DEBUG
+    com.example.api.feign: DEBUG
+
+
+#token
+jwt:
+  header: Authorization
+  access_token_expiration_time: ENC(PG4JSgOpAhiZC16lYyYNDM1eozfKEsNvkOQ3anc5Aqs=)
+  refresh_token_expiration_time: ENC(GgGn+CG6QVcoBkrSC8UMtuH61XKT4dA0WjerMvjjHVA=)
+  secret: ENC(TqxyAE56hmRWMyGs/QTs6Bk24zM5CzCHWWad+ynSlSdCMyBi+fJ+42MWJm+Ff7HSwZGb5uealqRFJfRlcjae7yTiUiWenYvk0AJJcuZaeSgbInicx/j26A==)
+
+#aws s3
+cloud:
+  aws:
+    credentials:
+      accessKey: ENC(AWZt04BRr05xeA4w5kepyBUlQ4RymDryWtCQ2NaR7gU1KppN0g5yOA==)
+      secretKey: ENC(m42kwwRzLp8x4fypA+6n4XEUTcKGgCyvR2EpJ96ZnE8vX97QGW+Ri0D1x/5GPa85/sXuTCzm0AgtKlueRS42iA==)
+    s3:
+      bucketName: capstone-fittrip
+      defaultImage: https://capstone-fittrip.s3.ap-northeast-2.amazonaws.com/Default.png
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
+---
+
+server:
+  port: 0
+
+#database
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  datasource:
+    driver-class-name: ENC(99GcqaF31b2h7drzcZPTJpaBmTIiWfPht1Lph0SgWlO3oREkCgo72SQwvSNz3V/r)
+    url: ENC(biB5HJ7n563hIqI0a7YXL4DvIlzsoxguKwM+DOwVM03rwtr7J5KQAqL23GdWtie383rklZ65Y/KWxPnWGpfr5tjzLwMOsOKEDlZHD9q8Uy8ApZqxDNax+NZl0SxkGqmupZxYOWJTQH/wvMMd6V55SIJPsk2PHPRgFBpa3qpo8T0wD/iS4RjJ4bPOe0hx3CbAYV54BHzDR3I=)
+    username: ENC(V2TyEui0GOcMhhqaNh87NodY7eXRgx3i)
+    password: ENC(9Eq1eaBBSV0uDdF+lEqhMMU2XFy34g4ph88+s+prHpA=)
+    hikari:
+      maximum-pool-size: 10
+      connection-timeout: 10000
+      validation-timeout: 10000
+      max-lifetime: 580000
+      # Session wait_timeout 수정
+      connection-init-sql: set wait_timeout = 600
+
+
+
+  #redis
+  redis:
+    data:
+      host: ENC(tGSyaWgAy6s4+Wgi82BtQQWlsU7wcmUfOVlaMvFr7/8=)
+      port: ENC(hVspbamBCfSDuBluCHhYum74LSUGVNQU)
+
+  #spring data jpa
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        # show_sql: true
+        format_sql: true
+        default_batch_fetch_size: 100
+  sql:
+    init:
+      mode: never
+  naming:
+    physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+#logging level
+logging:
+  level:
+    wish.cloud: DEBUG
+    org.springframework.security.web: DEBUG
+    com.example.api.feign: DEBUG
+
+  #kafka
+  kafka:
+    bootstrap-servers: ENC(wWqf/bHu+BXfqtnp+QQOPnXAZqVS+pHUjADS0R2m3DE=)
+    topic:
+      server-chat: "serverChat"
+      direct-chat: "directChat"
+      forum-chat: "forumChat"
+      emoji-chat: "emojiChat"
+    consumer:
+      group-id:
+        server-chat: "serverChatGroup"
+        direct-chat: "directChatGroup"
+        forum-chat: "forumChatGroup"
+        emoji-chat: "emojiChatGroup"
+
+eureka:
+  client:
+    fetch-registry: true # 유레카 클라이언트 활성화
+    register-with-eureka: true # 유레카 클라이언트 활성화
+    service-url:
+      defaultZone: http://discovery-service:8761/eureka #유레카 서버
+  instance:
+    instance-id: user-instance
+  application:
+    name: user-service
