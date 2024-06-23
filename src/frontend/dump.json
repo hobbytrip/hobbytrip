@@ -1,0 +1,63 @@
+{
+  "data": {
+    "server": {
+      "serverId": 1,
+      "managerId": 1,
+      "profile": null,
+      "description": null,
+      "name": "example",
+      "open": false
+    },
+    "categories": [
+      {
+        "categoryId": 1,
+        "name": "채팅 채널"
+      },
+      {
+        "categoryId": 2,
+        "name": "음성 채널"
+      },
+      {
+        "categoryId": 3,
+        "name": "채팅채널모음"
+      }
+    ],
+    "channels": [
+      {
+        "channelId": 1,
+        "categoryId": 1,
+        "channelType": "CHAT",
+        "name": "일반"
+      },
+      {
+        "channelId": 2,
+        "categoryId": 2,
+        "channelType": "VOICE",
+        "name": "일반"
+      },
+      {
+        "channelId": 3,
+        "categoryId": 3,
+        "channelType": "CHAT",
+        "name": "테스트 채널"
+      },
+      {
+        "channelId": 4,
+        "categoryId": 3,
+        "channelType": "CHAT",
+        "name": "테스트 채널2"
+      }
+    ],
+    "userOnOff": {
+      "connectionStates": {
+        "1": "online",
+        "2": "offline",
+        "3": "online",
+        "4": "offline",
+        "5": "online"
+      },
+      "channelStates": {}
+    },
+    "messages": null
+  }
+}

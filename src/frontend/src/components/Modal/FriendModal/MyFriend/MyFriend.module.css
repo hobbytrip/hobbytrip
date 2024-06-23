@@ -1,0 +1,135 @@
+.wrapper {
+  font-family: "Pretendard";
+  padding: 11px 0px;
+  border-radius: 20px 20px 0px 0px;
+  background-color: #ffffff;
+  height: 611px;
+  width: 390px;
+}
+
+.wrapper ul {
+  list-style-type: none;
+}
+
+.friendMenuContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  gap: 30px;
+  height: 30px;
+}
+
+.friendMenuContainer h3 {
+  color: var(--main-purple);
+  font-weight: 700;
+}
+
+.friendMenuList {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* gap: 5px; */
+}
+
+.friendMenuList li {
+  text-align: center;
+}
+
+.friendMenuList button {
+  border: none;
+  white-space: nowrap;
+  background: none;
+}
+
+.friendMenuList .addFriend {
+  background-color: var(--main-purple);
+  color: #ffffff;
+  padding: 3px;
+  border-radius: 5px;
+  margin-left: 5px;
+}
+
+.searchContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  gap: 10px;
+}
+
+.searchForm {
+  display: flex;
+  align-items: center;
+  width: 320px;
+  padding: 5px 6.61px 3px 11px;
+  border-radius: 5px;
+  background-color: var(--light-gray);
+  color: var(--dark-gray);
+}
+
+.searchInput {
+  display: flex;
+  flex: 9;
+  border: none;
+  background: none;
+  height: 14px;
+  border-radius: 20px 0 0 20px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 14.32px;
+  text-align: left;
+}
+
+.searchBtn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 1;
+  border-radius: 0 20px 20px 0;
+  border: none;
+  width: 16.39px;
+  height: 16px;
+}
+
+@media (min-width: 432px) {
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    border-radius: 0px;
+  }
+
+  .friendMenuContainer {
+    width: 90%;
+  }
+
+  .friendMenuList, .searchBtn {
+    width: 80%;
+  }
+
+  .friendMenuList {
+    justify-content: end;   
+    padding: 0px;
+    margin: 0px; 
+  }
+
+  .friendMenuList button {
+    flex: 1;
+  }
+
+  .searchContainer {
+    width: 80%;
+  }
+
+  .searchForm {
+    width: 100%;
+  }
+
+  .friendListContainer {
+    height: 70%;
+    width: 70%;
+  }
+}

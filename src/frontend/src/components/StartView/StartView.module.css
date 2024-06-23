@@ -1,0 +1,17 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  height: 100vh;
+}
+.logo {
+  width: 400px;
+  height: 300px;
+}
+.startText {
+  font-family: "DOSSaemmul";
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--main-purple);
+}

@@ -1,0 +1,11 @@
+.formWrapper {
+  background-color: white;
+  /* height: 275px; */
+  width: 272px; 
+  /* img 넣기로 30px 늘렸습니다 */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 10px;
+  border-radius: 10px;
+}

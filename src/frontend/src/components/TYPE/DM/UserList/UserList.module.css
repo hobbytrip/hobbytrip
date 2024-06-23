@@ -1,0 +1,46 @@
+.userList {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  gap: 15px;
+  padding: 30px;
+}
+.header {
+  font-family: "DOSSaemmul";
+  height: 33px;
+  /* padding: 10px 33px; */
+  @media (min-width: 432px) {
+    height: 15px;
+  }
+}
+li {
+  font-size: 16px;
+  list-style: none;
+}
+
+.list {
+  gap: 0px;
+  margin-left: -30px;
+}
+
+.user {
+  display: flex;
+  align-items: center;
+  height: 25px;
+  gap: 4px;
+  @media (min-width: 432px) {
+    height: 35px;
+  }
+}
+.stateCircle {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+.userName {
+  margin-left: 10px;
+  @media (min-width: 432px) {
+    /* font-size: 20px; */
+    font-weight: 600;
+  }
+}

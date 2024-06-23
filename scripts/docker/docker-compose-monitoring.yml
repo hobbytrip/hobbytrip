@@ -1,0 +1,38 @@
+version: '3'
+services:
+  # Grafana
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - loki
+    volumes:
+      - grafana-data:/var/lib/grafana
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: "fittrip!!"
+
+  # Loki
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    ports:
+      - "3100:3100"
+    volumes:
+      - loki-data:/loki
+
+  # Promtail
+  promtail:
+    image: grafana/promtail:latest
+    container_name: promtail
+    volumes:
+      - /home/hdbstn3055/script/logs:/var/log
+      - ./promtail-config.yaml:/etc/promtail/config.yml
+    command: -config.file=/etc/promtail/config.yml
+    depends_on:
+      - loki
+
+volumes:
+  grafana-data:
+  loki-data:

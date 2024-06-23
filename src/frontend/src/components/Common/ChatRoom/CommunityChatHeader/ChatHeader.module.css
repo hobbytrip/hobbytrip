@@ -1,0 +1,36 @@
+.ChatHeaderContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+.iconImg {
+  width: 150px;
+  margin-left: -30px;
+}
+.menuIcon {
+  color: white;
+  width: 25px;
+  height: 25px;
+  margin-right: 10px;
+}
+
+@media (max-width: 431px) {
+  .iconImg {
+    height: 57px;
+    width: 65px;
+  }
+  .menuIcon {
+    color: white;
+    width: 15px;
+    height: 15px;
+  }
+  .ChatHeaderContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 270px;
+    margin: 10px 10px 10px 10px;
+  }
+}

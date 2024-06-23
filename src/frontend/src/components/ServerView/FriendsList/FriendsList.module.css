@@ -1,0 +1,74 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 350px;
+  height: 599px;
+  gap: 11px;
+  padding: 10px 30px 30px 10px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  color: var(--dark-gray);
+}
+
+li {
+  font-size: 16px;
+  list-style: none;
+}
+
+.backBtn {
+  background: none;
+  border: none;
+  color: var(--dark-gray);
+  position: absolute;
+  right: 10px;
+}
+
+.listHeader {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 19px;
+  padding: 15px 25px;
+  position: relative;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  height: 33px;
+  gap: 10px;
+  padding: 9px 33px;
+}
+
+.list {
+  gap: 20px;
+}
+
+.friend {
+  display: flex;
+  align-items: center;
+  height: 20px;
+  gap: 4px;
+}
+
+.stateCircle {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.profileImage {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+}
+
+.name {
+  margin-right: 10px;
+}
+
+.crown {
+  width: 18.75px;
+  height: 15px;
+  color: var(--main-purple);
+}

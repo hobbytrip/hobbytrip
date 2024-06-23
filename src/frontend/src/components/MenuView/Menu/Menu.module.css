@@ -1,0 +1,121 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 330px;
+  height: 460px;
+  gap: 20px;
+  padding: 20px 0px 130px 0px;
+  font-family: "Pretendard";
+}
+
+.wrapper button {
+  border: none;
+  background: none;
+}
+
+.userContainer {
+  width: 310px;
+  height: 55px;
+  gap: 5px;
+  padding: 10px;
+}
+
+.user {
+  display: flex;
+  width: 249px;
+  height: 50px;
+  gap: 15px;
+}
+
+.imgContainer { 
+  width: 50px;
+  height: 50px;
+}
+
+.imgContainer img {
+  width: 31.45px;
+  height: 28px;
+  gap: 10px;
+  padding: 10px 8px;
+  border-radius: 300px;
+}
+
+.userData {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 184px;
+  height: 38px;
+  gap: 5px;
+}
+
+.statusContainer {
+  display: flex;
+  align-items: center;
+}
+
+.statusCircle {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  margin-right: 5px;
+  background-color: #70CC40;
+}
+
+.menuListWrapper {
+  display: flex;
+  flex-direction: column;
+  width: 330px;
+  height: 335px;
+  gap: 15px;
+  padding: 15px 0px;
+}
+
+.menuListWrapper button {
+  display: flex;
+  align-items: center;
+  width: 330px;
+  height: 55px;
+  padding: 7px 15px;
+  gap: 10px;
+}
+
+.icon {
+  color: var(--main-purple);
+  width: 20px;
+  height: 20px;
+}
+
+.alarm {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 305px;
+  height: 41px;
+  gap: 10px;
+  padding: 7px 15px;
+}
+
+.alarm div {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  width: 237px;
+  height: 48px;
+  margin-right: auto;
+}
+
+.alarm button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+}
+
+.alarm button .icon {
+  width: 15px; 
+  height: 15px; 
+}
