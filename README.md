@@ -71,21 +71,34 @@
 
 - Language
   - Java 17
-  - Spring Boot 3.2.4
-- Library
+- Spring Framework
+  - Spring Boot 3.2.x 
   - WebSocket, STOMP, SockJS
+  - Netflix Eureka Server
+  - Netflix Eureka Client
+  - Spring Cloud Gateway
+  - OpenFeign
+  - Kafka
 - Database
   - MySQL
   - MariaDB
   - MongoDB
   - Redis
+  - H2
+- Object Storage
+  - Amazon S3 
 - Infra
-  - Github Actions(CI/CD)
-  - Google Cloud Platform
   - Docker
   - NGINX
   - Kafka
   - Grafana
+  - Loki
+- CI/CD
+  - Git
+  - Github Actions
+  - GCE(Google Compute Engine)
+- OpenSource
+  - OpenVidu 
 
 ## 전체 아키텍처
 
@@ -102,8 +115,9 @@
 #### 한윤수
 
 - 커뮤니티 서비스
-- GCP 서버 배포
-- Github Actions(CI/CD) 구축
+- MSA 연동 서비스
+- Github Actions(CI/CD), 인프라 설계
+- 로깅 시스템 구축
 
 #### 유다인
 
