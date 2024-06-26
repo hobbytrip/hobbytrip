@@ -78,6 +78,7 @@
   - Netflix Eureka Client
   - Spring Cloud Gateway
   - OpenFeign
+  - WebClient
   - Kafka
 - Database
   - MySQL
