@@ -8,8 +8,8 @@ import useUserStore from "../../../../../actions/useUserStore";
 
 function CreateCategory({ onClose, onBack }) {
   const [name, setName] = useState("");
-  const { setServerCategories } = useServerStore((state) => ({
-    setServerCategories: state.setServerCategories,
+  const { setServerData } = useServerStore((state) => ({
+    setServerData: state.setServerData,
   }));
   const { serverData } = useServerStore.getState();
   const { USER } = useUserStore();
@@ -37,7 +37,7 @@ function CreateCategory({ onClose, onBack }) {
           ...(serverData.serverCategories || []),
           res.data.data,
         ];
-        setServerCategories(updatedCategories);
+        setServerData({serverCategories: updatedCategories});
         onClose();
       } else {
         console.log("카테고리 만들기 실패", res);

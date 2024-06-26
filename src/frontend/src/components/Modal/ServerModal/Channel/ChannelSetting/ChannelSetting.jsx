@@ -7,8 +7,8 @@ import {  HiUserGroup } from "react-icons/hi2";
 
 function ChannelSetting({ userId, channel, onClose }) { 
   const [name, setName] = useState("");
-  const { setServerChannels } = useServerStore((state) => ({
-    setServerChannels: state.setServerChannels
+  const { setServerData } = useServerStore((state) => ({
+    setServerData: state.setServerData
   }));
   const { serverData } = useServerStore.getState();
   const channelId = channel.channelId;
@@ -61,7 +61,7 @@ function ChannelSetting({ userId, channel, onClose }) {
           }
           return channel;
         });
-        setServerChannels(updatedChannels);
+        setServerData({serverChannels: updatedChannels});
         onClose();
       } else {
         console.log("채널 수정 실패.");
@@ -89,7 +89,7 @@ function ChannelSetting({ userId, channel, onClose }) {
           if (res.status === 200) {
             alert("삭제되었습니다");
             const updatedChannels = serverData.serverChannels.filter(c => c.channelId !== channelId);
-            setServerChannels(updatedChannels);
+            setServerData({serverChannels: updatedChannels});
           } else {
             alert("삭제하는 중에 오류가 발생했습니다");
             console.error(res);

@@ -16,8 +16,8 @@ function CreateChannel({ categoryId, onClose, onBack }) {
   const [name, setName] = useState("");
   const [type, setType] = useState("CHAT");
   const [open, setOpen] = useState(false);
-  const { setServerChannels } = useServerStore((state) => ({
-    setServerChannels: state.setServerChannels,
+  const { setServerData } = useServerStore((state) => ({
+    setServerData: state.setServerData,
   }));
   const { serverData } = useServerStore.getState();
   const { USER } = useUserStore();
@@ -45,7 +45,7 @@ function CreateChannel({ categoryId, onClose, onBack }) {
           ...(serverData.serverChannels || []),
           res.data.data,
         ];
-        setServerChannels(updatedChannels);
+        setServerData({serverChannels: updatedChannels});
         onClose();
       } else {
         console.log("채널 만들기 실패", res);

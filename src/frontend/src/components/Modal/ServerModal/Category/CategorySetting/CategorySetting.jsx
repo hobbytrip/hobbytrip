@@ -8,64 +8,32 @@ import { HiHome } from "react-icons/hi2";
 
 function CategorySetting({ categoryId, onClose }) {
   const [name, setName] = useState("");
-  const { serverData, setServerCategories } = useServerStore((state) => ({
-    serverData: state.serverData,
-    setServerCategories: state.setServerCategories
-  }));
+  const { setServerData } = useServerStore((state) => state.setServerData);
+  const { serverData } = useServerStore.getState();
   const { USER } = useUserStore();
   const userId = USER.userId;
   const serverId = serverData?.serverInfo?.serverId;
-
-  useEffect(() => {
-    if (serverData?.serverCategories) {
-      const category = serverData.serverCategories.find(
-        (cat) => cat.categoryId === categoryId
-      );
-      if (category) {
-        setName(category.name);
-      } else {
-        console.error("Category not found.");
-      }
-    }
-  }, [categoryId, serverData]);
+  console.error(serverData);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (name === "") {
-      alert("카테고리 이름을 입력해주세요");
-      return;
-    }
-    if (String(userId) !== String(serverData?.serverInfo?.managerId)) {
-      alert("수정 권한이 없습니다");
-      return;
-    }
+
     try {
-      const data = {
+      const res = await axiosInstance.patch(API.COMM_CATEGORY, {
         userId,
         serverId,
         categoryId,
         name,
-      };
-
-      console.log("Sending data to API:", data); // Debug log
-
-      const res = await axiosInstance.patch(API.COMM_CATEGORY, data);
-
-      console.log("API Response:", res.data); // Debug log
+      });
 
       if (res.data.success) {
         const updatedCategory = res.data.data;
-        const updatedCategories = serverData.serverCategories.map((category) => {
-          if (category.categoryId === updatedCategory.categoryId) {
-            return updatedCategory;
-          }
-          return category;
-        });
+        const updatedCategories = serverData.serverCategories.map((category) =>
+          category.categoryId === updatedCategory.categoryId ? updatedCategory : category
+        );
 
-        console.log("Updated Categories:", updatedCategories); // Debug log
-
-        setServerCategories(updatedCategories);
-
+        setServerData({serverCategories: updatedCategories});
+        console.error(serverData);
         onClose();
       } else {
         console.log("카테고리 수정 실패.");
@@ -99,7 +67,7 @@ function CategorySetting({ categoryId, onClose }) {
             (category) => category.categoryId !== categoryId
           );
 
-          setServerCategories(updatedCategories);
+          setServerData({serverCategories: updatedCategories});
           onClose();
         } else {
           alert("삭제하는 중에 오류가 발생했습니다");
