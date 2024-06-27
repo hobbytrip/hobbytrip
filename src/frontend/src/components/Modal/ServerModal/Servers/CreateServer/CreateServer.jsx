@@ -9,14 +9,14 @@ import useUserStore from "../../../../../actions/useUserStore";
 import { TbCameraPlus } from "react-icons/tb";
 import usePlanetsStore from "../../../../../actions/usePlantesStore";
 
-function CreateServer() {
+function CreateServer({ onClose }) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [profileImage, setProfileImage] = useState(null);
   const [profilePreview, setProfilePreview] = useState(null);
   const [showJoinServer, setShowJoinServer] = useState(false);
-  const fetchServerData = useServerStore((state) => state.fetchServerData);
+  const { setServerData } = useServerStore.getState();
   const imgRef = useRef();
   const nav = useNavigate();
 
@@ -35,8 +35,6 @@ function CreateServer() {
       const data = JSON.stringify({
         userId: userId,
         name: name,
-        // description: description,
-        // category: category,
       });
       const communityData = new Blob([data], { type: "application/json" });
       formData.append("requestDto", communityData);
@@ -52,21 +50,16 @@ function CreateServer() {
       });
 
       if (response.data.success) {
-        console.log(response);
-        // setServerData({ serverInfo: response.data.data });
-        addServer(response.data.data);
+        console.log(response.data.data);
+        const data = response.data.data;
+        addServer(data);
         const serverId = response.data.data.serverId;
-        console.log("create fetch");
-        await fetchServerData(serverId, userId);
-        const fetchedData = useServerStore.getState().serverData;
-        if (fetchedData && fetchedData.serverChannels) {
-          const defaultChatChannel = fetchedData.serverChannels.find(
-            (channel) => channel.channelType === "CHAT"
-          );
-          if (defaultChatChannel) {
-            nav(`/${serverId}/${defaultChatChannel.channelId}/chat`);
-          }
-        }
+        await axiosInstance.get(API.GET_SERVER(serverId, userId));
+
+        setServerData({
+          serverInfo: data
+        })
+        onClose();
       } else {
         console.log("행성 만들기 실패.");
         console.log(response);
@@ -162,6 +155,9 @@ function CreateServer() {
           </div>
         </form>
       )}
+      <button className={s.closeBtn} onClick={onClose}>
+        <h4 style={{ color: "#fff", textDecoration: "underline" }}> 뒤로 가기 </h4>
+      </button>
     </>
   );
 }

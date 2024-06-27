@@ -9,25 +9,12 @@ const useServerStore = create((set) => ({
     userStatus: null,
     messages: null,
   },
-  setServerData: (data) => {
-    set({
-      serverData: {
-        serverInfo: data.server,
-        serverCategories: data.categories,
-        serverChannels: data.channels,
-        serverUserInfos: data.serverUserInfos,
-        userStatus: data.usersState,
-        messages: data.messages,
-      },
-    });
-  },
-  setServerInfo: (newServerInfo) =>
-    set((state) => ({
-      serverData: {
-        ...state.serverData,
-        serverInfo: newServerInfo,
-      },
-    })),
+  setServerData: (newData) => set((state) => ({
+    serverData: {
+      ...state.serverData,
+      ...newData,
+    }
+  }))
 }));
 
 export default useServerStore;

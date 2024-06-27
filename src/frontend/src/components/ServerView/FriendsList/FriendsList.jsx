@@ -8,7 +8,7 @@ import { FaCrown } from "react-icons/fa"; // 관리자 왕관 표시
 import useUserStatusStore from "../../../actions/useUserStatusStore";
 
 const FriendsList = () => {
-  const { serverData } = useServerStore();
+  const { serverData } = useServerStore.getState();
 
   const managerId = serverData.serverInfo.managerId;
   const serverUserStatus = serverData.userStatus.usersConnectionState; //유저 상태

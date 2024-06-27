@@ -22,7 +22,7 @@ const CategoryList = () => {
   const userId = USER.userId;
   const { serverId } = useParams();
 
-  const { serverData } = useServerStore();
+  const { serverData } = useServerStore.getState();
 
   useEffect(() => {
     deleteNotice();

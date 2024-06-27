@@ -112,10 +112,6 @@
 .createServerModal > * {
   z-index: 1000; 
 }
-.closeBtn {
-  background-color: transparent;
-  margin-top: 10px;
-}
 
 @media (min-width: 432px) {
   .wrapper {

@@ -58,7 +58,7 @@ const postUserLocation = async (userId, serverId, channelId) => {
 function ChatRoom() {
   const { USER } = useUserStore();
   const { accessToken } = useAuthStore();
-  const { serverData } = useServerStore();
+  const { serverData } = useServerStore.getState();
   const { client } = useWebSocketStore();
   const { removeMessage } = useChatStore();
 

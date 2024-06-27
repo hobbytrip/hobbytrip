@@ -10,10 +10,10 @@ import usePlanetsStore from "../../../../../actions/usePlantesStore";
 function JoinServer({ onClose }) {
   const [link, setLink] = useState("");
   const nav = useNavigate();
-  const { fetchServerData } = useServerStore((state) => ({
-    fetchServerData: state.fetchServerData,
-  }));
-  const { serverData } = useServerStore();
+  // const { fetchServerData } = useServerStore((state) => ({
+  //   fetchServerData: state.fetchServerData,
+  // }));
+  const { serverData } = useServerStore.getState();
 
   const { USER } = useUserStore();
   const userId = USER.userId;
@@ -47,7 +47,8 @@ function JoinServer({ onClose }) {
         console.log("Join server response:", res.data);
         const updatedServerInfo = res.data.data;
         addServer(updatedServerInfo);
-        await fetchServerData(serverId, userId);
+        // await fetchServerData(serverId, userId);
+        // await 
         const fetchedData = useServerStore.getState().serverData;
         if (fetchedData && fetchedData.serverChannels) {
           const defaultChatChannel = fetchedData.serverChannels.find(

@@ -15,10 +15,10 @@ const ServerSetting = () => {
   const [serverCategory, setServerCategory] = useState("");
   const [profileImage, setProfileImage] = useState(null);
   const [profilePreview, setProfilePreview] = useState(null);
-  const { setServerInfo } = useServerStore((state) => ({
-    setServerInfo: state.setServerInfo
+  const { setServerData } = useServerStore((state) => ({
+    setServerData: state.setServerData
   }));
-  const { serverData } = useServerStore();
+  const { serverData } = useServerStore.getState();
   const { updateServer } = usePlanetsStore(state => ({
     updateServer: state.updateServer
   }));
@@ -80,9 +80,8 @@ const ServerSetting = () => {
       });
 
       if (res.data.success) {
-        setServerInfo(res.data.data);
+        setServerData({serverInfo: res.data.data});
         updateServer(res.data.data);
-        // setServerData(res.data.data);
         console.log(serverData)
         nav(-1);
       } else {

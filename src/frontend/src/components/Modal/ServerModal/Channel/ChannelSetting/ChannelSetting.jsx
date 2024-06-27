@@ -10,7 +10,7 @@ function ChannelSetting({ userId, channel, onClose }) {
   const { setServerData } = useServerStore((state) => ({
     setServerData: state.setServerData
   }));
-  const { serverData } = useServerStore();
+  const { serverData } = useServerStore.getState();
   const channelId = channel.channelId;
   const categoryId = channel.categoryId;
 
@@ -61,7 +61,7 @@ function ChannelSetting({ userId, channel, onClose }) {
           }
           return channel;
         });
-        setServerData({ ...serverData, serverChannels: updatedChannels });
+        setServerData({serverChannels: updatedChannels});
         onClose();
       } else {
         console.log("채널 수정 실패.");
@@ -89,7 +89,7 @@ function ChannelSetting({ userId, channel, onClose }) {
           if (res.status === 200) {
             alert("삭제되었습니다");
             const updatedChannels = serverData.serverChannels.filter(c => c.channelId !== channelId);
-            setServerData({ ...serverData, serverChannels: updatedChannels });
+            setServerData({serverChannels: updatedChannels});
           } else {
             alert("삭제하는 중에 오류가 발생했습니다");
             console.error(res);

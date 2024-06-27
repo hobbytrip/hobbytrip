@@ -8,7 +8,7 @@ const usePlanetsStore = create((set) => ({
     servers: state.servers.map(server =>
       server.serverId === updatedServer.serverId ? updatedServer : server
     )
-  }))
+  })),
 }));
 
 export default usePlanetsStore;

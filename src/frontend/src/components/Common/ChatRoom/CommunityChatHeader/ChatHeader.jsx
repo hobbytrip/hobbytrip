@@ -11,7 +11,9 @@ export default function ChatHeader() {
         src={iconImg}
         className={s.iconImg}
         alt="logo-img"
-        onClick={() => nav("/main")}
+        onClick={() => {
+          console.log('mainnnnnn');
+          nav("/main")}}
       />
       <AiOutlineMenu className={s.menuIcon} />
     </div>

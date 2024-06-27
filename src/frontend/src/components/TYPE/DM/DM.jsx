@@ -18,7 +18,7 @@ function DM() {
   const [dmInfo, setDmInfo] = useState(null);
   const { dmId } = useParams();
   const { dmHistoryList, setDmHistoryList } = useDmHistoryStore();
-  const { serverData } = useServerStore();
+  const { serverData } = useServerStore.getState();
   const { USER } = useUserStore();
   const userId = USER.userId;
   const serverId = serverData.serverInfo.serverId;
