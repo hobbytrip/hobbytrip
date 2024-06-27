@@ -1,6 +1,6 @@
 package capstone.communityservice.domain.server.repository;
 
-import capstone.communityservice.domain.server.dto.OpenServerQuery;
+import capstone.communityservice.domain.server.dto.response.OpenServerQuery;
 import capstone.communityservice.domain.server.entity.Server;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

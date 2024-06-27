@@ -4,8 +4,8 @@ import capstone.communityservice.domain.channel.entity.Channel;
 import capstone.communityservice.domain.channel.entity.ChannelType;
 import capstone.communityservice.domain.channel.exception.ChannelException;
 import capstone.communityservice.domain.channel.repository.ChannelRepository;
-import capstone.communityservice.domain.forum.dto.ForumChannelResponseDto;
-import capstone.communityservice.domain.forum.dto.ForumResponseDto;
+import capstone.communityservice.domain.forum.dto.response.ForumChannelResponseDto;
+import capstone.communityservice.domain.forum.dto.response.ForumResponse;
 import capstone.communityservice.domain.forum.entity.Forum;
 import capstone.communityservice.domain.forum.repository.ForumRepository;
 import capstone.communityservice.global.common.dto.SliceResponseDto;
@@ -57,7 +57,7 @@ public class ChannelQueryService {
             // Forum 댓글 개수 읽어오기 로직
             ForumChannelResponseDto forumsMessageCount = chatServiceClient.getForumsMessageCount(forumIds);
 
-            Slice<ForumResponseDto> forumResponseSlice = getForumResponseDtos(forums, pageable, forumsMessageCount);
+            Slice<ForumResponse> forumResponseSlice = getForumResponseDtos(forums, pageable, forumsMessageCount);
 
             return new SliceResponseDto<>(forumResponseSlice);
         }
@@ -72,11 +72,11 @@ public class ChannelQueryService {
     }
 
 
-    private Slice<ForumResponseDto> getForumResponseDtos(Slice<Forum> forums, Pageable pageable, ForumChannelResponseDto forumsMessageCount) {
-        List<ForumResponseDto> forumList = forums.getContent()
+    private Slice<ForumResponse> getForumResponseDtos(Slice<Forum> forums, Pageable pageable, ForumChannelResponseDto forumsMessageCount) {
+        List<ForumResponse> forumList = forums.getContent()
                 .stream()
                 .map(forum ->
-                        ForumResponseDto.of(forum,
+                        ForumResponse.of(forum,
                                 forumsMessageCount.getForumsMessageCount()
                                         .get(
                                                 forum.getId()

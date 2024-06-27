@@ -1,14 +1,13 @@
 package capstone.communityservice.domain.server.service;
 
-import capstone.communityservice.domain.category.dto.CategoryResponseDto;
+import capstone.communityservice.domain.category.dto.response.CategoryResponse;
 import capstone.communityservice.domain.category.repository.CategoryRepository;
-import capstone.communityservice.domain.channel.dto.ChannelResponseDto;
+import capstone.communityservice.domain.channel.dto.response.ChannelResponse;
 import capstone.communityservice.domain.channel.entity.Channel;
 import capstone.communityservice.domain.channel.entity.ChannelType;
 import capstone.communityservice.domain.channel.exception.ChannelException;
 import capstone.communityservice.domain.channel.repository.ChannelRepository;
-import capstone.communityservice.domain.server.dto.*;
-import capstone.communityservice.domain.server.entity.ServerUser;
+import capstone.communityservice.domain.server.dto.response.*;
 import capstone.communityservice.global.external.ChatServiceClient;
 import capstone.communityservice.global.external.StateServiceClient;
 import capstone.communityservice.global.external.dto.ServerMessageDto;
@@ -45,7 +44,7 @@ public class ServerQueryService {
     private final ChannelRepository channelRepository;
     private final CategoryRepository categoryRepository;
 
-    public ServerReadResponseDto read(Long serverId, Long userId) {
+    public ServerReadResponse read(Long serverId, Long userId) {
         Server findServer = findServerWithServerUser(serverId);
 
         validateServerUser(serverId, userId);
@@ -71,20 +70,20 @@ public class ServerQueryService {
                 );
     }
 
-    private ServerReadResponseDto createServerReadResponseDto(
+    private ServerReadResponse createServerReadResponseDto(
             Long serverId,
             Server findServer,
             ServerUsersStateResponse usersState,
             Page<ServerMessageDto> messages
     ) {
-        List<ChannelResponseDto> channels = channelRepository.findByServerId(serverId)
+        List<ChannelResponse> channels = channelRepository.findByServerId(serverId)
                 .stream()
-                .map(ChannelResponseDto::of)
+                .map(ChannelResponse::of)
                 .toList();
 
-        List<CategoryResponseDto> categories = categoryRepository.findByServerId(serverId)
+        List<CategoryResponse> categories = categoryRepository.findByServerId(serverId)
                 .stream()
-                .map(CategoryResponseDto::of)
+                .map(CategoryResponse::of)
                 .toList();
 
         List<ServerUserInfo> serverUserInfos = findServer
@@ -93,8 +92,8 @@ public class ServerQueryService {
                 .map(ServerUserInfo::of)
                 .toList();
 
-        return ServerReadResponseDto.of(
-                ServerResponseDto.of(findServer),
+        return ServerReadResponse.of(
+                ServerResponse.of(findServer),
                 serverUserInfos,
                 categories,
                 channels,
@@ -103,10 +102,10 @@ public class ServerQueryService {
         );
     }
 
-    public List<OpenServerQueryDto> search() {
+    public List<OpenServerQueryResponse> search() {
         return serverRepository.findTopOpenServer()
                 .stream()
-                .map(OpenServerQueryDto::of)
+                .map(OpenServerQueryResponse::of)
                 .collect(Collectors.toList());
     }
 
@@ -118,7 +117,7 @@ public class ServerQueryService {
 
         Page<Server> servers = serverRepository.findServerWithPaging(name, pageable);
 
-        return PageResponseDto.of(servers, ServerWithCountResponseDto::of);
+        return PageResponseDto.of(servers, ServerWithCountResponse::of);
     }
 
     private ServerUsersStateResponse getUsersState(Long serverId) {

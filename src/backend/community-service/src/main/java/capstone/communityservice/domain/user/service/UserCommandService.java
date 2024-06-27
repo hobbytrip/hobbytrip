@@ -1,7 +1,7 @@
 package capstone.communityservice.domain.user.service;
 
-import capstone.communityservice.domain.user.dto.UserRequestIdDto;
-import capstone.communityservice.domain.user.dto.UserResponseDto;
+import capstone.communityservice.domain.user.dto.request.UserCreateRequest;
+import capstone.communityservice.domain.user.dto.response.UserResponse;
 import capstone.communityservice.domain.user.entity.User;
 import capstone.communityservice.domain.user.repository.UserRepository;
 import capstone.communityservice.global.external.UserServiceClient;
@@ -24,14 +24,14 @@ public class UserCommandService {
     private final UserServiceFakeClient userServiceFakeClient;
 
 
-    public UserResponseDto save(UserRequestIdDto requestDto) {
-        return UserResponseDto.of(
+    public UserResponse save(UserCreateRequest request) {
+        return UserResponse.of(
                 userRepository.findByOriginalId(
-                        requestDto.getOriginalId())
+                                request.getOriginalId())
                         .orElseGet(() -> {
                              User newUser = User.of(
                                      userServiceClient.getUser(
-                                             requestDto.getOriginalId()
+                                             request.getOriginalId()
                                      )
                              );
 //                            User newUser = User.of(userServiceFakeClient.getUser(requestDto.getOriginalId()));

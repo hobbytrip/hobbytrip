@@ -1,13 +1,15 @@
 package capstone.communityservice.domain.server.service;
 
-import capstone.communityservice.domain.category.dto.CategoryResponseDto;
+import capstone.communityservice.domain.category.dto.response.CategoryResponse;
 import capstone.communityservice.domain.category.entity.Category;
 import capstone.communityservice.domain.category.service.CategoryCommandService;
 import capstone.communityservice.domain.channel.entity.Channel;
 import capstone.communityservice.domain.channel.entity.ChannelType;
 import capstone.communityservice.domain.channel.repository.ChannelRepository;
 import capstone.communityservice.domain.channel.service.ChannelCommandService;
-import capstone.communityservice.domain.server.dto.*;
+import capstone.communityservice.domain.server.dto.request.*;
+import capstone.communityservice.domain.server.dto.response.ServerInviteCodeResponse;
+import capstone.communityservice.domain.server.dto.response.ServerResponse;
 import capstone.communityservice.domain.server.entity.Server;
 import capstone.communityservice.domain.server.entity.ServerUser;
 import capstone.communityservice.domain.server.exception.ServerException;
@@ -23,7 +25,6 @@ import capstone.communityservice.global.util.RandomUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,7 +36,6 @@ import java.util.Optional;
 @Transactional
 @RequiredArgsConstructor
 public class ServerCommandService {
-
     private static final String INVITE_LINK_PREFIX = "serverId=%d";
     private static final String serverKafkaTopic = "communityServerEventTopic";
 
@@ -53,22 +53,25 @@ public class ServerCommandService {
     private final ServerUserRepository serverUserRepository;
     private final ChannelRepository channelRepository;
 
-    public ServerResponseDto create(ServerCreateRequestDto requestDto, MultipartFile file) {
+    public ServerResponse create(ServerCreateRequest request, MultipartFile file) {
          String profileUrl = file != null ? uploadProfile(file) : null; // <- S3 등록 후
         // String profileUrl = null;
         System.out.println(profileUrl);
 
-        User user = userQueryService.findUserByOriginalId(requestDto.getUserId());
+        User user = userQueryService.findUserByOriginalId(request.getUserId());
 
         Server server = serverRepository.save(
                 Server.of(
-                        requestDto.getName(),
+                        request.getName(),
                         profileUrl,
                         user.getId()
                 )
         );
 
-        serverUserCommandService.save(ServerUser.of(server, user));
+        serverUserCommandService.save(
+                ServerUser.of(server, user)
+        );
+
         categoryAndChannelInit(server, user.getId());
 
         /**
@@ -76,16 +79,16 @@ public class ServerCommandService {
          * 유저 상태 정보(온라인/오프라인) 상태관리 서버로부터 받아오는 로직 필요.
          * 첫 접속시 보여줄 채팅 메시지를 가져오기 위한 채팅 서비스 OpenFeign 작업 필요.
          */
-        return ServerResponseDto.of(server);
+        return ServerResponse.of(server);
     }
 
-    public ServerResponseDto join(ServerJoinRequestDto requestDto) {
-        Server findServer = validateServerUser(requestDto);
-        validateServerJoin(findServer, requestDto);
+    public ServerResponse join(ServerJoinRequest request) {
+        Server findServer = validateServerUser(request);
+        validateServerJoin(findServer, request);
 
-        User findUser = userQueryService.findUserByOriginalId(requestDto.getUserId());
+        User findUser = userQueryService.findUserByOriginalId(request.getUserId());
 
-        verifyInvitationCode(findServer.getId(), requestDto);
+        verifyInvitationCode(findServer.getId(), request);
 
         serverUserCommandService.save(ServerUser.of(findServer, findUser));
 
@@ -97,34 +100,34 @@ public class ServerCommandService {
                 defaultChannel.getId()
         );
 
-        return ServerResponseDto.of(findServer);
+        return ServerResponse.of(findServer);
     }
 
-    public ServerResponseDto update(ServerUpdateRequestDto requestDto, MultipartFile file) {
-        Server findServer = serverQueryService.validateExistServer(requestDto.getServerId());
+    public ServerResponse update(ServerUpdateRequest request, MultipartFile file) {
+        Server findServer = serverQueryService.validateExistServer(request.getServerId());
 
-        validateManager(findServer.getManagerId(), requestDto.getUserId());
+        validateManager(findServer.getManagerId(), request.getUserId());
 
-        String profileUrl = determineProfileUrl(file, findServer, requestDto.getProfile());
+        String profileUrl = determineProfileUrl(file, findServer, request.getProfile());
 
         findServer.setServer(
-                requestDto.getName(),
+                request.getName(),
                 profileUrl,
-                requestDto.isOpen(),
-                requestDto.getDescription()
+                request.isOpen(),
+                request.getDescription()
         );
 
         serverKafkaTemplate.send(serverKafkaTopic, CommunityServerEventDto.of("server-update", findServer));
 
         printKafkaLog("update");
 
-        return ServerResponseDto.of(findServer);
+        return ServerResponse.of(findServer);
     }
 
-    public void delete(ServerDeleteRequestDto requestDto) {
-        Server findServer = serverQueryService.validateExistServer(requestDto.getServerId());
+    public void delete(ServerDeleteRequest request) {
+        Server findServer = serverQueryService.validateExistServer(request.getServerId());
 
-        validateManager(findServer.getManagerId(), requestDto.getUserId());
+        validateManager(findServer.getManagerId(), request.getUserId());
 
         if(findServer.getProfile() != null)
             fileUploadService.delete(findServer.getProfile());
@@ -135,12 +138,12 @@ public class ServerCommandService {
         serverRepository.delete(findServer);
     }
 
-    public ServerResponseDto deleteProfile(ServerProfileDeleteRequestDto requestDto) {
+    public ServerResponse deleteProfile(ServerProfileDeleteRequest request) {
         Server findServer = serverQueryService.validateExistServer(
-                requestDto.getServerId()
+                request.getServerId()
         );
 
-        validateManager(findServer.getManagerId(), requestDto.getUserId());
+        validateManager(findServer.getManagerId(), request.getUserId());
 
         if(findServer.getProfile() != null){
             fileUploadService.delete(findServer.getProfile());
@@ -151,16 +154,16 @@ public class ServerCommandService {
 
         printKafkaLog("update");
 
-        return ServerResponseDto.of(findServer);
+        return ServerResponse.of(findServer);
     }
 
     /**
      * Server내 자체 Category Repository 사용할지 고민
      */
     private void categoryAndChannelInit(Server server, Long userId){
-        CategoryResponseDto initChatCategory
+        CategoryResponse initChatCategory
                 = categoryCommandService.save(Category.of(server, "채팅 채널"));
-        CategoryResponseDto initVoiceCategory
+        CategoryResponse initVoiceCategory
                 = categoryCommandService.save(Category.of(server, "음성 채널"));
 
         Channel newChannel = channelRepository.save(
@@ -202,30 +205,30 @@ public class ServerCommandService {
         return ServerInviteCodeResponse.of(value);
     }
 
-    private void validateServerJoin(Server server, ServerJoinRequestDto requestDto) {
-        boolean isClosedWithoutCode = !server.isOpen() && requestDto.getInvitationCode() == null;
+    private void validateServerJoin(Server server, ServerJoinRequest request) {
+        boolean isClosedWithoutCode = !server.isOpen() && request.getInvitationCode() == null;
         if (isClosedWithoutCode) {
             throw new ServerException(Code.VALIDATION_ERROR, "Not open server. Require invitationCode");
         }
     }
 
-    private void verifyInvitationCode(Long serverId, ServerJoinRequestDto requestDto) {
-        if (requestDto.getInvitationCode() != null) {
+    private void verifyInvitationCode(Long serverId, ServerJoinRequest request) {
+        if (request.getInvitationCode() != null) {
             String storedInvitationCode = redisService.getValues(INVITE_LINK_PREFIX.formatted(serverId));
-            validateMatchInvitationCode(storedInvitationCode, requestDto.getInvitationCode());
+            validateMatchInvitationCode(storedInvitationCode, request.getInvitationCode());
         }
     }
 
-    private Server validateServerUser(ServerJoinRequestDto requestDto) {
+    private Server validateServerUser(ServerJoinRequest request) {
         Optional<Server> findServer = serverUserRepository.validateServerUser(
-                requestDto.getServerId(),
-                requestDto.getUserId()
+                request.getServerId(),
+                request.getUserId()
         );
 
         if(findServer.isPresent()){
             throw new ServerException(Code.VALIDATION_ERROR, "Already Exist User");
         } else{
-            return serverQueryService.validateExistServer(requestDto.getServerId());
+            return serverQueryService.validateExistServer(request.getServerId());
         }
     }
 

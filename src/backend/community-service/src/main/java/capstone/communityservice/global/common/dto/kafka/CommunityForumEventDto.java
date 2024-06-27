@@ -1,6 +1,6 @@
 package capstone.communityservice.global.common.dto.kafka;
 
-import capstone.communityservice.domain.forum.dto.FileResponseDto;
+import capstone.communityservice.domain.forum.dto.response.FileResponse;
 import capstone.communityservice.domain.forum.entity.Forum;
 import capstone.communityservice.domain.forum.entity.ForumCategory;
 import lombok.Builder;
@@ -31,9 +31,9 @@ public class CommunityForumEventDto {
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
 
-    private List<FileResponseDto> files;
+    private List<FileResponse> files;
 
-    public static CommunityForumEventDto of(String type, Long serverId, Forum forum, Long channelId, List<FileResponseDto> files){
+    public static CommunityForumEventDto of(String type, Long serverId, Forum forum, Long channelId, List<FileResponse> files){
         return CommunityForumEventDto.builder()
                 .type(type)
                 .serverId(serverId)

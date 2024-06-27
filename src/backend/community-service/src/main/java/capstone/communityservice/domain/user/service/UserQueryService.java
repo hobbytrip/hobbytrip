@@ -1,14 +1,13 @@
 package capstone.communityservice.domain.user.service;
 
-import capstone.communityservice.domain.dm.dto.DmReadQueryDto;
+import capstone.communityservice.domain.dm.dto.response.DmUserReadResponse;
 import capstone.communityservice.domain.dm.repository.DmRepository;
 import capstone.communityservice.domain.dm.repository.DmUserRepository;
-import capstone.communityservice.domain.server.dto.ServerReadQueryDto;
-import capstone.communityservice.domain.server.entity.Server;
+import capstone.communityservice.domain.server.dto.response.ServerUserReadResponse;
 import capstone.communityservice.domain.server.repository.ServerRepository;
 import capstone.communityservice.domain.server.repository.ServerUserRepository;
-import capstone.communityservice.domain.user.dto.UserReadResponseDto;
-import capstone.communityservice.domain.user.dto.UserServerDmInfo;
+import capstone.communityservice.domain.user.dto.response.UserReadResponse;
+import capstone.communityservice.domain.user.dto.response.UserServerDmInfo;
 import capstone.communityservice.domain.user.entity.User;
 import capstone.communityservice.domain.user.exception.UserException;
 import capstone.communityservice.domain.user.repository.UserRepository;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -43,19 +41,19 @@ public class UserQueryService {
     }
 
 
-    public UserReadResponseDto read(Long userId) {
-        // UserReadResponseDto.of(dmes, servers)
-        List<ServerReadQueryDto> servers = serverRepository.findServersWithUserId(userId)
+    public UserReadResponse read(Long userId) {
+        // UserReadResponse.of(dmes, servers)
+        List<ServerUserReadResponse> servers = serverRepository.findServersWithUserId(userId)
                 .stream()
-                .map(ServerReadQueryDto::of)
+                .map(ServerUserReadResponse::of)
                 .toList();
 
-        List<DmReadQueryDto> dms = dmRepository.findDmsWithUserId(userId)
+        List<DmUserReadResponse> dms = dmRepository.findDmsWithUserId(userId)
                 .stream()
-                .map(DmReadQueryDto::of)
+                .map(DmUserReadResponse::of)
                 .toList();
 
-        return UserReadResponseDto.of(servers, dms);
+        return UserReadResponse.of(servers, dms);
     }
 
     public UserServerDmInfo feignRead(Long userId) {
