@@ -90,6 +90,8 @@ public class DmCommandService {
     public void delete(DmDeleteRequest request) {
         Dm findDm = validateDm(request.getDmId());
 
+        validateDmProfileDelete(findDm);
+
         dmRepository.delete(findDm);
     }
 
@@ -101,6 +103,12 @@ public class DmCommandService {
             findDm.setProfile(null);
         } else{
             throw new DmException(Code.VALIDATION_ERROR, "Dm profileUrl not equals.");
+        }
+    }
+
+    private void validateDmProfileDelete(Dm dm) {
+        if(dm.getProfile() != null){
+            fileUploadService.delete(dm.getProfile());
         }
     }
 

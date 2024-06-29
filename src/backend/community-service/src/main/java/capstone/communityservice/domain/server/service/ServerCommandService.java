@@ -129,14 +129,14 @@ public class ServerCommandService {
 
         validateManager(findServer.getManagerId(), request.getUserId());
 
-        if(findServer.getProfile() != null)
-            fileUploadService.delete(findServer.getProfile());
+        validateServerProfileDelete(findServer);
 
         serverKafkaTemplate.send(serverKafkaTopic, CommunityServerEventDto.of("server-delete", findServer));
 
         printKafkaLog("delete");
         serverRepository.delete(findServer);
     }
+
 
     public ServerResponse deleteProfile(ServerProfileDeleteRequest request) {
         Server findServer = serverQueryService.validateExistServer(
@@ -275,6 +275,10 @@ public class ServerCommandService {
         if(!managerId.equals(userId)){
             throw new ServerException(Code.UNAUTHORIZED, "Not Manager");
         }
+    }
+    private void validateServerProfileDelete(Server server) {
+        if(server.getProfile() != null)
+            fileUploadService.delete(server.getProfile());
     }
 
     private void printKafkaLog(String type) {
