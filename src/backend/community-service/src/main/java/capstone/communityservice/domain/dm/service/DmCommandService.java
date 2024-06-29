@@ -91,6 +91,7 @@ public class DmCommandService {
         Dm findDm = validateDm(request.getDmId());
 
         validateDmProfileDelete(findDm);
+        dmUserRepository.deleteAllByDmId(findDm.getId());
 
         dmRepository.delete(findDm);
     }

@@ -3,6 +3,7 @@ package capstone.communityservice.domain.server.repository;
 import capstone.communityservice.domain.server.entity.Server;
 import capstone.communityservice.domain.server.entity.ServerUser;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
@@ -28,7 +29,9 @@ public interface ServerUserRepository extends JpaRepository<ServerUser, Long> {
             nativeQuery = true)
     List<Long> findServerIdsByUserId(Long userId);
 
-
+    @Modifying
+    @Query("delete from ServerUser su where su.server.id = :serverid and su.deleted = false")
+    void deleteAllByServerId(Long id);
 
 
 //    @Query("select s from ServerUser su join fetch su.user u join fetch su.server s where u.id =: userId")

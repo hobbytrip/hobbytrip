@@ -2,6 +2,7 @@ package capstone.communityservice.domain.channel.repository;
 
 import capstone.communityservice.domain.channel.entity.Channel;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
@@ -21,4 +22,7 @@ public interface ChannelRepository extends JpaRepository<Channel, Long> {
             nativeQuery = true)
     Long validateChannelManager(Long channelId);
 
+    @Modifying
+    @Query("delete from Channel c where c.server.id = :serverid and c.deleted = false")
+    void deleteAllByServerId(Long serverId);
 }

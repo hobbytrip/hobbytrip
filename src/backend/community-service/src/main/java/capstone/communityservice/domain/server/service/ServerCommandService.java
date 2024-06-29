@@ -2,6 +2,7 @@ package capstone.communityservice.domain.server.service;
 
 import capstone.communityservice.domain.category.dto.response.CategoryResponse;
 import capstone.communityservice.domain.category.entity.Category;
+import capstone.communityservice.domain.category.repository.CategoryRepository;
 import capstone.communityservice.domain.category.service.CategoryCommandService;
 import capstone.communityservice.domain.channel.entity.Channel;
 import capstone.communityservice.domain.channel.entity.ChannelType;
@@ -52,6 +53,7 @@ public class ServerCommandService {
     private final ServerRepository serverRepository;
     private final ServerUserRepository serverUserRepository;
     private final ChannelRepository channelRepository;
+    private final CategoryRepository categoryRepository;
 
     public ServerResponse create(ServerCreateRequest request, MultipartFile file) {
          String profileUrl = file != null ? uploadProfile(file) : null; // <- S3 등록 후
@@ -133,10 +135,11 @@ public class ServerCommandService {
 
         serverKafkaTemplate.send(serverKafkaTopic, CommunityServerEventDto.of("server-delete", findServer));
 
+        serverDeleteBatch(findServer);
+
         printKafkaLog("delete");
         serverRepository.delete(findServer);
     }
-
 
     public ServerResponse deleteProfile(ServerProfileDeleteRequest request) {
         Server findServer = serverQueryService.validateExistServer(
@@ -279,6 +282,12 @@ public class ServerCommandService {
     private void validateServerProfileDelete(Server server) {
         if(server.getProfile() != null)
             fileUploadService.delete(server.getProfile());
+    }
+
+    private void serverDeleteBatch(Server server) {
+        channelRepository.deleteAllByServerId(server.getId());
+        categoryRepository.deleteAllByServerid(server.getId());
+        serverUserRepository.deleteAllByServerId(server.getId());
     }
 
     private void printKafkaLog(String type) {

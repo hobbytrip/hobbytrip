@@ -31,7 +31,7 @@ public class Dm extends BaseTimeEntity {
     @Column(nullable = false)
     private boolean deleted = Boolean.FALSE;
 
-    @OneToMany(mappedBy = "dm", orphanRemoval = true)
+    @OneToMany(mappedBy = "dm")
     private List<DmUser> dmUsers = new ArrayList<>();
 
     public static Dm of(String name) {

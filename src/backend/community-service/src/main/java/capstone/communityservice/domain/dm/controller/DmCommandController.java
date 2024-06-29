@@ -60,6 +60,7 @@ public class DmCommandController {
     public DataResponseDto<Object> delete(@Valid @RequestBody DmDeleteProfileRequest requestDto){
         dmCommandService.deleteProfile(requestDto);
 
+
         return DataResponseDto.of("Dm profile delete success!!");
     }
 }
