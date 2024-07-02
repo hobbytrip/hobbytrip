@@ -28,6 +28,6 @@ public interface DmUserRepository extends JpaRepository<DmUser, Long> {
     List<Long> findDmIdsByUserId(Long userId);
 
     @Modifying
-    @Query("delete from DmUser du where du.dm.id = :dmId and du.deleted = false")
+    @Query("update DmUser du set du.deleted = true where du.dm.id = :dmId")
     void deleteAllByDmId(Long dmId);
 }
