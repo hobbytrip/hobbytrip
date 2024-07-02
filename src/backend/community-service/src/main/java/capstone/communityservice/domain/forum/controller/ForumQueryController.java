@@ -1,6 +1,6 @@
 package capstone.communityservice.domain.forum.controller;
 
-import capstone.communityservice.domain.forum.dto.ForumReadResponseDto;
+import capstone.communityservice.domain.forum.dto.response.ForumReadResponse;
 import capstone.communityservice.domain.forum.service.ForumQueryService;
 import capstone.communityservice.global.common.dto.DataResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ public class ForumQueryController {
 
     @GetMapping("/{forumId}")
     public DataResponseDto<Object> read(@PathVariable("forumId") Long forumId){
-        ForumReadResponseDto response = forumQueryService.read(forumId);
+        ForumReadResponse response = forumQueryService.read(forumId);
 
         return DataResponseDto.of(response);
     }

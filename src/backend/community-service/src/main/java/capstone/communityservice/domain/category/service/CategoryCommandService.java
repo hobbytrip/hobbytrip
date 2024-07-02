@@ -1,17 +1,15 @@
 package capstone.communityservice.domain.category.service;
 
-import capstone.communityservice.domain.category.dto.CategoryCreateRequestDto;
-import capstone.communityservice.domain.category.dto.CategoryDeleteRequestDto;
-import capstone.communityservice.domain.category.dto.CategoryResponseDto;
-import capstone.communityservice.domain.category.dto.CategoryUpdateRequestDto;
+import capstone.communityservice.domain.category.dto.request.CategoryCreateRequest;
+import capstone.communityservice.domain.category.dto.request.CategoryDeleteRequest;
+import capstone.communityservice.domain.category.dto.response.CategoryResponse;
+import capstone.communityservice.domain.category.dto.request.CategoryUpdateRequest;
 import capstone.communityservice.domain.category.entity.Category;
-import capstone.communityservice.domain.category.exception.CategoryException;
 import capstone.communityservice.domain.category.repository.CategoryRepository;
 import capstone.communityservice.domain.dm.exception.DmException;
 import capstone.communityservice.domain.server.entity.Server;
 import capstone.communityservice.domain.server.service.ServerQueryService;
 import capstone.communityservice.global.common.dto.kafka.CommunityCategoryEventDto;
-import capstone.communityservice.global.common.dto.kafka.CommunityChannelEventDto;
 import capstone.communityservice.global.exception.Code;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +29,7 @@ public class CategoryCommandService {
     private final CategoryRepository categoryRepository;
     private final ServerQueryService serverQueryService;
 
-    public CategoryResponseDto save(Category category) {
+    public CategoryResponse save(Category category) {
         Category newCategory = categoryRepository.save(category);
 
         categoryKafkaTemplate.send(categoryKafkaTopic, CommunityCategoryEventDto.of("category-create",
@@ -42,36 +40,45 @@ public class CategoryCommandService {
 
         printKafkaLog("create");
 
-        return CategoryResponseDto.of(newCategory);
+        return CategoryResponse.of(newCategory);
     }
 
-    public CategoryResponseDto create(CategoryCreateRequestDto requestDto) {
-        Server findServer = validateManagerInCategory(requestDto.getServerId(), requestDto.getUserId());
+    public CategoryResponse create(CategoryCreateRequest request) {
+        Server findServer = validateManagerInCategory(request.getServerId(), request.getUserId());
 
-        return save(Category.of(
-                findServer, requestDto.getName())
+        return save(Category.of
+                (
+                    findServer, request.getName()
+                )
         );
     }
 
-    public CategoryResponseDto update(CategoryUpdateRequestDto requestDto) {
-        validateManagerInCategory(requestDto.getServerId(), requestDto.getUserId());
+    public CategoryResponse update(CategoryUpdateRequest request) {
+        validateManagerInCategory(request.getServerId(), request.getUserId());
 
-        Category findCategory = validateCategory(requestDto.getCategoryId());
-        findCategory.setName(requestDto.getName());
+        Category findCategory = validateCategory(request.getCategoryId());
+        findCategory.setName(request.getName());
 
-        categoryKafkaTemplate.send(categoryKafkaTopic, CommunityCategoryEventDto.of("category-update", findCategory, requestDto.getServerId()));
+        categoryKafkaTemplate.send(
+                categoryKafkaTopic,
+                CommunityCategoryEventDto.of(
+                        "category-update",
+                        findCategory,
+                        request.getServerId()
+                )
+        );
 
         printKafkaLog("update");
 
-        return CategoryResponseDto.of(findCategory);
+        return CategoryResponse.of(findCategory);
     }
 
-    public void delete(CategoryDeleteRequestDto requestDto) {
-        validateManagerInCategory(requestDto.getServerId(), requestDto.getUserId());
+    public void delete(CategoryDeleteRequest request) {
+        validateManagerInCategory(request.getServerId(), request.getUserId());
 
-        Category findCategory = validateCategory(requestDto.getCategoryId());
+        Category findCategory = validateCategory(request.getCategoryId());
 
-        categoryKafkaTemplate.send(categoryKafkaTopic, CommunityCategoryEventDto.of("category-delete", findCategory, requestDto.getServerId()));
+        categoryKafkaTemplate.send(categoryKafkaTopic, CommunityCategoryEventDto.of("category-delete", findCategory, request.getServerId()));
 
         printKafkaLog("delete");
 

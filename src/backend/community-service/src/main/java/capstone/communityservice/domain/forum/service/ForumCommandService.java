@@ -4,26 +4,28 @@ import capstone.communityservice.domain.channel.entity.Channel;
 import capstone.communityservice.domain.channel.entity.ChannelType;
 import capstone.communityservice.domain.channel.exception.ChannelException;
 import capstone.communityservice.domain.channel.repository.ChannelRepository;
-import capstone.communityservice.domain.forum.dto.*;
+import capstone.communityservice.domain.forum.dto.request.ForumCreateRequest;
+import capstone.communityservice.domain.forum.dto.request.ForumDeleteRequest;
+import capstone.communityservice.domain.forum.dto.request.ForumUpdateRequest;
+import capstone.communityservice.domain.forum.dto.response.FileResponse;
+import capstone.communityservice.domain.forum.dto.response.ForumCreateResponse;
+import capstone.communityservice.domain.forum.dto.response.ForumUpdateResponse;
 import capstone.communityservice.domain.forum.entity.File;
 import capstone.communityservice.domain.forum.entity.Forum;
 import capstone.communityservice.domain.forum.entity.ForumCategory;
 import capstone.communityservice.domain.forum.exception.ForumException;
 import capstone.communityservice.domain.forum.repository.FileRepository;
 import capstone.communityservice.domain.forum.repository.ForumRepository;
-import capstone.communityservice.domain.server.entity.Server;
 import capstone.communityservice.domain.server.exception.ServerException;
 import capstone.communityservice.domain.server.repository.ServerRepository;
 import capstone.communityservice.domain.server.service.ServerQueryService;
 import capstone.communityservice.domain.user.entity.User;
 import capstone.communityservice.domain.user.service.UserQueryService;
 import capstone.communityservice.global.common.dto.kafka.CommunityForumEventDto;
-import capstone.communityservice.global.common.dto.kafka.CommunityServerEventDto;
 import capstone.communityservice.global.common.service.FileUploadService;
 import capstone.communityservice.global.exception.Code;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +34,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -53,49 +54,49 @@ public class ForumCommandService {
     private final ServerRepository serverRepository;
 
     // 마크다운을 읽으려면 XSS 보안 처리를 해줘야 함
-    public ForumCreateResponseDto create(ForumCreateRequestDto requestDto, List<MultipartFile> fileList) {
-        validateServerAndChannel(requestDto.getServerId(), requestDto.getChannelId());
+    public ForumCreateResponse create(ForumCreateRequest request, List<MultipartFile> fileList) {
+        validateServerAndChannel(request.getServerId(), request.getChannelId());
 
         User findUser = userQueryService.findUserByOriginalId(
-                requestDto.getUserId()
+                request.getUserId()
         );
 
         Forum newForum = forumRepository.save(
                 Forum.of(
-                        requestDto.getChannelId(),
-                        requestDto.getTitle(),
+                        request.getChannelId(),
+                        request.getTitle(),
                         findUser,
-                        requestDto.getContent(),
-                        requestDto.getForumCategory()
+                        request.getContent(),
+                        request.getForumCategory()
                 )
         );
 
-        List<FileResponseDto> files = fileList != null ? uploadFile(fileList, newForum).stream()
-                .map(FileResponseDto::of)
+        List<FileResponse> files = fileList != null ? uploadFile(fileList, newForum).stream()
+                .map(FileResponse::of)
                 .toList() : null;
 
         forumKafkaTemplate.send(
                 forumKafkaTopic,
                 CommunityForumEventDto.of("forum-create",
-                        requestDto.getServerId(),
+                        request.getServerId(),
                         newForum,
-                        requestDto.getChannelId(),
+                        request.getChannelId(),
                         files
                 )
         );
+
         printKafkaLog("create");
-        return ForumCreateResponseDto.of(newForum, findUser.getName());
+        return ForumCreateResponse.of(newForum, findUser.getName());
     }
 
-    public ForumUpdateResponseDto update(ForumUpdateRequestDto requestDto, List<Long> filesId, List<MultipartFile> fileList){
-        validateServerAndChannel(requestDto.getServerId(), requestDto.getChannelId());
+    public ForumUpdateResponse update(ForumUpdateRequest request, List<Long> filesId, List<MultipartFile> fileList){
+        validateServerAndChannel(request.getServerId(), request.getChannelId());
 
-        Forum findForum = validateExistForum(requestDto.getForumId());
+        Forum findForum = validateExistForum(request.getForumId());
 
-        validateOwnerUser(findForum, requestDto.getUserId());
+        validateOwnerUser(findForum, request.getUserId());
 
-        List<FileResponseDto> files = getFileResponseDtos(
-                requestDto,
+        List<FileResponse> files = getFileResponseDtos(
                 filesId,
                 fileList,
                 findForum
@@ -103,42 +104,42 @@ public class ForumCommandService {
 
         modifyForum(
                 findForum,
-                requestDto.getTitle(),
-                requestDto.getContent(),
-                requestDto.getCategory()
+                request.getTitle(),
+                request.getContent(),
+                request.getCategory()
         );
 
 
         forumKafkaTemplate.send(
                 forumKafkaTopic,
                 CommunityForumEventDto.of("forum-update",
-                        requestDto.getServerId(),
+                        request.getServerId(),
                         findForum,
-                        requestDto.getChannelId(),
+                        request.getChannelId(),
                         files
                 )
         );
 
         printKafkaLog("update");
 
-        return ForumUpdateResponseDto.of(findForum, files);
+        return ForumUpdateResponse.of(findForum, files);
     }
 
-    public void delete(ForumDeleteRequestDto requestDto){
-        validateServerAndChannel(requestDto.getServerId(), requestDto.getChannelId());
-        Forum findForum = validateExistForum(requestDto.getForumId());
+    public void delete(ForumDeleteRequest request){
+        validateServerAndChannel(request.getServerId(), request.getChannelId());
+        Forum findForum = validateExistForum(request.getForumId());
 
         validateDelete(
                 findForum,
-                requestDto.getUserId(),
-                requestDto.getChannelId()
+                request.getUserId(),
+                request.getChannelId()
         );
 
         forumKafkaTemplate.send(
                 forumKafkaTopic,
                 CommunityForumEventDto.of("forum-delete",
-                        requestDto.getServerId(),
-                        requestDto.getChannelId(),
+                        request.getServerId(),
+                        request.getChannelId(),
                         findForum.getId()
                 )
         );
@@ -148,19 +149,19 @@ public class ForumCommandService {
         forumRepository.delete(findForum);
     }
 
-    private List<FileResponseDto> getFileResponseDtos(ForumUpdateRequestDto requestDto, List<Long> filesId, List<MultipartFile> fileList, Forum findForum) {
+    private List<FileResponse> getFileResponseDtos(List<Long> filesId, List<MultipartFile> fileList, Forum findForum) {
         List<File> response = updateFiles(
                 filesId,
                 fileList,
                 findForum
         );
 
-        List<FileResponseDto> files;
+        List<FileResponse> files;
 
         if(response != null) {
             files = response.
                     stream().
-                    map(FileResponseDto::of).
+                    map(FileResponse::of).
                     toList();
         } else {
             files = null;
@@ -199,7 +200,7 @@ public class ForumCommandService {
                 .forEach(fileUploadService::delete);
 
         List<Long> fileIds = files.stream()
-                .map(File::getId) // File 엔티티에 getId() 메소드가 있다고 가정
+                .map(File::getId)
                 .toList();
 
         fileRepository.deleteAllByIdIn(fileIds);
