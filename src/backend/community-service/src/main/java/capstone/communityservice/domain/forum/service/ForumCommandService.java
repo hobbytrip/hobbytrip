@@ -22,6 +22,7 @@ import capstone.communityservice.domain.server.service.ServerQueryService;
 import capstone.communityservice.domain.user.entity.User;
 import capstone.communityservice.domain.user.service.UserQueryService;
 import capstone.communityservice.global.common.dto.kafka.CommunityForumEventDto;
+import capstone.communityservice.global.common.kafka.KafkaEventPublisher;
 import capstone.communityservice.global.common.service.FileUploadService;
 import capstone.communityservice.global.exception.Code;
 import lombok.RequiredArgsConstructor;
@@ -40,18 +41,16 @@ import java.util.Objects;
 @Transactional
 @RequiredArgsConstructor
 public class ForumCommandService {
-    private static final String forumKafkaTopic = "communityForumEventTopic";
-
     private final FileUploadService fileUploadService;
-    private final KafkaTemplate<String, CommunityForumEventDto> forumKafkaTemplate;
 
     private final UserQueryService userQueryService;
-    private final ServerQueryService serverQueryService;
 
     private final ForumRepository forumRepository;
     private final ChannelRepository channelRepository;
     private final FileRepository fileRepository;
     private final ServerRepository serverRepository;
+
+    private final KafkaEventPublisher kafkaEventPublisher;
 
     // 마크다운을 읽으려면 XSS 보안 처리를 해줘야 함
     public ForumCreateResponse create(ForumCreateRequest request, List<MultipartFile> fileList) {
@@ -75,8 +74,7 @@ public class ForumCommandService {
                 .map(FileResponse::of)
                 .toList() : null;
 
-        forumKafkaTemplate.send(
-                forumKafkaTopic,
+        kafkaEventPublisher.sendToForumEventTopic(
                 CommunityForumEventDto.of("forum-create",
                         request.getServerId(),
                         newForum,
@@ -110,8 +108,7 @@ public class ForumCommandService {
         );
 
 
-        forumKafkaTemplate.send(
-                forumKafkaTopic,
+        kafkaEventPublisher.sendToForumEventTopic(
                 CommunityForumEventDto.of("forum-update",
                         request.getServerId(),
                         findForum,
@@ -135,8 +132,7 @@ public class ForumCommandService {
                 request.getChannelId()
         );
 
-        forumKafkaTemplate.send(
-                forumKafkaTopic,
+        kafkaEventPublisher.sendToForumEventTopic(
                 CommunityForumEventDto.of("forum-delete",
                         request.getServerId(),
                         request.getChannelId(),

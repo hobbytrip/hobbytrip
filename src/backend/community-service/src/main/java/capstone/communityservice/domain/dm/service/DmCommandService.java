@@ -10,6 +10,7 @@ import capstone.communityservice.domain.dm.repository.DmUserRepository;
 import capstone.communityservice.domain.user.entity.User;
 import capstone.communityservice.domain.user.service.UserQueryService;
 import capstone.communityservice.global.common.dto.kafka.CommunityDmEventDto;
+import capstone.communityservice.global.common.kafka.KafkaEventPublisher;
 import capstone.communityservice.global.common.service.FileUploadService;
 import capstone.communityservice.global.exception.Code;
 import lombok.RequiredArgsConstructor;
@@ -27,14 +28,12 @@ import java.util.stream.Collectors;
 @Transactional
 @RequiredArgsConstructor
 public class DmCommandService {
-    private static final String dmKafkaTopic = "communityDmEventTopic";
-
-    private final KafkaTemplate<String, CommunityDmEventDto> dmKafkaTemplate;
-
     private final DmRepository dmRepository;
     private final DmUserRepository dmUserRepository;
     private final UserQueryService userQueryService;
     private final FileUploadService fileUploadService;
+
+    private final KafkaEventPublisher kafkaEventPublisher;
 
     public DmResponse create(DmCreateRequest request) {
         List<User> users = findUsers(request.getUserIds());
@@ -65,7 +64,9 @@ public class DmCommandService {
         Dm findDm = validateDm(request.getDmId());
         findDm.setName(request.getName());
 
-        dmKafkaTemplate.send(dmKafkaTopic, CommunityDmEventDto.of("dm-update", findDm));
+        kafkaEventPublisher.sendToDmEventTopic(
+                CommunityDmEventDto.of("dm-update", findDm)
+        );
 
         printKafkaLog("update");
 
@@ -80,7 +81,9 @@ public class DmCommandService {
 
         findDm.setProfile(profileUrl);
 
-        dmKafkaTemplate.send(dmKafkaTopic, CommunityDmEventDto.of("dm-update", findDm));
+        kafkaEventPublisher.sendToDmEventTopic(
+                CommunityDmEventDto.of("dm-update", findDm)
+        );
 
         printKafkaLog("update");
 

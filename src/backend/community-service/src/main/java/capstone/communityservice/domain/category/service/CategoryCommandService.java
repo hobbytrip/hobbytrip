@@ -10,6 +10,7 @@ import capstone.communityservice.domain.dm.exception.DmException;
 import capstone.communityservice.domain.server.entity.Server;
 import capstone.communityservice.domain.server.service.ServerQueryService;
 import capstone.communityservice.global.common.dto.kafka.CommunityCategoryEventDto;
+import capstone.communityservice.global.common.kafka.KafkaEventPublisher;
 import capstone.communityservice.global.exception.Code;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,19 +23,19 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class CategoryCommandService {
-    private static final String categoryKafkaTopic = "communityCategoryEventTopic";
-
-    private final KafkaTemplate<String, CommunityCategoryEventDto> categoryKafkaTemplate;
-
     private final CategoryRepository categoryRepository;
     private final ServerQueryService serverQueryService;
+
+    private final KafkaEventPublisher kafkaEventPublisher;
 
     public CategoryResponse save(Category category) {
         Category newCategory = categoryRepository.save(category);
 
-        categoryKafkaTemplate.send(categoryKafkaTopic, CommunityCategoryEventDto.of("category-create",
-                newCategory,
-                newCategory.getServer().getId()
+        kafkaEventPublisher.sendToCategoryEventTopic(
+                CommunityCategoryEventDto.of(
+                        "category-create",
+                        newCategory,
+                        newCategory.getServer().getId()
                 )
         );
 
@@ -59,8 +60,7 @@ public class CategoryCommandService {
         Category findCategory = validateCategory(request.getCategoryId());
         findCategory.setName(request.getName());
 
-        categoryKafkaTemplate.send(
-                categoryKafkaTopic,
+        kafkaEventPublisher.sendToCategoryEventTopic(
                 CommunityCategoryEventDto.of(
                         "category-update",
                         findCategory,
@@ -78,7 +78,13 @@ public class CategoryCommandService {
 
         Category findCategory = validateCategory(request.getCategoryId());
 
-        categoryKafkaTemplate.send(categoryKafkaTopic, CommunityCategoryEventDto.of("category-delete", findCategory, request.getServerId()));
+        kafkaEventPublisher.sendToCategoryEventTopic(
+                CommunityCategoryEventDto.of(
+                        "category-delete",
+                        findCategory,
+                        request.getServerId()
+                )
+        );
 
         printKafkaLog("delete");
 

@@ -19,6 +19,7 @@ import capstone.communityservice.domain.server.repository.ServerUserRepository;
 import capstone.communityservice.domain.user.entity.User;
 import capstone.communityservice.domain.user.service.UserQueryService;
 import capstone.communityservice.global.common.dto.kafka.CommunityServerEventDto;
+import capstone.communityservice.global.common.kafka.KafkaEventPublisher;
 import capstone.communityservice.global.common.service.FileUploadService;
 import capstone.communityservice.global.common.service.RedisService;
 import capstone.communityservice.global.exception.Code;
@@ -38,11 +39,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ServerCommandService {
     private static final String INVITE_LINK_PREFIX = "serverId=%d";
-    private static final String serverKafkaTopic = "communityServerEventTopic";
 
     private final FileUploadService fileUploadService;
     private final RedisService redisService;
-    private final KafkaTemplate<String, CommunityServerEventDto> serverKafkaTemplate;
 
     private final UserQueryService userQueryService;
     private final ServerUserCommandService serverUserCommandService;
@@ -54,6 +53,8 @@ public class ServerCommandService {
     private final ServerUserRepository serverUserRepository;
     private final ChannelRepository channelRepository;
     private final CategoryRepository categoryRepository;
+
+    private final KafkaEventPublisher kafkaEventPublisher;
 
     public ServerResponse create(ServerCreateRequest request, MultipartFile file) {
          String profileUrl = file != null ? uploadProfile(file) : null; // <- S3 등록 후
@@ -119,7 +120,9 @@ public class ServerCommandService {
                 request.getDescription()
         );
 
-        serverKafkaTemplate.send(serverKafkaTopic, CommunityServerEventDto.of("server-update", findServer));
+        kafkaEventPublisher.sendToServerEventTopic(
+                CommunityServerEventDto.of("server-update", findServer)
+        );
 
         printKafkaLog("update");
 
@@ -133,7 +136,9 @@ public class ServerCommandService {
 
         validateServerProfileDelete(findServer);
 
-        serverKafkaTemplate.send(serverKafkaTopic, CommunityServerEventDto.of("server-delete", findServer));
+        kafkaEventPublisher.sendToServerEventTopic(
+                CommunityServerEventDto.of("server-delete", findServer)
+        );
 
         serverDeleteBatch(findServer);
 
@@ -153,7 +158,9 @@ public class ServerCommandService {
             findServer.setProfile(null);
         }
 
-        serverKafkaTemplate.send(serverKafkaTopic, CommunityServerEventDto.of("server-update", findServer));
+        kafkaEventPublisher.sendToServerEventTopic(
+                CommunityServerEventDto.of("server-delete", findServer)
+        );
 
         printKafkaLog("update");
 
@@ -177,12 +184,14 @@ public class ServerCommandService {
                         "일반")
         );
 
+
         channelRepository.save(
                 Channel.of(
                         server,
                         initVoiceCategory.getCategoryId(),
                         ChannelType.VOICE,
-                        "일반")
+                        "일반"
+                )
         );
 
         channelCommandService.sendUserLocEvent(

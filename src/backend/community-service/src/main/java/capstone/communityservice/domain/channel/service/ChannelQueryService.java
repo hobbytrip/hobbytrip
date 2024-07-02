@@ -9,6 +9,7 @@ import capstone.communityservice.domain.forum.dto.response.ForumResponse;
 import capstone.communityservice.domain.forum.entity.Forum;
 import capstone.communityservice.domain.forum.repository.ForumRepository;
 import capstone.communityservice.global.common.dto.SliceResponseDto;
+import capstone.communityservice.global.common.kafka.KafkaEventPublisher;
 import capstone.communityservice.global.exception.Code;
 import capstone.communityservice.global.external.ChatServiceClient;
 import lombok.RequiredArgsConstructor;

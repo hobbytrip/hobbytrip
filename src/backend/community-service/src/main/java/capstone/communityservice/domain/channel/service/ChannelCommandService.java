@@ -20,6 +20,7 @@ import capstone.communityservice.domain.server.repository.ServerRepository;
 import capstone.communityservice.domain.server.service.ServerQueryService;
 import capstone.communityservice.global.common.dto.kafka.CommunityChannelEventDto;
 import capstone.communityservice.global.common.dto.kafka.UserLocationEventDto;
+import capstone.communityservice.global.common.kafka.KafkaEventPublisher;
 import capstone.communityservice.global.common.service.FileUploadService;
 import capstone.communityservice.global.exception.Code;
 import lombok.RequiredArgsConstructor;
@@ -28,21 +29,13 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class ChannelCommandService {
-    private static final String channelKafkaTopic = "communityChannelEventTopic";
-    private static final String userLocationKafkaTopic = "userLocationEvent";
-
-    private final KafkaTemplate<String, CommunityChannelEventDto> channelKafkaTemplate;
-    private final KafkaTemplate<String, UserLocationEventDto> userLocationKafkaTemplate;
-
     private final ServerQueryService serverQueryService;
     private final FileUploadService fileUploadService;
 
@@ -52,6 +45,8 @@ public class ChannelCommandService {
     private final ForumRepository forumRepository;
     private final FileRepository fileRepository;
 
+    private final KafkaEventPublisher kafkaEventPublisher;
+
     public ChannelResponse create(ChannelCreateRequest request) {
         Server findServer = validateManagerInChannel(request.getServerId(), request.getUserId());
 
@@ -59,8 +54,7 @@ public class ChannelCommandService {
 
         Channel newChannel = channelRepository.save(createChannel(findServer, request));
 
-        channelKafkaTemplate.send(
-                channelKafkaTopic,
+        kafkaEventPublisher.sendToChannelEventTopic(
                 CommunityChannelEventDto.of(
                         "channel-create",
                         newChannel,
@@ -68,6 +62,7 @@ public class ChannelCommandService {
                 )
         );
 
+        printKafkaLog("create");
         return ChannelResponse.of(newChannel);
     }
 
@@ -79,7 +74,13 @@ public class ChannelCommandService {
 
         findChannel.modifyChannel(request.getCategoryId(), request.getName());
 
-        channelKafkaTemplate.send(channelKafkaTopic, CommunityChannelEventDto.of("channel-update", findChannel, request.getServerId()));
+        kafkaEventPublisher.sendToChannelEventTopic(
+                CommunityChannelEventDto.of(
+                        "channel-update",
+                        findChannel,
+                        request.getServerId()
+                )
+        );
 
         printKafkaLog("update");
 
@@ -92,16 +93,30 @@ public class ChannelCommandService {
         Channel findChannel = validateChannel(request.getChannelId());
 
         validateForumChannelDelete(findChannel);
-        channelKafkaTemplate.send(userLocationKafkaTopic,
+
+        kafkaEventPublisher.sendToChannelEventTopic(
                 CommunityChannelEventDto.of(
                         "channel-delete",
                         findChannel,
                         request.getServerId()
                 )
         );
+
         printKafkaLog("delete");
 
         channelRepository.delete(findChannel);
+    }
+
+    public void sendUserLocEvent(Long userId, Long serverId, Long channelId) {
+        kafkaEventPublisher.sendToUserLocEventTopic(
+                UserLocationEventDto.of(
+                        userId,
+                        serverId,
+                        channelId
+                )
+        );
+
+        printKafkaLog("User Location Send");
     }
 
     private void validateForumChannelDelete(Channel channel) {
@@ -141,16 +156,7 @@ public class ChannelCommandService {
         );
     }
 
-    public void sendUserLocEvent(Long userId, Long serverId, Long channelId) {
-        userLocationKafkaTemplate.send(userLocationKafkaTopic,
-                UserLocationEventDto.of(
-                        userId,
-                        serverId,
-                        channelId)
-        );
 
-        printKafkaLog("User Location Send");
-    }
 
     private Channel validateChannel(Long channelId){
         return channelRepository.findById(channelId)
