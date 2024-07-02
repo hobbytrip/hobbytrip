@@ -7,20 +7,30 @@ import capstone.communityservice.domain.channel.dto.request.ChannelDeleteRequest
 import capstone.communityservice.domain.channel.dto.response.ChannelResponse;
 import capstone.communityservice.domain.channel.dto.request.ChannelUpdateRequest;
 import capstone.communityservice.domain.channel.entity.Channel;
+import capstone.communityservice.domain.channel.entity.ChannelType;
 import capstone.communityservice.domain.channel.exception.ChannelException;
 import capstone.communityservice.domain.channel.repository.ChannelRepository;
+import capstone.communityservice.domain.forum.entity.File;
+import capstone.communityservice.domain.forum.entity.Forum;
+import capstone.communityservice.domain.forum.repository.FileRepository;
+import capstone.communityservice.domain.forum.repository.ForumRepository;
 import capstone.communityservice.domain.server.entity.Server;
 import capstone.communityservice.domain.server.exception.ServerException;
 import capstone.communityservice.domain.server.repository.ServerRepository;
 import capstone.communityservice.domain.server.service.ServerQueryService;
 import capstone.communityservice.global.common.dto.kafka.CommunityChannelEventDto;
 import capstone.communityservice.global.common.dto.kafka.UserLocationEventDto;
+import capstone.communityservice.global.common.service.FileUploadService;
 import capstone.communityservice.global.exception.Code;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -34,10 +44,13 @@ public class ChannelCommandService {
     private final KafkaTemplate<String, UserLocationEventDto> userLocationKafkaTemplate;
 
     private final ServerQueryService serverQueryService;
+    private final FileUploadService fileUploadService;
 
     private final ChannelRepository channelRepository;
     private final ServerRepository serverRepository;
     private final CategoryRepository categoryRepository;
+    private final ForumRepository forumRepository;
+    private final FileRepository fileRepository;
 
     public ChannelResponse create(ChannelCreateRequest request) {
         Server findServer = validateManagerInChannel(request.getServerId(), request.getUserId());
@@ -78,6 +91,7 @@ public class ChannelCommandService {
 
         Channel findChannel = validateChannel(request.getChannelId());
 
+        validateForumChannelDelete(findChannel);
         channelKafkaTemplate.send(userLocationKafkaTopic,
                 CommunityChannelEventDto.of(
                         "channel-delete",
@@ -88,6 +102,33 @@ public class ChannelCommandService {
         printKafkaLog("delete");
 
         channelRepository.delete(findChannel);
+    }
+
+    private void validateForumChannelDelete(Channel channel) {
+        if(channel
+                .getChannelType()
+                .equals(ChannelType.FORUM)
+        ){
+            List<Forum> forums = forumRepository.findForumsByChannelId(channel.getId());
+            List<Long> forumIds = forums.stream()
+                    .map(Forum::getId)
+                    .distinct()
+                    .toList();
+
+            List<File> files = fileRepository.findByForumIdsIn(forumIds);
+
+            fileRepository.deleteAllByForumIdsIn(forumIds);
+//            fileDelete(files);
+
+
+            forumRepository.deleteAllByChannelId(channel.getId());
+        }
+    }
+
+    private void fileDelete(List<File> files) {
+        files.stream()
+                .map(File::getFileUrl)
+                .forEach(fileUploadService::delete);
     }
 
 

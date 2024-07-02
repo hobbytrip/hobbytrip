@@ -280,7 +280,7 @@ public class ServerCommandService {
         }
     }
     private void validateServerProfileDelete(Server server) {
-        if(server.getProfile() != null)
+        if(server.getProfile() != null && !server.getProfile().equals("null"))
             fileUploadService.delete(server.getProfile());
     }
 

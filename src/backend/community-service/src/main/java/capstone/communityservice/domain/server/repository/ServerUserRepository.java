@@ -30,8 +30,8 @@ public interface ServerUserRepository extends JpaRepository<ServerUser, Long> {
     List<Long> findServerIdsByUserId(Long userId);
 
     @Modifying
-    @Query("delete from ServerUser su where su.server.id = :serverid and su.deleted = false")
-    void deleteAllByServerId(Long id);
+    @Query("delete from ServerUser su where su.server.id = :serverId and su.deleted = false")
+    void deleteAllByServerId(Long serverId);
 
 
 //    @Query("select s from ServerUser su join fetch su.user u join fetch su.server s where u.id =: userId")

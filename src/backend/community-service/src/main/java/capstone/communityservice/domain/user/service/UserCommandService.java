@@ -34,7 +34,7 @@ public class UserCommandService {
                                              request.getOriginalId()
                                      )
                              );
-//                            User newUser = User.of(userServiceFakeClient.getUser(requestDto.getOriginalId()));
+//                            User newUser = User.of(userServiceFakeClient.getUser(request.getOriginalId()));
                             userRepository.save(newUser);
                             return newUser;
                         }));

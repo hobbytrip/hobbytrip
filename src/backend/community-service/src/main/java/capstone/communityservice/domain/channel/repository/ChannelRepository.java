@@ -23,6 +23,6 @@ public interface ChannelRepository extends JpaRepository<Channel, Long> {
     Long validateChannelManager(Long channelId);
 
     @Modifying
-    @Query("delete from Channel c where c.server.id = :serverid and c.deleted = false")
+    @Query("delete from Channel c where c.server.id = :serverId and c.deleted = false")
     void deleteAllByServerId(Long serverId);
 }

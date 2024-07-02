@@ -13,6 +13,6 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     List<Category> findByServerId(Long serverId);
 
     @Modifying
-    @Query("delete from Category c where c.server.id = :serverid and c.deleted = false")
-    void deleteAllByServerid(Long id);
+    @Query("delete from Category c where c.server.id = :serverId and c.deleted = false")
+    void deleteAllByServerid(Long serverId);
 }
