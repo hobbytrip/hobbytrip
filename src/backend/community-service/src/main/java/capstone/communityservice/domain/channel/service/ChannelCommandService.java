@@ -118,7 +118,7 @@ public class ChannelCommandService {
             List<File> files = fileRepository.findByForumIdsIn(forumIds);
 
             fileRepository.deleteAllByForumIdsIn(forumIds);
-//            fileDelete(files);
+            fileDelete(files);
 
 
             forumRepository.deleteAllByChannelId(channel.getId());
