@@ -41,6 +41,7 @@ function CreateServer() {
       if (profileImage) {
         formData.append("profile", profileImage);
       }
+      console.error(data, formData, profileImage);
 
       const response = await axiosInstance.post(API.COMM_SERVER, formData, {
         headers: {

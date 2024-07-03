@@ -6,7 +6,6 @@ import MainHeader from "../../components/MainView/MainHeader/MainHeader.jsx";
 import MyPlanet from "../../components/MainView/MyPlanet/MyPlanet.jsx";
 import MyFriend from "../../components/Modal/FriendModal/MyFriend/MyFriend.jsx";
 import style from "./MainView.module.css";
-import setSSE from "../../hooks/useSSE.js";
 import DmHistoryList from "../../components/TYPE/DM/DmHistoryList/DmHistoryList.jsx";
 import { AiOutlineMenu } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
@@ -17,7 +16,6 @@ const MainView = () => {
   const { userId } = useUserStore();
   const { setServers } = usePlanetsStore();
 
-  setSSE();
   useEffect(() => {
     if (userId) {
       const getMainData = async () => {
