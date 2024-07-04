@@ -12,9 +12,9 @@ import ForumRoom from "./pages/Chat/ForumRoom/ForumRoom.jsx";
 import SettingView from "./pages/ServerView/SettingView/SettingView.jsx";
 import Server from "./components/TYPE/Community/Server.jsx";
 import DM from "./components/TYPE/DM/DM.jsx";
-import "./utils/notification/fcm.js";
+import "./utils/fcm.js";
+import { messaging } from "./utils/fcm.js"
 import { getToken } from "firebase/messaging";
-import { messaging } from "./utils/notification/fcm.js"
 
 const { VITE_APP_VAPID_KEY } = import.meta.env;
 
