@@ -46,3 +46,5 @@ application.yml
 ### log ###
 ./log
 **/*.log
+
+.gitmodules
