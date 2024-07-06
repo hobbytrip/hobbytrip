@@ -1,6 +1,6 @@
 package capstone.gatewayservice.global.filter;
 
-import capstone.gatewayservice.global.common.JwtTokenProvider;
+import capstone.gatewayservice.global.common.JwtTokenValidator;
 import capstone.gatewayservice.global.common.dto.DataResponseDto;
 import capstone.gatewayservice.global.common.dto.ErrorResponseDto;
 import capstone.gatewayservice.global.exception.Code;
@@ -31,15 +31,13 @@ import java.nio.charset.StandardCharsets;
 @Component
 public class AuthorizationFilter extends AbstractGatewayFilterFactory<AuthorizationFilter.Config> {
 
-    private final JwtTokenProvider jwtTokenProvider;
-
-    private final AuthClient authClient;
+    private final JwtTokenValidator jwtTokenValidator;
 
     private final WebClient.Builder webClientBuilder;
 
-    public AuthorizationFilter(JwtTokenProvider jwtTokenProvider, @Lazy @Qualifier("AuthFeignClient") AuthClient authClient, WebClient.Builder webClientBuilder){
+    public AuthorizationFilter(JwtTokenValidator jwtTokenValidator, @Lazy @Qualifier("AuthFeignClient") AuthClient authClient, WebClient.Builder webClientBuilder){
         super(Config.class);
-        this.jwtTokenProvider = jwtTokenProvider;
+        this.jwtTokenValidator = jwtTokenValidator;
         this.authClient = authClient;
         this.webClientBuilder = webClientBuilder;
     }
@@ -56,13 +54,13 @@ public class AuthorizationFilter extends AbstractGatewayFilterFactory<Authorizat
             }
             
             String accessToken =
-                    jwtTokenProvider.resolveAccessToken(exchange.getRequest());
+                    jwtTokenValidator.resolveAccessToken(exchange.getRequest());
 
             String refreshToken =
-                    jwtTokenProvider.resolveRefreshToken(exchange.getRequest());
+                    jwtTokenValidator.resolveRefreshToken(exchange.getRequest());
 
 
-            if (StringUtils.hasText(accessToken) && jwtTokenProvider.validateToken(accessToken)) {
+            if (StringUtils.hasText(accessToken) && jwtTokenValidator.validateToken(accessToken)) {
                 return doNotLogout(accessToken, exchange.getRequest())
                         .flatMap(isValid -> {
                             if (Boolean.TRUE.equals(isValid)) {
