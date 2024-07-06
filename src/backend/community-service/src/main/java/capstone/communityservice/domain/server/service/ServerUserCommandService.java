@@ -1,8 +1,8 @@
 package capstone.communityservice.domain.server.service;
 
-import capstone.communityservice.domain.server.dto.ServerUserDeleteRequestDto;
-import capstone.communityservice.domain.server.dto.ServerUserResponseDto;
-import capstone.communityservice.domain.server.dto.ServerUserUpdateDto;
+import capstone.communityservice.domain.server.dto.request.ServerUserDeleteRequest;
+import capstone.communityservice.domain.server.dto.response.ServerUserUpdateResponse;
+import capstone.communityservice.domain.server.dto.request.ServerUserUpdateRequest;
 import capstone.communityservice.domain.server.entity.Server;
 import capstone.communityservice.domain.server.entity.ServerUser;
 import capstone.communityservice.domain.server.exception.ServerException;
@@ -27,25 +27,25 @@ public class ServerUserCommandService {
         serverUserRepository.save(serverUser);
     }
 
-    public ServerUserResponseDto update(ServerUserUpdateDto requestDto) {
-        ServerUser findServerUser = validateServerUser(requestDto.getServerId(), requestDto.getUserId());
+    public ServerUserUpdateResponse update(ServerUserUpdateRequest request) {
+        ServerUser findServerUser = validateServerUser(request.getServerId(), request.getUserId());
 
-        findServerUser.setName(requestDto.getName());
+        findServerUser.setName(request.getName());
 
-        return ServerUserResponseDto.of(findServerUser, requestDto.getServerId(), requestDto.getUserId());
+        return ServerUserUpdateResponse.of(findServerUser, request.getServerId(), request.getUserId());
     }
 
-    public void delete(ServerUserDeleteRequestDto requestDto) {
+    public void delete(ServerUserDeleteRequest request) {
         ServerUser findServerUser = validateServerUser(
-                requestDto.getServerId(),
-                requestDto.getServerUserId()
+                request.getServerId(),
+                request.getServerUserId()
         );
 
-        Server findServer = serverQueryService.validateExistServer(requestDto.getServerId());
+        Server findServer = serverQueryService.validateExistServer(request.getServerId());
 
         serverQueryService.validateManager(
                 findServer.getManagerId(),
-                requestDto.getUserId()
+                request.getUserId()
         );
 
         serverUserRepository.delete(findServerUser);

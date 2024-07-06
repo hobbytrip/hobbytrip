@@ -1,6 +1,5 @@
 package capstone.communityservice.domain.dm.entity;
 
-import capstone.communityservice.domain.server.entity.ServerUser;
 import capstone.communityservice.domain.user.entity.User;
 import capstone.communityservice.global.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;

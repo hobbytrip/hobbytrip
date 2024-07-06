@@ -2,6 +2,7 @@ package capstone.communityservice.domain.dm.repository;
 
 import capstone.communityservice.domain.dm.entity.DmUser;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -25,4 +26,8 @@ public interface DmUserRepository extends JpaRepository<DmUser, Long> {
             "where du.user_id = :userId ",
             nativeQuery = true)
     List<Long> findDmIdsByUserId(Long userId);
+
+    @Modifying
+    @Query("update DmUser du set du.deleted = true where du.dm.id = :dmId")
+    void deleteAllByDmId(Long dmId);
 }

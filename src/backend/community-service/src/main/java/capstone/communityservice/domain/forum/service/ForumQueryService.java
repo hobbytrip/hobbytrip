@@ -1,7 +1,7 @@
 package capstone.communityservice.domain.forum.service;
 
-import capstone.communityservice.domain.forum.dto.ForumReadResponseDto;
-import capstone.communityservice.domain.forum.dto.ForumResponseDto;
+import capstone.communityservice.domain.forum.dto.response.ForumReadResponse;
+import capstone.communityservice.domain.forum.dto.response.ForumResponse;
 import capstone.communityservice.domain.forum.entity.Forum;
 import capstone.communityservice.domain.forum.exception.ForumException;
 import capstone.communityservice.domain.forum.repository.ForumRepository;
@@ -24,12 +24,12 @@ public class ForumQueryService {
 
      private final ChatServiceClient chatServiceClient;
 
-    public ForumReadResponseDto read(Long forumId) {
+    public ForumReadResponse read(Long forumId) {
         Forum findForum = validateExistForum(forumId);
 
         Page<ForumMessageDto> messages = chatServiceClient.getForumMessages(forumId, 0, 30);
 
-        return ForumReadResponseDto.of(ForumResponseDto.of(findForum), messages);
+        return ForumReadResponse.of(ForumResponse.of(findForum), messages);
     }
 
     private Forum validateExistForum(Long forumId){
