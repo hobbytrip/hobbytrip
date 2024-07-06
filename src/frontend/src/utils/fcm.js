@@ -17,29 +17,15 @@ export const messaging = getMessaging(app);
 onMessage(messaging, (payload) => {
   console.log("Message received. ", payload);
   
-  const titleData = payload.notification.title;
-  const bodyData = payload.notification.body;
-  let title;
-  switch(titleData){
-    case 'SERVER':
-      title = '서버 이름'
-      break;
-    case 'FRIEND':
-      title = '친구 요청'
-      break;
-    case 'DM':
-      title = 'DM'
-      break;
-    default:
-      title = "FitTrip"
-      break;
-  }
-  const body = {
+  // notification은 나중에 data로 바꾸기
+  const notificationTitle = payload.notification.title;
+  const notificationOptions = {
     body: payload.notification.body,
-    icon: 'http://localhost:3000/image/logo.png'
+    icon: 'http://localhost:3000/image/logo.png',
+    tag: notificationTitle
   };
 
- const notification = new Notification(title, body);
+ const notification = new Notification(notificationTitle, notificationOptions);
 
  notification.onclick = (event) => {
   event.preventDefault();
