@@ -2,27 +2,35 @@ package capstone.communityservice.domain.channel.service;
 
 import capstone.communityservice.domain.category.exception.CategoryException;
 import capstone.communityservice.domain.category.repository.CategoryRepository;
-import capstone.communityservice.domain.channel.dto.ChannelCreateRequestDto;
-import capstone.communityservice.domain.channel.dto.ChannelDeleteRequestDto;
-import capstone.communityservice.domain.channel.dto.ChannelResponseDto;
-import capstone.communityservice.domain.channel.dto.ChannelUpdateRequestDto;
+import capstone.communityservice.domain.channel.dto.request.ChannelCreateRequest;
+import capstone.communityservice.domain.channel.dto.request.ChannelDeleteRequest;
+import capstone.communityservice.domain.channel.dto.response.ChannelResponse;
+import capstone.communityservice.domain.channel.dto.request.ChannelUpdateRequest;
 import capstone.communityservice.domain.channel.entity.Channel;
 import capstone.communityservice.domain.channel.entity.ChannelType;
 import capstone.communityservice.domain.channel.exception.ChannelException;
 import capstone.communityservice.domain.channel.repository.ChannelRepository;
+import capstone.communityservice.domain.forum.entity.File;
+import capstone.communityservice.domain.forum.entity.Forum;
+import capstone.communityservice.domain.forum.repository.FileRepository;
+import capstone.communityservice.domain.forum.repository.ForumRepository;
 import capstone.communityservice.domain.server.entity.Server;
 import capstone.communityservice.domain.server.exception.ServerException;
 import capstone.communityservice.domain.server.repository.ServerRepository;
 import capstone.communityservice.domain.server.service.ServerQueryService;
 import capstone.communityservice.global.common.dto.kafka.CommunityChannelEventDto;
-import capstone.communityservice.global.common.dto.kafka.CommunityDmEventDto;
 import capstone.communityservice.global.common.dto.kafka.UserLocationEventDto;
+import capstone.communityservice.global.common.service.FileUploadService;
 import capstone.communityservice.global.exception.Code;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -36,17 +44,20 @@ public class ChannelCommandService {
     private final KafkaTemplate<String, UserLocationEventDto> userLocationKafkaTemplate;
 
     private final ServerQueryService serverQueryService;
+    private final FileUploadService fileUploadService;
 
     private final ChannelRepository channelRepository;
     private final ServerRepository serverRepository;
     private final CategoryRepository categoryRepository;
+    private final ForumRepository forumRepository;
+    private final FileRepository fileRepository;
 
-    public ChannelResponseDto create(ChannelCreateRequestDto requestDto) {
-        Server findServer = validateManagerInChannel(requestDto.getServerId(), requestDto.getUserId());
+    public ChannelResponse create(ChannelCreateRequest request) {
+        Server findServer = validateManagerInChannel(request.getServerId(), request.getUserId());
 
-        validateCategory(requestDto.getCategoryId());
+        validateCategory(request.getCategoryId());
 
-        Channel newChannel = channelRepository.save(createChannel(findServer, requestDto));
+        Channel newChannel = channelRepository.save(createChannel(findServer, request));
 
         channelKafkaTemplate.send(
                 channelKafkaTopic,
@@ -57,34 +68,35 @@ public class ChannelCommandService {
                 )
         );
 
-        return ChannelResponseDto.of(newChannel);
+        return ChannelResponse.of(newChannel);
     }
 
-    public ChannelResponseDto update(ChannelUpdateRequestDto requestDto) {
-        validateManagerInChannel(requestDto.getServerId(), requestDto.getUserId());
-        validateCategory(requestDto.getCategoryId());
+    public ChannelResponse update(ChannelUpdateRequest request) {
+        validateManagerInChannel(request.getServerId(), request.getUserId());
+        validateCategory(request.getCategoryId());
 
-        Channel findChannel = validateChannel(requestDto.getChannelId());
+        Channel findChannel = validateChannel(request.getChannelId());
 
-        findChannel.modifyChannel(requestDto.getCategoryId(), requestDto.getName());
+        findChannel.modifyChannel(request.getCategoryId(), request.getName());
 
-        channelKafkaTemplate.send(channelKafkaTopic, CommunityChannelEventDto.of("channel-update", findChannel, requestDto.getServerId()));
+        channelKafkaTemplate.send(channelKafkaTopic, CommunityChannelEventDto.of("channel-update", findChannel, request.getServerId()));
 
         printKafkaLog("update");
 
-        return ChannelResponseDto.of(findChannel);
+        return ChannelResponse.of(findChannel);
     }
 
-    public void delete(ChannelDeleteRequestDto requestDto) {
-        validateManagerInChannel(requestDto.getServerId(), requestDto.getUserId());
+    public void delete(ChannelDeleteRequest request) {
+        validateManagerInChannel(request.getServerId(), request.getUserId());
 
-        Channel findChannel = validateChannel(requestDto.getChannelId());
+        Channel findChannel = validateChannel(request.getChannelId());
 
+        validateForumChannelDelete(findChannel);
         channelKafkaTemplate.send(userLocationKafkaTopic,
                 CommunityChannelEventDto.of(
                         "channel-delete",
                         findChannel,
-                        requestDto.getServerId()
+                        request.getServerId()
                 )
         );
         printKafkaLog("delete");
@@ -92,13 +104,40 @@ public class ChannelCommandService {
         channelRepository.delete(findChannel);
     }
 
+    private void validateForumChannelDelete(Channel channel) {
+        if(channel
+                .getChannelType()
+                .equals(ChannelType.FORUM)
+        ){
+            List<Forum> forums = forumRepository.findForumsByChannelId(channel.getId());
+            List<Long> forumIds = forums.stream()
+                    .map(Forum::getId)
+                    .distinct()
+                    .toList();
 
-    private Channel createChannel(Server findServer, ChannelCreateRequestDto requestDto){
+            List<File> files = fileRepository.findByForumIdsIn(forumIds);
+
+            fileRepository.deleteAllByForumIdsIn(forumIds);
+            fileDelete(files);
+
+
+            forumRepository.deleteAllByChannelId(channel.getId());
+        }
+    }
+
+    private void fileDelete(List<File> files) {
+        files.stream()
+                .map(File::getFileUrl)
+                .forEach(fileUploadService::delete);
+    }
+
+
+    private Channel createChannel(Server findServer, ChannelCreateRequest request){
         return Channel.of(
                 findServer,
-                requestDto.getCategoryId(),
-                requestDto.getChannelType(),
-                requestDto.getName()
+                request.getCategoryId(),
+                request.getChannelType(),
+                request.getName()
         );
     }
 

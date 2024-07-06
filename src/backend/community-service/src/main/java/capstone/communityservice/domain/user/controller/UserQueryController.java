@@ -1,7 +1,7 @@
 package capstone.communityservice.domain.user.controller;
 
-import capstone.communityservice.domain.user.dto.UserReadResponseDto;
-import capstone.communityservice.domain.user.dto.UserServerDmInfo;
+import capstone.communityservice.domain.user.dto.response.UserReadResponse;
+import capstone.communityservice.domain.user.dto.response.UserServerDmInfo;
 import capstone.communityservice.domain.user.service.UserQueryService;
 import capstone.communityservice.global.common.dto.DataResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class UserQueryController {
 
     @GetMapping("/{userId}")
     public DataResponseDto<Object> read(@PathVariable("userId") Long userId){
-        UserReadResponseDto response = userQueryService.read(userId);
+        UserReadResponse response = userQueryService.read(userId);
 
         return DataResponseDto.of(response);
     }

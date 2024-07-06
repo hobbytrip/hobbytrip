@@ -1,8 +1,6 @@
 package capstone.communityservice.global.external;
 
-import capstone.communityservice.domain.forum.dto.ForumChannelResponseDto;
-import capstone.communityservice.global.common.dto.DataResponseDto;
-import capstone.communityservice.global.common.dto.PageResponseDto;
+import capstone.communityservice.domain.forum.dto.response.ForumChannelResponseDto;
 import capstone.communityservice.global.external.dto.DmMessageDto;
 import capstone.communityservice.global.external.dto.ForumMessageDto;
 import capstone.communityservice.global.external.dto.ServerMessageDto;

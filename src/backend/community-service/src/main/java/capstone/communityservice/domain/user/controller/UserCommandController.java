@@ -1,7 +1,7 @@
 package capstone.communityservice.domain.user.controller;
 
-import capstone.communityservice.domain.user.dto.UserRequestIdDto;
-import capstone.communityservice.domain.user.dto.UserResponseDto;
+import capstone.communityservice.domain.user.dto.request.UserCreateRequest;
+import capstone.communityservice.domain.user.dto.response.UserResponse;
 import capstone.communityservice.domain.user.service.UserCommandService;
 import capstone.communityservice.global.common.dto.DataResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +18,8 @@ public class UserCommandController {
     private final UserCommandService userCommandService;
 
     @PostMapping
-    public DataResponseDto<Object> create(@RequestBody UserRequestIdDto requestDto){
-        UserResponseDto response = userCommandService.save(requestDto);
+    public DataResponseDto<Object> create(@RequestBody UserCreateRequest request){
+        UserResponse response = userCommandService.save(request);
         return DataResponseDto.of(response);
     }
 }

@@ -2,7 +2,7 @@ package capstone.communityservice.domain.user.entity;
 
 import capstone.communityservice.domain.dm.entity.DmUser;
 import capstone.communityservice.domain.server.entity.ServerUser;
-import capstone.communityservice.domain.user.dto.UserFeignResponseDto;
+import capstone.communityservice.domain.user.dto.response.UserFeignResponseDto;
 import capstone.communityservice.global.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

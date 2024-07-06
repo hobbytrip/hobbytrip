@@ -1,10 +1,10 @@
 package capstone.communityservice.domain.channel.controller;
 
 
-import capstone.communityservice.domain.channel.dto.ChannelCreateRequestDto;
-import capstone.communityservice.domain.channel.dto.ChannelDeleteRequestDto;
-import capstone.communityservice.domain.channel.dto.ChannelResponseDto;
-import capstone.communityservice.domain.channel.dto.ChannelUpdateRequestDto;
+import capstone.communityservice.domain.channel.dto.request.ChannelCreateRequest;
+import capstone.communityservice.domain.channel.dto.request.ChannelDeleteRequest;
+import capstone.communityservice.domain.channel.dto.response.ChannelResponse;
+import capstone.communityservice.domain.channel.dto.request.ChannelUpdateRequest;
 import capstone.communityservice.domain.channel.service.ChannelCommandService;
 import capstone.communityservice.global.common.dto.DataResponseDto;
 import jakarta.validation.Valid;
@@ -18,22 +18,22 @@ public class ChannelCommandController {
     private final ChannelCommandService channelCommandService;
 
     @PostMapping
-    public DataResponseDto<Object> create(@Valid @RequestBody ChannelCreateRequestDto requestDto){
-        ChannelResponseDto response = channelCommandService.create(requestDto);
+    public DataResponseDto<Object> create(@Valid @RequestBody ChannelCreateRequest request){
+        ChannelResponse response = channelCommandService.create(request);
 
         return DataResponseDto.of(response);
     }
 
     @PatchMapping
-    public DataResponseDto<Object> update(@Valid @RequestBody ChannelUpdateRequestDto requestDto){
-        ChannelResponseDto response = channelCommandService.update(requestDto);
+    public DataResponseDto<Object> update(@Valid @RequestBody ChannelUpdateRequest request){
+        ChannelResponse response = channelCommandService.update(request);
 
         return DataResponseDto.of(response);
     }
 
     @DeleteMapping
-    public DataResponseDto<Object> delete(@Valid @RequestBody ChannelDeleteRequestDto requestDto){
-        channelCommandService.delete(requestDto);
+    public DataResponseDto<Object> delete(@Valid @RequestBody ChannelDeleteRequest request){
+        channelCommandService.delete(request);
 
         return DataResponseDto.of("Channel delete success!");
     }

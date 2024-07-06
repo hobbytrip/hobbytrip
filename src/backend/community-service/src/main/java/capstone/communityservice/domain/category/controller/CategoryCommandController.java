@@ -1,10 +1,10 @@
 package capstone.communityservice.domain.category.controller;
 
 
-import capstone.communityservice.domain.category.dto.CategoryCreateRequestDto;
-import capstone.communityservice.domain.category.dto.CategoryDeleteRequestDto;
-import capstone.communityservice.domain.category.dto.CategoryResponseDto;
-import capstone.communityservice.domain.category.dto.CategoryUpdateRequestDto;
+import capstone.communityservice.domain.category.dto.request.CategoryCreateRequest;
+import capstone.communityservice.domain.category.dto.request.CategoryDeleteRequest;
+import capstone.communityservice.domain.category.dto.response.CategoryResponse;
+import capstone.communityservice.domain.category.dto.request.CategoryUpdateRequest;
 import capstone.communityservice.domain.category.service.CategoryCommandService;
 import capstone.communityservice.global.common.dto.DataResponseDto;
 import jakarta.validation.Valid;
@@ -19,22 +19,22 @@ public class CategoryCommandController {
     private final CategoryCommandService categoryCommandService;
 
     @PostMapping
-    public DataResponseDto<Object> create(@Valid @RequestBody CategoryCreateRequestDto requestDto){
-        CategoryResponseDto response = categoryCommandService.create(requestDto);
+    public DataResponseDto<Object> create(@Valid @RequestBody CategoryCreateRequest request){
+        CategoryResponse response = categoryCommandService.create(request);
 
         return DataResponseDto.of(response);
     }
 
     @PatchMapping
-    public DataResponseDto<Object> update(@Valid @RequestBody CategoryUpdateRequestDto requestDto){
-        CategoryResponseDto response = categoryCommandService.update(requestDto);
+    public DataResponseDto<Object> update(@Valid @RequestBody CategoryUpdateRequest request){
+        CategoryResponse response = categoryCommandService.update(request);
 
         return DataResponseDto.of(response);
     }
 
     @DeleteMapping
-    public DataResponseDto<Object> delete(@Valid @RequestBody CategoryDeleteRequestDto requestDto){
-        categoryCommandService.delete(requestDto);
+    public DataResponseDto<Object> delete(@Valid @RequestBody CategoryDeleteRequest request){
+        categoryCommandService.delete(request);
 
         return DataResponseDto.of("Category delete success!");
     }

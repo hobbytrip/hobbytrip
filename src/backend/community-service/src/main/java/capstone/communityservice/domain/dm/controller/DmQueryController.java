@@ -1,6 +1,6 @@
 package capstone.communityservice.domain.dm.controller;
 
-import capstone.communityservice.domain.dm.dto.DmReadResponseDto;
+import capstone.communityservice.domain.dm.dto.response.DmReadResponse;
 import capstone.communityservice.domain.dm.service.DmQueryService;
 import capstone.communityservice.global.common.dto.DataResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ public class DmQueryController {
 
     @GetMapping("/{dmId}")
     public DataResponseDto<Object> read(@PathVariable("dmId") Long dmId){
-        DmReadResponseDto response = dmQueryService.read(dmId);
+        DmReadResponse response = dmQueryService.read(dmId);
 
         return DataResponseDto.of(response);
     }

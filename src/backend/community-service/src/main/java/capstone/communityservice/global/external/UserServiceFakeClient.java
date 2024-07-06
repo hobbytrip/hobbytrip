@@ -1,6 +1,6 @@
 package capstone.communityservice.global.external;
 
-import capstone.communityservice.domain.user.dto.UserFeignResponseDto;
+import capstone.communityservice.domain.user.dto.response.UserFeignResponseDto;
 import org.springframework.stereotype.Component;
 
 /**

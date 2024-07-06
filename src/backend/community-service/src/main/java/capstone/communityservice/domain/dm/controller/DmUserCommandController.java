@@ -1,6 +1,6 @@
 package capstone.communityservice.domain.dm.controller;
 
-import capstone.communityservice.domain.dm.dto.DmUserDeleteRequestDto;
+import capstone.communityservice.domain.dm.dto.request.DmUserDeleteRequest;
 import capstone.communityservice.domain.dm.service.DmUserCommandService;
 import capstone.communityservice.global.common.dto.DataResponseDto;
 import jakarta.validation.Valid;
@@ -18,7 +18,7 @@ public class DmUserCommandController {
     private final DmUserCommandService dmUserCommandService;
 
     @DeleteMapping
-    public DataResponseDto<Object> delete(@Valid @RequestBody DmUserDeleteRequestDto requestDto){
+    public DataResponseDto<Object> delete(@Valid @RequestBody DmUserDeleteRequest requestDto){
         dmUserCommandService.delete(requestDto);
 
         return DataResponseDto.of("DmUser delete success!!");

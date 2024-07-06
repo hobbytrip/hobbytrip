@@ -1,6 +1,5 @@
 package capstone.communityservice.domain.dm.entity;
 
-import capstone.communityservice.domain.server.entity.ServerUser;
 import capstone.communityservice.global.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -8,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +31,7 @@ public class Dm extends BaseTimeEntity {
     @Column(nullable = false)
     private boolean deleted = Boolean.FALSE;
 
-    @OneToMany(mappedBy = "dm", orphanRemoval = true)
+    @OneToMany(mappedBy = "dm")
     private List<DmUser> dmUsers = new ArrayList<>();
 
     public static Dm of(String name) {

@@ -1,6 +1,6 @@
 package capstone.communityservice.global.external;
 
-import capstone.communityservice.domain.user.dto.UserFeignResponseDto;
+import capstone.communityservice.domain.user.dto.response.UserFeignResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

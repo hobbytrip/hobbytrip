@@ -1,6 +1,6 @@
 package capstone.communityservice.domain.dm.service;
 
-import capstone.communityservice.domain.dm.dto.DmUserDeleteRequestDto;
+import capstone.communityservice.domain.dm.dto.request.DmUserDeleteRequest;
 import capstone.communityservice.domain.dm.entity.DmUser;
 import capstone.communityservice.domain.dm.exception.DmException;
 import capstone.communityservice.domain.dm.repository.DmUserRepository;
@@ -18,9 +18,8 @@ public class DmUserCommandService {
 
     private final DmUserRepository dmUserRepository;
 
-
-    public void delete(DmUserDeleteRequestDto requestDto) {
-        DmUser dmUser = validateDmUser(requestDto.getDmId(), requestDto.getUserId());
+    public void delete(DmUserDeleteRequest request) {
+        DmUser dmUser = validateDmUser(request.getDmId(), request.getUserId());
 
         dmUserRepository.delete(dmUser);
     }

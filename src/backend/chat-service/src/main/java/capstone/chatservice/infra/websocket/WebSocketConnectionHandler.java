@@ -37,12 +37,7 @@ public class WebSocketConnectionHandler implements ChannelInterceptor {
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(message);
-        if (StompCommand.CONNECT.equals(headerAccessor.getCommand())) {
-            if (!jwtTokenHandler.validateToken(
-                    Objects.requireNonNull(headerAccessor.getFirstNativeHeader(AUTH_PREFIX)))) {
-                throw new GlobalException(Code.UNAUTHORIZED);
-            }
-        }
+        validateTokenOnConnect(headerAccessor);
         return message;
     }
 
@@ -51,48 +46,72 @@ public class WebSocketConnectionHandler implements ChannelInterceptor {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(message);
 
         if (StompCommand.CONNECT.equals(headerAccessor.getCommand())) {
-            Long userId = Long.parseLong(Objects.requireNonNull(headerAccessor.getFirstNativeHeader(USER_ID)));
-            String sessionId = headerAccessor.getSessionId();
-            ConnectionStateInfo connectionStateInfo = ConnectionStateInfo.builder()
-                    .userId(userId)
-                    .sessionId(sessionId)
-                    .type(ConnectionType.CONNECT)
-                    .state(ConnectionState.ONLINE)
-                    .build();
-            stateEventProducer.sendToConnectionStateInfoTopic(connectionStateInfo);
-
-            UserServerDmInfo ids = communityClient.getServerIdsAndRoomIds(userId);
-            ConnectionStateEventDto connectionEventDto = ConnectionStateEventDto.builder()
-                    .userId(userId)
-                    .type(ConnectionType.CONNECT)
-                    .state(ConnectionState.ONLINE)
-                    .serverIds(ids.getServerIds())
-                    .roomIds(ids.getDmIds())
-                    .build();
-            stateEventProducer.sendToConnectionStateEventTopic(connectionEventDto);
+            Long userId = sendConnectionStateInfo(headerAccessor);
+            sendConnectionStateEvent(userId);
         }
 
         if (StompCommand.DISCONNECT.equals(headerAccessor.getCommand())) {
-            String sessionId = headerAccessor.getSessionId();
-            ConnectionStateInfo connectionStateInfo = ConnectionStateInfo.builder()
-                    .sessionId(sessionId)
-                    .type(ConnectionType.DISCONNECT)
-                    .state(ConnectionState.OFFLINE)
-                    .build();
-
-            Long userId = stateClient.saveUserConnectionState(connectionStateInfo).getData();
+            Long userId = saveDisconnectionState(headerAccessor);
             if (userId != null) {
-
-                UserServerDmInfo ids = communityClient.getServerIdsAndRoomIds(userId);
-                ConnectionStateEventDto connectionEventDto = ConnectionStateEventDto.builder()
-                        .userId(userId)
-                        .type(ConnectionType.DISCONNECT)
-                        .state(ConnectionState.OFFLINE)
-                        .serverIds(ids.getServerIds())
-                        .roomIds(ids.getDmIds())
-                        .build();
-                stateEventProducer.sendToConnectionStateEventTopic(connectionEventDto);
+                sendDisConnectionStateEvent(userId);
             }
         }
+    }
+
+    private void validateTokenOnConnect(StompHeaderAccessor headerAccessor) {
+        if (StompCommand.CONNECT.equals(headerAccessor.getCommand())) {
+            if (!jwtTokenHandler.validateToken(
+                    Objects.requireNonNull(headerAccessor.getFirstNativeHeader(AUTH_PREFIX)))) {
+                throw new GlobalException(Code.UNAUTHORIZED);
+            }
+        }
+    }
+
+    private Long sendConnectionStateInfo(StompHeaderAccessor headerAccessor) {
+        Long userId = Long.parseLong(Objects.requireNonNull(headerAccessor.getFirstNativeHeader(USER_ID)));
+        String sessionId = headerAccessor.getSessionId();
+        ConnectionStateInfo connectionStateInfo = ConnectionStateInfo.builder()
+                .userId(userId)
+                .sessionId(sessionId)
+                .type(ConnectionType.CONNECT)
+                .state(ConnectionState.ONLINE)
+                .build();
+        stateEventProducer.sendToConnectionStateInfoTopic(connectionStateInfo);
+        return userId;
+    }
+
+    private void sendConnectionStateEvent(Long userId) {
+        UserServerDmInfo ids = communityClient.getServerIdsAndRoomIds(userId);
+        ConnectionStateEventDto connectionEventDto = ConnectionStateEventDto.builder()
+                .userId(userId)
+                .type(ConnectionType.CONNECT)
+                .state(ConnectionState.ONLINE)
+                .serverIds(ids.getServerIds())
+                .roomIds(ids.getDmIds())
+                .build();
+        stateEventProducer.sendToConnectionStateEventTopic(connectionEventDto);
+    }
+
+    private Long saveDisconnectionState(StompHeaderAccessor headerAccessor) {
+        String sessionId = headerAccessor.getSessionId();
+        ConnectionStateInfo connectionStateInfo = ConnectionStateInfo.builder()
+                .sessionId(sessionId)
+                .type(ConnectionType.DISCONNECT)
+                .state(ConnectionState.OFFLINE)
+                .build();
+
+        return stateClient.saveUserConnectionState(connectionStateInfo).getData();
+    }
+
+    private void sendDisConnectionStateEvent(Long userId) {
+        UserServerDmInfo ids = communityClient.getServerIdsAndRoomIds(userId);
+        ConnectionStateEventDto connectionEventDto = ConnectionStateEventDto.builder()
+                .userId(userId)
+                .type(ConnectionType.DISCONNECT)
+                .state(ConnectionState.OFFLINE)
+                .serverIds(ids.getServerIds())
+                .roomIds(ids.getDmIds())
+                .build();
+        stateEventProducer.sendToConnectionStateEventTopic(connectionEventDto);
     }
 }

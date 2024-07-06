@@ -1,16 +1,11 @@
 package capstone.communityservice.domain.server.entity;
 
-import capstone.communityservice.domain.server.dto.ServerUserCreateRequestDto;
 import capstone.communityservice.domain.user.entity.User;
 import capstone.communityservice.global.common.entity.BaseTimeEntity;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -40,16 +35,6 @@ public class ServerUser extends BaseTimeEntity {
     private boolean deleted = Boolean.FALSE;
 
     //===생성 메서드===//
-    public static ServerUser of(ServerUserCreateRequestDto requestDto) {
-        ServerUser serverUser = new ServerUser();
-
-        serverUser.setServer(requestDto.getServer());
-        serverUser.setUser(requestDto.getUser());
-        serverUser.setName(requestDto.getUser().getName());
-
-        return serverUser;
-    }
-
     public static ServerUser of(Server server, User user) {
         ServerUser serverUser = new ServerUser();
 

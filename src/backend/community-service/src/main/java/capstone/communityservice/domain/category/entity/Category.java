@@ -34,9 +34,9 @@ public class Category extends BaseTimeEntity {
     private boolean deleted = Boolean.FALSE;
 
     //===생성 메서드===//
-    public static Category of(Server server, String channelName) {
+    public static Category of(Server server, String categoryName) {
         Category category = new Category();
-        category.setName(channelName);
+        category.setName(categoryName);
         server.addCategory(category);
 
         return category;
