@@ -21,7 +21,7 @@ const DmHistoryList = ({ dmHistoryList }) => {
       const res = await axiosInstance.get(API.DM_SSE_MAIN(userId));
       if (res.data.success) {
         setDmNotice(res.data.data);
-        console.log(res.data.data);
+        console.log('dm data:', res.data.data);
       }
     } catch (error) {
       console.error("Error fetching server notices:", error);
