@@ -1,10 +1,13 @@
 import { create } from "zustand";
 
 const useAuthStore = create((set) => ({
-  accesstoken: null,
-  refreshtoken: null,
-  setTokens: (accesstoken, refreshtoken) =>
-    set({ accesstoken: accesstoken, refreshtoken: refreshtoken }),
+  accessToken: null,
+  refreshToken: null,
+  setTokens: (accessToken, refreshToken) =>
+    set({ accessToken: accessToken, refreshToken: refreshToken }),
+  clearTokens: () => {
+    set({ accessToken: null, refreshToken: null });
+  },
 }));
 
 export default useAuthStore;

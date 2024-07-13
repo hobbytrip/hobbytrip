@@ -10,6 +10,8 @@
   height: 300px;
 }
 .startText {
+  font-family: "DOSSaemmul";
   font-weight: 700;
+  font-size: 20px;
   color: var(--main-purple);
 }

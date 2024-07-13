@@ -13,6 +13,8 @@
     "@stomp/stompjs": "^7.0.0",
     "@tanstack/react-query": "^5.37.1",
     "axios": "^1.6.8",
+    "event-source-polyfill": "^1.0.31",
+    "firebase": "^10.12.2",
     "http-proxy-middleware": "^3.0.0",
     "json-server": "^1.0.0-alpha.23",
     "openvidu-browser": "^2.29.1",

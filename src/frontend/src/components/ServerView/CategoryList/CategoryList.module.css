@@ -3,9 +3,8 @@
   flex-direction: column;
   align-items: center;
   width: 390px;
-  height: 594px;
+  height: 611px;
   background-color: #FFFFFF;
-  border-radius: 10px;
   color: var(--dark-gray);
 }
 

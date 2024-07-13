@@ -1,0 +1,60 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+}
+.h3 {
+  font-family: "DOSSaemmul";
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+.h4 {
+  font-family: "DOSSaemmul";
+  font-weight: 600;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  margin-top: 30px;
+  margin-bottom: 10px;
+  position: relative;
+}
+.form {
+  position: relative;
+  width: 100%;
+}
+.input {
+  height: 30px;
+  background-color: var(--light-gray);
+  border-radius: 5px;
+  padding: 5px;
+  width: 100%;
+}
+.addFriendBtn {
+  background-color: var(--main-purple);
+  color: white;
+  padding: 5px;
+  position: absolute;
+  right: 1px;
+  bottom: 7px;
+}
+.backBtn {
+  font-family: "DOSSaemmul";
+  font-weight: 700;
+  background-color: transparent;
+  position: absolute;
+  color: var(--main-purple);
+  cursor: pointer;
+  bottom: 450px;
+  left: 43px;
+}
+.error {
+  color: red;
+  margin-top: 5px;
+  font-family: "DOSSaemmul";
+}
+.success {
+  margin-top: 5px;
+  font-family: "DOSSaemmul";
+}

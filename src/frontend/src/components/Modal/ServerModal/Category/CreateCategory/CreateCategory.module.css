@@ -116,3 +116,10 @@
   background-color: var(--main-purple);
   margin: 10px auto;
 }
+
+.backBtn {
+  background: none;
+  text-decoration: underline;
+  color: #FFF;
+  padding: 3px;
+}

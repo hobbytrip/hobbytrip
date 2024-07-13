@@ -1,66 +1,42 @@
+import React, { useState, useEffect } from "react";
 import style from "./CategorySetting.module.css";
-import { useState, useEffect } from "react";
-import axios from "axios";
 import useServerStore from "../../../../../actions/useServerStore";
 import API from "../../../../../utils/API/API";
+import { axiosInstance } from "../../../../../utils/axiosInstance";
+import useUserStore from "../../../../../actions/useUserStore";
+import { HiHome } from "react-icons/hi2";
 
-const CATEGORY_URL = API.COMM_CATEGORY;
-
-function CategorySetting({ userId, categoryId, onClose }) { // onClose 함수를 props로 받음
+function CategorySetting({ categoryId, onClose }) {
   const [name, setName] = useState("");
-  const { serverData, setServerData } = useServerStore((state) => ({
-    serverData: state.serverData,
-    setServerData: state.setServerData
-  }));
-
-  const serverId = serverData.serverInfo.serverId;
-  useEffect(() => {
-    const fetchCategory = async () => {
-      try {
-        const category = serverData.serverCategories.find(cat => cat.categoryId === categoryId);
-        if (category) {
-          setName(category.name); 
-        } else {
-          console.error("Category not found.");
-        }
-      } catch (error) {
-        console.error("Error fetching category data:", error);
-      }
-    };
-  
-    fetchCategory();
-  }, [categoryId, serverData.serverCategories]);
+  const { setServerData } = useServerStore((state) => state.setServerData);
+  const { serverData } = useServerStore.getState();
+  const { USER } = useUserStore();
+  const userId = USER.userId;
+  const serverId = serverData?.serverInfo?.serverId;
+  console.error(serverData);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if(name === ''){
-      alert("카테고리 이름을 입력해주세요");
-      return;
-    }
-    try {
-      const data = {
-        userId: userId,
-        serverId: serverData.serverInfo.serverId,
-        categoryId: categoryId,
-        name: name
-      };
 
-      const res = await axios.patch(CATEGORY_URL, data);
+    try {
+      const res = await axiosInstance.patch(API.COMM_CATEGORY, {
+        userId,
+        serverId,
+        categoryId,
+        name,
+      });
 
       if (res.data.success) {
-        console.log(res);
         const updatedCategory = res.data.data;
-        const updatedCategories = serverData.serverCategories.map(category => {
-          if (category.categoryId === updatedCategory.categoryId) {
-            return updatedCategory; 
-          }
-          return category;
-        });
-        setServerData({ ...serverData, serverCategories: updatedCategories });
+        const updatedCategories = serverData.serverCategories.map((category) =>
+          category.categoryId === updatedCategory.categoryId ? updatedCategory : category
+        );
+
+        setServerData({serverCategories: updatedCategories});
+        console.error(serverData);
         onClose();
       } else {
         console.log("카테고리 수정 실패.");
-        console.log(res); 
       }
     } catch (error) {
       console.error("데이터 patch 에러:", error);
@@ -70,38 +46,50 @@ function CategorySetting({ userId, categoryId, onClose }) { // onClose 함수를
   const handleDelete = async () => {
     const confirmDelete = window.confirm("정말 삭제하시겠습니까?");
     if (confirmDelete) {
-      if (String(userId) !== String(serverData.serverInfo.managerId)) {
+      if (String(userId) !== String(serverData?.serverInfo?.managerId)) {
         alert("삭제 권한이 없습니다");
-      } else {
-        try {
-          const res = await axios.delete(CATEGORY_URL, {
-            data: {
-              serverId: serverId,
-              userId: userId,
-              categoryId: categoryId
-            },
-          });
-          if (res.status === 200) {
-            alert("삭제되었습니다");
-            const updatedCategories = serverData.serverCategories.filter(category => category.categoryId !== categoryId);
-            setServerData({ ...serverData, serverCategories: updatedCategories });
-          } else {
-            alert("삭제하는 중에 오류가 발생했습니다");
-            console.error(res);
-          }
-        } catch (error) {
+        return;
+      }
+      try {
+        const res = await axiosInstance.delete(API.COMM_CATEGORY, {
+          data: {
+            serverId,
+            userId,
+            categoryId,
+          },
+        });
+
+        console.log("Delete Response:", res); // Debug log
+
+        if (res.status === 200) {
+          alert("삭제되었습니다");
+          const updatedCategories = serverData.serverCategories.filter(
+            (category) => category.categoryId !== categoryId
+          );
+
+          setServerData({serverCategories: updatedCategories});
+          onClose();
+        } else {
           alert("삭제하는 중에 오류가 발생했습니다");
-          console.error(error);
+          console.error(res);
         }
+      } catch (error) {
+        alert("삭제하는 중에 오류가 발생했습니다");
+        console.error(error);
       }
     }
-  }
+  };
 
   return (
     <>
       <form className={style.formWrapper} onSubmit={handleSubmit}>
         <div className={style.topContainer}>
-          <h3><b> 카테고리 설정 </b></h3>
+          <h3>
+            <b>
+              <HiHome style={{ marginRight: "5px" }} />
+              카테고리 설정
+            </b>
+          </h3>
         </div>
         <div className={style.name}>
           <div className={style.label}>
@@ -116,19 +104,28 @@ function CategorySetting({ userId, categoryId, onClose }) { // onClose 함수를
             />
           </div>
         </div>
-        
-        <div className={style.createContainer} >
-          <button className={style.createBtn} 
-            style={{backgroundColor: 'var(--main-purple)', color:'white'}}
-            type="submit">
+
+        <div className={style.createContainer}>
+          <button
+            className={style.createBtn}
+            style={{ backgroundColor: "var(--main-purple)", color: "white" }}
+            type="submit"
+          >
             저장하기
           </button>
         </div>
-        
+
         <button onClick={handleDelete}>
           <h5>삭제하기</h5>
         </button>
       </form>
+      <button
+        className={style.backBtn}
+        onClick={onClose}
+        style={{ color: "white" }}
+      >
+        <h4> 뒤로 가기</h4>
+      </button>
     </>
   );
 }

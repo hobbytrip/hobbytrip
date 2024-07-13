@@ -116,3 +116,9 @@
   background-color: var(--main-purple);
   margin: 10px auto;
 }
+
+.backBtn {
+  background: none;
+  text-decoration: underline;
+  padding: 3px;
+}

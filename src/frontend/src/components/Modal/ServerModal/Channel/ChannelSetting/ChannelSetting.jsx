@@ -1,26 +1,23 @@
-// ChannelSetting.jsx
-
 import style from "./ChannelSetting.module.css";
 import { useState, useEffect } from "react";
-import axios from "axios";
 import useServerStore from "../../../../../actions/useServerStore";
 import API from "../../../../../utils/API/API";
-
-const CHANNEL_URL = API.COMM_CHANNEL;
+import { axiosInstance } from "../../../../../utils/axiosInstance";
+import {  HiUserGroup } from "react-icons/hi2";
 
 function ChannelSetting({ userId, channel, onClose }) { 
   const [name, setName] = useState("");
-  const { serverData, setServerData } = useServerStore((state) => ({
-    serverData: state.serverData,
+  const { setServerData } = useServerStore((state) => ({
     setServerData: state.setServerData
   }));
+  const { serverData } = useServerStore.getState();
   const channelId = channel.channelId;
   const categoryId = channel.categoryId;
 
   useEffect(() => {
     const fetchChannel = async () => {
       try {
-        const channel = serverData.serverChannels.find(cat => cat.channelId === channelId);
+        const channel = serverData.serverChannels.find(c => c.channelId === channelId);
         if (channel) {
           setName(channel.name); 
         } else {
@@ -40,6 +37,10 @@ function ChannelSetting({ userId, channel, onClose }) {
       alert("채널 이름을 입력해주세요");
       return;
     }
+    if (String(userId) !== String(serverData.serverInfo.managerId)) {
+      alert("수정 권한이 없습니다");
+      return;
+    }
     try {
       const data = {
         userId: userId,
@@ -49,7 +50,7 @@ function ChannelSetting({ userId, channel, onClose }) {
         name: name
       };
 
-      const res = await axios.patch(CHANNEL_URL, data);
+      const res = await axiosInstance.patch(API.COMM_CHANNEL, data);
 
       if (res.data.success) {
         console.log(res);
@@ -60,10 +61,10 @@ function ChannelSetting({ userId, channel, onClose }) {
           }
           return channel;
         });
-        setServerData({ ...serverData, serverChannels: updatedChannels });
+        setServerData({serverChannels: updatedChannels});
         onClose();
       } else {
-        console.log("카테고리 수정 실패.");
+        console.log("채널 수정 실패.");
         console.log(res); 
       }
     } catch (error) {
@@ -78,7 +79,7 @@ function ChannelSetting({ userId, channel, onClose }) {
         alert("삭제 권한이 없습니다");
       } else {
         try {
-          const res = await axios.delete(CHANNEL_URL, {
+          const res = await axiosInstance.delete(API.COMM_CHANNEL, {
             data: {
               serverId: serverData.serverInfo.serverId,
               userId: userId,
@@ -88,7 +89,7 @@ function ChannelSetting({ userId, channel, onClose }) {
           if (res.status === 200) {
             alert("삭제되었습니다");
             const updatedChannels = serverData.serverChannels.filter(c => c.channelId !== channelId);
-            setServerData({ ...serverData, serverChannels: updatedChannels });
+            setServerData({serverChannels: updatedChannels});
           } else {
             alert("삭제하는 중에 오류가 발생했습니다");
             console.error(res);
@@ -106,7 +107,12 @@ function ChannelSetting({ userId, channel, onClose }) {
     <div className={style.wrapper}>
       <form className={style.formWrapper} onSubmit={handleSubmit}>
         <div className={style.topContainer}>
-          <h3><b> 채널 설정 </b></h3>
+          <h3>
+            <b>
+              <HiUserGroup style={{marginRight:'5px'}} />
+              채널 설정          
+            </b>
+          </h3>
         </div>
         <div className={style.name}>
           <div className={style.label}>

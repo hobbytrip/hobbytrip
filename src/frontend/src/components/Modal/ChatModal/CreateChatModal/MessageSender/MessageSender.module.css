@@ -4,20 +4,44 @@
   border-radius: 5px;
   position: relative;
   border-style: none;
+  background-color: var(--light-gray);
 }
-
+.previewBox {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  z-index: 999;
+  position: absolute;
+  bottom: 40px;
+  left: 0;
+  background-color: var(--light-gray);
+  border-bottom: 2px solid white;
+  border-radius: 5px;
+}
 .filePreview {
-  height: 150px;
+  width: 150px;
+  background-color: white;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 20px;
+}
+.previewImg {
+  width: 100%;
 }
 
 .dropdownContent {
   width: 100px;
-  background-color: var(--light-gray);
+  background-color: #0000008c;
   position: absolute;
-  top: -40px;
+  top: -50px;
   left: 0;
   z-index: 9999;
   border-radius: 5px;
+  @media (min-width: 432px) {
+    top: -170px;
+    width: 140px;
+    padding: 0;
+  }
 }
 .typingIndicator {
   display: flex;
@@ -34,8 +58,8 @@
   align-items: center;
   justify-content: center;
   gap: 5px;
-  padding-left: 5px;
-  padding-right: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .inputContent {
@@ -43,6 +67,9 @@
   height: 40px;
   background-color: transparent;
   color: black;
+  @media (min-width: 432px) {
+    width: 100%;
+  }
 }
 
 .btn {

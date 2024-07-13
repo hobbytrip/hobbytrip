@@ -1,77 +1,79 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import style from './CategoryList.module.css';
-import CreateCategory from '../../Modal/ServerModal/Category/CreateCategory/CreateCategory';
-import CategorySetting from '../../Modal/ServerModal/Category/CategorySetting/CategorySetting';
-import CreateChannel from '../../Modal/ServerModal/Channel/CreateChannel/CreateChannel';
-import Channel from './Channel/Channel';
-import useServerStore from '../../../actions/useServerStore';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import style from "./CategoryList.module.css";
+import CreateItem from "./CreateItem/CreateItem";
+import Channel from "./Channel/Channel";
+import CreateChannel from "../../Modal/ServerModal/Channel/CreateChannel/CreateChannel";
+import CategorySetting from "../../Modal/ServerModal/Category/CategorySetting/CategorySetting";
+import useUserStore from "../../../actions/useUserStore";
+import useServerStore from "../../../actions/useServerStore";
 import { HiPlus } from "react-icons/hi2";
-import { IoSettings, IoClose } from "react-icons/io5";
-
-const userId = 1; // 테스트용
+import { IoClose, IoSettings } from "react-icons/io5";
 
 const CategoryList = () => {
-  const [categories, setCategories] = useState([]);
-  const [channels, setChannels] = useState([]);
-  const [showCreateCategory, setShowCreateCategory] = useState(false);
-
+  const [showCreateItemModal, setShowCreateItemModal] = useState(false);
+  const { USER } = useUserStore();
+  const userId = USER.userId;
   const nav = useNavigate();
-  const { serverData } = useServerStore((state) => ({
+  const { serverData, fetchServerData } = useServerStore((state) => ({
     serverData: state.serverData,
+    fetchServerData: state.fetchServerData,
   }));
+  const serverId = serverData?.serverInfo?.serverId;
 
   useEffect(() => {
-    setCategories(serverData.serverCategories || []);
-    setChannels(serverData.serverChannels || []);
+    if (serverId && userId) {
+      fetchServerData(serverId, userId);
+    }
   }, [serverData]);
 
   const handleCloseCategory = () => {
-    nav('initialChat?');
+    nav(-1);
   };
 
-  const handleCloseCreateChannel = () => {
-    setShowCreateCategory(false);
+  const handleCloseCreateItemModal = () => {
+    setShowCreateItemModal(false);
   };
 
-  const handleAddCategory = () => {
-    setShowCreateCategory(true);
+  const handleAddItem = () => {
+    setShowCreateItemModal(true);
   };
 
   const getCategoryChannels = (categoryId) => {
-    return channels.filter(channel => channel.categoryId === categoryId);
+    return (serverData?.serverChannels || []).filter((channel) => channel.categoryId === categoryId);
   };
 
   return (
     <>
       <div className={style.categoryList}>
         <div className={style.categoryHeader}>
-          <button onClick={handleAddCategory}>
-            <HiPlus style={{ width: '18px', height: '18px' }} />
+          <button onClick={handleAddItem}>
+            <HiPlus style={{ width: "18px", height: "18px" }} />
           </button>
           <button onClick={handleCloseCategory}>
-            <IoClose style={{ width: '18px', height: '18px' }} />
+            <IoClose style={{ width: "18px", height: "18px" }} />
           </button>
         </div>
-        {categories.map(category => (
+        <div className={style.uncategorizedChannels}>
+          {(serverData?.serverChannels || []).filter((channel) => !channel.categoryId).map((channel) => (
+            <li key={channel.channelId}>
+              <Channel channel={channel} serverId={serverData?.serverInfo?.serverId} />
+            </li>
+          ))}
+        </div>
+        {(serverData?.serverCategories || []).map((category) => (
           <Category
             key={category.categoryId}
             categoryId={category.categoryId}
             name={category.name}
-            serverId={serverData.serverInfo.serverId}
+            serverId={serverData?.serverInfo?.serverId}
             channels={getCategoryChannels(category.categoryId)}
           />
         ))}
       </div>
-      {/* ! 카테고리 생성하기 ! */}
-      {showCreateCategory && (
+      {showCreateItemModal && (
         <div className={style.createServerModal}>
-          <CreateCategory userId={userId} onClose={handleCloseCreateChannel} />
-          <button className={style.closeBtn} onClick={handleCloseCreateChannel}>
-            <h4 style={{ color: "#fff", textDecoration: "underline" }}>
-              뒤로 가기
-            </h4>
-          </button>
+          <CreateItem userId={userId} onClose={handleCloseCreateItemModal} />
         </div>
       )}
     </>
@@ -81,7 +83,6 @@ const CategoryList = () => {
 const Category = ({ categoryId, name, serverId, channels }) => {
   const [showCreateChannel, setShowCreateChannel] = useState(false);
   const [showCategorySetting, setShowCategorySetting] = useState(false);
-  const nav = useNavigate();
 
   const handleAddChannel = () => {
     setShowCreateChannel(true);
@@ -105,48 +106,40 @@ const Category = ({ categoryId, name, serverId, channels }) => {
         <div className={style.categoryName}>
           <h3>{name}</h3>
           <button className={style.iconPurple}>
-            <IoSettings style={{ width: '17px', height: '17px' }} onClick={handleCategorySetting} />
+            <IoSettings
+              style={{ width: "17px", height: "17px" }}
+              onClick={handleCategorySetting}
+            />
           </button>
           <button className={style.iconPurple}>
-            <HiPlus style={{ width: '17px', height: '17px' }} onClick={handleAddChannel} />
+            <HiPlus
+              style={{ width: "17px", height: "17px" }}
+              onClick={handleAddChannel}
+            />
           </button>
         </div>
         <div className={style.categoryChannels}>
-          {channels.map(channel => (
+          {channels.map((channel) => (
             <li key={channel.channelId}>
               <Channel channel={channel} serverId={serverId} />
             </li>
           ))}
         </div>
       </div>
-      {/* ! 채널 만들기 ! */}
       {showCreateChannel && (
         <div className={style.createServerModal}>
           <CreateChannel
-            userId={userId}
             categoryId={categoryId}
             onClose={handleCloseCreateChannel}
           />
-          <button className={style.closeBtn} onClick={handleCloseCreateChannel}>
-            <h4 style={{ color: "#fff", textDecoration: "underline" }}>
-              뒤로 가기
-            </h4>
-          </button>
         </div>
       )}
-      {/* ! 카테고리 수정 삭제 ! */}
       {showCategorySetting && (
         <div className={style.createServerModal}>
           <CategorySetting
-            userId={userId}
             categoryId={categoryId}
             onClose={handleCloseCategorySetting}
           />
-          <button className={style.closeBtn} onClick={handleCloseCategorySetting}>
-            <h4 style={{ color: "#fff", textDecoration: "underline" }}>
-              뒤로 가기
-            </h4>
-          </button>
         </div>
       )}
     </>

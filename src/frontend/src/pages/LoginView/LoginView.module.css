@@ -8,9 +8,9 @@
   width: 240px;
 }
 .container {
-  width: 390px;
-  padding-left: 35px;
-  padding-right: 35px;
+  width: 100%;
+  margin-left: 10px;
+  margin-right: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -22,7 +22,11 @@
   flex-direction: column;
 }
 .description {
-  font-size: 16px;
+  font-family: "DOSSaemmul";
+  font-size: 20px;
   font-weight: 700;
   color: var(--main-purple);
+}
+.loginForm {
+  display: flex;
 }

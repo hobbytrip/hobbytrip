@@ -1,0 +1,56 @@
+.forumBox {
+  background-color: var(--light-gray);
+  padding: 15px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 15px;
+  margin-top: 10px;
+  cursor: pointer;
+  position: relative;
+}
+
+.container {
+  display: flexbox;
+}
+
+.category {
+  color: var(--dark-gray);
+  font-size: 12px;
+}
+.detail {
+  display: flex;
+  flex-direction: row;
+}
+.writer {
+  color: var(--main-purple);
+  margin-right: 5px;
+}
+
+.welcome {
+  text-align: center;
+  margin-top: 50%;
+}
+
+.modals {
+  position: absolute;
+  /* left: 10px; */
+  right: 10px;
+  /* bottom: 0px; */
+  /* display: none; */
+  color: var(--dark-gray);
+}
+.editInput {
+  border-radius: 5px;
+  padding: 2px;
+}
+.editTextarea {
+  background-color: white;
+  display: flex;
+  padding: 2px;
+  /* height: 25px; */
+  border-radius: 5px;
+  border-style: none;
+  font-family: "Pretendard";
+  outline-style: none;
+}

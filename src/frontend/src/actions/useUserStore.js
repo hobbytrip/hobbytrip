@@ -1,28 +1,42 @@
 import { create } from "zustand";
-import axios from "../utils/instance";
+import axios from "axios";
+import API from "../utils/API/API";
+import useAuthStore from "./useAuthStore";
 
 const useUserStore = create((set) => ({
-  user: null,
-  setUserInfo: (userInfo) => set({ user: userInfo }),
-  getUserInfo: async () => {
-    try {
-      const response = await axios.get(`/user/profile`);
-      if (response.status === 200) {
-        const userData = response.data;
-        set({ user: userData });
-      } else {
-        console.log("Falied to fetch user data");
-      }
-    } catch (error) {
-      console.log("Error fetching user data:", error);
-    }
+  USER: JSON.parse(localStorage.getItem("user")) || {},
+  notificationEnabled: false,
+
+  setUserInfo: (user) => {
+    localStorage.setItem("user", JSON.stringify(user));
+    set({ USER: user });
   },
+
+  clearUserInfo: () => {
+    localStorage.removeItem("user");
+    set({ USER: {} });
+  },
+
   updateUserInfo: async (endpoint, updates) => {
     try {
-      const response = await axios.patch(`/user/profile/${endpoint}`, updates);
-      if (response.status == 200) {
+      const { accessToken } = useAuthStore.getState();
+      const response = await axios.patch(
+        API.UPDATE_PROFILE(endpoint),
+        updates,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          withCredentials: true,
+        }
+      );
+
+      if (response.data) {
+        const updatedUser = { ...useUserStore.getState().USER, ...updates };
+        localStorage.setItem("user", JSON.stringify(updatedUser));
         set((state) => ({
-          user: { ...state.user, ...updates },
+          ...state,
+          USER: updatedUser,
         }));
       } else {
         console.error("Failed to update user data");
@@ -31,28 +45,12 @@ const useUserStore = create((set) => ({
       console.log("Error updating user data:", error);
     }
   },
-  getUserInfo: async () => {
-    try {
-      const response = await axios.get(`/user/profile`);
-      if (response.status === 200) {
-        const userData = response.data;
-        set({ user: userData });
-      } else {
-        console.log("Failed to fetch user data");
-      }
-    } catch (error) {
-      console.log("Error fetching user data:", error);
-    }
-  },
-  //   //유저 커뮤니티 회원가입
-  postUserIdToCommunity: async () => {
-    try {
-      const { originalId } = useUserStore.getState().user;
-      const response = await axios.post("/user", { originalId });
-      console.log("POST request to /community/user successful:", response);
-    } catch (error) {
-      console.error("Error posting userId to /community/user:", error);
-    }
+
+  setNotificationEnabled: (enabled) =>
+    set(() => ({ notificationEnabled: enabled })),
+  clearUserInfo: () => {
+    localStorage.removeItem("user");
+    set({ USER: {} });
   },
 }));
 

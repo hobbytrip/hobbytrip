@@ -51,9 +51,7 @@
 .addImg {
   display: flex;
   flex-direction: row; 
-  justify-content: center;
   align-items: center;
-  width: 153px;
   height: 40px;
   gap: 10px;
 }

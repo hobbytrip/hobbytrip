@@ -25,9 +25,9 @@ const SearchForm = () => {
 }
 
 const MenuBtn = () => {
-  const navigator = useNavigate();
+  const nav = useNavigate();
   function onClick(){
-    navigator('/menu');
+    nav('/menu');
   }
   return (
     <button className={style.menuBtn} onClick={onClick}>
@@ -37,10 +37,15 @@ const MenuBtn = () => {
 }
 
 const MainHeader = () => {
+  const nav = useNavigate();
+  function handleHome(){
+    nav('/main');
+  }
   return (
     <div className={style.wrapper}>
       <img src='./../../../../src/assets/image/logo-white.png'
-        className={style.logo} alt='logo'/>
+        className={style.logo} alt='logo'
+        onClick={handleHome}/>
       <SearchForm />
       <MenuBtn />
     </div>
