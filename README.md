@@ -111,7 +111,7 @@
 
 - 채팅 서비스
 - 상태관리 서비스
-- Kafka 토픽 설계
+- EDM(Event Driven MicroService) 아키텍처, Kafka 토픽 설계
 
 #### 한윤수
 
