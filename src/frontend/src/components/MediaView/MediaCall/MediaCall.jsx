@@ -24,7 +24,7 @@ export default function MediaCall() {
   const [session, setSession] = useState(undefined);
   const [publisher, setPublisher] = useState(undefined);
   const [subscribers, setSubscribers] = useState([]);
-  const [screenCam, setScreenCam] = useState(false);
+  const [isScreenConnected, setIsScreenConnected] = useState(false);
   const [isCameraConnected, setIsCameraConnected] = useState(false);
   const [isMicConnected, setIsMicConnected] = useState(false);
 
@@ -36,11 +36,9 @@ export default function MediaCall() {
 
   const accessToken = localStorage.getItem("accessToken");
   const OV = useRef(null);
-  const pc = new RTCPeerConnection();
-  const state = pc.iceConnectionState;
 
   useEffect(() => {
-    OV.current = new OpenVidu(); // 컴포넌트가 처음 마운트될 때만 초기화
+    OV.current = new OpenVidu(); 
 
     return () => {
       if (OV.current) {
@@ -53,7 +51,6 @@ export default function MediaCall() {
     e.preventDefault();
 
     const mySession = OV.current.initSession();
-    console.log(state);
 
     mySession.on("streamCreated", (event) => {
       const subscriber = mySession.subscribe(event.stream, undefined);
@@ -76,22 +73,15 @@ export default function MediaCall() {
     setSession(mySession);
   }, []);
 
-  // publisher 설정
   useEffect(() => {
     if (session) {
       getToken().then(async (token) => {
         console.log(token);
         try {
           await session.connect(token);
-          let publisher = await OV.current.initPublisherAsync(undefined, {
-            audioSource: undefined,
-            videoSource: undefined,
-            publishAudio: true,
-            publishVideo: true,
-            mirror: false,
-          });
-          session.publish(publisher);
-          setPublisher(publisher);
+          setIsCameraConnected(false);
+          setIsMicConnected(false);
+          setIsScreenConnected(false);
         } catch (error) {
           console.log(error);
         }
@@ -115,8 +105,7 @@ export default function MediaCall() {
     console.log(JSON.stringify(data));
     const res = await axios.post(
       API.MEDIA,
-      { customSessionId: sessionId },
-      {
+      { customSessionId: sessionId }, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
@@ -147,7 +136,6 @@ export default function MediaCall() {
     return res.data;
   };
 
-  // 세션 나가기
   const leaveSession = useCallback(() => {
     if (session) {
       session.disconnect();
@@ -185,25 +173,68 @@ export default function MediaCall() {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, [leaveSession]);
-
-  const toggleVideo = () => {
+  const toggleCamera = async () => {
     if (publisher) {
-      const publishVideo = publisher.stream.videoActive;
-      publisher.publishVideo(!publishVideo);
-      setIsCameraConnected(!publishVideo);
+      if (publisher.stream.videoActive) {
+        session.unpublish(publisher);
+        setPublisher(null);
+        setIsCameraConnected(false); 
+      } else {
+        const cameraPublisher = await OV.current.initPublisherAsync(undefined, {
+          videoSource: undefined,
+          publishAudio: true,
+          publishVideo: true,
+          mirror: false,
+        });
+        session.publish(cameraPublisher);
+        setPublisher(cameraPublisher);
+        setIsScreenConnected(false); 
+        setIsCameraConnected(true); 
+      }
+    } else {
+      const cameraPublisher = await OV.current.initPublisherAsync(undefined, {
+        videoSource: undefined,
+        publishAudio: true,
+        publishVideo: true,
+        mirror: false,
+      });
+      session.publish(cameraPublisher);
+      setPublisher(cameraPublisher);
+      setIsScreenConnected(false);
+      setIsCameraConnected(true); 
     }
   };
-
+  const toggleScreenShare = async () => {
+    if (publisher && publisher.stream.videoSource === "screen") {
+      session.unpublish(publisher);
+      setPublisher(null);
+      setIsScreenConnected(false); 
+    } else {
+      if (publisher) {
+        session.unpublish(publisher);
+        setPublisher(null);
+        setIsCameraConnected(false); 
+      }
+  
+      const screenPublisher = await OV.current.initPublisherAsync(undefined, {
+        videoSource: "screen",
+        publishAudio: true,
+        publishVideo: true,
+        mirror: false,
+      });
+      session.publish(screenPublisher);
+      setPublisher(screenPublisher);
+      setIsScreenConnected(true); 
+    }
+  };
+  
+  
   const toggleMic = () => {
     if (publisher) {
       const publishAudio = publisher.stream.audioActive;
       publisher.publishAudio(!publishAudio);
       setIsMicConnected(!publishAudio);
     }
-  };
-
-  const switchCamera = () => {
-    setScreenCam(!screenCam);
   };
 
   const handleClose = () => {
@@ -257,10 +288,10 @@ export default function MediaCall() {
                   </div>
                 ))}
                 <div className={style.mediaDeviceContainer}>
-                  <button onClick={switchCamera}>
-                    {screenCam ? <LuMonitorOff /> : <LuMonitor />}
+                  <button onClick={toggleScreenShare}>
+                    {isScreenConnected ? <LuMonitorOff /> : <LuMonitor /> }
                   </button>
-                  <button onClick={toggleVideo}>
+                  <button onClick={toggleCamera}>
                     {isCameraConnected ? (
                       <IoVideocamOffOutline />
                     ) : (
