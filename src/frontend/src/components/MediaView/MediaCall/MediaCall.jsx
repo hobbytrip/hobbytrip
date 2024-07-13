@@ -173,24 +173,13 @@ export default function MediaCall() {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, [leaveSession]);
+  
   const toggleCamera = async () => {
     if (publisher) {
-      if (publisher.stream.videoActive) {
-        session.unpublish(publisher);
-        setPublisher(null);
-        setIsCameraConnected(false); 
-      } else {
-        const cameraPublisher = await OV.current.initPublisherAsync(undefined, {
-          videoSource: undefined,
-          publishAudio: true,
-          publishVideo: true,
-          mirror: false,
-        });
-        session.publish(cameraPublisher);
-        setPublisher(cameraPublisher);
-        setIsScreenConnected(false); 
-        setIsCameraConnected(true); 
-      }
+      session.unpublish(publisher);
+      setPublisher(null);
+      setIsCameraConnected(false);
+      setIsScreenConnected(false);
     } else {
       const cameraPublisher = await OV.current.initPublisherAsync(undefined, {
         videoSource: undefined,
@@ -200,12 +189,13 @@ export default function MediaCall() {
       });
       session.publish(cameraPublisher);
       setPublisher(cameraPublisher);
+      setIsCameraConnected(true);
       setIsScreenConnected(false);
-      setIsCameraConnected(true); 
     }
   };
+  
   const toggleScreenShare = async () => {
-    if (publisher && publisher.stream.videoSource === "screen") {
+    if (isScreenConnected) {
       session.unpublish(publisher);
       setPublisher(null);
       setIsScreenConnected(false); 
@@ -227,8 +217,7 @@ export default function MediaCall() {
       setIsScreenConnected(true); 
     }
   };
-  
-  
+    
   const toggleMic = () => {
     if (publisher) {
       const publishAudio = publisher.stream.audioActive;
