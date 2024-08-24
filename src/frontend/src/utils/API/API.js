@@ -48,6 +48,7 @@ const API = {
 
   //서버 이벤트
   COMM_SERVER: `${COMMUNITY_BASE_URL}/server`,
+  COMM_PROFILE: `${COMMUNITY_BASE_URL}/server/profile`,
   GET_SERVER: (serverId, userId) =>
     `${COMMUNITY_BASE_URL}/server/${serverId}/${userId}`,
   INVITE_SERVER: (serverId) =>

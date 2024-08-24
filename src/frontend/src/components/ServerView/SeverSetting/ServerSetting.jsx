@@ -66,7 +66,6 @@ const ServerSetting = () => {
 
       const communityData = new Blob([data], { type: "application/json" });
       formData.append("requestDto", communityData);
-      // console.log(profile);
       if (profileImage !== null) {
         formData.append("profile", profileImage);
       } else {
@@ -141,7 +140,23 @@ const ServerSetting = () => {
     }
   };
 
-  const handleDeleteImage = () => {
+  const handleDeleteImage = async() => {
+    try{
+      const res = await axiosInstance.patch(API.COMM_PROFILE, JSON.stringify({
+      serverId: serverInfo.serverId,
+      userId: userId
+    }));
+    
+    if (res.data.success) {
+      setServerData({serverInfo: res.data.data});
+      updateServer(res.data.data);
+    } else {
+      console.log(res);
+    }
+  } catch (error) {
+    console.error("데이터 post 에러:", error);
+  }
+    
     setProfileImage(null);
     setProfilePreview(null);
   };
