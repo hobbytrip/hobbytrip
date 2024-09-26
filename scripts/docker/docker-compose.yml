@@ -27,7 +27,6 @@ services:
       - KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR=2
       - KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=2
       - KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR=2
-
   Kafka01Service:
     image: bitnami/kafka:3.7.0
     restart: unless-stopped
@@ -54,7 +53,6 @@ services:
       - KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR=2
       - KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=2
       - KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR=2
-
   Kafka02Service:
     image: bitnami/kafka:3.7.0
     restart: unless-stopped
@@ -81,7 +79,6 @@ services:
       - KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR=2
       - KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=2
       - KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR=2
-
   KafkaWebUiService:
     image: provectuslabs/kafka-ui:latest
     restart: unless-stopped
@@ -98,7 +95,6 @@ services:
       - Kafka00Service
       - Kafka01Service
       - Kafka02Service
-      
   # MSA Service Discovery
   discovery-service:
     image: hanyoonsoo/discovery-service:1.0
