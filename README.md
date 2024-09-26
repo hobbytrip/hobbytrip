@@ -109,9 +109,10 @@
 ### Backend
 #### 안재진
 
+- 프로젝트 공통 작업 설정
 - 채팅 서비스
 - 상태관리 서비스
-- EDM(Event Driven MicroService) 아키텍처, Kafka 토픽 설계
+- EDA(Event Driven Architecture) 설계
 
 #### 한윤수
 
