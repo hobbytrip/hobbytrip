@@ -73,12 +73,10 @@
   - Java 17
 - Spring Framework
   - Spring Boot 3.2.x 
-  - WebSocket, STOMP, SockJS
+  - WebSocket
   - Netflix Eureka Server
   - Netflix Eureka Client
   - Spring Cloud Gateway
-  - OpenFeign
-  - WebClient
   - Kafka
 - Database
   - MySQL
