@@ -110,7 +110,7 @@
 - 프로젝트 공통 작업 설정
 - 채팅 서비스
 - 상태관리 서비스
-- EDA(Event Driven Architecture) 설계
+- EDA(Event Driven Architecture) 설계 및 구축
 
 #### 한윤수
 
