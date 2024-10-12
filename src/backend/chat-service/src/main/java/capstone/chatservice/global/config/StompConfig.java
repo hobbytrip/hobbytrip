@@ -1,6 +1,6 @@
 package capstone.chatservice.global.config;
 
-import capstone.chatservice.infra.websocket.WebSocketConnectionHandler;
+import capstone.chatservice.global.websocket.WebSocketConnectionHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;

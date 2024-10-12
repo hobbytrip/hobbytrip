@@ -1,4 +1,4 @@
-package capstone.chatservice.infra.websocket;
+package capstone.chatservice.global.websocket;
 
 import capstone.chatservice.global.common.JwtTokenHandler;
 import capstone.chatservice.global.exception.Code;
