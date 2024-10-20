@@ -2,7 +2,7 @@ package capstone.chatservice.domain.server.dto.response;
 
 import capstone.chatservice.domain.model.ActionType;
 import capstone.chatservice.domain.model.ChatType;
-import capstone.chatservice.domain.server.dto.ServerMessageDto;
+import capstone.chatservice.infra.kafka.producer.chat.event.ServerChatEvent;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,11 +18,11 @@ public class ServerMessageDeleteResponse {
     private ChatType chatType;
     private ActionType actionType;
 
-    public static ServerMessageDeleteResponse from(ServerMessageDto messageDto) {
+    public static ServerMessageDeleteResponse from(ServerChatEvent chatEvent) {
         return new ServerMessageDeleteResponse(
-                messageDto.getMessageId(),
-                ChatType.SERVER,
-                ActionType.DELETE
+                chatEvent.getMessageId(),
+                chatEvent.getChatType(),
+                chatEvent.getActionType()
         );
     }
 }

@@ -1,6 +1,6 @@
 package capstone.chatservice.global.config.kafka.consumer.chat;
 
-import capstone.chatservice.domain.server.dto.ServerMessageDto;
+import capstone.chatservice.infra.kafka.producer.chat.event.ServerChatEvent;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -33,16 +33,16 @@ public class ServerChatConsumerConfig {
     }
 
     @Bean
-    public ConsumerFactory<String, ServerMessageDto> serverChatConsumerFactory() {
+    public ConsumerFactory<String, ServerChatEvent> serverChatConsumerFactory() {
         return new DefaultKafkaConsumerFactory<>(
                 serverChatConsumerConfiguration(),
                 new StringDeserializer(),
-                new JsonDeserializer<>(ServerMessageDto.class));
+                new JsonDeserializer<>(ServerChatEvent.class));
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, ServerMessageDto> serverChatListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, ServerMessageDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<String, ServerChatEvent> serverChatListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, ServerChatEvent> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(serverChatConsumerFactory());
         return factory;
     }

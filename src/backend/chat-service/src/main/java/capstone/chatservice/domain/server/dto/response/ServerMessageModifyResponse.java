@@ -2,7 +2,7 @@ package capstone.chatservice.domain.server.dto.response;
 
 import capstone.chatservice.domain.model.ActionType;
 import capstone.chatservice.domain.model.ChatType;
-import capstone.chatservice.domain.server.dto.ServerMessageDto;
+import capstone.chatservice.infra.kafka.producer.chat.event.ServerChatEvent;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,14 +22,14 @@ public class ServerMessageModifyResponse {
     private ActionType actionType;
     private LocalDateTime modifiedAt;
 
-    public static ServerMessageModifyResponse from(ServerMessageDto message) {
+    public static ServerMessageModifyResponse from(ServerChatEvent chatEvent) {
         return new ServerMessageModifyResponse(
-                message.getServerId(),
-                message.getMessageId(),
-                message.getContent(),
-                ChatType.SERVER,
-                ActionType.MODIFY,
-                message.getModifiedAt()
+                chatEvent.getServerId(),
+                chatEvent.getMessageId(),
+                chatEvent.getContent(),
+                chatEvent.getChatType(),
+                chatEvent.getActionType(),
+                chatEvent.getModifiedAt()
         );
     }
 }

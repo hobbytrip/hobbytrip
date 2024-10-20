@@ -3,7 +3,7 @@ package capstone.chatservice.infra.kafka.producer.chat;
 import capstone.chatservice.domain.dm.dto.DirectMessageDto;
 import capstone.chatservice.domain.emoji.dto.EmojiDto;
 import capstone.chatservice.domain.forum.dto.ForumMessageDto;
-import capstone.chatservice.domain.server.dto.ServerMessageDto;
+import capstone.chatservice.infra.kafka.producer.chat.event.ServerChatEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,12 +28,12 @@ public class ChatEventProducer {
     private String forumChatTopic;
 
 
-    private final KafkaTemplate<String, ServerMessageDto> serverChatKafkaTemplate;
+    private final KafkaTemplate<String, ServerChatEvent> serverChatKafkaTemplate;
     private final KafkaTemplate<String, DirectMessageDto> direcetChatKafkaTemplate;
     private final KafkaTemplate<String, EmojiDto> emojiChatKafkaTemplate;
     private final KafkaTemplate<String, ForumMessageDto> forumChatKafkaTemplate;
 
-    public void sendToServerChatTopic(ServerMessageDto messageDto) {
+    public void sendToServerChatTopic(ServerChatEvent messageDto) {
         serverChatKafkaTemplate.send(serverChatTopic, messageDto);
     }
 

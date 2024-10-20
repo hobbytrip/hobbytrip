@@ -3,7 +3,7 @@ package capstone.chatservice.domain.server.dto.response;
 import capstone.chatservice.domain.file.domain.UploadFile;
 import capstone.chatservice.domain.model.ActionType;
 import capstone.chatservice.domain.model.ChatType;
-import capstone.chatservice.domain.server.dto.ServerMessageDto;
+import capstone.chatservice.infra.kafka.producer.chat.event.ServerChatEvent;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -32,22 +32,22 @@ public class ServerMessageCreateResponse {
     private List<UploadFile> files;
     private LocalDateTime createdAt;
 
-    public static ServerMessageCreateResponse from(ServerMessageDto message) {
+    public static ServerMessageCreateResponse from(ServerChatEvent chatEvent) {
         return new ServerMessageCreateResponse(
-                message.getMessageId(),
-                message.getServerId(),
-                message.getChannelId(),
-                message.getUserId(),
-                message.getParentId(),
+                chatEvent.getMessageId(),
+                chatEvent.getServerId(),
+                chatEvent.getChannelId(),
+                chatEvent.getUserId(),
+                chatEvent.getParentId(),
                 0L,
-                message.getProfileImage(),
-                message.getWriter(),
-                message.getContent(),
-                message.isDeleted(),
-                ChatType.SERVER,
-                ActionType.SEND,
-                message.getFiles(),
-                message.getCreatedAt()
+                chatEvent.getProfileImage(),
+                chatEvent.getWriter(),
+                chatEvent.getContent(),
+                chatEvent.isDeleted(),
+                chatEvent.getChatType(),
+                chatEvent.getActionType(),
+                chatEvent.getFiles(),
+                chatEvent.getCreatedAt()
         );
     }
 }

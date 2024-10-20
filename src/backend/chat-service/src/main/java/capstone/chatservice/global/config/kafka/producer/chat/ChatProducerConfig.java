@@ -3,7 +3,7 @@ package capstone.chatservice.global.config.kafka.producer.chat;
 import capstone.chatservice.domain.dm.dto.DirectMessageDto;
 import capstone.chatservice.domain.emoji.dto.EmojiDto;
 import capstone.chatservice.domain.forum.dto.ForumMessageDto;
-import capstone.chatservice.domain.server.dto.ServerMessageDto;
+import capstone.chatservice.infra.kafka.producer.chat.event.ServerChatEvent;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -36,12 +36,12 @@ public class ChatProducerConfig {
     }
 
     @Bean
-    public ProducerFactory<String, ServerMessageDto> serverChatProducerFactory() {
+    public ProducerFactory<String, ServerChatEvent> serverChatProducerFactory() {
         return new DefaultKafkaProducerFactory<>(chatEventProducerConfig());
     }
 
     @Bean
-    public KafkaTemplate<String, ServerMessageDto> serverChatKafkaTemplate() {
+    public KafkaTemplate<String, ServerChatEvent> serverChatKafkaTemplate() {
         return new KafkaTemplate<>(serverChatProducerFactory());
     }
 

@@ -10,7 +10,6 @@ import capstone.chatservice.infra.S3.FileStore;
 import capstone.chatservice.infra.kafka.producer.alarm.AlarmEventProducer;
 import capstone.chatservice.infra.kafka.producer.alarm.dto.DmAlarmEventDto;
 import capstone.chatservice.infra.kafka.producer.chat.ChatEventProducer;
-import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -45,7 +44,7 @@ public class DirectMessageCommandController {
     }
 
     @MessageMapping("/direct/message/delete")
-    public void modify(DirectMessageDeleteRequest deleteRequest) {
+    public void delete(DirectMessageDeleteRequest deleteRequest) {
 
         DirectMessageDto messageDto = commandService.delete(deleteRequest);
         chatEventProducer.sendToDirectChatTopic(messageDto);
@@ -53,8 +52,7 @@ public class DirectMessageCommandController {
 
     @PostMapping("/direct/message/file")
     public void uploadFile(@RequestPart DirectMessageCreateRequest createRequest,
-                           @RequestPart(value = "files", required = false) List<MultipartFile> files)
-            throws IOException {
+                           @RequestPart(value = "files", required = false) List<MultipartFile> files) {
 
         List<UploadFile> uploadFiles = fileStore.storeFiles(files);
         createRequest.setFiles(uploadFiles);
