@@ -210,13 +210,36 @@ services:
       - gateway-service
       - community-service
   # CHAT-SERVICE
-  mongo-chat:
+  mongodb1:
     image: mongo:latest
-    container_name: mongo-chat
+    container_name: mongodb1
+    hostname: mongo1
+    restart: always
     ports:
       - "27017:27017"
     environment:
       MONGO_INITDB_DATABASE: capstone
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    command: mongod --replSet rs0 --keyFile /etc/mongodb.key --bind_ip_all
+    volumes:
+      - ./db1:/data/db
+      - ~/.ssh/mongodb.key:/etc/mongodb.key
+  mongodb2:
+    image: mongo:latest
+    container_name: mongodb2
+    hostname: mongo2
+    restart: always
+    ports:
+      - "27018:27018"
+    environment:
+      MONGO_INITDB_DATABASE: capstone
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    command: mongod --replSet rs0 --keyFile /etc/mongodb.key --bind_ip_all
+    volumes:
+      - ./db2:/data/db
+      - ~/.ssh/mongodb.key:/etc/mongodb.key
   chat-service:
     image: hanyoonsoo/chat-service:1.0
     container_name: chat-service
@@ -226,7 +249,8 @@ services:
       - Kafka00Service
       - Kafka01Service
       - Kafka02Service
-      - mongo-chat
+      - mongodb1
+      - mongodb2
       - discovery-service
       - gateway-service
     volumes:
@@ -240,7 +264,8 @@ services:
       - Kafka00Service
       - Kafka01Service
       - Kafka02Service
-      - mongo-chat
+      - mongodb1
+      - mongodb2
       - discovery-service
       - gateway-service
       - chat-service
