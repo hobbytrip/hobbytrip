@@ -28,6 +28,8 @@ public class ServerChatEvent {
 
     private String uuid;
 
+    private boolean isProcessed;
+
     private Long messageId;
     private Long serverId;
     private Long channelId;
@@ -82,5 +84,9 @@ public class ServerChatEvent {
 
     public void changeEventSentType(EventSentType eventSentType) {
         this.eventSentType = eventSentType;
+    }
+
+    public void markAsProcessed() {
+        this.isProcessed = true;
     }
 }
